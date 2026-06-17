@@ -4,8 +4,8 @@
 
 ## Project
 
-- **Customer:** `<CUSTOMER>`
-- **Project:** `<PROJECT>`
+- **Customer:** `World Bank Group`
+- **Project:** `WBG`
 - **Environment:** ODC (default) — change if O11
 - **Class prefix:** `rnt-`
 - **Spacing base:** 4pt

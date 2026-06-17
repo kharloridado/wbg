@@ -3,10 +3,10 @@
 Fill this in at project kickoff. The OutSystems skills read these values so they don't have to ask every session.
 
 ## Identity
-- Customer: `<CUSTOMER>`
-- Project: `<PROJECT>`
-- Repo: `<git remote / repo name>`
-- Start date: `<YYYY-MM-DD>`
+- Customer: `World Bank Group`
+- Project: `WBG`
+- Repo: `kharloridado/wbg`
+- Start date: `2026-06-17`
 
 ## Brand source of truth
 - Brand guidelines: see `design/brand-guidelines.md`
