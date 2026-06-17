@@ -1,14 +1,13 @@
 /* typography.css — WBG / "The Loop" type scale + weights
  * Extracted from Figma: type/role page [node:10995-7259], effects page [node:19737-9489].
- * Canonical `lift` core: body = Inter, heading/label = Poppins.
- * NOTE: the library also exposes Open Sans (primitive Heading/Body styles + a conflicting
- * `lift/global/font family` alias), plus foreign Manrope / Andes / IBM Plex Sans styles.
- * Build uses the lift core fonts; the conflicts are FINDINGS (findings/), not edits here. */
+ * Font family: Open Sans — brand-owner decision 2026-06-17, resolving FND-002
+ * (the library exposed 6 families: Inter/Open Sans/Poppins/Manrope/Andes/IBM Plex Sans).
+ * Open Sans matches the primitive Heading/* and Body/* type styles in the library. */
 :root {
-  /* ---- Font families (lift core) ---- */
-  --font-family-body:    "Inter", system-ui, sans-serif;
-  --font-family-heading: "Poppins", system-ui, sans-serif;
-  --font-family-label:   "Poppins", system-ui, sans-serif;
+  /* ---- Font families (Open Sans, per FND-002 sign-off) ---- */
+  --font-family-body:    "Open Sans", system-ui, sans-serif;
+  --font-family-heading: "Open Sans", system-ui, sans-serif;
+  --font-family-label:   "Open Sans", system-ui, sans-serif;
   --font-family-base:    var(--font-family-body);
 
   /* ---- Weights ---- */

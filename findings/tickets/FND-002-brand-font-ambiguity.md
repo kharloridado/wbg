@@ -1,5 +1,8 @@
 FND-002 [design-token] Ambiguous canonical brand font
 
+> ✅ RESOLVED 2026-06-17 — brand owner chose **Open Sans**. `typography.css` set to Open Sans
+> (body/heading/label). Do NOT file this as an open bug; if filed for the record, open it closed/resolved.
+
 <!-- dedup: [node:10995-7259] [node:11122-2143] -->
 
 **Type:** design-token

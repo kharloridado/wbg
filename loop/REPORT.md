@@ -40,7 +40,7 @@ Built with `npm run build:theme:dev` (the prod `build:theme` `--targets` flag pa
 | ID | Type | Sev | Summary |
 |---|---|---|---|
 | FND-001 | consistency | high | Foreign token systems leaked in (`_ITSES`/Open Sans, `_GDS`/Manrope, `Headings Desktop`/Andes, `DS L2.0`/IBM Plex) |
-| FND-002 | design-token | high | Ambiguous brand font — 6 families; Inter vs Open Sans conflict inside `lift` |
+| FND-002 | design-token | high | Ambiguous brand font — 6 families. ✅ **RESOLVED 2026-06-17: Open Sans** (brand owner); typography.css updated |
 | FND-003 | design-token | medium | Shadow color drift `#21262d29` vs `#000d1a29` |
 | FND-004 | design-token | medium | Radius naming/value mismatch (`radius-4` = 16px) |
 | FND-005 | design-token | low | `Spacing/xtiny` = 2px off the 4pt grid |
