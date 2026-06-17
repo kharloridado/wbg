@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read", "Write", "Edit", "Grep", "Glob",
+      "Bash(npm run build:theme)",
+      "Bash(npm run build:theme:dev)",
+      "Bash(jq:*)",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git switch:*)", "Bash(git checkout:*)", "Bash(git status:*)",
+      "Bash(gh issue create:*)", "Bash(gh issue edit:*)", "Bash(gh label create:*)", "Bash(gh project:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(gh repo delete:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "echo \"$(date -u +%FT%TZ) artifact edit\" >> loop/loop.log" }
+        ]
+      }
+    ]
+  }
+}

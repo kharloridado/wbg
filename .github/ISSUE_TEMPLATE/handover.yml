@@ -1,0 +1,31 @@
+name: Code Handover (OutSystems)
+description: Generated code ready to be added into OutSystems. Filed as a Task and assigned to the developer.
+title: "[handover] <component> — add in OutSystems"
+labels: ["handover", "task"]
+body:
+  - type: textarea
+    id: files
+    attributes:
+      label: Files in this handover
+      description: List each generated file and its OutSystems destination
+      placeholder: |
+        - rnt-button.css        -> Theme CSS
+        - rnt-segmented.js       -> Script resource (Theme Library)
+        - rnt-segmented.css      -> source of the shadow styles (kept in the .js)
+        - Block: Segmented        -> Patterns Library
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: OutSystems install checklist
+      placeholder: |
+        - [ ] Paste rnt-button.css into Theme CSS
+        - [ ] Import rnt-segmented.js as a Script resource
+        - [ ] Create Block "Segmented" with the listed inputs/events/placeholders
+        - [ ] Set ExtendedClass on the Button pattern
+        - [ ] 1-Click Publish, validate in browser at all breakpoints
+    validations: { required: true }
+  - type: input
+    id: pr
+    attributes:
+      label: Related branch / PR (if any)

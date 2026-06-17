@@ -1,0 +1,10 @@
+/* spacing.css — 4pt base scale (OutSystems UI standard naming) */
+:root {
+  --space-none: 0;
+  --space-xs: 4px;
+  --space-s:  8px;
+  --space-m:  16px;
+  --space-l:  24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}

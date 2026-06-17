@@ -1,0 +1,4 @@
+/* index.css — entry for build:theme. Bundles to a single flat dist/theme.css. */
+@import "./colors.css";
+@import "./spacing.css";
+@import "./typography.css";

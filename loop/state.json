@@ -1,0 +1,25 @@
+{
+  "goal": "",
+  "figma_url": "",
+  "branch": "",
+  "status": "pending",
+  "mode": "single",
+  "project": { "owner": "", "number": 0 },
+  "caps": {
+    "max_rounds_per_item": 3,
+    "max_global_iterations": 500,
+    "budget_note": "raise/lower for library-scale runs; a full library is hundreds of items"
+  },
+  "checkpoints": {
+    "after_tokens": "pause",
+    "after_primitives": "pause",
+    "after_composites": "continue"
+  },
+  "iteration": 0,
+  "tiers": ["foundations", "primitives", "composites", "patterns"],
+  "current_tier": "foundations",
+  "items": [],
+  "findings": [],
+  "handover_epics": [],
+  "consistency_passes": []
+}

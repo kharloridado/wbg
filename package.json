@@ -1,0 +1,14 @@
+{
+  "name": "outsystems-project-template",
+  "version": "1.0.0",
+  "description": "OutSystems frontend project scaffold — lightningcss theme pipeline + findings workflow",
+  "private": true,
+  "scripts": {
+    "build:theme": "lightningcss --bundle --targets '>= 0.25%' tokens/index.css -o dist/theme.css",
+    "build:theme:dev": "lightningcss --bundle tokens/index.css -o dist/theme.css",
+    "watch:theme": "lightningcss --bundle --watch tokens/index.css -o dist/theme.css"
+  },
+  "devDependencies": {
+    "lightningcss-cli": "^1.0.0"
+  }
+}
