@@ -1,0 +1,14 @@
+/* shadows.css — WBG / "The Loop" elevation / drop-shadow scale
+ * Extracted from Figma: effects page [node:19737-9489] (lift shadow system).
+ * DRIFT: the shadow color `lift/effects/shadow/default` reads #21262d29 on the effects
+ * page but #000d1a29 on the colors page [node:11122-2143]. Using the effects-page value
+ * (dedicated source); the mismatch is a FINDING — do not silently reconcile. */
+:root {
+  --shadow-color: #21262d29;
+
+  --shadow-lowest:  0 0  8px  0 var(--shadow-color);
+  --shadow-low:     0 2px 8px  0 var(--shadow-color);
+  --shadow-regular: 0 4px 12px 0 var(--shadow-color);
+  --shadow-medium:  0 8px 20px 0 var(--shadow-color);
+  --shadow-high:    0 5px 32px 0 var(--shadow-color);
+}

@@ -1,0 +1,229 @@
+/* semantic-colors.css — WBG / "The Loop" semantic role layer
+ * Extracted from Figma: Semantic Colors [node:11122-2879] (references the primitive ramps
+ * in colors.css [node:11122-2143]). Build to these exactly; contrast failures are findings.
+ *
+ * Each role references a PRIMITIVE via var() (CLAUDE.md hard rule #3 — never hard-code).
+ * Four roles have NO matching primitive and are kept as literal hex; all four are tracked
+ * by FND-006 (text-on-light-subdued, text-on-blue, text-on-light-link-hover,
+ * divider-on-dark-default). The "informational" casing clash is FND-007. */
+:root {
+  /* ---- Domain ---- */
+  --color-domain-primary:   var(--color-blue-70);
+  --color-domain-secondary: var(--color-blue-40);
+
+  /* Domain · interactive (on light) */
+  --color-domain-interactive-enabled-primary:   var(--color-blue-70);
+  --color-domain-interactive-enabled-secondary: var(--color-neutral-95);
+  --color-domain-interactive-hover:    var(--color-blue-40);
+  --color-domain-interactive-focused:  var(--color-blue-50);
+  --color-domain-interactive-visited:  var(--color-purple-70);
+  --color-domain-interactive-pressed:  var(--color-blue-90);
+  --color-domain-interactive-disable:  var(--color-neutral-40);
+
+  /* Domain · elevations */
+  --color-domain-elevation-light-high:    var(--color-neutral-30);
+  --color-domain-elevation-light-medium:  var(--color-neutral-20);
+  --color-domain-elevation-light-low:     var(--color-neutral-05);
+  --color-domain-elevation-light-lowest:  var(--color-white);
+  --color-domain-elevation-dark-high:     var(--color-neutral-70);
+  --color-domain-elevation-dark-medium:   var(--color-neutral-80);
+  --color-domain-elevation-dark-regular:  var(--color-neutral-90);
+  --color-domain-elevation-dark-low:      var(--color-neutral-95);
+  --color-domain-elevation-dark-lowest:   var(--color-black);
+
+  /* Domain · states */
+  --color-domain-state-positive-low:     var(--color-green-03);
+  --color-domain-state-positive-regular: var(--color-green-on-dark-07);
+  --color-domain-state-positive-high:    var(--color-green-70);
+  --color-domain-state-negative-low:     var(--color-red-10);
+  --color-domain-state-negative-regular: var(--color-red-50);
+  --color-domain-state-negative-high:    var(--color-red-80);
+  --color-domain-state-warning-low:      var(--color-yellow-03);
+  --color-domain-state-warning-regular:  var(--color-yellow-50);
+  --color-domain-state-warning-medium:   var(--color-yellow-base);
+  --color-domain-state-warning-high:     var(--color-yellow-90);
+  /* Figma names this group "informational" (lowercase); see FND-007 naming clash */
+  --color-domain-state-info-low:         var(--color-blue-05);
+  --color-domain-state-info-regular:     var(--color-blue-40);
+  --color-domain-state-info-high:        var(--color-blue-70);
+  --color-domain-state-suggestion-low:     var(--color-purple-10);
+  --color-domain-state-suggestion-regular: var(--color-purple-40);
+  --color-domain-state-suggestion-high:    var(--color-purple-80);
+  --color-domain-state-disable-low:     var(--color-neutral-15);
+  --color-domain-state-disable-regular: var(--color-neutral-20);
+  --color-domain-state-disable-medium:  var(--color-neutral-30);
+  --color-domain-state-disable-high:    var(--color-neutral-40);
+  --color-domain-state-disable-highest: var(--color-neutral-50);
+
+  /* ---- Background ---- */
+  --color-bg-page-default:          var(--color-neutral-05);
+  --color-bg-page-default-inverted: var(--color-black);
+  --color-bg-overlay-on-light-lowest:  var(--color-neutral-alpha-04);
+  --color-bg-overlay-on-light-low:     var(--color-neutral-alpha-08);
+  --color-bg-overlay-on-light-regular: var(--color-neutral-alpha-16);
+  --color-bg-overlay-on-light-medium:  var(--color-neutral-alpha-24);
+  --color-bg-overlay-on-dark-low:      var(--color-gray-alpha-white-16);
+  --color-bg-overlay-on-dark-regular:  var(--color-gray-alpha-white-24);
+  --color-bg-overlay-on-dark-medium:   var(--color-gray-alpha-white-48);
+  --color-bg-container-primary:   var(--color-blue-70);
+  --color-bg-container-secondary: var(--color-blue-40);
+  --color-bg-container-on-light-high:    var(--color-neutral-30);
+  --color-bg-container-on-light-medium:  var(--color-neutral-20);
+  --color-bg-container-on-light-regular: var(--color-neutral-10);
+  --color-bg-container-on-light-low:     var(--color-neutral-05);
+  --color-bg-container-on-light-lowest:  var(--color-white);
+  --color-bg-container-on-dark-high:    var(--color-neutral-70);
+  --color-bg-container-on-dark-medium:  var(--color-neutral-80);
+  --color-bg-container-on-dark-regular: var(--color-neutral-90);
+  --color-bg-container-on-dark-low:     var(--color-neutral-95);
+  --color-bg-container-on-dark-lowest:  var(--color-black);
+  --color-bg-link-primary-enabled:  var(--color-blue-70);
+  --color-bg-link-primary-hover:    var(--color-blue-40);
+  --color-bg-link-primary-pressed:  var(--color-blue-90);
+  --color-bg-link-primary-visited:  var(--color-purple-70);
+  --color-bg-link-primary-disabled: var(--color-neutral-40);
+  --color-bg-link-secondary-enabled:  #ffffff00;   /* transparent — no primitive token */
+  --color-bg-link-secondary-hover:    var(--color-blue-40);
+  --color-bg-link-secondary-pressed:  var(--color-blue-30);
+  --color-bg-link-secondary-visited:  var(--color-purple-70);
+  --color-bg-link-secondary-disabled: var(--color-white);
+  --color-bg-container-state-suggestion-low:  var(--color-purple-10);
+  --color-bg-container-state-suggestion-high: var(--color-purple-60);
+  --color-bg-container-state-success-low:  var(--color-green-03);
+  --color-bg-container-state-success-high: var(--color-green-60);
+  --color-bg-container-state-error-low:  var(--color-red-10);
+  --color-bg-container-state-error-high: var(--color-red-70);
+  --color-bg-container-state-info-low:  var(--color-blue-05);
+  --color-bg-container-state-info-high: var(--color-blue-70);
+
+  /* ---- Text ---- */
+  --color-text-on-light-subdued:  #000d1a91;   /* FND-006 — orphan alpha, no primitive */
+  --color-text-on-light-headers:  var(--color-neutral-alpha-95);
+  --color-text-on-light-default:  var(--color-neutral-alpha-70);
+  --color-text-on-light-emphasis: var(--color-blue-90);
+  --color-text-on-blue:           #004099;     /* FND-006 — orphan, no primitive */
+  --color-text-on-light-state-error:    var(--color-red-70);
+  --color-text-on-light-state-disabled: var(--color-neutral-alpha-42);
+  --color-text-on-light-state-success:  var(--color-green-60);
+  --color-text-on-light-state-warning:  var(--color-yellow-90);
+  --color-text-on-light-state-info:     var(--color-blue-60);
+  --color-text-on-light-state-suggest:  var(--color-purple-60);
+  --color-text-on-light-link-primary-enabled:   var(--color-blue-70);
+  --color-text-on-light-link-secondary-enabled: var(--color-neutral-95);
+  --color-text-on-light-link-hover:   #066db1;   /* FND-006 — orphan, no primitive */
+  --color-text-on-light-link-visited: var(--color-purple-70);
+  --color-text-on-dark-default:  var(--color-gray-alpha-white-75);
+  --color-text-on-dark-emphasis: var(--color-gray-alpha-white-90);
+  --color-text-on-dark-subdued:  var(--color-gray-alpha-white-60);
+  --color-text-on-dark-state-success:  var(--color-green-on-dark-07);
+  --color-text-on-dark-state-error:    var(--color-red-50);
+  --color-text-on-dark-state-disabled: var(--color-gray-alpha-white-48);
+  --color-text-on-dark-state-warning:  var(--color-yellow-50);
+  --color-text-on-dark-state-suggest:  var(--color-purple-40);
+  --color-text-on-dark-state-info:     var(--color-blue-40);
+  --color-text-on-dark-link-primary-enabled: var(--color-gray-alpha-white-90);
+  --color-text-on-dark-link-secondary:       var(--color-neutral-05);
+  --color-text-on-dark-link-hover:    var(--color-blue-40);
+  --color-text-on-dark-link-visited:  var(--color-purple-40);
+  --color-text-on-state-info-emphasis:    var(--color-blue-70);
+  --color-text-on-state-info-default:     var(--color-blue-60);
+  --color-text-on-state-error-emphasis:   var(--color-red-80);
+  --color-text-on-state-error-default:    var(--color-red-50);
+  --color-text-on-state-success-emphasis: var(--color-green-70);
+  --color-text-on-state-success-default:  var(--color-green-60);
+  --color-text-on-state-warning-emphasis: var(--color-yellow-90);
+  --color-text-on-state-warning-default:  var(--color-yellow-base);
+
+  /* ---- Icon ---- */
+  --color-icon-on-light-primary:   var(--color-blue-70);
+  --color-icon-on-light-secondary: var(--color-blue-40);
+  --color-icon-on-light-alpha-emphasis: var(--color-neutral-alpha-70);
+  --color-icon-on-light-alpha-default:  var(--color-neutral-alpha-57);
+  --color-icon-on-light-alpha-disable:  var(--color-neutral-alpha-42);
+  --color-icon-on-light-state-disabled: var(--color-neutral-40);
+  --color-icon-on-light-emphasis: var(--color-neutral-80);
+  --color-icon-on-light-default:  var(--color-neutral-60);
+  --color-icon-on-light-state-success:        var(--color-green-60);
+  --color-icon-on-light-state-warning-regular: var(--color-yellow-50);
+  --color-icon-on-light-state-warning-high:    var(--color-yellow-90);
+  --color-icon-on-light-state-error:           var(--color-red-70);
+  --color-icon-on-light-state-informational:   var(--color-blue-70);
+  --color-icon-on-light-state-suggestional:    var(--color-purple-80);
+  --color-icon-on-light-link-enabled: var(--color-blue-70);
+  --color-icon-on-light-link-hover:   var(--color-blue-40);
+  --color-icon-on-light-link-visited: var(--color-purple-70);
+  --color-icon-on-dark-primary: var(--color-blue-40);
+  --color-icon-on-dark-alpha-emphasis: var(--color-white);
+  --color-icon-on-dark-alpha-default:  var(--color-gray-alpha-white-75);
+  --color-icon-on-dark-default:  var(--color-neutral-05);
+  --color-icon-on-dark-emphasis: var(--color-white);
+  --color-icon-on-dark-state-disabled: var(--color-neutral-15);
+  --color-icon-on-dark-state-success:  var(--color-green-on-dark-07);
+  --color-icon-on-dark-state-warning:  var(--color-yellow-on-dark-base);
+  --color-icon-on-dark-state-error:    var(--color-red-30);
+  --color-icon-on-dark-state-info:     var(--color-blue-40);
+  --color-icon-on-dark-state-suggest:  var(--color-purple-30);
+  --color-icon-on-dark-link-enabled-primary: var(--color-blue-40);
+  --color-icon-on-dark-link-hover:   var(--color-blue-50);
+  --color-icon-on-dark-link-visited: var(--color-purple-50);
+
+  /* ---- Divider ---- */
+  --color-divider-on-light-emphasis: var(--color-neutral-alpha-24);
+  --color-divider-on-light-default:  var(--color-neutral-alpha-16);
+  --color-divider-on-light-subdued:  var(--color-neutral-alpha-08);
+  --color-divider-on-dark-emphasis:  var(--color-gray-alpha-white-60);
+  --color-divider-on-dark-default:   #00538a99;   /* FND-006 — orphan alpha, no primitive */
+  --color-divider-on-dark-subdued:   var(--color-gray-alpha-white-24);
+
+  /* ---- Outline ---- */
+  --color-outline-white:       var(--color-white);
+  --color-outline-transparent: #ffffff00;   /* transparent — no primitive token */
+  --color-outline-primary:     var(--color-blue-70);
+  --color-outline-on-light-emphasis: var(--color-neutral-alpha-42);
+  --color-outline-on-light-default:  var(--color-neutral-alpha-24);
+  --color-outline-on-light-subdued:  var(--color-neutral-alpha-16);
+  --color-outline-on-light-dimmed:   var(--color-neutral-alpha-08);
+  --color-outline-on-light-state-success-low:  var(--color-green-03);
+  --color-outline-on-light-state-success-high: var(--color-green-60);
+  --color-outline-on-light-state-error-low:  var(--color-red-10);
+  --color-outline-on-light-state-error-high: var(--color-red-70);
+  --color-outline-on-light-state-warning-low:  var(--color-yellow-03);
+  --color-outline-on-light-state-warning-high: var(--color-yellow-base);
+  --color-outline-on-light-state-info-low:  var(--color-blue-40);
+  --color-outline-on-light-state-info-high: var(--color-blue-60);
+  --color-outline-on-light-state-suggest-low:  var(--color-purple-40);
+  --color-outline-on-light-state-suggest-high: var(--color-purple-60);
+  --color-outline-on-light-state-disable-low:  var(--color-neutral-20);
+  --color-outline-on-light-link-enabled: var(--color-blue-70);
+  --color-outline-on-light-link-hover:   var(--color-blue-40);
+  --color-outline-on-light-link-focused: var(--color-blue-50);
+  --color-outline-on-light-link-visited: var(--color-purple-70);
+  --color-outline-on-dark-emphasis: var(--color-blue-40);
+  --color-outline-on-dark-default:  var(--color-neutral-40);
+  --color-outline-on-dark-subdued:  var(--color-neutral-70);
+  --color-outline-on-dark-dimmed:   var(--color-neutral-80);
+  --color-outline-on-dark-state-success-low:        var(--color-green-70);
+  --color-outline-on-dark-state-success-high:       var(--color-green-03);
+  --color-outline-on-dark-state-error-low:          var(--color-red-80);
+  --color-outline-on-dark-state-error-high:         var(--color-red-10);
+  --color-outline-on-dark-state-warning-low:        var(--color-yellow-50);
+  --color-outline-on-dark-state-warning-high:       var(--color-yellow-03);
+  --color-outline-on-dark-state-informational-low:  var(--color-blue-70);
+  --color-outline-on-dark-state-informational-high: var(--color-blue-05);
+  --color-outline-on-dark-state-suggestional-low:   var(--color-purple-80);
+  --color-outline-on-dark-state-suggestional-high:  var(--color-purple-10);
+  --color-outline-on-dark-state-disable: var(--color-gray-alpha-white-48);
+  --color-outline-on-dark-link-enabled:  var(--color-gray-alpha-white-90);
+  --color-outline-on-dark-link-hover:    var(--color-blue-40);
+  --color-outline-on-dark-link-focused:  var(--color-blue-50);
+  --color-outline-on-dark-link-visited:  var(--color-purple-40);
+
+  /* ---- Legacy semantic aliases (kept for the template's --color-* contract) ----
+   * primary/secondary/info CHANGED from the #000000/#2563EB placeholders to the WB palette. */
+  --color-primary:   var(--color-blue-50);            /* #0071bc — was #000000 */
+  --color-secondary: var(--color-wb-brand-dark-blue); /* #002244 — was #000000 */
+  --color-success:   var(--color-green-60);           /* #388004 — was #16A34A */
+  --color-warning:   #d97706;                          /* lift icon warning — unchanged */
+  --color-error:     var(--color-red-50);             /* #da1e28 — was #DC2626 */
+  --color-info:      var(--color-blue-50);            /* #0071bc — was #2563EB */
+}

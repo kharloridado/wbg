@@ -1,4 +1,8 @@
-/* index.css — entry for build:theme. Bundles to a single flat dist/theme.css. */
+/* index.css — entry for build:theme. Bundles to a single flat dist/theme.css.
+ * Order: primitives first, then the semantic role layer that references them. */
 @import "./colors.css";
+@import "./semantic-colors.css";
 @import "./spacing.css";
 @import "./typography.css";
+@import "./radius.css";
+@import "./shadows.css";

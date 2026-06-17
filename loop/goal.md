@@ -1,15 +1,14 @@
 # Loop Goal
 
 ## Goal
-<one sentence — e.g. "Implement the entire R&T Connect design system library as OutSystems-ready code.">
+Extract and reconcile the FULL WBG token set from The Loop — Main Library into OutSystems-ready `dist/theme.css` (Phase 0), file token-drift findings, then PAUSE for brand-owner sign-off before any component is built.
 
 ## Figma
-- URL: <figma library url>
-- In scope: <"entire library" | specific pages/frames/node ids>
+- URL: [The Loop — Main Library](https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?m=auto&t=Nn0446OIuqhWPaxx-1)
+- In scope: entire library — ALL published variables/tokens (color, spacing, type, radius, shadow, motion). Phase 0 only this run; component tiers are seeded but NOT built (paused at after_tokens checkpoint).
 
 ## Mode
-- `single`  — one screen / a few components (flat queue)
-- `library` — full design system: dependency-ordered, tier-by-tier, with checkpoints  ← set this for the scenario
+- `library` — full design system: dependency-ordered, tier-by-tier, with checkpoints. **This run: Phase 0 (tokens) only, then pause.**
 
 ## Scope
 - [ ] Phase 0: extract + reconcile the FULL token set (token-drift findings), build theme.css

@@ -1,11 +1,23 @@
-# Findings Register — <Customer> / <Project>
-> Next ID: FND-001
+# Findings Register — World Bank Group / WBG
+> Next ID: FND-012
 >
 > Local mirror of design-conformance findings. Live tracker = GitHub Issues labeled `finding`.
 > The implementation always matches the approved design; rows here track conflicts awaiting a design/brand decision.
+>
+> Gate (`high+`): FND-001, FND-002 open GitHub issues + notify; medium/low batch here.
+> `gh` was NOT authenticated during this Phase 0 run, so ALL rows are queued locally;
+> ready-to-file payloads are in `findings/tickets/`. File them once `gh auth login` is done.
 
 | ID | Type | Sev | Location | Observed | Rule | Recommendation | Disposition | Issue |
 |---|---|---|---|---|---|---|---|---|
-| _example_ FND-001 | accessibility/contrast | high | Login / Primary CTA (12:48) | #1A73E8 on #5B8DEF → 1.9:1 | WCAG 2.2 SC 1.4.3 | Darken CTA bg to #1B4FB8 (4.6:1) | open | — |
-
-<!-- Delete the example row when you log the first real finding. -->
+| FND-001 | consistency | high | Type/role page (node:10995-7259) | Foreign token systems leaked into the WBG library: `_ITSES` (Open Sans), `_GDS` (Manrope), `Headings Desktop` (Andes), `DS L2.0` (IBM Plex Sans) + strays (`Primary Blue/06`, `WB Brand/White`, `Drop Shadow/02-Cards`, `Label/L`, `Text/Link`, `Generic/White`) | Single source of truth / no foreign tokens in brand library | Remove/relocate non-`lift` systems out of the WBG library, or namespace them as explicitly out-of-scope. NOT imported into theme.css. | open | queued |
+| FND-002 | design-token | high | Type page (node:10995-7259) + colors (node:11122-2143) | Ambiguous brand font: library exposes Inter, Open Sans, Poppins, Manrope, Andes, IBM Plex Sans. Even within `lift`: `lift/global/font family`=Open Sans vs `lift/global/font-family/body`=Inter | One canonical body + heading font per brand | Brand owner to confirm canonical fonts. Built to lift core (body=Inter, heading/label=Poppins); flag for sign-off. | open | queued |
+| FND-003 | design-token | medium | Effects (node:19737-9489) vs colors (node:11122-2143) | `lift/effects/shadow/default` = `#21262d29` on effects page but `#000d1a29` on colors page | Token must resolve to one value (per mode) | Reconcile the shadow color to a single value. Built with effects-page `#21262d29`. | open | queued |
+| FND-004 | design-token | medium | Effects (node:19737-9489) + type (node:10995-7259) | Radius naming/value mismatch: `lift/border radius/radius-4`=16px (name implies 4), `lift/border radius/base`=4px, `Border Radius/Medium`=8, `Border Radius/Large`=16 | Consistent, non-misleading token names | Rename `radius-4`→`radius-large`/`-16`; align the `lift` and primitive radius names. Built as base 4 / medium 8 / large 16. | open | queued |
+| FND-005 | design-token | low | Spacing System (node:10994-5086) | `Spacing/xtiny` = 2px breaks the 4pt base grid | Project spacing base = 4pt | Confirm 2px is intentional (hairline) or drop it. Built faithfully as `--space-xtiny: 2px`. | open | queued |
+| FND-006 | design-token | low | Semantic Colors (node:11122-2879) | Orphan semantic tokens with no primitive: `Text/On Light/Subdued` `#000d1a91`, `Text/On Blue` `#004099`, `Text/On Light/Link/Hover` `#066db1`, `Divider/On Dark/Default` `#00538a99` | Semantic tokens should reference a primitive | Add matching primitives or retarget these roles. Built faithfully as literals (the other ~166 roles reference primitives via var()). | open | queued |
+| FND-007 | design-token | low | Semantic Colors (node:11122-2879) | `Domain/States/informational/*` is lowercase while every sibling state group (`Positive`/`Negative`/`Warning`/`Suggestion`/`Disable`) is title-case | Consistent token casing | Rename to `Informational`. Built as `--color-domain-state-info-*`. | open | queued |
+| FND-008 | consistency | low | Semantic Colors (node:11122-2879) | One role spelled many ways across groups: "info" = `informational`(Domain)/`Information`(Background)/`Informational`(Outline,Icon)/`Info`(Text); "suggestion" = `Suggestion`(Domain,Background)/`Suggestional`(Outline,Icon)/`Suggest`(Text) | One canonical name per role across all groups | Standardise on `informational` and `suggestion` everywhere. Built with normalised `-info-`/`-suggest(ion)-` token names. | open | queued |
+| FND-009 | brand/token | medium | Palette / Accent·Indigo (node:11122-2143) | Ramp inversion: `Indigo/40` `#9fa9f7` is darker than `Indigo/50` `#a8b2ff` (step 50 should be ≥ step 40 in darkness) | Ramps must be monotonic light→dark | Swap the 40/50 values or re-step the Indigo ramp. Built faithfully as published. | open | queued |
+| FND-010 | design-token | low | Palette / Green + Yellow (node:11122-2143) | Step naming mixes numeric steps with `$lift-core … base`/`on-dark` raw names (`green-on-dark-07`, `green-base`, `yellow-base`, `yellow-on-dark-base`) — non-uniform vs Blue/Red/Purple's 10–90 scale | Uniform step naming across ramps | Renumber Green/Yellow to a 10–90 scale. Built faithfully with source names. | open | queued |
+| FND-011 | a11y/contrast | medium | Semantic Colors / `Domain·Interactive·Hover` + `Domain·Secondary` = `Blue/40` `#169af3` (node:11122-2879) | `#169af3` on white = **3.02:1** — below the 4.5:1 normal-text minimum (meets 3:1 for large text / UI components) | WCAG 2.2 SC 1.4.3 | Where used as interactive/link *text*, darken to `Blue/50 #0071bc` (≈4.6:1). Built faithfully; flag for sign-off. | open | queued |
