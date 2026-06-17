@@ -1,5 +1,5 @@
 # Findings Register — World Bank Group / WBG
-> Next ID: FND-012
+> Next ID: FND-013
 >
 > Local mirror of design-conformance findings. Live tracker = GitHub Issues labeled `finding`.
 > The implementation always matches the approved design; rows here track conflicts awaiting a design/brand decision.
@@ -21,3 +21,4 @@
 | FND-009 | brand/token | medium | Palette / Accent·Indigo (node:11122-2143) | Ramp inversion: `Indigo/40` `#9fa9f7` is darker than `Indigo/50` `#a8b2ff` (step 50 should be ≥ step 40 in darkness) | Ramps must be monotonic light→dark | Swap the 40/50 values or re-step the Indigo ramp. Built faithfully as published. | open | [#19](https://github.com/kharloridado/wbg/issues/19) |
 | FND-010 | design-token | low | Palette / Green + Yellow (node:11122-2143) | Step naming mixes numeric steps with `$lift-core … base`/`on-dark` raw names (`green-on-dark-07`, `green-base`, `yellow-base`, `yellow-on-dark-base`) — non-uniform vs Blue/Red/Purple's 10–90 scale | Uniform step naming across ramps | Renumber Green/Yellow to a 10–90 scale. Built faithfully with source names. | open | [#20](https://github.com/kharloridado/wbg/issues/20) |
 | FND-011 | a11y/contrast | medium | Semantic Colors / `Domain·Interactive·Hover` + `Domain·Secondary` = `Blue/40` `#169af3` (node:11122-2879) | `#169af3` on white = **3.02:1** — below the 4.5:1 normal-text minimum (meets 3:1 for large text / UI components) | WCAG 2.2 SC 1.4.3 | Where used as interactive/link *text*, darken to `Blue/50 #0071bc` (≈4.6:1). Built faithfully; flag for sign-off. | open | [#21](https://github.com/kharloridado/wbg/issues/21) |
+| FND-012 | a11y/brand | medium | tokens/outsystems-ui-overrides.css · `--color-focus-outer` (OutSystems UI v2.28.1 focus 'outer') | Brand-inheritance retints OutSystems' high-contrast yellow focus ring `#ffd337` to The Loop's focused role `Blue/50 #0071bc`; a blue ring on a blue surface may fail to be perceivable | WCAG 2.2 SC 2.4.11 / 2.4.7 | Keep Blue/50 on light surfaces but retain a high-contrast ring on brand/dark surfaces, or add a dedicated brand focus-ring token, or sign off the trade-off. Built faithfully (Blue/50). | open | [#23](https://github.com/kharloridado/wbg/issues/23) |
