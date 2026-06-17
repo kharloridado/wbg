@@ -7,9 +7,13 @@
   "mode": "library",
   "phase": "after-tokens-checkpoint",
   "pause_reason": "after_tokens checkpoint = pause; awaiting designer/brand-owner sign-off on tokens + findings before building components.",
-  "project": { "owner": "kharloridado", "number": 0, "note": "gh not authenticated this run; project board not yet created/linked" },
+  "project": {
+    "owner": "kharloridado",
+    "number": 0,
+    "note": "gh not authenticated this run; project board not yet created/linked"
+  },
   "repo": "kharloridado/wbg",
-  "gh_authenticated": false,
+  "gh_authenticated": true,
   "caps": {
     "max_rounds_per_item": 3,
     "max_global_iterations": 500,
@@ -21,38 +25,224 @@
     "after_composites": "continue"
   },
   "iteration": 1,
-  "tiers": ["foundations", "primitives", "composites", "patterns"],
+  "tiers": [
+    "foundations",
+    "primitives",
+    "composites",
+    "patterns"
+  ],
   "current_tier": "foundations",
-  "token_source_nodes": ["11122-2143", "11122-2879", "10995-7259", "10994-5086", "19737-9489"],
+  "token_source_nodes": [
+    "11122-2143",
+    "11122-2879",
+    "10995-7259",
+    "10994-5086",
+    "19737-9489"
+  ],
   "scope_note": "THIS PHASE = LIGHT mode only. Dark/inverted semantic roles parked in tokens/semantic-colors-dark.css (NOT imported by index.css); reconcile in a later dark-mode phase.",
-  "token_count": { "color": 264, "color_deferred_dark": 63, "spacing": 16, "typography": 24, "shadow": 6, "radius": 3, "total_in_build": 313 },
+  "token_count": {
+    "color": 264,
+    "color_deferred_dark": 63,
+    "spacing": 16,
+    "typography": 24,
+    "shadow": 6,
+    "radius": 3,
+    "total_in_build": 313
+  },
   "token_count_note": "Light theme.css has 264 color tokens (primitives + light semantic). 63 On Dark / Elevation Dark / inverted roles moved to semantic-colors-dark.css (deferred). Semantic roles reference primitives via var() per hard rule #3.",
   "items": [
-    { "id": "tok-colors-primitives", "tier": "foundations", "level": "L1", "node": "11122-2143", "artifact": "tokens/colors.css", "status": "built" },
-    { "id": "tok-semantic-colors",  "tier": "foundations", "level": "L1", "node": "11122-2879", "artifact": "tokens/semantic-colors.css", "status": "built", "scope": "light" },
-    { "id": "tok-semantic-colors-dark", "tier": "foundations", "level": "L1", "node": "11122-2879", "artifact": "tokens/semantic-colors-dark.css", "status": "deferred", "scope": "dark", "note": "Not imported by index.css; reconcile in a later dark-mode phase." },
-    { "id": "tok-spacing",          "tier": "foundations", "level": "L1", "node": "10994-5086", "artifact": "tokens/spacing.css", "status": "built" },
-    { "id": "tok-typography",       "tier": "foundations", "level": "L1", "node": "10995-7259", "artifact": "tokens/typography.css", "status": "built" },
-    { "id": "tok-radius",           "tier": "foundations", "level": "L1", "node": "19737-9489", "artifact": "tokens/radius.css", "status": "built" },
-    { "id": "tok-shadows",          "tier": "foundations", "level": "L1", "node": "19737-9489", "artifact": "tokens/shadows.css", "status": "built" }
+    {
+      "id": "tok-colors-primitives",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "11122-2143",
+      "artifact": "tokens/colors.css",
+      "status": "built"
+    },
+    {
+      "id": "tok-semantic-colors",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "11122-2879",
+      "artifact": "tokens/semantic-colors.css",
+      "status": "built",
+      "scope": "light"
+    },
+    {
+      "id": "tok-semantic-colors-dark",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "11122-2879",
+      "artifact": "tokens/semantic-colors-dark.css",
+      "status": "deferred",
+      "scope": "dark",
+      "note": "Not imported by index.css; reconcile in a later dark-mode phase."
+    },
+    {
+      "id": "tok-spacing",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "10994-5086",
+      "artifact": "tokens/spacing.css",
+      "status": "built"
+    },
+    {
+      "id": "tok-typography",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "10995-7259",
+      "artifact": "tokens/typography.css",
+      "status": "built"
+    },
+    {
+      "id": "tok-radius",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "19737-9489",
+      "artifact": "tokens/radius.css",
+      "status": "built"
+    },
+    {
+      "id": "tok-shadows",
+      "tier": "foundations",
+      "level": "L1",
+      "node": "19737-9489",
+      "artifact": "tokens/shadows.css",
+      "status": "built"
+    }
   ],
   "items_note": "Component tiers (primitives/composites/patterns) NOT yet audited — only token frames were exposed in the file this run. Audit them after the tokens checkpoint sign-off.",
   "findings": [
-    { "id": "FND-001", "type": "consistency",  "sev": "high",   "node": "10995-7259", "status": "queued", "summary": "Foreign token systems leaked into WBG library", "ticket": "findings/tickets/FND-001-foreign-token-systems.md" },
-    { "id": "FND-002", "type": "design-token", "sev": "high",   "node": "10995-7259", "status": "resolved", "resolution": "Open Sans chosen by brand owner 2026-06-17; typography.css updated", "summary": "Ambiguous canonical brand font (6 families)", "ticket": "findings/tickets/FND-002-brand-font-ambiguity.md" },
-    { "id": "FND-003", "type": "design-token", "sev": "medium", "node": "19737-9489", "status": "queued", "summary": "Shadow color drift #21262d29 vs #000d1a29" },
-    { "id": "FND-004", "type": "design-token", "sev": "medium", "node": "19737-9489", "status": "queued", "summary": "Radius naming/value mismatch (radius-4=16)" },
-    { "id": "FND-005", "type": "design-token", "sev": "low",    "node": "10994-5086", "status": "queued", "summary": "Spacing/xtiny=2px off the 4pt grid" },
-    { "id": "FND-006", "type": "design-token", "sev": "low",    "node": "11122-2879", "status": "queued", "summary": "Orphan semantic tokens with no primitive (4)" },
-    { "id": "FND-007", "type": "design-token", "sev": "low",    "node": "11122-2879", "status": "queued", "summary": "Domain/States/informational lowercase casing clash" },
-    { "id": "FND-008", "type": "consistency",  "sev": "low",    "node": "11122-2879", "status": "queued", "summary": "Cross-group role spelling variants (info/Information/Informational/Info; Suggestion/Suggestional/Suggest)" },
-    { "id": "FND-009", "type": "brand",        "sev": "medium", "node": "11122-2143", "status": "queued", "summary": "Accent/Indigo ramp inversion (40 #9fa9f7 darker than 50 #a8b2ff)" },
-    { "id": "FND-010", "type": "design-token", "sev": "low",    "node": "11122-2143", "status": "queued", "summary": "Green/Yellow mixed step naming ($lift-core base/on-dark vs numeric)" },
-    { "id": "FND-011", "type": "a11y",         "sev": "medium", "node": "11122-2879", "status": "queued", "summary": "Blue/40 #169af3 = 3.02:1 on white; fails normal-text AA when used as interactive/link text" }
+    {
+      "id": "FND-001",
+      "type": "consistency",
+      "sev": "high",
+      "node": "10995-7259",
+      "status": "filed",
+      "summary": "Foreign token systems leaked into WBG library",
+      "ticket": "findings/tickets/FND-001-foreign-token-systems.md",
+      "issue": 12,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/12",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-002",
+      "type": "design-token",
+      "sev": "high",
+      "node": "10995-7259",
+      "status": "resolved",
+      "resolution": "Open Sans chosen by brand owner 2026-06-17; typography.css updated",
+      "summary": "Ambiguous canonical brand font (6 families)",
+      "ticket": "findings/tickets/FND-002-brand-font-ambiguity.md"
+    },
+    {
+      "id": "FND-003",
+      "type": "design-token",
+      "sev": "medium",
+      "node": "19737-9489",
+      "status": "filed",
+      "summary": "Shadow color drift #21262d29 vs #000d1a29",
+      "issue": 13,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/13",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-004",
+      "type": "design-token",
+      "sev": "medium",
+      "node": "19737-9489",
+      "status": "filed",
+      "summary": "Radius naming/value mismatch (radius-4=16)",
+      "issue": 14,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/14",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-005",
+      "type": "design-token",
+      "sev": "low",
+      "node": "10994-5086",
+      "status": "filed",
+      "summary": "Spacing/xtiny=2px off the 4pt grid",
+      "issue": 15,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/15",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-006",
+      "type": "design-token",
+      "sev": "low",
+      "node": "11122-2879",
+      "status": "filed",
+      "summary": "Orphan semantic tokens with no primitive (4)",
+      "issue": 16,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/16",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-007",
+      "type": "design-token",
+      "sev": "low",
+      "node": "11122-2879",
+      "status": "filed",
+      "summary": "Domain/States/informational lowercase casing clash",
+      "issue": 17,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/17",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-008",
+      "type": "consistency",
+      "sev": "low",
+      "node": "11122-2879",
+      "status": "filed",
+      "summary": "Cross-group role spelling variants (info/Information/Informational/Info; Suggestion/Suggestional/Suggest)",
+      "issue": 18,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/18",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-009",
+      "type": "brand",
+      "sev": "medium",
+      "node": "11122-2143",
+      "status": "filed",
+      "summary": "Accent/Indigo ramp inversion (40 #9fa9f7 darker than 50 #a8b2ff)",
+      "issue": 19,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/19",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-010",
+      "type": "design-token",
+      "sev": "low",
+      "node": "11122-2143",
+      "status": "filed",
+      "summary": "Green/Yellow mixed step naming ($lift-core base/on-dark vs numeric)",
+      "issue": 20,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/20",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-011",
+      "type": "a11y",
+      "sev": "medium",
+      "node": "11122-2879",
+      "status": "filed",
+      "summary": "Blue/40 #169af3 = 3.02:1 on white; fails normal-text AA when used as interactive/link text",
+      "issue": 21,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/21",
+      "assignee": "kharloridado"
+    }
   ],
   "handover_epics": [],
   "handover_note": "build:theme (lightningcss --targets '>= 0.25%') panics in this env (lightningcss 1.0.0-alpha.71); build:theme:dev works. Fix the targets flag before handover. dist/theme.css built via dev script.",
   "consistency_passes": [
-    { "tier": "foundations", "result": "pass-with-findings", "note": "Semantic roles reference primitives via var() (hard rule #3); only 4 flagged orphans + transparent kept literal. Divergences captured as FND-001..011 (incl. a11y contrast FND-011, Indigo ramp inversion FND-009). All 57 var() refs resolve to defined primitives." }
-  ]
+    {
+      "tier": "foundations",
+      "result": "pass-with-findings",
+      "note": "Semantic roles reference primitives via var() (hard rule #3); only 4 flagged orphans + transparent kept literal. Divergences captured as FND-001..011 (incl. a11y contrast FND-011, Indigo ramp inversion FND-009). All 57 var() refs resolve to defined primitives."
+    }
+  ],
+  "findings_note": "All 10 open findings filed as GitHub issues #12-#21 (kharloridado/wbg), assigned to @me, labeled finding+bug+type+sev. Issue types unsupported on this repo, so the bug label carries the Bug classification. FND-002 resolved pre-filing (not pushed)."
 }
