@@ -25,6 +25,7 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const tokensDir = join(root, "tokens");
+const blocksDir = join(root, "src", "blocks");
 const outFile = join(root, "dist", "theme.css");
 
 /* Per-file section metadata. `group` clusters files in the Section Index (one
@@ -39,8 +40,23 @@ const META = {
   "radius.css":          { group: "Radius",        name: "Border Radius" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
-  "component-field.css": { group: "Components",    name: "Text Field" },
-  "component-toggle.css": { group: "Components",   name: "Toggle" },
+  "component-field.css":        { group: "Components",       name: "Text Field" },
+  "component-toggle.css":       { group: "Components",       name: "Toggle" },
+  "component-note.css":         { group: "Components",       name: "Notes" },
+  "component-popover.css":      { group: "Components",       name: "Popover" },
+  "component-system-alert.css": { group: "Components",       name: "System Alert" },
+  "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
+  /* Widget override sections (src/blocks/) */
+  "loop-button.css":        { group: "Widget Overrides", name: "Button" },
+  "loop-button-text.css":   { group: "Widget Overrides", name: "Button Text" },
+  "loop-button-group.css":  { group: "Widget Overrides", name: "Button Group" },
+  "loop-checkbox.css":      { group: "Widget Overrides", name: "Checkbox" },
+  "loop-radio-button.css":  { group: "Widget Overrides", name: "Radio Button" },
+  "loop-text-field.css":    { group: "Widget Overrides", name: "Text Field" },
+  "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
+  "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
+  /* Custom component BEM blocks (src/blocks/) */
+  "loop-note.css":          { group: "Custom Components", name: "Notes" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)
@@ -63,6 +79,15 @@ function extractHoistedImports(body) {
 
 function importOrder() {
   const index = readFileSync(join(tokensDir, "index.css"), "utf8");
+  const files = [];
+  const re = /@import\s+["']\.\/([^"']+)["']/g;
+  let m;
+  while ((m = re.exec(index))) files.push(m[1]);
+  return files;
+}
+
+function blocksOrder() {
+  const index = readFileSync(join(blocksDir, "index.css"), "utf8");
   const files = [];
   const re = /@import\s+["']\.\/([^"']+)["']/g;
   let m;
@@ -136,7 +161,9 @@ function splitRoot(body) {
 }
 
 function build() {
-  const files = importOrder();
+  const tokenFiles = importOrder();
+  const blockFiles = blocksOrder();
+  const files = [...tokenFiles, ...blockFiles];
   const groups = groupFiles(files);
   const stamp = new Date().toISOString().slice(0, 10);
   const head = [
@@ -150,11 +177,12 @@ function build() {
   ].join("\n");
 
   const rootSections = []; // declarations lifted into the single consolidated :root
-  const tailSections = []; // files with no :root (e.g. utility classes)
+  const tailSections = []; // files with no :root (e.g. utility classes, block overrides)
   const hoisted = [];      // external @import url() lines, lifted to the top
   for (const file of files) {
     const title = `${sectionNumber(groups, file)}. ${sectionTitle(groups, file)}`;
-    const raw = readFileSync(join(tokensDir, file), "utf8").trimEnd();
+    const dir = blockFiles.includes(file) ? blocksDir : tokensDir;
+    const raw = readFileSync(join(dir, file), "utf8").trimEnd();
     const { stripped, imports } = extractHoistedImports(raw);
     hoisted.push(...imports);
     const body = stripped.trimEnd();
@@ -184,10 +212,9 @@ function build() {
 build();
 
 if (process.argv.includes("--watch")) {
-  console.log("watching tokens/ …");
+  console.log("watching tokens/ and src/blocks/ …");
   let timer;
-  watch(tokensDir, () => {
-    clearTimeout(timer);
-    timer = setTimeout(build, 50); // debounce editor multi-writes
-  });
+  const rebuild = () => { clearTimeout(timer); timer = setTimeout(build, 50); };
+  watch(tokensDir, rebuild);
+  watch(blocksDir, rebuild);
 }

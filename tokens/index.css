@@ -10,6 +10,10 @@
 /* Component token layers — reference the foundations above. */
 @import "./component-field.css";
 @import "./component-toggle.css";
+@import "./component-note.css";
+@import "./component-popover.css";
+@import "./component-system-alert.css";
+@import "./component-tooltip.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";

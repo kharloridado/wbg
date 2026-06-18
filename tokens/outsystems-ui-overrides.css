@@ -147,7 +147,7 @@
    * The Loop's scale (spacing.css) uses descriptive names but the SAME 4pt values,
    * so this is a no-visual-change remap that makes OutSystems' spacing a single
    * source of truth on The Loop tokens (edit Loop → framework follows). */
-  --space-none: var(--space-none);     /* 0      = 0      */
+  --space-none: 0;                      /* 0      = 0      */
   --space-xs:   var(--space-tiny);     /* 4px    = 4px    */
   --space-s:    var(--space-xxsmall);  /* 8px    = 8px    */
   --space-base: var(--space-small);    /* 16px   = 16px   */

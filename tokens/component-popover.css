@@ -1,0 +1,33 @@
+/* component-popover.css — WBG / "The Loop" Popover component tokens
+ * Figma: "Popover" [node:26345-2762]. Vanilla JS Web Component (<loop-popover>).
+ * CSS custom properties cascade into Shadow DOM so the component reads them here.
+ * Pointer positions: top | bottom | left | right | none (default: bottom).
+ * Width defaults to 320px; host can override via CSS: loop-popover { --loop-popover-width: 280px; } */
+:root {
+  /* ---- Geometry ---- */
+  --loop-popover-padding-h:        var(--space-small);    /* 16px — loop/popover/horizontal-padding */
+  --loop-popover-padding-v:        var(--space-small);    /* 16px — loop/popover/vertical-padding */
+  --loop-popover-radius:           var(--radius-base);    /* 4px  — Figma: lift/border-radius/radius-1 */
+  --loop-popover-shadow:           0px 2px 3px rgba(0, 0, 0, 0.12);  /* Figma drop-shadow */
+  --loop-popover-bg:               var(--color-bg-container-on-light-lowest);  /* #ffffff */
+  --loop-popover-width:            320px;
+  --loop-popover-pointer-w:        18px;                  /* triangle base — Figma */
+  --loop-popover-pointer-h:        8px;                   /* triangle height — Figma */
+  --loop-popover-header-pb:        var(--space-xsmall);   /* 12px — padding-bottom + separator margin */
+
+  /* ---- Typography ---- */
+  --loop-popover-title-size:       var(--font-size-200);  /* 14px — loop/popover/label */
+  --loop-popover-title-leading:    20px;                  /* loop/popover/label/line-height */
+  --loop-popover-title-tracking:   0.25px;                /* loop/popover/letter-spacing */
+  --loop-popover-title-weight:     var(--font-weight-bold);
+  --loop-popover-body-size:        var(--font-size-100);  /* 12px — loop/popover/body */
+  --loop-popover-body-leading:     18px;                  /* loop/popover/body/line-height */
+  --loop-popover-body-weight:      var(--font-weight-regular);
+
+  /* ---- Colors ---- */
+  --loop-popover-title-color:      var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
+  --loop-popover-body-color:       var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
+  --loop-popover-divider-color:    var(--color-divider-on-light-default);    /* --color-neutral-alpha-16 */
+  --loop-popover-dismiss-color:    var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
+  --loop-popover-focus:            var(--color-domain-interactive-focused);  /* #0071bc — color-blue-50 */
+}

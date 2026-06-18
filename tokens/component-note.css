@@ -1,0 +1,37 @@
+/* component-note.css — WBG / "The Loop" Notes callout component tokens
+ * Figma: "Notes" [node:26642-61530]. Custom CSS-only block (no JS needed).
+ * Four types: important | tip | information | success. Applied via ExtendedClass.
+ *
+ * Consumed by src/blocks/loop-note.css (loaded separately in the Widget Override
+ * section). These tokens cascade normally — no Shadow DOM boundary. */
+:root {
+  /* ---- Geometry ---- */
+  --loop-note-corner-radius: var(--radius-base);            /* 4px  — loop/notes/corner-radius */
+  --loop-note-padding-h:     var(--space-small);            /* 16px — loop/notes/padding-h */
+  --loop-note-padding-v:     var(--space-xsmall);           /* 12px — loop/notes/padding-v */
+  --loop-note-gap:           var(--space-tiny);             /* 4px  — gap: body ↔ action row */
+  --loop-note-action-pt:     var(--space-xxsmall);          /* 8px  — action link top-padding */
+  --loop-note-min-w:         150px;
+  --loop-note-body-size:     var(--font-size-200);          /* 14px */
+  --loop-note-body-leading:  var(--line-height-narrow);     /* 1.25 */
+
+  /* ---- Type: important ---- */
+  --loop-note-important-bg:     var(--color-domain-state-warning-low);     /* #fef3d7 — color-yellow-03 */
+  --loop-note-important-border: var(--color-domain-state-warning-medium);  /* #896001 — color-yellow-base */
+  --loop-note-important-label:  var(--color-domain-state-warning-medium);  /* #896001 */
+
+  /* ---- Type: tip ---- */
+  --loop-note-tip-bg:     var(--color-domain-state-suggestion-low);        /* #f1e1ff — color-purple-10 */
+  --loop-note-tip-border: var(--color-domain-state-suggestion-regular);    /* #c17cfe — color-purple-40 */
+  --loop-note-tip-label:  var(--color-text-on-light-state-suggest);        /* #763ba9 — color-purple-60 */
+
+  /* ---- Type: information ---- */
+  --loop-note-information-bg:     var(--color-domain-state-info-low);      /* #f6fcff — color-blue-05 */
+  --loop-note-information-border: var(--color-domain-state-info-regular);  /* #169af3 — color-blue-40 */
+  --loop-note-information-label:  var(--color-text-on-light-state-info);   /* #00538a — color-blue-60 */
+
+  /* ---- Type: success ---- */
+  --loop-note-success-bg:     var(--color-domain-state-positive-low);      /* #f6fef0 — color-green-03 */
+  --loop-note-success-border: var(--color-outline-on-light-state-success-high); /* #388004 — color-green-60 */
+  --loop-note-success-label:  var(--color-text-on-light-state-success);    /* #388004 — color-green-60 */
+}
