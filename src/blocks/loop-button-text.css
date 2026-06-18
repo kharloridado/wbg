@@ -27,7 +27,7 @@
   padding: var(--space-xxsmall, 8px);                  /* minimal click padding around the label */
 
   background-color: transparent;
-  border: 0;
+  border: 0px;
   color: var(--color-text-on-light-link-primary-enabled);   /* blue-70 #004370 */
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);

@@ -24,7 +24,7 @@
   --loop-field-label-size:      var(--font-size-300);          /* 16px — loop/label/font size */
   --loop-field-label-weight:    var(--font-weight-semibold);   /* 600  — loop/label/font weight */
   --loop-field-label-leading:   16px;                          /* loop/label/font height */
-  --loop-field-label-tracking:  0;                             /* loop/label/letter spacing */
+  --loop-field-label-tracking:  0px;                           /* loop/label/letter spacing */
 
   /* ---- Placeholder / value text ---- */
   --loop-field-text-size:       var(--font-size-300);          /* 16px — loop/placeholder/text field/font size */

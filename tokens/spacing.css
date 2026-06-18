@@ -4,7 +4,7 @@
  * xs/s/m/l/xl. The full scale below is faithful to Figma; see findings for the
  * naming-divergence note (off-scale: xtiny=2 breaks the strict 4pt step). */
 :root {
-  --space-none:    0;
+  --space-none:    0px;
   --space-xtiny:   2px;   /* off the 4pt grid — flagged */
   --space-tiny:    4px;
   --space-xxsmall: 8px;

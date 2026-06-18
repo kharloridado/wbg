@@ -138,7 +138,7 @@
 .form-control[data-textarea].is-read-only {
   background-color: transparent;
   border-color: transparent;
-  padding-inline: 0;
+  padding-inline: 0px;
 }
 
 /* ---- Sizes — native .input-large / .input-small + added .is-regular ---- */
@@ -187,7 +187,7 @@
   font-size: var(--loop-field-label-size, 16px);
   font-weight: var(--loop-field-label-weight, 600);
   line-height: var(--loop-field-label-leading, 16px);
-  letter-spacing: var(--loop-field-label-tracking, 0);
+  letter-spacing: var(--loop-field-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
 /* Required marker — hooks OutSystems' native .mandatory class (set by the Label

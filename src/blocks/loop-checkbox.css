@@ -62,7 +62,7 @@
   box-sizing: border-box;
   width: var(--loop-checkbox-control-size);
   height: var(--loop-checkbox-control-size);
-  padding: var(--space-none, 0);
+  padding: var(--space-none, 0px);
   cursor: pointer;
 }
 
@@ -102,8 +102,8 @@
   height: 5px;
   border-left: 2.5px solid var(--loop-checkbox-glyph);
   border-bottom: 2.5px solid var(--loop-checkbox-glyph);
-  border-top: 0;
-  border-right: 0;
+  border-top: 0px;
+  border-right: 0px;
   background: none;
   transform: translate(-50%, -50%) rotate(-45deg);
 }
@@ -120,7 +120,7 @@
   top: 50%;
   width: 10px;
   height: 2.5px;
-  border: 0;
+  border: 0px;
   border-radius: 1px;
   background: var(--loop-checkbox-glyph);
   transform: translate(-50%, -50%);

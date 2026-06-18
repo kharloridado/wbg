@@ -17,7 +17,7 @@ The source of truth for brand conformance. Findings reference this. Fill it in a
 - Type scale: see `tokens/typography.css`
 
 ## Spacing
-- Base: 4pt. Scale: see `tokens/spacing.css`.
+- Base: **unconfirmed** — grid/base spec TBD (not 4pt by default). Scale: see `tokens/spacing.css`. Confirm the canonical spacing base with the Loop team before flagging off-scale values.
 
 ## Logo / iconography / elevation
 `<rules, clear-space, shadow scale, etc.>`

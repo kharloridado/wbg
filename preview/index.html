@@ -83,6 +83,18 @@
     align-items: center;
   }
 
+  /* --- native [data-switch] baseline (mirrors OS UI _switch.scss essentials) ---
+       OutSystems UI strips the native checkbox and draws the track (:before) +
+       thumb (:after). The Loop override is self-contained and restates these, but
+       the stub keeps the preview honest about the native foundation. */
+  [data-switch] {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+  }
+  [data-switch]:before,
+  [data-switch]:after { content: ""; position: absolute; display: block; }
+
   /* --- native .form-control[data-input] baseline (mirrors OS UI _inputs.scss) ---
        Height, reset, and transition so The Loop tokens land on an honest foundation. */
   .form-control[data-input],
@@ -116,7 +128,7 @@
 
 <!-- 4) Preview page chrome (not part of the design system). -->
 <style>
-  body {
+  html, body {
     margin: 0;
     padding: 0;
     font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -182,6 +194,15 @@
 </header>
 
 <main>
+
+  <!-- ============ TYPOGRAPHY ============ -->
+  <section>
+    <h2>Typography</h2>
+    <p class="pv-figma">tokens/typography.css · Figma node 10995-7259 · Open Sans (FND-002 signed off)</p>
+    <loop-type-reference
+      intro="Open Sans — heading styles (H1–H3), body styles, font-size scale, weights, line heights, letter spacing. Click any chip to copy the token or utility class.">
+    </loop-type-reference>
+  </section>
 
   <!-- ============ BUTTON ============ -->
   <section>
@@ -553,10 +574,309 @@
     </div>
   </section>
 
+  <!-- ============ TOOLTIP ============ -->
+  <section>
+    <h2>Tooltip</h2>
+    <p class="pv-figma">tokens/component-tooltip.css · src/blocks/loop-tooltip.css · Figma node 17874-7113</p>
+    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. Arrow triangles use clip-path; position managed by OutSystems JS at runtime.</p>
+
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start; padding: 24px 0;">
+
+      <!-- Dark / Bottom (default: balloon below trigger, arrow pointing up) -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#5b6b7b;">Dark · Bottom (default)</span>
+        <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open" style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
+          <div class="osui-tooltip__content" role="button" tabindex="0" aria-describedby="tt-dark-bottom" style="padding:4px 8px; background:#f0f4f8; border-radius:4px; font-size:14px; cursor:default;">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open" id="tt-dark-bottom" role="tooltip" aria-hidden="false" style="position:relative; margin-top:4px;">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow" style="left:24px; top:-4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark / Top (balloon above trigger, arrow pointing down) -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#5b6b7b;">Dark · Top</span>
+        <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open" style="position:relative; display:inline-flex; flex-direction:column-reverse; align-items:center;">
+          <div class="osui-tooltip__content" role="button" tabindex="0" aria-describedby="tt-dark-top" style="padding:4px 8px; background:#f0f4f8; border-radius:4px; font-size:14px; cursor:default;">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon top osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open" id="tt-dark-top" role="tooltip" aria-hidden="false" style="position:relative; margin-bottom:4px;">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow" style="left:24px; bottom:-4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light / Bottom -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#5b6b7b;">Light · Bottom</span>
+        <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open" style="position:relative; display:inline-flex; flex-direction:column; align-items:center;">
+          <div class="osui-tooltip__content" role="button" tabindex="0" aria-describedby="tt-light-bottom" style="padding:4px 8px; background:#f0f4f8; border-radius:4px; font-size:14px; cursor:default;">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open" id="tt-light-bottom" role="tooltip" aria-hidden="false" style="position:relative; margin-top:4px;">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow" style="left:24px; top:-4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light / Left (balloon to the right, arrow pointing right) -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#5b6b7b;">Light · Left (right-side balloon)</span>
+        <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open" style="position:relative; display:inline-flex; flex-direction:row; align-items:center;">
+          <div class="osui-tooltip__content" role="button" tabindex="0" aria-describedby="tt-light-left" style="padding:4px 8px; background:#f0f4f8; border-radius:4px; font-size:14px; cursor:default;">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon left osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open" id="tt-light-left" role="tooltip" aria-hidden="false" style="position:relative; margin-left:4px; display:flex; flex-direction:row; align-items:center;">
+            <div class="osui-tooltip__balloon-arrow" style="left:-4px; top:50%; transform:translateY(-50%);"></div>
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:4px;">
+      <span class="pv-note">FND-027: Light-mode drop-shadow 0px 2px 2px rgba(0,0,0,0.1) has no matching shadow scale token (closest --shadow-low = 0 2px 8px). Implemented exact Figma value as --loop-tooltip-light-shadow.</span>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section>
+    <h2>Notes — custom CSS block <code>.loop-note</code></h2>
+    <p class="pv-figma">handover/loop-note.md · Figma node 26642-61530</p>
+
+    <div class="pv-row" style="align-items:stretch;flex-direction:column;gap:12px">
+      <div class="loop-note loop-note--important" style="max-width:520px">
+        <p class="loop-note__body"><span class="loop-note__label">Important: </span>This record requires approval before it can be submitted to the World Bank procurement portal.</p>
+      </div>
+
+      <div class="loop-note loop-note--tip" style="max-width:520px">
+        <p class="loop-note__body"><span class="loop-note__label">Tip: </span>Use keyboard shortcut <strong>Ctrl+S</strong> to save your progress at any time without submitting.</p>
+        <div class="loop-note__action"><a href="#">See all shortcuts</a></div>
+      </div>
+
+      <div class="loop-note loop-note--information" style="max-width:520px">
+        <p class="loop-note__body"><span class="loop-note__label">Information: </span>This record will be reviewed by the compliance team within 3 business days of submission.</p>
+        <div class="loop-note__action"><a href="#">Learn more about compliance</a></div>
+      </div>
+
+      <div class="loop-note loop-note--success" style="max-width:520px">
+        <p class="loop-note__body"><span class="loop-note__label">Success: </span>Your changes have been saved and submitted for approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAG ============ -->
+  <section>
+    <h2>Tag — custom CSS block <code>.loop-tag</code></h2>
+    <p class="pv-figma">Figma node 17313-5502 · richer than native OutSystems UI <code>.tag</code> · radius 48 ≠ pill 32 (FND-028)</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Colors</span>
+      <span class="loop-tag loop-tag--blue"><span class="loop-tag__label">Blue</span></span>
+      <span class="loop-tag loop-tag--purple"><span class="loop-tag__label">Purple</span></span>
+      <span class="loop-tag loop-tag--green"><span class="loop-tag__label">Green</span></span>
+      <span class="loop-tag loop-tag--yellow"><span class="loop-tag__label">Yellow</span></span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <span class="loop-tag loop-tag--blue loop-tag--small"><span class="loop-tag__label">Small (24)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--regular"><span class="loop-tag__label">Regular (32)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--large"><span class="loop-tag__label">Large (40)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--xlarge"><span class="loop-tag__label">xLarge (48)</span></span>
+      <span class="pv-note">FND-029: Figma publishes one label size (16) + hpadding (12); heights map to the spacing scale. Large/xLarge vpadding + the off-scale 6.5px small padding are flagged.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">With icon</span>
+      <span class="loop-tag loop-tag--green">
+        <i class="loop-tag__icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 10l4 4 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+        <span class="loop-tag__label">Approved</span>
+      </span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Dismissible</span>
+      <span class="loop-tag loop-tag--blue loop-tag--dismissible">
+        <span class="loop-tag__label">Filter: Active</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove Active filter">×</button>
+      </span>
+      <span class="loop-tag loop-tag--purple loop-tag--dismissible">
+        <span class="loop-tag__label">Region: EAP</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove EAP region">×</button>
+      </span>
+      <span class="pv-note">Tab to the × — focus ring is the brand blue (#0071bc); button carries an aria-label.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Selected</span>
+      <span class="loop-tag loop-tag--blue loop-tag--selected"><span class="loop-tag__label">Blue</span></span>
+      <span class="loop-tag loop-tag--purple loop-tag--selected"><span class="loop-tag__label">Purple</span></span>
+      <span class="loop-tag loop-tag--green loop-tag--selected"><span class="loop-tag__label">Green</span></span>
+      <span class="loop-tag loop-tag--yellow loop-tag--selected"><span class="loop-tag__label">Yellow</span></span>
+      <span class="pv-note">FND-030: Selected = bold label + filled high-bg. Exact per-color selected values pending design confirmation.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <span class="loop-tag loop-tag--blue loop-tag--disabled"><span class="loop-tag__label">Disabled</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--disabled loop-tag--dismissible">
+        <span class="loop-tag__label">Disabled</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove" disabled>×</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- ============ SYSTEM ALERT ============ -->
+  <section>
+    <h2>System Alert — custom Web Component <code>&lt;loop-system-alert&gt;</code></h2>
+    <p class="pv-figma">handover/loop-system-alert.md · Figma node 17873-7603</p>
+
+    <div class="pv-row" style="align-items:stretch;flex-direction:column;gap:8px;padding-bottom:8px">
+      <span class="pv-label" style="flex-basis:auto;margin-bottom:4px">Single-line (with dismiss)</span>
+
+      <loop-system-alert type="error"
+        title="Connection failed"
+        message="Could not reach the server. Please check your connection."
+        action-label="Retry"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="warning"
+        title="Unsaved changes"
+        message="You have unsaved changes. Save before navigating away."
+        action-label="Save now"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="informative"
+        title="Maintenance window"
+        message="Scheduled maintenance on Saturday 22 June, 02:00–04:00 UTC."
+        action-label="Details"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="offline"
+        title="You are offline"
+        message="Changes will be saved locally and synced when reconnected."
+        dismissible>
+      </loop-system-alert>
+    </div>
+
+    <div class="pv-row" style="align-items:stretch;flex-direction:column;gap:8px">
+      <span class="pv-label" style="flex-basis:auto;margin-bottom:4px">Multi-line</span>
+
+      <loop-system-alert type="informative"
+        title="New policy update"
+        message="The World Bank Group procurement policy has been updated effective 1 July 2026. All active projects must be reviewed against the new guidelines before the end of the quarter."
+        action-label="Review policy"
+        action-href="#"
+        dismissible
+        multiline>
+      </loop-system-alert>
+
+      <loop-system-alert type="error"
+        message="An unexpected error occurred while processing your request. Please try again or contact the system administrator if the problem persists."
+        action-label="Contact support"
+        multiline>
+      </loop-system-alert>
+    </div>
+    <p class="pv-note" style="margin-top:8px">⚠ Pending finding: rgba(255,255,255,0.75) text on the offline background (#8a9db1) may fail WCAG AA contrast — filed for design review.</p>
+    <p class="pv-log" id="sysalert-log">last event: —</p>
+  </section>
+
+  <!-- ============ TYPE REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Typography Reference — custom Web Component <code>&lt;loop-type-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-type-reference.js · Figma type page node 10995-7259 · Open Sans (FND-002)</p>
+    <p class="pv-note" style="margin-bottom:20px">Fast import: one JS file + one element renders the named type styles (Heading/Body), the font-size scale, weights, line-heights and tracking — live from the theme. Click any class/variable to copy.</p>
+
+    <!-- Demo: a couple of the generated type utilities applied directly -->
+    <div class="pv-row">
+      <span class="pv-label">Utilities</span>
+      <span class="font-size-800 font-weight-bold">.font-size-800 .font-weight-bold</span>
+      <span class="font-size-200 font-weight-regular">.font-size-200 .font-weight-regular</span>
+    </div>
+
+    <loop-type-reference
+      intro="Type system generated live from the WBG / The Loop theme. Named roles follow the Figma type page; apply a class via ExtendedClass or reference a variable.">
+    </loop-type-reference>
+  </section>
+
+  <!-- ============ COLOR REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Color Reference — custom Web Component <code>&lt;loop-color-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-color-reference.js · auto-renders the Live Style Guide from the live theme tokens</p>
+    <p class="pv-note" style="margin-bottom:20px">Fast import: one JS file + one element renders every primitive ramp with its hex, <code>.background-*</code> / <code>.text-*</code> utility classes and CSS variable. Click any class/variable to copy.</p>
+
+    <!-- Demo: a couple of the generated primitive utilities applied directly -->
+    <div class="pv-row">
+      <span class="pv-label">Utilities</span>
+      <span class="background-blue-50" style="padding:6px 12px;border-radius:6px;color:#fff">.background-blue-50</span>
+      <span class="background-red-10 text-red-70" style="padding:6px 12px;border-radius:6px">.background-red-10 .text-red-70</span>
+      <span class="background-green-03 text-green-60" style="padding:6px 12px;border-radius:6px">.background-green-03 .text-green-60</span>
+    </div>
+
+    <loop-color-reference
+      intro="Primitive color reference, generated live from the WBG / The Loop theme. Attach a class via ExtendedClass; reference a variable in custom CSS.">
+    </loop-color-reference>
+  </section>
+
+  <!-- ============ POPOVER ============ -->
+  <section>
+    <h2>Popover — custom Web Component <code>&lt;loop-popover&gt;</code></h2>
+    <p class="pv-figma">handover/loop-popover.md · Figma node 26345-2762</p>
+    <p class="pv-note" style="margin-bottom:16px">Pointers shown open inline (position relative to trigger is set in production by the containing layout). Toggle <code>open</code> to show/hide.</p>
+
+    <div class="pv-row" style="align-items:flex-start;gap:32px;flex-wrap:wrap">
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+        <span style="font-size:12px;color:#5b6b7b">pointer=&quot;top&quot; + title + dismiss</span>
+        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-top').toggleAttribute('open')">Toggle</button>
+        <loop-popover id="pop-top" pointer="top" title="About this field" has-dismiss open>
+          <p>Describes the project priority level used for reporting. Values range from 1 (low) to 5 (critical).</p>
+        </loop-popover>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+        <span style="font-size:12px;color:#5b6b7b">pointer=&quot;bottom&quot; (default)</span>
+        <loop-popover id="pop-bottom" pointer="bottom" open>
+          <p>This is a simple popover with no title and a bottom pointer.</p>
+        </loop-popover>
+        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-bottom').toggleAttribute('open')">Toggle</button>
+      </div>
+
+      <div style="display:flex;flex-direction:row;align-items:center;gap:8px">
+        <span style="font-size:12px;color:#5b6b7b">pointer=&quot;left&quot;</span>
+        <loop-popover id="pop-left" pointer="left" title="Left pointer" has-dismiss open>
+          <p>Popover appears to the right of the trigger with the pointer on the left edge.</p>
+        </loop-popover>
+      </div>
+
+      <div style="display:flex;flex-direction:row;align-items:center;gap:8px">
+        <loop-popover id="pop-right" pointer="right" title="Right pointer" has-dismiss open>
+          <p>Popover appears to the left of the trigger with the pointer on the right edge.</p>
+        </loop-popover>
+        <span style="font-size:12px;color:#5b6b7b">pointer=&quot;right&quot;</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+        <span style="font-size:12px;color:#5b6b7b">pointer=&quot;none&quot;</span>
+        <loop-popover id="pop-none" pointer="none" title="No pointer" has-dismiss open>
+          <p>A floating panel with no pointer triangle. Use for tooltips or menus that don't need directional context.</p>
+        </loop-popover>
+      </div>
+
+    </div>
+    <p class="pv-log" id="popover-log">last event: —</p>
+  </section>
+
 </main>
 
 <!-- 3) The real custom component, loaded exactly as it ships to ODC. -->
+<script src="../src/components/loop-type-reference.js"></script>
 <script src="../src/components/loop-button-dropdown.js"></script>
+<script src="../src/components/loop-system-alert.js"></script>
+<script src="../src/components/loop-popover.js"></script>
+<script src="../src/components/loop-color-reference.js"></script>
+<script src="../src/components/loop-type-reference.js"></script>
 <script>
   // Preview-only: surface the component's select/toggle events so you can verify wiring.
   const log = document.getElementById('lbd-log');
@@ -568,6 +888,19 @@
   // Set the indeterminate checkbox state (can't be done in HTML alone).
   const cbIndet = document.getElementById('cb-indet');
   if (cbIndet) cbIndet.indeterminate = true;
+
+  // Surface System Alert events.
+  const saLog = document.getElementById('sysalert-log');
+  document.querySelectorAll('loop-system-alert').forEach(el => {
+    el.addEventListener('dismiss', e => { saLog.textContent = `dismiss → type: ${e.detail.type}`; });
+    el.addEventListener('action',  e => { saLog.textContent = `action  → type: ${e.detail.type}`; });
+  });
+
+  // Surface Popover close events.
+  const pvLog = document.getElementById('popover-log');
+  document.querySelectorAll('loop-popover').forEach(el => {
+    el.addEventListener('close', () => { pvLog.textContent = `close ← #${el.id}`; });
+  });
 </script>
 </body>
 </html>

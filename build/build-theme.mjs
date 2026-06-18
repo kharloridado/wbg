@@ -34,9 +34,11 @@ const outFile = join(root, "dist", "theme.css");
 const META = {
   "colors.css":          { group: "Colors",        name: "Primitives" },
   "semantic-colors.css": { group: "Colors",        name: "Semantic (light)" },
-  "color-utilities.css": { group: "Colors",        name: "Utilities" },
+  "color-utilities.css": { group: "Colors",        name: "Utilities (roles)" },
+  "color-utilities-primitives.css": { group: "Colors", name: "Utilities (primitives)" },
   "spacing.css":         { group: "Spacing",       name: "Scale" },
   "typography.css":      { group: "Typography",    name: "Type" },
+  "typography-utilities.css": { group: "Typography", name: "Utilities" },
   "radius.css":          { group: "Radius",        name: "Border Radius" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
@@ -46,6 +48,7 @@ const META = {
   "component-popover.css":      { group: "Components",       name: "Popover" },
   "component-system-alert.css": { group: "Components",       name: "System Alert" },
   "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
+  "component-tag.css":          { group: "Components",       name: "Tag" },
   /* Widget override sections (src/blocks/) */
   "loop-button.css":        { group: "Widget Overrides", name: "Button" },
   "loop-button-text.css":   { group: "Widget Overrides", name: "Button Text" },
@@ -57,6 +60,7 @@ const META = {
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
   /* Custom component BEM blocks (src/blocks/) */
   "loop-note.css":          { group: "Custom Components", name: "Notes" },
+  "loop-tag.css":           { group: "Custom Components", name: "Tag" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)

@@ -3,8 +3,10 @@
 @import "./colors.css";
 @import "./semantic-colors.css";
 @import "./color-utilities.css";
+@import "./color-utilities-primitives.css";
 @import "./spacing.css";
 @import "./typography.css";
+@import "./typography-utilities.css";
 @import "./radius.css";
 @import "./shadows.css";
 /* Component token layers — reference the foundations above. */
@@ -14,6 +16,7 @@
 @import "./component-popover.css";
 @import "./component-system-alert.css";
 @import "./component-tooltip.css";
+@import "./component-tag.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";

@@ -170,7 +170,7 @@
 
   /* ---- Legacy semantic aliases (kept for the template's --color-* contract) ----
    * primary/secondary/info CHANGED from the #000000/#2563EB placeholders to the WB palette. */
-  --color-primary:   var(--color-blue-50);            /* #0071bc — was #000000 */
+  --color-primary:   var(--color-blue-70);            /* #0071bc — was #000000 */
   --color-secondary: var(--color-wb-brand-dark-blue); /* #002244 — was #000000 */
   --color-success:   var(--color-green-60);           /* #388004 — was #16A34A */
   --color-warning:   #d97706;                          /* lift icon warning — unchanged */

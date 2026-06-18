@@ -19,10 +19,10 @@
      .button-group-selected-item      → bg 'primary', text neutral-0 (filled)
      [disabled]                       → neutral
 
-   The Loop overrides: pill OUTER corners (32px), 2px joined INNER corners,
+   The Loop overrides: pill OUTER corners (32px), square joined INNER corners (0),
      Open Sans 700 / tracking -0.5, and WB blue-70 outline/text + blue-70 selected fill.
 
-   Tokens: --radius-pill, --radius-xs, --space-medium, --font-family-label,
+   Tokens: --radius-pill, --space-medium, --font-family-label,
      --font-weight-bold, --font-size-300, --letter-spacing-button,
      --color-outline-on-light-link-enabled, --color-text-on-light-link-primary-enabled,
      --color-bg-link-primary-enabled, --color-white, --color-text-on-light-state-disabled,
@@ -48,21 +48,21 @@
   line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* middle items: all corners are joined (inner) 2px */
-  border-radius: var(--radius-xs, 2px);
+  /* middle items: all corners are joined (inner) — square, no radius */
+  border-radius: 0;
 }
 
 /* collapse the shared border (keep native behaviour explicit) */
 .button-group-item:not(:first-child) {
-  border-left: 0;
+  border-left: 0px;
 }
 
-/* end caps: outer corners pill (32px), inner corners 2px */
+/* end caps: outer corners pill (32px), inner corners square (0) */
 .button-group-item:first-child {
-  border-radius: var(--radius-pill, 32px) var(--radius-xs, 2px) var(--radius-xs, 2px) var(--radius-pill, 32px);
+  border-radius: var(--radius-pill, 32px) 0 0 var(--radius-pill, 32px);
 }
 .button-group-item:last-child {
-  border-radius: var(--radius-xs, 2px) var(--radius-pill, 32px) var(--radius-pill, 32px) var(--radius-xs, 2px);
+  border-radius: 0 var(--radius-pill, 32px) var(--radius-pill, 32px) 0;
 }
 /* single item (first === last): fully pill */
 .button-group-item:first-child:last-child {

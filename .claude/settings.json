@@ -1,12 +1,24 @@
 {
   "permissions": {
     "allow": [
-      "Read", "Write", "Edit", "Grep", "Glob",
+      "Read",
+      "Write",
+      "Edit",
+      "Grep",
+      "Glob",
       "Bash(npm run build:theme)",
       "Bash(npm run build:theme:dev)",
       "Bash(jq:*)",
-      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git switch:*)", "Bash(git checkout:*)", "Bash(git status:*)",
-      "Bash(gh issue create:*)", "Bash(gh issue edit:*)", "Bash(gh label create:*)", "Bash(gh project:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git switch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git status:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh label create:*)",
+      "Bash(gh project:*)",
+      "Bash(gh issue *)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
@@ -19,7 +31,10 @@
       {
         "matcher": "Write|Edit",
         "hooks": [
-          { "type": "command", "command": "echo \"$(date -u +%FT%TZ) artifact edit\" >> loop/loop.log" }
+          {
+            "type": "command",
+            "command": "echo \"$(date -u +%FT%TZ) artifact edit\" >> loop/loop.log"
+          }
         ]
       }
     ]

@@ -4,6 +4,8 @@
   "description": "OutSystems frontend project scaffold — lightningcss theme pipeline + findings workflow",
   "private": true,
   "scripts": {
+    "gen:color-utilities": "node build/gen-color-utilities.mjs",
+    "gen:type-utilities": "node build/gen-type-utilities.mjs",
     "build:theme": "node build/build-theme.mjs",
     "watch:theme": "node build/build-theme.mjs --watch",
     "preview": "node build/preview-server.mjs",

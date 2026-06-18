@@ -6,6 +6,11 @@
              parallel class system. Devs use the standard OutSystems Switch widget; this
              theme override makes it render as The Loop toggle. (Same pattern as
              loop-button.css / loop-checkbox.css / loop-radio-button.css.)
+             SELF-CONTAINED: the override supplies its own structural reset
+             (appearance:none on the input; content/position/display on the track :before
+             + thumb :after) rather than leaning on OutSystems UI's baseline switch CSS.
+             So the control renders correctly even where that baseline isn't present
+             (e.g. the local preview), exactly like loop-checkbox.css / loop-radio-button.css.
    Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
    Escalation Level: L1/L2 (native widget + token-driven theme override).
 
@@ -41,44 +46,66 @@
        asset — FND-026 (additive detail; colours/geometry are faithful).
    ============================================ */
 
-/* ---- Track box ---- */
+/* ---- Track box — hide the native checkbox; :before/:after draw the switch ---- */
 [data-switch],
 .has-accessible-features [data-switch] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;                                     /* positioning context for track + thumb */
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: middle;
   width: var(--loop-toggle-track-w, 56px);
   height: var(--loop-toggle-track-h, 32px);
+  background-color: transparent;
+  border: 0px;
   border-radius: var(--radius-pill, 50px);
+  overflow: initial;
+  cursor: pointer;
 }
 
 /* ---- Track pill (:before) — fill the box, transparent border, OFF = neutral-60 ---- */
 [data-switch]:empty:before,
 .has-accessible-features [data-switch]:empty:before {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 0px;
+  left: 0px;
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 0;                                              /* Outline/Transparent */
+  border: 0px;                                            /* Outline/Transparent */
   border-radius: var(--radius-pill, 50px);
   background-color: var(--color-icon-on-light-default);   /* OFF track — neutral-60 #4b5e71 */
   opacity: 1;
+  transition: background-color 180ms linear, border-color 180ms linear;
 }
 
 /* ---- Thumb (:after) — 24px white circle, OFF sits +4px from the left ---- */
 [data-switch]:empty:after,
 .has-accessible-features [data-switch]:empty:after {
+  content: "";
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
   width: var(--loop-toggle-circle, 24px);
   height: var(--loop-toggle-circle, 24px);
   top: var(--loop-toggle-padding, 4px);
-  left: 0;
-  margin-left: 0;
-  border: 0;
+  left: 0px;
+  margin-left: 0px;
+  border: 0px;
   border-radius: 100%;
   box-shadow: none;
   background-color: var(--color-white, #ffffff);
   transform: translateX(var(--loop-toggle-padding, 4px)) translateZ(0);
+  transition: transform 180ms linear, background-color 180ms linear;
 }
 
 /* ---- Checked — blue-70 track, thumb slides to the right ---- */
 [data-switch]:checked:before,
 .has-accessible-features [data-switch]:checked:before {
-  border: 0;
+  border: 0px;
   background-color: var(--color-domain-interactive-enabled-primary);   /* blue-70 #004370 */
 }
 [data-switch]:checked:after,
@@ -91,12 +118,12 @@
 [data-switch]:checked:hover:before,
 .has-accessible-features [data-switch]:checked:hover:before {
   background-color: var(--color-domain-interactive-hover);     /* blue-40 #169af3 */
-  border: 0;
+  border: 0px;
 }
 [data-switch]:checked:active:before,
 .has-accessible-features [data-switch]:checked:active:before {
   background-color: var(--color-domain-interactive-pressed);   /* blue-90 #012740 */
-  border: 0;
+  border: 0px;
 }
 
 /* ---- Disabled — muted interactive track, white thumb, inert ---- */
@@ -108,7 +135,7 @@
 [data-switch][aria-disabled="true"]:empty:before,
 .has-accessible-features [data-switch][disabled]:empty:before {
   background-color: var(--color-domain-interactive-disable);   /* neutral-40 #8a9db1 */
-  border: 0;
+  border: 0px;
 }
 [data-switch][disabled]:empty:after,
 [data-switch][aria-disabled="true"]:empty:after,
@@ -152,7 +179,7 @@
   font-size: var(--loop-toggle-label-size, 16px);
   font-weight: var(--loop-toggle-label-weight, 400);
   line-height: var(--loop-toggle-label-leading, 18px);
-  letter-spacing: var(--loop-toggle-label-tracking, 0);
+  letter-spacing: var(--loop-toggle-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
 /* Label position (Figma "Label Position" = Right [default] / Left / Top / Bottom) */

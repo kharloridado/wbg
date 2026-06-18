@@ -76,7 +76,7 @@
   left: 50%;
   width: 50%;
   height: 50%;
-  margin: 0;
+  margin: 0px;
   transform: translate(-50%, -50%);
   border-radius: 100%;
   background-color: var(--color-outline-on-light-link-enabled);  /* blue-70 dot */
@@ -142,7 +142,7 @@
   font-weight: var(--font-weight-regular, 400);
   font-size: var(--font-size-300, 16px);         /* XLarge label */
   line-height: 18px;
-  letter-spacing: var(--letter-spacing-none, 0);
+  letter-spacing: var(--letter-spacing-none, 0px);
   color: var(--color-text-on-light-default);     /* #000d1ab2 */
 }
 
@@ -175,11 +175,11 @@
   margin-top: var(--space-checkbox-group-row, 14px);   /* loop/checkbox/group/vpadding */
 }
 .radio-group.is-horizontal [data-radio-button]:not(:first-of-type) {
-  margin-top: 0;
+  margin-top: 0px;
   margin-left: var(--space-checkbox-group-column, 20px);   /* loop/checkbox/group/hpadding */
 }
 .is-rtl .radio-group.is-horizontal [data-radio-button]:not(:first-of-type) {
-  margin-left: 0;
+  margin-left: 0px;
   margin-right: var(--space-checkbox-group-column, 20px);
 }
 
