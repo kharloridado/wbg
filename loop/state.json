@@ -3,14 +3,16 @@
   "figma_url": "https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library",
   "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
   "branch": "loop/2026-06-17-design-system",
-  "status": "paused",
+  "status": "primitives-delivered",
   "mode": "library",
-  "phase": "after-tokens-checkpoint",
-  "pause_reason": "after_tokens checkpoint = pause; awaiting designer/brand-owner sign-off on tokens + findings before building components.",
+  "phase": "after-primitives-checkpoint",
+  "pause_reason": "Primitives tier built + committed + pushed (loop/2026-06-17-design-system) + on the Project board with handover tasks #24-33. after_primitives checkpoint = pause: awaiting sign-off before composites/patterns. Next component (Dropdown/Select) needs its Figma node id — design-system search does not index The Loop's components.",
   "project": {
     "owner": "kharloridado",
-    "number": 0,
-    "note": "gh not authenticated this run; project board not yet created/linked"
+    "number": 1,
+    "id": "PVT_kwHOAjimIs4Ba9WT",
+    "title": "World Bank Live Style Guide",
+    "note": "Findings + handover tasks live on this board (32 items)."
   },
   "repo": "kharloridado/wbg",
   "gh_authenticated": true,
