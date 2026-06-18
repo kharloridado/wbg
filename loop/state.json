@@ -31,7 +31,7 @@
     "composites",
     "patterns"
   ],
-  "current_tier": "foundations",
+  "current_tier": "primitives",
   "token_source_nodes": [
     "11122-2143",
     "11122-2879",
@@ -109,9 +109,25 @@
       "node": "19737-9489",
       "artifact": "tokens/shadows.css",
       "status": "built"
-    }
+    },
+    {
+      "id": "cmp-button",          "tier": "primitives", "level": "L1/L2", "node": "15597-766",   "artifact": "src/blocks/loop-button.css",        "approach": "restyle native .btn",            "status": "built" },
+    {
+      "id": "cmp-button-text",     "tier": "primitives", "level": "L1/L2", "node": "15597-4652",  "artifact": "src/blocks/loop-button-text.css",   "approach": "native button-link",             "status": "built" },
+    {
+      "id": "cmp-button-group",    "tier": "primitives", "level": "L1/L2", "node": "15597-2978",  "artifact": "src/blocks/loop-button-group.css",  "approach": "restyle native button-group (+Button Switch 15597-4070)", "status": "built" },
+    {
+      "id": "cmp-button-dropdown", "tier": "composites", "level": "L3",    "node": "15597-766",   "artifact": "src/components/loop-button-dropdown.js", "approach": "vanilla JS Web Component",   "status": "built" },
+    {
+      "id": "cmp-checkbox",        "tier": "primitives", "level": "L1/L2", "node": "19336-17679", "artifact": "src/blocks/loop-checkbox.css",      "approach": "restyle native checkbox",        "status": "built" },
+    {
+      "id": "cmp-radio-button",    "tier": "primitives", "level": "L1/L2", "node": "19336-18637", "artifact": "src/blocks/loop-radio-button.css",  "approach": "restyle native .radio-button",   "status": "built" },
+    {
+      "id": "cmp-text-field",      "tier": "primitives", "level": "L1/L2", "node": "19336-9606",  "artifact": "src/blocks/loop-text-field.css",    "approach": "restyle native .form-control[data-input]", "status": "built" },
+    {
+      "id": "cmp-toggle",          "tier": "primitives", "level": "L1/L2", "node": "25344-27822", "artifact": "src/blocks/loop-switch.css",        "approach": "restyle native [data-switch]",   "status": "built" }
   ],
-  "items_note": "Component tiers (primitives/composites/patterns) NOT yet audited — only token frames were exposed in the file this run. Audit them after the tokens checkpoint sign-off.",
+  "items_note": "Phase 0 tokens built. Primitives tier (button/button-text/button-group+switch/checkbox/radio/text-field/toggle) built as native-widget restyles + 1 composite (button-dropdown Web Component); each has a handover doc + style-guide entry. All built faithfully; conflicts flagged as findings (FND-013..026), never silently changed. NOT yet committed; GitHub Project board + handover sub-issues pending gh auth.",
   "findings": [
     {
       "id": "FND-001",

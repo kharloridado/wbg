@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Loop — Component Preview</title>
+
+<!--
+  LOAD ORDER mirrors ODC: native OutSystems UI baseline → brand theme tokens →
+  handover overrides (which are pasted into Theme CSS, below OutSystems UI).
+  Equal-specificity .btn rules resolve by source order, so the overrides MUST come
+  after the baseline to win.
+-->
+
+<!-- 1) Minimal native OutSystems UI baseline.
+        The override files only RESTYLE OutSystems UI's native .btn / .button-group;
+        they assume the framework base (display, border-width, box-sizing, cursor,
+        transition) already exists. ODC provides it — locally we stub just enough.
+        This is framework scaffold, NOT design. -->
+<style>
+  :root { color-scheme: light; }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* --- native .btn baseline (mirrors OutSystems UI _btn.scss essentials) --- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .btn[disabled], .btn[aria-disabled="true"] { cursor: not-allowed; }
+
+  /* --- native .button-group baseline (mirrors _button-group.scss essentials) --- */
+  .button-group { display: inline-flex; }
+  .button-group-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .button-group-item[disabled] { cursor: not-allowed; }
+
+  /* --- native [data-checkbox] baseline (mirrors OS UI _checkbox.scss essentials) ---
+       The Loop override builds its own ::before box on top of this stripped input. */
+  [data-checkbox] {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+  }
+  [data-checkbox]::before { display: block; }
+  [data-checkbox]::after  { position: absolute; display: block; }
+
+  /* --- native .radio-button baseline (mirrors OS UI _radio-button.scss essentials) ---
+       The Loop override rebuilds the ring+dot via ::before/::after. */
+  .radio-button {
+    appearance: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .radio-button:before, .radio-button:after { position: absolute; display: block; }
+  [data-radio-button] {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* --- native .form-control[data-input] baseline (mirrors OS UI _inputs.scss) ---
+       Height, reset, and transition so The Loop tokens land on an honest foundation. */
+  .form-control[data-input],
+  .form-control[data-textarea] {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: border-color 180ms ease, background-color 180ms ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-control[data-textarea] { resize: vertical; min-height: 80px; }
+</style>
+
+<!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
+<link rel="stylesheet" href="../dist/theme.css">
+
+<!-- 3) The actual handover override CSS (pasted into Theme CSS, below OutSystems UI). -->
+<link rel="stylesheet" href="../src/blocks/loop-button.css">
+<link rel="stylesheet" href="../src/blocks/loop-button-text.css">
+<link rel="stylesheet" href="../src/blocks/loop-button-group.css">
+<link rel="stylesheet" href="../src/blocks/loop-checkbox.css">
+<link rel="stylesheet" href="../src/blocks/loop-radio-button.css">
+<link rel="stylesheet" href="../src/blocks/loop-text-field.css">
+<link rel="stylesheet" href="../src/blocks/loop-switch.css">
+
+<!-- 4) Preview page chrome (not part of the design system). -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+    color: var(--color-text-on-light-default, #000d1ab2);
+    background: var(--color-neutral-05, #f5f7f9);
+  }
+
+  /* --- preview page chrome (not part of the design system) --- */
+  .pv-header {
+    padding: 24px 32px;
+    background: var(--color-bg-link-primary-enabled, #004370);
+    color: #fff;
+  }
+  .pv-header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 700; }
+  .pv-header p { margin: 0; opacity: .85; font-size: 14px; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px; }
+  section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,13,26,.08);
+  }
+  section > h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-on-light-default, #00263e);
+  }
+  section > .pv-figma { margin: 0 0 20px; font-size: 12px; color: #5b6b7b; }
+  .pv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 20px;
+    padding: 14px 0;
+    border-top: 1px solid #eef1f4;
+  }
+  .pv-row:first-of-type { border-top: 0; }
+  .pv-label {
+    flex: 0 0 130px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #5b6b7b;
+  }
+  .pv-note { font-size: 12px; color: #8a9db1; flex-basis: 100%; }
+  .pv-log {
+    flex-basis: 100%;
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    color: #004370;
+    min-height: 16px;
+  }
+</style>
+</head>
+<body>
+
+<header class="pv-header">
+  <h1>The Loop — Local Component Preview</h1>
+  <p>Real theme tokens (dist/theme.css) + the actual handover CSS/JS, on the native OutSystems UI baseline. Validate fidelity before importing into ODC.</p>
+</header>
+
+<main>
+
+  <!-- ============ BUTTON ============ -->
+  <section>
+    <h2>Button — restyle native <code>.btn</code></h2>
+    <p class="pv-figma">handover/loop-button.md · Figma node 15597-766</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Secondary</span>
+      <button class="btn">Button</button>
+      <button class="btn btn-large">Large</button>
+      <button class="btn is-regular">Regular</button>
+      <button class="btn btn-small">Small</button>
+      <button class="btn" disabled>Disabled</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Primary</span>
+      <button class="btn btn-primary">Button</button>
+      <button class="btn btn-primary btn-large">Large</button>
+      <button class="btn btn-primary is-regular">Regular</button>
+      <button class="btn btn-primary btn-small">Small</button>
+      <button class="btn btn-primary" disabled>Disabled</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Ghost / Tertiary</span>
+      <button class="btn btn-ghost">Button</button>
+      <button class="btn btn-ghost btn-large">Large</button>
+      <button class="btn btn-ghost is-regular">Regular</button>
+      <button class="btn btn-ghost btn-small">Small</button>
+      <button class="btn btn-ghost" disabled>Disabled</button>
+      <span class="pv-note">Ghost = <code>Extended Class = "btn-ghost"</code> (the one added modifier).</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">With icon</span>
+      <button class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Add item
+      </button>
+      <span class="pv-note">Icon gap 6px (FND-013).</span>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON TEXT ============ -->
+  <section>
+    <h2>Button Text — native <code>.btn</code> + <code>btn-text</code></h2>
+    <p class="pv-figma">handover/loop-button-text.md · Figma node 15597-4652</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Text button</span>
+      <button class="btn btn-text">Learn more</button>
+      <button class="btn btn-text" disabled>Disabled</button>
+      <span class="pv-note">Tab to it: focus ring is the dedicated high-contrast ORANGE (#b6490c), not blue — FND-015.</span>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON GROUP / SWITCH ============ -->
+  <section>
+    <h2>Button Group &amp; Switch — restyle native <code>.button-group</code></h2>
+    <p class="pv-figma">handover/loop-button-group.md · Figma nodes 15597-2978 / 15597-4070</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Group (3)</span>
+      <div class="button-group" role="group" aria-label="View">
+        <button class="button-group-item">Day</button>
+        <button class="button-group-item button-group-selected-item">Week</button>
+        <button class="button-group-item">Month</button>
+      </div>
+      <span class="pv-note">Pill outer end-caps (32px), 2px joined inner corners.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Switch (2)</span>
+      <div class="button-group" role="group" aria-label="Mode">
+        <button class="button-group-item button-group-selected-item">On</button>
+        <button class="button-group-item">Off</button>
+      </div>
+      <span class="pv-note">A Switch is just a 2-item group.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Single</span>
+      <div class="button-group">
+        <button class="button-group-item">Only</button>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <div class="button-group" role="group" aria-label="Disabled">
+        <button class="button-group-item" disabled>Day</button>
+        <button class="button-group-item button-group-selected-item" disabled>Week</button>
+        <button class="button-group-item" disabled>Month</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON DROPDOWN ============ -->
+  <section>
+    <h2>Button Dropdown — custom Web Component</h2>
+    <p class="pv-figma">handover/loop-button-dropdown.md · Figma node 15597-3469</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Primary</span>
+      <loop-button-dropdown
+        label="Actions"
+        variant="primary"
+        options='[{"value":"edit","label":"Edit"},{"value":"dup","label":"Duplicate"},{"value":"del","label":"Delete"}]'>
+      </loop-button-dropdown>
+
+      <span class="pv-label" style="flex-basis:80px">Secondary</span>
+      <loop-button-dropdown
+        label="More"
+        variant="secondary"
+        options='[{"value":"share","label":"Share"},{"value":"export","label":"Export"}]'>
+      </loop-button-dropdown>
+
+      <loop-button-dropdown label="Disabled" disabled
+        options='[{"value":"x","label":"Nope"}]'></loop-button-dropdown>
+
+      <p class="pv-note">Keyboard: focus trigger → Enter/Space/↓ opens · ↑/↓/Home/End navigate · Esc closes &amp; returns focus · click-outside closes.</p>
+      <p class="pv-log" id="lbd-log">last event: —</p>
+    </div>
+  </section>
+
+
+  <!-- ============ CHECKBOX ============ -->
+  <section>
+    <h2>Checkbox — restyle native <code>[data-checkbox]</code></h2>
+    <p class="pv-figma">handover/loop-checkbox.md · Figma node 19336-17679</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Unchecked</span>
+      <input type="checkbox" data-checkbox aria-label="Unchecked">
+      <input type="checkbox" data-checkbox aria-label="Unchecked hover" style="--demo:1">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Checked</span>
+      <input type="checkbox" data-checkbox checked aria-label="Checked">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Indeterminate</span>
+      <input type="checkbox" data-checkbox id="cb-indet" aria-label="Indeterminate">
+      <span class="pv-note">Indeterminate set via JS below.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <input type="checkbox" data-checkbox disabled aria-label="Disabled unchecked">
+      <input type="checkbox" data-checkbox disabled checked aria-label="Disabled checked">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Error</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox--error" aria-invalid="true" aria-label="Error unchecked">
+      <input type="checkbox" data-checkbox class="loop-checkbox--error" checked aria-invalid="true" aria-label="Error checked">
+      <span class="pv-note">FND-016: unchecked border #00396b3d ≈ 1.45:1 vs white (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+  </section>
+
+  <!-- ============ RADIO BUTTON ============ -->
+  <section>
+    <h2>Radio Button — restyle native <code>.radio-button</code></h2>
+    <p class="pv-figma">Figma node 19336-18637</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Group (vertical)</span>
+      <div data-radio-group role="radiogroup" aria-label="Vertical group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1a" aria-label="Option A">
+          <label for="r1a">Option A</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1b" checked aria-label="Option B">
+          <label for="r1b">Option B (checked)</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1c" aria-label="Option C">
+          <label for="r1c">Option C</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <div data-radio-button style="display:inline-flex;align-items:center">
+          <input type="radio" class="radio-button" name="rgsz" id="rsz-xl" aria-label="XLarge">
+          <label for="rsz-xl" style="margin-left:8px;font-size:16px">XLarge (28px)</label>
+        </div>
+        <div data-radio-button style="display:inline-flex;align-items:center">
+          <input type="radio" class="radio-button loop-radio-large" name="rgsz" id="rsz-l" aria-label="Large">
+          <label for="rsz-l" style="margin-left:8px;font-size:14px">Large (24px)</label>
+        </div>
+        <div data-radio-button style="display:inline-flex;align-items:center">
+          <input type="radio" class="radio-button loop-radio-regular" name="rgsz" id="rsz-r" aria-label="Regular">
+          <label for="rsz-r" style="margin-left:4px;font-size:13px">Regular (20px)</label>
+        </div>
+        <div data-radio-button style="display:inline-flex;align-items:center">
+          <input type="radio" class="radio-button loop-radio-small" name="rgsz" id="rsz-s" aria-label="Small">
+          <label for="rsz-s" style="margin-left:4px;font-size:12px">Small (16px)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <div data-radio-group role="radiogroup" aria-label="Disabled group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rgd" id="rd1" disabled aria-label="Disabled unchecked">
+          <label for="rd1">Disabled</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rgd" id="rd2" disabled checked aria-label="Disabled checked">
+          <label for="rd2">Disabled (checked)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Error / Required</span>
+      <div data-radio-group class="not-valid" role="radiogroup" aria-label="Error group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rge" id="re1" aria-label="Error option A">
+          <label for="re1">Error option A</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rge" id="re2" checked aria-label="Error option B">
+          <label for="re2">Error option B (checked)</label>
+        </div>
+      </div>
+      <span class="pv-note">FND-023: required/error state communicated by color only (red ring, no icon) — logged, not re-designed.</span>
+    </div>
+  </section>
+
+  <!-- ============ TEXT FIELD ============ -->
+  <section>
+    <h2>Text Field — restyle native <code>.form-control[data-input]</code></h2>
+    <p class="pv-figma">handover/loop-text-field.md · Figma node 19336-9606</p>
+
+    <div class="pv-row" style="flex-direction:column;align-items:stretch;max-width:400px">
+      <span class="pv-label" style="flex-basis:auto;margin-bottom:8px">Default (xLarge — 56px)</span>
+      <div class="loop-field">
+        <label data-label for="tf-default">Label</label>
+        <input class="form-control" data-input id="tf-default" type="text" placeholder="Placeholder text">
+        <span class="loop-field__helper">Helper text</span>
+      </div>
+    </div>
+
+    <div class="pv-row" style="flex-wrap:wrap;gap:16px;align-items:flex-end">
+      <span class="pv-label" style="flex-basis:100%">Sizes</span>
+      <div class="loop-field" style="flex:1;min-width:160px">
+        <label data-label for="tf-xl">xLarge (56px)</label>
+        <input class="form-control" data-input id="tf-xl" type="text" placeholder="xLarge">
+      </div>
+      <div class="loop-field" style="flex:1;min-width:160px">
+        <label data-label for="tf-l">Large (48px)</label>
+        <input class="form-control input-large" data-input id="tf-l" type="text" placeholder="Large">
+      </div>
+      <div class="loop-field" style="flex:1;min-width:160px">
+        <label data-label for="tf-r">Regular (40px)</label>
+        <input class="form-control is-regular" data-input id="tf-r" type="text" placeholder="Regular">
+      </div>
+      <div class="loop-field" style="flex:1;min-width:160px">
+        <label data-label for="tf-s">Small (32px)</label>
+        <input class="form-control input-small" data-input id="tf-s" type="text" placeholder="Small">
+      </div>
+    </div>
+
+    <div class="pv-row" style="flex-direction:column;align-items:stretch;max-width:400px">
+      <span class="pv-label" style="flex-basis:auto;margin-bottom:8px">States</span>
+      <div class="loop-field" style="margin-bottom:12px">
+        <label data-label class="mandatory" for="tf-req">Required</label>
+        <input class="form-control" data-input id="tf-req" type="text" placeholder="Required field">
+      </div>
+      <div class="loop-field" style="margin-bottom:12px">
+        <label data-label for="tf-err">Error</label>
+        <input class="form-control not-valid" data-input id="tf-err" type="text" value="Bad input">
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field" style="margin-bottom:12px">
+        <label data-label for="tf-warn">Warning</label>
+        <input class="form-control is-warning" data-input id="tf-warn" type="text" value="Caution value">
+        <span class="loop-field__helper loop-field__helper--warning">Warning message here</span>
+      </div>
+      <div class="loop-field" style="margin-bottom:12px">
+        <label data-label for="tf-dis">Disabled</label>
+        <input class="form-control" data-input id="tf-dis" type="text" placeholder="Disabled" disabled>
+        <span class="loop-field__helper loop-field__helper--disabled">Cannot edit</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-ro">Read-Only</label>
+        <input class="form-control is-read-only" data-input id="tf-ro" type="text" value="Read only value" readonly>
+      </div>
+      <span class="pv-note">FND-019: resting border #00396b3d ≈ 1.45:1 (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+
+    <div class="pv-row" style="max-width:400px">
+      <span class="pv-label">Textarea</span>
+      <div class="loop-field" style="width:100%">
+        <label data-label for="tf-ta">Multiline</label>
+        <textarea class="form-control" data-textarea id="tf-ta" placeholder="Type here…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOGGLE / SWITCH ============ -->
+  <section>
+    <h2>Toggle — restyle native <code>[data-switch]</code></h2>
+    <p class="pv-figma">handover/loop-switch.md · Figma node 25344-27822</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Checked / Unchecked</span>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch checked aria-label="On">
+        <span class="loop-toggle__label">On (checked)</span>
+      </label>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch aria-label="Off">
+        <span class="loop-toggle__label">Off (unchecked)</span>
+      </label>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Label position</span>
+      <label class="loop-toggle loop-toggle--left">
+        <input type="checkbox" data-switch checked aria-label="Label left">
+        <span class="loop-toggle__label">Left</span>
+      </label>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch checked aria-label="Label right">
+        <span class="loop-toggle__label">Right</span>
+      </label>
+      <label class="loop-toggle loop-toggle--top">
+        <input type="checkbox" data-switch checked aria-label="Label top">
+        <span class="loop-toggle__label">Top</span>
+      </label>
+      <label class="loop-toggle loop-toggle--bottom">
+        <input type="checkbox" data-switch checked aria-label="Label bottom">
+        <span class="loop-toggle__label">Bottom</span>
+      </label>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+        <input type="checkbox" data-switch checked aria-label="xLarge (56×32)">
+        <input type="checkbox" data-switch class="loop-toggle-large" checked aria-label="Large (48×26)">
+        <input type="checkbox" data-switch class="loop-toggle-regular" checked aria-label="Regular (40×20)">
+        <input type="checkbox" data-switch class="loop-toggle-small" checked aria-label="Small (32×16)">
+      </div>
+      <span class="pv-note">FND-025: only xLarge has published switch tokens; smaller sizes use observed track dims (padding held at 4px) — flagged.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <label class="loop-toggle loop-toggle--disabled">
+        <input type="checkbox" data-switch checked disabled aria-label="Disabled on">
+        <span class="loop-toggle__label">Disabled (on)</span>
+      </label>
+      <label class="loop-toggle loop-toggle--disabled">
+        <input type="checkbox" data-switch disabled aria-label="Disabled off">
+        <span class="loop-toggle__label">Disabled (off)</span>
+      </label>
+      <span class="pv-note">FND-026: the ON-thumb check glyph (node 25845-30789) is omitted pending its asset/colour token.</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- 3) The real custom component, loaded exactly as it ships to ODC. -->
+<script src="../src/components/loop-button-dropdown.js"></script>
+<script>
+  // Preview-only: surface the component's select/toggle events so you can verify wiring.
+  const log = document.getElementById('lbd-log');
+  document.querySelectorAll('loop-button-dropdown').forEach(el => {
+    el.addEventListener('select', e => { log.textContent = `select → ${JSON.stringify(e.detail)}`; });
+    el.addEventListener('toggle', e => { if (e.detail.open) log.textContent = `toggle → open`; });
+  });
+
+  // Set the indeterminate checkbox state (can't be done in HTML alone).
+  const cbIndet = document.getElementById('cb-indet');
+  if (cbIndet) cbIndet.indeterminate = true;
+</script>
+</body>
+</html>

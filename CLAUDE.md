@@ -7,8 +7,8 @@
 - **Customer:** `World Bank Group`
 - **Project:** `WBG`
 - **Environment:** ODC (default) — change if O11
-- **Class prefix:** `rnt-`
-- **Spacing base:** 4pt
+- **Class prefix:** `loop-`
+- **Spacing base:** unconfirmed — grid spec TBD (do **not** flag values as "off the 4pt grid"). Scale extracted from Figma (`tokens/spacing.css`, descriptive `tiny`…`xhuge`); most steps are multiples of 4 but this is not a confirmed rule. See the 2026-06-16 Live Style Guide sync ("final grid spec not yet confirmed").
 - **Token style:** OutSystems UI standard conventions
 - **CSS methodology:** BEM (`block__element--modifier`)
 - **Custom components:** vanilla JS Web Components wrapped in OutSystems Blocks
@@ -43,11 +43,19 @@ gh issue create --title "[handover] <component> — add in OutSystems" \
 
 Both findings (bugs) and handovers (tasks) can live on the same GitHub **Project** board — a kanban view with a `Status` column you drag items across.
 
-## Build pipeline (lightningcss)
+## Build pipeline
 
 - Source tokens live in `tokens/` (`colors.css`, `spacing.css`, `typography.css`).
-- `npm run build:theme` → flat `dist/theme.css` to paste into the ODC Theme editor.
+- `npm run build:theme` → `dist/theme.css` to paste into the ODC Theme editor.
+  Assembled by `build/build-theme.mjs` (comment-preserving), which prepends an
+  **OutSystems-UI-style Table of Contents + `#SECTION` banners** and keeps the
+  source provenance/finding comments. **Rule: `dist/theme.css` must always carry
+  this TOC + sectioning** — never ship a flat, comment-stripped theme. Section
+  order follows the `@import` order in `tokens/index.css`; add a file's title to
+  the `META` map in the build script when you add a new token file.
 - `npm run watch:theme` for live rebuilds while iterating.
+- `npm run build:theme:min` → `dist/theme.min.css` via lightningcss (optional
+  minified build; strips comments, so NOT the file pasted into ODC).
 
 ## Hard rules (inherited from figma-to-outsystems orchestrator)
 
