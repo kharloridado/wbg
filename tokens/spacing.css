@@ -23,6 +23,14 @@
   --space-200: 16px;
   --space-500: 40px;
 
+  /* component spacing (off the strict 4pt grid — see findings register) */
+  --space-button-gap: 6px;   /* loop/button/gap — icon↔label gap */
+
+  /* radio / checkbox spacing (loop/checkbox/* — shared by radio + checkbox) */
+  --space-checkbox-gap:           8px;   /* loop/checkbox/gap — input↔label (→ 4px at regular/small) */
+  --space-checkbox-group-row:    14px;   /* loop/checkbox/group/vpadding — off 4pt grid (FND-022) */
+  --space-checkbox-group-column: 20px;   /* loop/checkbox/group/hpadding — unnamed 4pt step */
+
   /* layout */
   --grid-gutter: 24px;
 }

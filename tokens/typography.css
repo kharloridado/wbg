@@ -3,6 +3,37 @@
  * Font family: Open Sans — brand-owner decision 2026-06-17, resolving FND-002
  * (the library exposed 6 families: Inter/Open Sans/Poppins/Manrope/Andes/IBM Plex Sans).
  * Open Sans matches the primitive Heading/* and Body/* type styles in the library. */
+
+/* Load Open Sans from self-hosted ODC Resources (weights 400/600/700 — match
+ * --font-weight-*). Self-hosted (not the Google Fonts CDN @import) so ODC does
+ * not raise offline/PWA warnings — the runtime can cache local resources but not
+ * an external CDN. No italics: the design uses no italic styles.
+ *
+ * SETUP IN ODC: upload open-sans-400/600/700.woff2 as Resources, then adjust the
+ * url() below to the resource path ODC serves them from. display=swap avoids
+ * invisible text while the font loads; system-ui is the swap fallback. */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("open-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("open-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("open-sans-700.woff2") format("woff2");
+}
+
 :root {
   /* ---- Font families (Open Sans, per FND-002 sign-off) ---- */
   --font-family-body:    "Open Sans", system-ui, sans-serif;
@@ -46,6 +77,7 @@
   --letter-spacing-heading: -3px;
   --letter-spacing-label:   -1.5px;
   --letter-spacing-tight:   -0.35px;
+  --letter-spacing-button:  -0.5px;   /* loop/button/label/letter spacing — off the -0.35/-1.5 scale (see findings register) */
   --letter-spacing-none:    0;
   --letter-spacing-caps:    1px;
 }

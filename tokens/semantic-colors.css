@@ -77,6 +77,10 @@
   --color-bg-link-secondary-pressed:  var(--color-blue-30);
   --color-bg-link-secondary-visited:  var(--color-purple-70);
   --color-bg-link-secondary-disabled: var(--color-white);
+  --color-bg-link-tertiary-enabled:  #ffffff00;   /* transparent — no primitive token */
+  --color-bg-link-tertiary-hover:    var(--color-blue-20);
+  --color-bg-link-tertiary-pressed:  var(--color-blue-30);
+  --color-bg-link-tertiary-disabled: var(--color-white);
   --color-bg-container-state-suggestion-low:  var(--color-purple-10);
   --color-bg-container-state-suggestion-high: var(--color-purple-60);
   --color-bg-container-state-success-low:  var(--color-green-03);
@@ -136,6 +140,9 @@
   --color-divider-on-light-emphasis: var(--color-neutral-alpha-24);
   --color-divider-on-light-default:  var(--color-neutral-alpha-16);
   --color-divider-on-light-subdued:  var(--color-neutral-alpha-08);
+
+  /* ---- Keyboard focus (high-contrast ring; orphan — no primitive, FND-015) ---- */
+  --color-focus-keyboard-on-light: #b6490c;   /* Keyboard Focus/On Light — orange ring for text/link buttons */
 
   /* ---- Outline (on light + mode-agnostic) ---- */
   --color-outline-white:       var(--color-white);

@@ -1,0 +1,38 @@
+/* component-field.css — WBG / "The Loop" Text Field component tokens
+ * Extracted from Figma: "Text Field" [node:19336-9606] (input/label/placeholder vars).
+ * These are the field box + label + placeholder + helper metrics consumed by the
+ * native-input restyle in src/blocks/loop-text-field.css. Each value references a
+ * foundation-scale token where one exists; component-only metrics are declared here.
+ *
+ * Loaded AFTER the foundation files (colors/spacing/typography/radius) so the var()
+ * references resolve, and BEFORE outsystems-ui-overrides.css (which must stay last).
+ *
+ * Off-scale / orphan values are flagged, NOT silently normalised (CLAUDE.md the-one-rule):
+ *   - field vpadding 18px & label gap 6px are off the 4pt grid          → FND-018
+ *   - disabled border = Figma "Outline/On Dark/State/Disable" #ffffff7a, which has
+ *     no light-mode primitive (rendered borderless via the disable fill)  → FND-018 */
+:root {
+  /* ---- Field box (the input) ---- */
+  --loop-field-radius:          var(--radius-medium);          /* 8px — OutSystems/MUI target per Figma note (node:19336-17326); "Modern" mode = 32px */
+  --loop-field-padding-block:   18px;                          /* loop/field/vpadding — off 4pt grid (FND-018) */
+  --loop-field-padding-inline:  var(--space-small);            /* 16px — loop/field/hpadding left|right */
+  --loop-field-gap:             var(--space-xxsmall);          /* 8px — loop/Field/hGap (icon ↔ content) */
+  --loop-field-placeholder-pad: var(--space-xtiny);            /* 2px — loop/Field/Placeholder vPadding */
+
+  /* ---- Label (vertical / horizontal) ---- */
+  --loop-field-label-gap:       6px;                           /* loop/label/gap — off 4pt grid (FND-018) */
+  --loop-field-label-size:      var(--font-size-300);          /* 16px — loop/label/font size */
+  --loop-field-label-weight:    var(--font-weight-semibold);   /* 600  — loop/label/font weight */
+  --loop-field-label-leading:   16px;                          /* loop/label/font height */
+  --loop-field-label-tracking:  0;                             /* loop/label/letter spacing */
+
+  /* ---- Placeholder / value text ---- */
+  --loop-field-text-size:       var(--font-size-300);          /* 16px — loop/placeholder/text field/font size */
+  --loop-field-text-weight:     var(--font-weight-regular);    /* 400  — loop/Placeholder/Text Field/Font Weight */
+  --loop-field-text-leading:    16px;                          /* loop/placeholder/text field/line height */
+  --loop-field-text-tracking:   0.5px;                         /* loop/placeholder letterSpacing */
+
+  /* ---- Helper text ---- */
+  --loop-field-helper-size:     var(--font-size-100);          /* 12px */
+  --loop-field-helper-gap:      var(--space-tiny);             /* 4px — icon ↔ helper text */
+}
