@@ -39,6 +39,7 @@ const META = {
   "spacing.css":         { group: "Spacing",       name: "Scale" },
   "typography.css":      { group: "Typography",    name: "Type" },
   "typography-utilities.css": { group: "Typography", name: "Utilities" },
+  "typography-roles.css":     { group: "Typography", name: "Roles" },
   "radius.css":          { group: "Radius",        name: "Border Radius" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
@@ -50,12 +51,14 @@ const META = {
   "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
   "component-tag.css":          { group: "Components",       name: "Tag" },
   /* Widget override sections (src/blocks/) */
+  "loop-headings.css":      { group: "Widget Overrides", name: "Headings (h1–h3)" },
   "loop-button.css":        { group: "Widget Overrides", name: "Button" },
   "loop-button-text.css":   { group: "Widget Overrides", name: "Button Text" },
   "loop-button-group.css":  { group: "Widget Overrides", name: "Button Group" },
   "loop-checkbox.css":      { group: "Widget Overrides", name: "Checkbox" },
   "loop-radio-button.css":  { group: "Widget Overrides", name: "Radio Button" },
   "loop-text-field.css":    { group: "Widget Overrides", name: "Text Field" },
+  "loop-dropdown.css":      { group: "Widget Overrides", name: "Dropdown / Select" },
   "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
   /* Custom component BEM blocks (src/blocks/) */

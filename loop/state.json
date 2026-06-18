@@ -3,10 +3,10 @@
   "figma_url": "https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library",
   "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
   "branch": "loop/2026-06-17-design-system",
-  "status": "primitives-delivered",
+  "status": "composites-in-progress",
   "mode": "library",
-  "phase": "after-primitives-checkpoint",
-  "pause_reason": "Primitives tier built + committed + pushed (loop/2026-06-17-design-system) + on the Project board with handover tasks #24-33. after_primitives checkpoint = pause: awaiting sign-off before composites/patterns. Next component (Dropdown/Select) needs its Figma node id — design-system search does not index The Loop's components.",
+  "phase": "composites",
+  "pause_reason": "Dropdown/Select (#38) now BUILT (checker PASS) from Figma nodes 18787-4817 (Select) + 18830-17312 (Multiselect) + rendered DOM the user supplied 2026-06-18. Still BLOCKED on design input for the REST of the to-build queue (#39-54: Search, Date Picker, Upload, Alert, Toast, Badge, Progress Bar, Card, Tabs, Accordion, Modal, Breadcrumbs, Pagination, Avatar) — none carry Figma node ids yet. Provide node ids + (for provider/JS patterns) rendered OutSystems HTML to advance further.",
   "project": {
     "owner": "kharloridado",
     "number": 1,
@@ -26,14 +26,15 @@
     "after_primitives": "pause",
     "after_composites": "continue"
   },
-  "iteration": 1,
+  "iteration": 3,
   "tiers": [
     "foundations",
     "primitives",
+    "utilities",
     "composites",
     "patterns"
   ],
-  "current_tier": "primitives",
+  "current_tier": "composites",
   "token_source_nodes": [
     "11122-2143",
     "11122-2879",
@@ -113,23 +114,185 @@
       "status": "built"
     },
     {
-      "id": "cmp-button",          "tier": "primitives", "level": "L1/L2", "node": "15597-766",   "artifact": "src/blocks/loop-button.css",        "approach": "restyle native .btn",            "status": "built" },
+      "id": "cmp-button",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "15597-766",
+      "artifact": "src/blocks/loop-button.css",
+      "approach": "restyle native .btn",
+      "status": "built"
+    },
     {
-      "id": "cmp-button-text",     "tier": "primitives", "level": "L1/L2", "node": "15597-4652",  "artifact": "src/blocks/loop-button-text.css",   "approach": "native button-link",             "status": "built" },
+      "id": "cmp-button-text",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "15597-4652",
+      "artifact": "src/blocks/loop-button-text.css",
+      "approach": "native button-link",
+      "status": "built"
+    },
     {
-      "id": "cmp-button-group",    "tier": "primitives", "level": "L1/L2", "node": "15597-2978",  "artifact": "src/blocks/loop-button-group.css",  "approach": "restyle native button-group (+Button Switch 15597-4070)", "status": "built" },
+      "id": "cmp-button-group",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "15597-2978",
+      "artifact": "src/blocks/loop-button-group.css",
+      "approach": "restyle native button-group (+Button Switch 15597-4070)",
+      "status": "built"
+    },
     {
-      "id": "cmp-button-dropdown", "tier": "composites", "level": "L3",    "node": "15597-766",   "artifact": "src/components/loop-button-dropdown.js", "approach": "vanilla JS Web Component",   "status": "built" },
+      "id": "cmp-button-dropdown",
+      "tier": "composites",
+      "level": "L3",
+      "node": "15597-766",
+      "artifact": "src/components/loop-button-dropdown.js",
+      "approach": "vanilla JS Web Component",
+      "status": "built"
+    },
     {
-      "id": "cmp-checkbox",        "tier": "primitives", "level": "L1/L2", "node": "19336-17679", "artifact": "src/blocks/loop-checkbox.css",      "approach": "restyle native checkbox",        "status": "built" },
+      "id": "cmp-checkbox",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "19336-17679",
+      "artifact": "src/blocks/loop-checkbox.css",
+      "approach": "restyle native checkbox",
+      "status": "built"
+    },
     {
-      "id": "cmp-radio-button",    "tier": "primitives", "level": "L1/L2", "node": "19336-18637", "artifact": "src/blocks/loop-radio-button.css",  "approach": "restyle native .radio-button",   "status": "built" },
+      "id": "cmp-radio-button",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "19336-18637",
+      "artifact": "src/blocks/loop-radio-button.css",
+      "approach": "restyle native .radio-button",
+      "status": "built"
+    },
     {
-      "id": "cmp-text-field",      "tier": "primitives", "level": "L1/L2", "node": "19336-9606",  "artifact": "src/blocks/loop-text-field.css",    "approach": "restyle native .form-control[data-input]", "status": "built" },
+      "id": "cmp-text-field",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "19336-9606",
+      "artifact": "src/blocks/loop-text-field.css",
+      "approach": "restyle native .form-control[data-input]",
+      "status": "built"
+    },
     {
-      "id": "cmp-toggle",          "tier": "primitives", "level": "L1/L2", "node": "25344-27822", "artifact": "src/blocks/loop-switch.css",        "approach": "restyle native [data-switch]",   "status": "built" }
+      "id": "cmp-toggle",
+      "tier": "primitives",
+      "level": "L1/L2",
+      "node": "25344-27822",
+      "artifact": "src/blocks/loop-switch.css",
+      "approach": "restyle native [data-switch]",
+      "status": "built"
+    },
+    {
+      "id": "cmp-tag",
+      "tier": "composites",
+      "level": "L3",
+      "node": "live-select",
+      "artifact": "src/blocks/loop-tag.css",
+      "approach": "custom Tag block, color-configurable",
+      "status": "built",
+      "handover": [
+        64,
+        65
+      ]
+    },
+    {
+      "id": "cmp-tooltip",
+      "tier": "composites",
+      "level": "L3",
+      "node": "live-select",
+      "artifact": "src/blocks/loop-tooltip.css",
+      "approach": "restyle native Tooltip pattern",
+      "status": "built",
+      "handover": [
+        58,
+        59
+      ]
+    },
+    {
+      "id": "cmp-note",
+      "tier": "composites",
+      "level": "L3",
+      "node": "live-select",
+      "artifact": "src/blocks/loop-note.css",
+      "approach": "CSS block (Notes)",
+      "status": "built",
+      "handover": [
+        61
+      ]
+    },
+    {
+      "id": "cmp-system-alert",
+      "tier": "composites",
+      "level": "L5",
+      "node": "live-select",
+      "artifact": "src/components/loop-system-alert.js",
+      "approach": "vanilla JS Web Component",
+      "status": "built",
+      "handover": [
+        62
+      ]
+    },
+    {
+      "id": "cmp-popover",
+      "tier": "composites",
+      "level": "L5",
+      "node": "live-select",
+      "artifact": "src/components/loop-popover.js",
+      "approach": "vanilla JS Web Component",
+      "status": "built",
+      "handover": [
+        63
+      ]
+    },
+    {
+      "id": "cmp-segmented",
+      "tier": "composites",
+      "level": "L5",
+      "node": "live-select",
+      "artifact": "src/components/rnt-segmented.js",
+      "approach": "vanilla JS Web Component",
+      "status": "built"
+    },
+    {
+      "id": "util-color",
+      "tier": "utilities",
+      "level": "L2",
+      "node": "11122-2143",
+      "artifact": "tokens/*.css (gen:color-utilities)",
+      "approach": "generated .background-/.text- utilities + loop-color-reference.js",
+      "status": "built"
+    },
+    {
+      "id": "util-type",
+      "tier": "utilities",
+      "level": "L2",
+      "node": "10995-7259",
+      "artifact": "tokens/typography*.css (gen:type-utilities)",
+      "approach": "generated .font-size-/.font-weight- utilities + loop-type-reference.js",
+      "status": "built"
+    },
+    {
+      "id": "cmp-dropdown-select",
+      "tier": "composites",
+      "level": "L1/L2",
+      "node": "18787-4817",
+      "node_multiselect": "18830-17312",
+      "artifact": "src/blocks/loop-dropdown.css",
+      "approach": "restyle native Dropdown pattern (.dropdown) + VirtualSelect provider (.osui-dropdown-search/-tags)",
+      "status": "built",
+      "checker": "PASS (round 2 — finding-ID hygiene)",
+      "handover_doc": "handover/loop-dropdown.md",
+      "findings": [
+        "FND-031",
+        "FND-032"
+      ],
+      "note": "Covers single Select, Dropdown Search, Dropdown Tags (multi). Figma nodes + rendered DOM provided by user 2026-06-18 (outsystems-widgets-reference/widgets/dropdown*.md)."
+    }
   ],
-  "items_note": "Phase 0 tokens built. Primitives tier (button/button-text/button-group+switch/checkbox/radio/text-field/toggle) built as native-widget restyles + 1 composite (button-dropdown Web Component); each has a handover doc + style-guide entry. All built faithfully; conflicts flagged as findings (FND-013..026), never silently changed. NOT yet committed; GitHub Project board + handover sub-issues pending gh auth.",
+  "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",
   "findings": [
     {
       "id": "FND-001",
@@ -251,6 +414,33 @@
       "issue": 21,
       "issue_url": "https://github.com/kharloridado/wbg/issues/21",
       "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-012",
+      "type": "a11y",
+      "sev": "medium",
+      "node": "15597-766",
+      "status": "filed",
+      "summary": "Brand focus ring (Blue/50) replaces OutSystems high-contrast yellow ring",
+      "issue": 23,
+      "issue_url": "https://github.com/kharloridado/wbg/issues/23",
+      "assignee": "kharloridado"
+    },
+    {
+      "id": "FND-031",
+      "type": "consistency",
+      "sev": "low",
+      "node": "18787-4817",
+      "status": "register-only",
+      "summary": "Select field metrics diverge from Text Field & scale: pill --radius-pill 32px vs Text Field --radius-medium 8px; vpadding 11px off-grid; 13px text vs 16px"
+    },
+    {
+      "id": "FND-032",
+      "type": "design-token",
+      "sev": "low",
+      "node": "18787-4817",
+      "status": "register-only",
+      "summary": "Dropdown popup-list border #dae1e8 (foreign lift token, no WBG primitive) substituted to --color-outline-on-light-subdued"
     }
   ],
   "handover_epics": [],

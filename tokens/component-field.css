@@ -35,4 +35,41 @@
   /* ---- Helper text ---- */
   --loop-field-helper-size:     var(--font-size-100);          /* 12px */
   --loop-field-helper-gap:      var(--space-tiny);             /* 4px — icon ↔ helper text */
+
+  /* =========================================================================
+     Select / Dropdown  — Figma "Select" [node:18787-4817] (states 18770-10424)
+     Restyle of the native OutSystems Dropdown pattern (.dropdown) + the
+     VirtualSelect provider (.osui-dropdown-search / -tags). Field box reuses the
+     state COLOURS of the Text Field (shared semantic tokens) but has its OWN box
+     metrics — the Select is a pill (--radius-pill 32px) at 13px / ~40px tall, NOT the
+     Text Field's 8px-radius / 16px / 56px box. Divergences flagged, not normalised:
+       - radius = --radius-pill (32px) while the Text Field uses --radius-medium (8px):
+         sibling form controls have divergent corner radii            → FND-031
+       - vpadding 11px is off the 4pt grid (cf. FND-013/FND-018)       → FND-031
+       - Select label/value 13px ≠ 16px used by Text Field & Multi-select → FND-031
+     ========================================================================= */
+  --loop-select-radius:           var(--radius-pill);          /* 32px pill — ≠ Text Field's 8px, FND-031 */
+  --loop-select-padding-block:    11px;                        /* loop/field/vpadding (Select) — off 4pt grid, FND-031 */
+  --loop-select-padding-inline:   var(--space-small);          /* 16px — loop/field/hpadding left|right */
+  --loop-select-gap:              var(--space-xxsmall);        /* 8px — loop/field/hGap (content ↔ chevron) */
+  --loop-select-label-size:       13px;                        /* loop/label/font size (Select) — FND-031 */
+  --loop-select-label-leading:    16px;                        /* loop/label/font height */
+  --loop-select-label-tracking:   0.25px;                      /* loop/label/letter spacing */
+  --loop-select-text-size:        13px;                        /* loop/placeholder/text field/font size (Select) — FND-031 */
+  --loop-select-text-leading:     14px;                        /* loop/placeholder line height */
+  --loop-select-text-tracking:    0.5px;
+  --loop-select-list-radius:      var(--radius-medium);        /* 8px — card/corner radius (popup list) */
+  --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px shadow-color — -loop shadows/Low */
+
+  /* ---- Multi-select (DropdownTags) — Figma [node:18830-17312] ---- */
+  --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px — loop/multi-select/vpadding */
+  --loop-multiselect-min-content:   28px;                      /* loop/multi-select/placeholder height */
+
+  /* ---- Tag chip inside the multi-select (neutral chip, ≠ the blue loop-tag block) ---- */
+  --loop-select-tag-radius:         48px;                      /* loop/tag/border radius */
+  --loop-select-tag-padding-block:  var(--space-xxsmall);      /* 8px — loop/tag/vpadding */
+  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px — loop/tag/hpadding */
+  --loop-select-tag-gap:            var(--space-tiny);         /* 4px — loop/tag/hgap */
+  --loop-select-tag-bg:             var(--color-bg-container-on-light-low);   /* #f5f7f9 — Neutral/05 */
+  --loop-select-tag-cross-size:     14px;                      /* loop/tag/icon/cross-size */
 }
