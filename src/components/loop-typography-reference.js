@@ -1,8 +1,8 @@
 /**
- * <loop-type-reference> — auto-rendered Live Style Guide typography reference.
+ * <loop-typography-reference> — auto-rendered Live Style Guide typography reference.
  *
  * The typography counterpart to <loop-color-reference>: drop this one file into ODC
- * (Resources) and place a single <loop-type-reference> element on a Style-Guide screen.
+ * (Resources) and place a single <loop-typography-reference> element on a Style-Guide screen.
  * It renders the whole type system — named type styles (Heading/Body roles), the
  * font-size scale, weights, line-heights and letter-spacing — with NO rows built by
  * hand in Service Studio.
@@ -20,7 +20,7 @@
  * Attributes:
  *   heading   Optional section heading (default: "Typography")
  *   intro     Optional intro line under the heading
- *   filter    Optional comma list of section keys: styles,scale,weights,leading,tracking
+ *   filter    Optional comma list of section keys: styles,elements,scale,weights,leading,tracking
  *
  * Behaviour: each class / variable chip is a button — click to copy (with a ✓ cue).
  *
@@ -43,36 +43,42 @@
       note: "Open Sans Bold. Headings use the 1.12 (heading) line-height. Note: H1 Base and H2 Large share 48px; H2 Small and H3 Base share 32px — differentiated by semantic level and position in layout, not by visual size.",
       roles: [
         { label: "H1 · Large",  size: "1200", weight: "bold", lh: "heading", ls: "heading",
-          sample: "Transforming Lives" },
+          sample: "Transforming Lives",          cls: "loop-heading-h1-large" },
         { label: "H1 · Base",   size: "1100", weight: "bold", lh: "heading", ls: null,
-          sample: "Annual Report 2025" },
+          sample: "Annual Report 2025",          cls: "loop-heading-h1-base"  },
         { label: "H1 · Small",  size: "900",  weight: "bold", lh: "heading", ls: null,
-          sample: "Country Portfolio Summary" },
+          sample: "Country Portfolio Summary",   cls: "loop-heading-h1-small" },
         { label: "H1 · Tiny",   size: "700",  weight: "bold", lh: "heading", ls: null,
-          sample: "Project Overview" },
+          sample: "Project Overview",            cls: "loop-heading-h1-tiny"  },
         { label: "H2 · Large",  size: "1100", weight: "bold", lh: "heading", ls: null,
-          sample: "Strategic Priorities" },
+          sample: "Strategic Priorities",        cls: "loop-heading-h2-large" },
         { label: "H2 · Small",  size: "800",  weight: "bold", lh: "heading", ls: null,
-          sample: "Regional Analysis" },
+          sample: "Regional Analysis",           cls: "loop-heading-h2-small" },
         { label: "H3 · Base",   size: "800",  weight: "bold", lh: "heading", ls: null,
-          sample: "Key Findings" },
+          sample: "Key Findings",                cls: "loop-heading-h3-base"  },
       ],
     },
     body: {
       title: "Body styles",
       note: "Open Sans Regular. Body uses the 1.5 (base) line-height. Labels use Bold (700).",
       roles: [
-        { label: "Body · Large",          size: "600", weight: "regular", lh: "base", ls: "tight",
+        { label: "Body · Large",           size: "600", weight: "regular", lh: "base", ls: "tight",
+          cls: "loop-body-large",
           sample: "The World Bank Group is a unique global partnership of five institutions working for sustainable solutions that reduce poverty and build shared prosperity in developing countries." },
-        { label: "Body · Medium",         size: "500", weight: "regular", lh: "base", ls: { px: "-0.25px", off: true },
+        { label: "Body · Medium",          size: "500", weight: "regular", lh: "base", ls: { px: "-0.25px", off: true },
+          cls: "loop-body-medium",
           sample: "This section summarises portfolio performance for the current fiscal year, covering active projects across all six operational regions." },
-        { label: "Body · Base",           size: "300", weight: "regular", lh: "base", ls: "none",
+        { label: "Body · Base",            size: "300", weight: "regular", lh: "base", ls: "none",
+          cls: "loop-body-base",
           sample: "Projects are evaluated against four pillars of sustainable development: economic growth, social inclusion, environmental sustainability, and effective governance." },
-        { label: "Body · Small",          size: "200", weight: "regular", lh: "base", ls: "none",
+        { label: "Body · Small",           size: "200", weight: "regular", lh: "base", ls: "none",
+          cls: "loop-body-small",
           sample: "For more information on project eligibility criteria, please refer to the operational guidelines section of this document." },
-        { label: "Body · Tiny",           size: "100", weight: "regular", lh: "base", ls: { px: "0.25px", off: true },
+        { label: "Body · Tiny",            size: "100", weight: "regular", lh: "base", ls: { px: "0.25px", off: true },
+          cls: "loop-body-tiny",
           sample: "Source: World Bank Group Annual Report 2025. All figures are in USD millions unless otherwise stated." },
         { label: "Body · Tiny · All Caps", size: "100", weight: "regular", lh: "narrow", ls: "caps", caps: true,
+          cls: "loop-body-tiny-caps",
           sample: "World Bank Group · Annual Report · Fiscal Year 2025" },
       ],
     },
@@ -111,7 +117,7 @@
     return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
   }
 
-  class LoopTypeReference extends HTMLElement {
+  class LoopTypographyReference extends HTMLElement {
     static get observedAttributes() { return ["heading", "intro", "filter"]; }
 
     constructor() {
@@ -135,6 +141,7 @@
       const intro = this._intro ? `<p class="ltr__intro">${esc(this._intro)}</p>` : "";
       const parts = [];
       if (this._show("styles")) parts.push(this._stylesHtml(STYLES.heading), this._stylesHtml(STYLES.body));
+      if (this._show("elements")) parts.push(this._nativeHtml());
       if (this._show("scale")) parts.push(this._scaleHtml());
       if (this._show("weights")) parts.push(this._weightsHtml());
       if (this._show("leading")) parts.push(this._leadingHtml());
@@ -165,23 +172,13 @@
         const lhVar = `--line-height-${r.lh}`;
         const px = val(sizeVar) || "";
         const wt = val(weightVar) || "";
-        // tracking: token name, off-scale literal, or default
-        let lsCss = "normal", lsLabel = "default", lsCopy = "";
+        let lsLabel = "default", lsCopy = "";
         if (typeof r.ls === "string") {
-          lsCss = `var(--letter-spacing-${r.ls})`;
           lsLabel = (val(`--letter-spacing-${r.ls}`) || "") + ` (${r.ls})`;
           lsCopy = `--letter-spacing-${r.ls}`;
         } else if (r.ls && r.ls.px) {
-          lsCss = r.ls.px;
           lsLabel = `${r.ls.px}${r.ls.off ? " · off-scale" : ""}`;
         }
-        const isHeading = group === STYLES.heading;
-        const fontFamily = isHeading
-          ? `var(--font-family-heading,'Open Sans',system-ui,sans-serif)`
-          : `var(--font-family-body,'Open Sans',system-ui,sans-serif)`;
-        const style = `font-family:${fontFamily};`
-          + `font-size:var(${sizeVar});font-weight:var(${weightVar});line-height:var(${lhVar});`
-          + `letter-spacing:${lsCss};${r.caps ? "text-transform:uppercase;" : ""}`;
         const spec = `${px} · weight ${wt} · lh ${val(lhVar)} · tracking ${lsLabel}`;
         const offTag = (r.ls && r.ls.off) ? ` <span class="ltr__tag">off-scale</span>` : "";
         return `
@@ -190,9 +187,9 @@
               <span class="ltr__role-name">${esc(r.label)}</span>
               <span class="ltr__role-spec">${esc(spec)}${offTag}</span>
             </div>
-            <p class="ltr__sample" aria-hidden="true" style="${style}">${esc(r.sample)}</p>
+            <p class="ltr__sample ${esc(r.cls)}" aria-hidden="true">${esc(r.sample)}</p>
             <div class="ltr__role-tokens">
-              ${this._copyBtn(sizeVar)} ${this._copyBtn(weightVar)} ${this._copyBtn(lhVar)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
+              ${this._copyBtn("." + r.cls)} ${this._copyBtn(sizeVar)} ${this._copyBtn(weightVar)} ${this._copyBtn(lhVar)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
             </div>
           </div>`;
       }).join("");
@@ -201,6 +198,37 @@
           <h3 class="ltr__group-title">${esc(group.title)}</h3>
           <p class="ltr__group-note">${esc(group.note)}</p>
           ${rows}
+        </div>`;
+    }
+
+    /* ---- native heading element defaults ---- */
+    _nativeHtml() {
+      const row = (tag, label, spec, cls, sample) => `
+        <div class="ltr__role">
+          <div class="ltr__role-head">
+            <span class="ltr__role-name">${esc(label)}</span>
+            <span class="ltr__role-spec">${esc(spec)}</span>
+          </div>
+          <${tag} class="${esc(cls)}">${esc(sample)}</${tag}>
+          <div class="ltr__role-tokens">${this._copyBtn("." + cls)}</div>
+        </div>`;
+      const demoRow = `
+        <div class="ltr__role">
+          <div class="ltr__role-head">
+            <span class="ltr__role-name">h1 + .loop-heading-h1-large</span>
+            <span class="ltr__role-spec">60px · Bold · lh 1.12 · tracking −3px · class overrides element default</span>
+          </div>
+          <h1 class="loop-heading-h1-large">Transforming Lives</h1>
+          <div class="ltr__role-tokens">${this._copyBtn(".loop-heading-h1-large")}</div>
+        </div>`;
+      return `
+        <div class="ltr__group">
+          <h3 class="ltr__group-title">Native element defaults (h1–h3)</h3>
+          <p class="ltr__group-note">OutSystems Heading widget renders these elements. No ExtendedClass needed for the default role — apply a <code>.loop-heading-*</code> class to override. h4–h6 have no Loop spec.</p>
+          ${row("h1", "h1 element", "H1 · Base default · 48px · Bold · lh 1.12", "loop-heading-h1-base", "Annual Report 2025")}
+          ${row("h2", "h2 element", "H2 · Small default · 32px · Bold · lh 1.12", "loop-heading-h2-small", "Regional Analysis")}
+          ${row("h3", "h3 element", "H3 · Base default · 32px · Bold · lh 1.12", "loop-heading-h3-base", "Key Findings")}
+          ${demoRow}
         </div>`;
     }
 
@@ -366,6 +394,30 @@
 .ltr__copy.is-copied { color: var(--color-text-on-light-state-success, #234f03); }
 .ltr__copy.is-copied::after { content: " ✓"; }
 
+/* Native element defaults — mirrors loop-headings.css for shadow DOM context.
+ * Class selectors (.ltr__heading, .ltr__group-title, .loop-heading-*) have higher
+ * specificity (0,1,0) than these element rules (0,0,1) so they always win. */
+h1 { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-1100); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); color: var(--color-text-on-light-headers, #00263e); margin: 0; }
+h2 { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-800);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); color: var(--color-text-on-light-headers, #00263e); margin: 0; }
+h3 { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-800);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); color: var(--color-text-on-light-headers, #00263e); margin: 0; }
+
+/* Role classes — mirrors tokens/typography-roles.css, redeclared in shadow scope.
+ * CSS custom properties inherit through Shadow DOM so var() resolves from :root. */
+.loop-heading-h1-large { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-1200); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); letter-spacing: var(--letter-spacing-heading); }
+.loop-heading-h1-base  { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-1100); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+.loop-heading-h1-small { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-900);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+.loop-heading-h1-tiny  { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-700);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+.loop-heading-h2-large { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-1100); font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+.loop-heading-h2-small { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-800);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+.loop-heading-h3-base  { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-800);  font-weight: var(--font-weight-bold); line-height: var(--line-height-heading); }
+
+.loop-body-large     { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-600); font-weight: var(--font-weight-regular); line-height: var(--line-height-base); letter-spacing: var(--letter-spacing-tight); }
+.loop-body-medium    { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-500); font-weight: var(--font-weight-regular); line-height: var(--line-height-base); letter-spacing: -0.25px; }
+.loop-body-base      { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-300); font-weight: var(--font-weight-regular); line-height: var(--line-height-base); letter-spacing: var(--letter-spacing-none); }
+.loop-body-small     { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-200); font-weight: var(--font-weight-regular); line-height: var(--line-height-base); letter-spacing: var(--letter-spacing-none); }
+.loop-body-tiny      { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-100); font-weight: var(--font-weight-regular); line-height: var(--line-height-base); letter-spacing: 0.25px; }
+.loop-body-tiny-caps { font-family: var(--font-family-body,'Open Sans',system-ui,sans-serif); font-size: var(--font-size-100); font-weight: var(--font-weight-regular); line-height: var(--line-height-narrow); letter-spacing: var(--letter-spacing-caps); text-transform: uppercase; }
+
 @media (prefers-reduced-motion: reduce) { .ltr__copy { transition: none; } }
 `;
     }
@@ -380,7 +432,7 @@
     document.body.removeChild(ta);
   }
 
-  if (!customElements.get("loop-type-reference")) {
-    customElements.define("loop-type-reference", LoopTypeReference);
+  if (!customElements.get("loop-typography-reference")) {
+    customElements.define("loop-typography-reference", LoopTypographyReference);
   }
 })();

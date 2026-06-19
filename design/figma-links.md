@@ -26,4 +26,22 @@ Tabs - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Libra
 Cards - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=20315-6122&t=M7BBGl3kzV3fhA8T-4
 
 Progress Bar - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=20144-167950&t=M7BBGl3kzV3fhA8T-4
+
+Badge Status [In OutSystemsUI this is Tag, Badge, with more features, might worth starting from scratch]  - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=18153-7159&t=552ENw6IbmnAWVq2-4
+
+Badge Label [In OutSystemsUI this is Tag, Icon Badge, Badge] - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=22966-4806&t=552ENw6IbmnAWVq2-4 
+
+Date picker - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=17897-12293&t=552ENw6IbmnAWVq2-4
+
+Date Range picker - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=19338-21849&t=552ENw6IbmnAWVq2-4
+
+Time PIcker - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=19340-28355&t=552ENw6IbmnAWVq2-4
+
+File Uploader - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=18306-3832&t=552ENw6IbmnAWVq2-4
+
+Search - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=17191-8728&t=552ENw6IbmnAWVq2-4
+
+Select/Dropdown - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=18787-4817&t=552ENw6IbmnAWVq2-4
+
+Card - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=20315-6122&t=552ENw6IbmnAWVq2-4
 > The `outsystems-figma-integration` skill pulls tokens/metadata from these via MCP.

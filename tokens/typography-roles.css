@@ -1,0 +1,115 @@
+/* typography-roles.css
+ * Composite type-role utility classes — one class per Figma named role.
+ * Composes font-size + font-weight + line-height + letter-spacing from the
+ * typography scale tokens. Apply via ExtendedClass in OutSystems.
+ *
+ * Source: Figma node 10995-7259 (Open Sans, FND-002 sign-off).
+ * Off-scale letter-spacing values (-0.25px / 0.25px) are raw literals — no
+ * matching scale token exists; built faithfully (same basis as FND-013/022). */
+
+/* ================================================================
+   Heading roles — Open Sans Bold, line-height-heading (1.12)
+   ================================================================ */
+
+.loop-heading-h1-large {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1200);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+  letter-spacing:   var(--letter-spacing-heading);
+}
+
+.loop-heading-h1-base {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1100);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+.loop-heading-h1-small {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-900);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+.loop-heading-h1-tiny {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-700);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+.loop-heading-h2-large {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1100);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+.loop-heading-h2-small {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-800);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+.loop-heading-h3-base {
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-800);
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-heading);
+}
+
+/* ================================================================
+   Body roles — Open Sans Regular, line-height-base (1.5)
+   ================================================================ */
+
+.loop-body-large {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-600);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-base);
+  letter-spacing:   var(--letter-spacing-tight);
+}
+
+.loop-body-medium {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-500);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-base);
+  letter-spacing:   -0.25px; /* off-scale — no token; pending finding */
+}
+
+.loop-body-base {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-300);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-base);
+  letter-spacing:   var(--letter-spacing-none);
+}
+
+.loop-body-small {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-200);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-base);
+  letter-spacing:   var(--letter-spacing-none);
+}
+
+.loop-body-tiny {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-100);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-base);
+  letter-spacing:   0.25px; /* off-scale — no token; pending finding */
+}
+
+.loop-body-tiny-caps {
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-100);
+  font-weight:      var(--font-weight-regular);
+  line-height:      var(--line-height-narrow);
+  letter-spacing:   var(--letter-spacing-caps);
+  text-transform:   uppercase;
+}

@@ -20,7 +20,7 @@
  * later wins). When pasted into the ODC Theme editor, keep it below OutSystems UI. */
 :root {
   /* ====== Brand ====== (OS $osui-colors-brand) */
-  --color-primary:          var(--color-blue-50);            /* was #1068eb → #0071bc Blue/50 Base */
+  --color-primary:          var(--color-blue-70);            /* was #1068eb → #0071bc Blue/50 Base */
   --color-secondary:        var(--color-wb-brand-dark-blue); /* was #303d60 → #002244 WB dark blue */
   --color-primary-hover:    var(--color-blue-40);            /* was #295fd6 → Loop interactive hover */
   --color-primary-selected: var(--color-blue-10);            /* was rgba(20,110,245,.12) → blue tint */

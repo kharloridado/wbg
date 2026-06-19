@@ -13,6 +13,81 @@ widget's **Extended Class = `btn-text`**.
 | `src/blocks/loop-button-text.css` | Theme CSS (paste below OutSystems UI) |
 | `tokens/*` → `dist/theme.css` | adds `--color-focus-keyboard-on-light` (#b6490c) |
 
+## Code to paste into ODC
+
+> Copy the code below straight into ODC. The canonical source is the repo path in the summary — these blocks are generated from it (`node build/embed-handover-code.mjs`), so re-run after editing the source to keep the ticket in sync.
+
+<details>
+<summary><code>loop-button-text.css</code> → Theme CSS — paste below OutSystems UI</summary>
+
+```css
+/* ============================================
+   Component: Button Text  ("The Loop" — loop/button/text)
+   Figma: "Button Text" [node:15597-4652]
+
+   A link-style text button: no fill, no border, blue-70 label. Distinct from the
+   Button's GHOST variant (which keeps button padding + a light hover fill); Button
+   Text is inline/link-like and gets a dedicated high-contrast ORANGE keyboard-focus
+   ring (Keyboard Focus/On Light #b6490c) instead of the blue ring used elsewhere.
+
+   Approach: RESTYLE the native OutSystems UI Button (.btn) with a `btn-text` modifier
+     — OutSystems UI has no native text/link button style, so this is the one added
+     modifier (apply via the Button widget's Extended Class = "btn-text").
+   Location: Theme CSS (paste below OutSystems UI so it wins).
+   Escalation Level: L2 (native widget + token-driven modifier)
+
+   Tokens: --space-button-gap, --space-xxsmall, --font-family-label, --font-weight-bold,
+     --font-size-300, --letter-spacing-button, --line-height-base,
+     --color-text-on-light-link-primary-enabled, --color-blue-90,
+     --color-bg-link-primary-disabled (Text/On Light/Link/Disabled #8a9db1),
+     --color-focus-keyboard-on-light.
+   ============================================ */
+
+.btn-text {
+  min-height: 44px;                                    /* WCAG 2.2 SC 2.5.8 target size (implementation-level) */
+  height: auto;
+  gap: var(--space-button-gap, 6px);
+  padding: var(--space-xxsmall, 8px);                  /* minimal click padding around the label */
+
+  background-color: transparent;
+  border: 0px;
+  color: var(--color-text-on-light-link-primary-enabled);   /* blue-70 #004370 */
+
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--font-size-300, 16px);
+  line-height: var(--line-height-base, 1.5);
+  letter-spacing: var(--letter-spacing-button, -0.5px);
+  text-decoration: none;
+}
+
+/* Hover/pressed — underline + darken (standard link affordance) */
+.btn-text:hover           { filter: none; text-decoration: underline; }
+.desktop .btn-text:hover  { filter: none; }
+.btn-text:active          { color: var(--color-blue-90); }   /* Blue/90 #012740 (Link Pressed) */
+
+/* Disabled — Text/On Light/Link/Disabled #8a9db1 (neutral-40) */
+.btn-text[disabled],
+.btn-text[aria-disabled="true"] {
+  background-color: transparent;
+  color: var(--color-bg-link-primary-disabled);              /* #8a9db1 */
+  text-decoration: none;
+}
+
+/* Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — The Loop's dedicated high-contrast
+   ORANGE keyboard-focus ring (not the blue used on filled/outlined buttons). */
+.btn-text:focus-visible {
+  outline: 2px solid var(--color-focus-keyboard-on-light, #b6490c);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-text { transition: none; }
+}
+```
+
+</details>
+
 ## What it does
 - No fill, no border; **blue-70** label, Open Sans **700**, tracking **-0.5px**.
 - Hover = underline; pressed = Blue/90; disabled = `#8a9db1`.

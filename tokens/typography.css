@@ -87,5 +87,6 @@
  * fallback covers the moment before :root resolves / if the theme is pasted alone. */
 html, body {
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-body-base, 16px);
   line-height: var(--line-height-base, 1.5);
 }
