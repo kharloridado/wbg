@@ -1,0 +1,98 @@
+/* ============================================
+   Component: Button Group  ("The Loop" — loop/button/group)
+   Also covers: Button Switch (loop/button/switch) — per design review, the
+     Button Switch IS a Button Group (a 2-option segmented group). Same widget,
+     same classes; a switch is just a group with two items.
+   Figma: "Button Group" [node:15597-2978] · "Button Switch" [node:15597-4070]
+
+   Approach: RESTYLE the native OutSystems UI Button Group widget
+     (.button-group / .button-group-item / .button-group-selected-item) — NOT a
+     parallel class system. Devs use the standard OutSystems ButtonGroup widget.
+   Location: Theme CSS (paste below OutSystems UI so it wins).
+   Escalation Level: L1/L2 (native widget + token-driven theme override)
+
+   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_button-group.scss):
+     .button-group-item               → outlined: white bg, 1px border 'primary', text 'primary', radius 0, h40
+     :first-child                     → radius soft 0 0 soft (left rounded)
+     :not(:first-child)               → border-left: none (collapse shared border)
+     :last-child                      → radius 0 soft soft 0 (right rounded)
+     .button-group-selected-item      → bg 'primary', text neutral-0 (filled)
+     [disabled]                       → neutral
+
+   The Loop overrides: pill OUTER corners (32px), square joined INNER corners (0),
+     Open Sans 700 / tracking -0.5, and WB blue-70 outline/text + blue-70 selected fill.
+
+   Tokens: --radius-pill, --space-medium, --font-family-label,
+     --font-weight-bold, --font-size-300, --letter-spacing-button,
+     --color-outline-on-light-link-enabled, --color-text-on-light-link-primary-enabled,
+     --color-bg-link-primary-enabled, --color-white, --color-text-on-light-state-disabled,
+     --color-bg-link-secondary-disabled.
+
+   Fidelity note: selected-item fill is blue-70 (#004370) on white text — passes AA.
+     Non-selected outlined items reuse the secondary button treatment.
+   ============================================ */
+
+/* ---- Item — The Loop identity + outlined (non-selected) look ---- */
+.button-group-item {
+  min-height: 56px;
+  height: auto;
+  padding: var(--space-small, 16px) var(--space-medium, 32px);
+
+  background-color: var(--color-bg-link-secondary-enabled);     /* transparent */
+  border: 1px solid var(--color-outline-on-light-link-enabled); /* blue-70 */
+  color: var(--color-text-on-light-link-primary-enabled);       /* blue-70 */
+
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--font-size-300, 16px);
+  line-height: var(--line-height-base, 1.5);
+  letter-spacing: var(--letter-spacing-button, -0.5px);
+
+  /* middle items: all corners are joined (inner) — square, no radius */
+  border-radius: 0;
+}
+
+/* collapse the shared border (keep native behaviour explicit) */
+.button-group-item:not(:first-child) {
+  border-left: 0px;
+}
+
+/* end caps: outer corners pill (32px), inner corners square (0) */
+.button-group-item:first-child {
+  border-radius: var(--radius-pill, 32px) 0 0 var(--radius-pill, 32px);
+}
+.button-group-item:last-child {
+  border-radius: 0 var(--radius-pill, 32px) var(--radius-pill, 32px) 0;
+}
+/* single item (first === last): fully pill */
+.button-group-item:first-child:last-child {
+  border-radius: var(--radius-pill, 32px);
+}
+
+/* ---- Selected — filled blue-70 (like Primary) ---- */
+.button-group-selected-item,
+.button-group-item.button-group-selected-item {
+  background-color: var(--color-bg-link-primary-enabled);   /* blue-70 */
+  border-color: var(--color-bg-link-primary-enabled);
+  color: var(--color-white, #ffffff);
+}
+
+/* ---- Disabled ---- */
+.button-group-item[disabled],
+.button-group-item[aria-disabled="true"] {
+  background-color: var(--color-bg-link-secondary-disabled);   /* white */
+  border-color: var(--color-text-on-light-state-disabled);     /* neutral-alpha-42 */
+  color: var(--color-text-on-light-state-disabled);
+}
+.button-group-item[disabled].button-group-selected-item {
+  background-color: var(--color-text-on-light-state-disabled);
+  color: var(--color-white, #ffffff);
+}
+
+/* ---- Focus indicator (WCAG 2.2 SC 2.4.7) — brand blue, raised above neighbours ---- */
+.button-group-item:focus-visible {
+  outline: 2px solid var(--color-outline-on-light-link-enabled, var(--color-blue-70));
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}

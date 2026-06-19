@@ -1,0 +1,173 @@
+/* outsystems-ui-overrides.css — make OutSystems UI inherit "The Loop" branding
+ * ----------------------------------------------------------------------------
+ * OutSystems UI (pinned reference: vendor/outsystems-ui @ v2.28.1) declares its
+ * entire color system as :root CSS custom properties in
+ *   src/scss/01-foundations/_root.scss  (compiled from 00-abstract/_setup-color-vars.scss)
+ * and every component resolves color through var(--color-<name>) via the
+ * get-background-color / get-border-color / get-text-color SCSS functions.
+ *
+ * Therefore: redefining those same --color-* variables here — loaded AFTER the
+ * framework base in the build (see tokens/index.css) — retints the whole
+ * OutSystems UI framework to The Loop palette WITHOUT editing framework source
+ * (CLAUDE.md hard rule #1) and WITHOUT hard-coding values (hard rule #3 — every
+ * value points at a Loop primitive in colors.css).
+ *
+ * LEFT  = OutSystems UI v2.28.1 default (the var it ships + its hex, for traceability)
+ * RIGHT = The Loop primitive it now inherits from.
+ *
+ * NOTE on load order in ODC: the framework's _root.scss also emits these on :root,
+ * so this block must win. It does, because it is bundled last (equal specificity →
+ * later wins). When pasted into the ODC Theme editor, keep it below OutSystems UI. */
+:root {
+  /* ====== Brand ====== (OS $osui-colors-brand) */
+  --color-primary:          var(--color-blue-70);            /* was #1068eb → #0071bc Blue/50 Base */
+  --color-secondary:        var(--color-wb-brand-dark-blue); /* was #303d60 → #002244 WB dark blue */
+  --color-primary-hover:    var(--color-blue-40);            /* was #295fd6 → Loop interactive hover */
+  --color-primary-selected: var(--color-blue-10);            /* was rgba(20,110,245,.12) → blue tint */
+  --color-primary-lightest: var(--color-blue-05);            /* was white gradient → #f6fcff */
+
+  /* ====== Focus ====== (OS $osui-colors-focus)
+   * The Loop's interactive "focused" role is Blue/50 (semantic-colors.css
+   * --color-domain-interactive-focused / --color-outline-*-link-focused).
+   * This replaces OutSystems' yellow #ffd337 focus ring with the brand blue.
+   * FINDING (a11y/brand): blue-on-blue focus may reduce focus-ring contrast vs the
+   * high-contrast yellow default — see findings/tickets/FND-012. focus-inner is left
+   * to inherit (it references --color-neutral-10, remapped below). */
+  --color-focus-outer:      var(--color-blue-50);            /* was #ffd337 */
+
+  /* ====== Neutral ramp ====== (OS $osui-colors-neutral '0'..'10', light→dark) */
+  --color-neutral-0:  var(--color-white);       /* #ffffff = #ffffff */
+  --color-neutral-1:  var(--color-neutral-05);  /* #f8f9fa → #f5f7f9 */
+  --color-neutral-2:  var(--color-neutral-10);  /* #f1f3f5 → #e7edf3 */
+  --color-neutral-3:  var(--color-neutral-15);  /* #e9ecef → #dae3eb */
+  --color-neutral-4:  var(--color-neutral-20);  /* #dee2e6 → #d4dee8 */
+  --color-neutral-5:  var(--color-neutral-30);  /* #ced4da → #bdccdb */
+  --color-neutral-6:  var(--color-neutral-40);  /* #adb5bd → #8a9db1 */
+  --color-neutral-7:  var(--color-neutral-50);  /* #6a7178 → #586e84 */
+  --color-neutral-8:  var(--color-neutral-70);  /* #4f575e → #3d4c5c */
+  --color-neutral-9:  var(--color-neutral-80);  /* #272b30 → #252e37 */
+  --color-neutral-10: var(--color-neutral-95);  /* #101213 → #0c0f12 */
+
+  /* ====== Semantic ====== (OS $osui-colors-semantic)
+   * Aligns with the legacy aliases already in semantic-colors.css. */
+  --color-error:         var(--color-red-50);    /* #dc2020 → #da1e28 */
+  --color-error-light:   var(--color-red-10);    /* #fceaea → #fdf2f2 */
+  --color-warning:       var(--color-yellow-50); /* #e9a100 → #e19d00 (no exact Loop warning primitive) */
+  --color-warning-light: var(--color-yellow-03); /* #fdf6e5 → #fef3d7 */
+  --color-success:       var(--color-green-60);  /* #29823b → #388004 */
+  --color-success-light: var(--color-green-03);  /* #eaf3eb → #f6fef0 */
+  --color-info:          var(--color-blue-50);   /* #017aad → #0071bc */
+  --color-info-light:    var(--color-blue-05);   /* #e5f5fc → #f6fcff */
+
+  /* ====== Extended palette ====== (OS $osui-colors-extended, 7 steps each:
+   * lightest / lighter / light / (base) / dark / darker / darkest)
+   * Each OS hue inherits the nearest Loop ramp. Hues with no Loop equivalent
+   * (cyan, lime, grape) borrow the closest Loop accent — noted inline. */
+
+  /* red → Loop red */
+  --color-red-lightest: var(--color-red-10); --color-red-lighter: var(--color-red-20);
+  --color-red-light:    var(--color-red-40); --color-red:         var(--color-red-50);
+  --color-red-dark:     var(--color-red-60); --color-red-darker:  var(--color-red-70);
+  --color-red-darkest:  var(--color-red-90);
+
+  /* orange → Loop accent-orange */
+  --color-orange-lightest: var(--color-accent-orange-10); --color-orange-lighter: var(--color-accent-orange-20);
+  --color-orange-light:    var(--color-accent-orange-40); --color-orange:         var(--color-accent-orange-50);
+  --color-orange-dark:     var(--color-accent-orange-60); --color-orange-darker:  var(--color-accent-orange-70);
+  --color-orange-darkest:  var(--color-accent-orange-90);
+
+  /* yellow → Loop yellow */
+  --color-yellow-lightest: var(--color-yellow-03);         --color-yellow-lighter: var(--color-yellow-10);
+  --color-yellow-light:    var(--color-yellow-on-dark-07); --color-yellow:         var(--color-yellow-50);
+  --color-yellow-dark:     var(--color-yellow-60);         --color-yellow-darker:  var(--color-yellow-base);
+  --color-yellow-darkest:  var(--color-yellow-90);
+
+  /* lime → Loop accent-pale-green (no Loop lime; closest yellow-green accent) */
+  --color-lime-lightest: var(--color-accent-pale-green-10); --color-lime-lighter: var(--color-accent-pale-green-20);
+  --color-lime-light:    var(--color-accent-pale-green-30); --color-lime:         var(--color-accent-pale-green-50);
+  --color-lime-dark:     var(--color-accent-pale-green-60); --color-lime-darker:  var(--color-accent-pale-green-70);
+  --color-lime-darkest:  var(--color-accent-pale-green-90);
+
+  /* green → Loop green */
+  --color-green-lightest: var(--color-green-03);         --color-green-lighter: var(--color-green-30);
+  --color-green-light:    var(--color-green-on-dark-07); --color-green:         var(--color-green-60);
+  --color-green-dark:     var(--color-green-70);         --color-green-darker:  var(--color-green-base);
+  --color-green-darkest:  var(--color-green-07);
+
+  /* teal → Loop accent-teal */
+  --color-teal-lightest: var(--color-accent-teal-10); --color-teal-lighter: var(--color-accent-teal-20);
+  --color-teal-light:    var(--color-accent-teal-30); --color-teal:         var(--color-accent-teal-50);
+  --color-teal-dark:     var(--color-accent-teal-60); --color-teal-darker:  var(--color-accent-teal-70);
+  --color-teal-darkest:  var(--color-accent-teal-90);
+
+  /* cyan → Loop accent-teal (no Loop cyan; teal is closest) */
+  --color-cyan-lightest: var(--color-accent-teal-10); --color-cyan-lighter: var(--color-accent-teal-20);
+  --color-cyan-light:    var(--color-accent-teal-30); --color-cyan:         var(--color-accent-teal-40);
+  --color-cyan-dark:     var(--color-accent-teal-60); --color-cyan-darker:  var(--color-accent-teal-70);
+  --color-cyan-darkest:  var(--color-accent-teal-90);
+
+  /* blue → Loop blue */
+  --color-blue-lightest: var(--color-blue-05); --color-blue-lighter: var(--color-blue-20);
+  --color-blue-light:    var(--color-blue-40); --color-blue:         var(--color-blue-50);
+  --color-blue-dark:     var(--color-blue-60); --color-blue-darker:  var(--color-blue-70);
+  --color-blue-darkest:  var(--color-blue-90);
+
+  /* indigo → Loop accent-indigo */
+  --color-indigo-lightest: var(--color-accent-indigo-10); --color-indigo-lighter: var(--color-accent-indigo-20);
+  --color-indigo-light:    var(--color-accent-indigo-40); --color-indigo:         var(--color-accent-indigo-70);
+  --color-indigo-dark:     var(--color-accent-indigo-80); --color-indigo-darker:  var(--color-accent-indigo-90);
+  --color-indigo-darkest:  var(--color-accent-indigo-90);
+
+  /* violet → Loop purple */
+  --color-violet-lightest: var(--color-purple-10); --color-violet-lighter: var(--color-purple-20);
+  --color-violet-light:    var(--color-purple-40); --color-violet:         var(--color-purple-50);
+  --color-violet-dark:     var(--color-purple-60); --color-violet-darker:  var(--color-purple-70);
+  --color-violet-darkest:  var(--color-purple-90);
+
+  /* grape → Loop purple (no Loop grape; purple is closest) */
+  --color-grape-lightest: var(--color-purple-10); --color-grape-lighter: var(--color-purple-20);
+  --color-grape-light:    var(--color-purple-30); --color-grape:         var(--color-purple-60);
+  --color-grape-dark:     var(--color-purple-70); --color-grape-darker:  var(--color-purple-80);
+  --color-grape-darkest:  var(--color-purple-90);
+
+  /* pink → Loop accent-magenta */
+  --color-pink-lightest: var(--color-accent-magenta-10); --color-pink-lighter: var(--color-accent-magenta-20);
+  --color-pink-light:    var(--color-accent-magenta-30); --color-pink:         var(--color-accent-magenta-50);
+  --color-pink-dark:     var(--color-accent-magenta-60); --color-pink-darker:  var(--color-accent-magenta-70);
+  --color-pink-darkest:  var(--color-accent-magenta-90);
+
+  /* ====== App backgrounds / overlay ====== */
+  --color-background-body:  var(--color-neutral-05);          /* was #f3f6f8 → #f5f7f9 (Loop page bg) */
+  --color-background-login: var(--color-white);               /* was #ffffff = #ffffff */
+  --overlay-background:     var(--color-gray-alpha-black-24); /* was rgba(0,0,0,.25) → #0000003d */
+  /* --header-color intentionally NOT overridden — left at OutSystems default (#ffffff)
+   * until The Loop specifies a header/chrome color. */
+
+  /* ====== Spacing ====== (OS $osui-sizes → --space-<type>, compiled in _root.scss)
+   * The Loop's scale (spacing.css) uses descriptive names but the SAME 4pt values,
+   * so this is a no-visual-change remap that makes OutSystems' spacing a single
+   * source of truth on The Loop tokens (edit Loop → framework follows). */
+  --space-none: 0;                      /* 0      = 0      */
+  --space-xs:   var(--space-tiny);     /* 4px    = 4px    */
+  --space-s:    var(--space-xxsmall);  /* 8px    = 8px    */
+  --space-base: var(--space-small);    /* 16px   = 16px   */
+  --space-m:    var(--space-regular);  /* 24px   = 24px   */
+  --space-l:    var(--space-medium);   /* 32px   = 32px   */
+  --space-xl:   var(--space-large);    /* 40px   = 40px   */
+  --space-xxl:  var(--space-xlarge);   /* 48px   = 48px   */
+
+  /* ====== Border radius ====== (OS $osui-border-radius-types → --border-radius-<type>)
+   * Only 'soft' has a Loop brand equivalent (radius.css --radius-base 4px). 'rounded'
+   * (100px pill) and 'circle' (100%) are structural, not brand → left at OS defaults. */
+  --border-radius-soft: var(--radius-base);  /* 4px = 4px (Loop radius-base) */
+
+  /* ====== Shadow / elevation ====== (OS $osui-shadow-types → --shadow-<type>)
+   * Mapped by elevation rank to The Loop's lift elevation scale (shadows.css), which
+   * carries the brand shadow color (#21262d29) and spread — so framework elevation
+   * now reads as Loop elevation. --shadow-none stays 'none'. */
+  --shadow-xs: var(--shadow-lowest);   /* → 0 0 8px   (Loop lowest)  */
+  --shadow-s:  var(--shadow-low);      /* → 0 2px 8px (Loop low)     */
+  --shadow-m:  var(--shadow-regular);  /* → 0 4px 12px (Loop regular) */
+  --shadow-l:  var(--shadow-medium);   /* → 0 8px 20px (Loop medium)  */
+  --shadow-xl: var(--shadow-high);     /* → 0 5px 32px (Loop high)    */
+}

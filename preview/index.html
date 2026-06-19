@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Loop — Component Preview</title>
+
+<!--
+  LOAD ORDER mirrors ODC: native OutSystems UI baseline → brand theme tokens →
+  handover overrides (which are pasted into Theme CSS, below OutSystems UI).
+  Equal-specificity .btn rules resolve by source order, so the overrides MUST come
+  after the baseline to win.
+-->
+
+<!-- 1) Minimal native OutSystems UI baseline.
+        The override files only RESTYLE OutSystems UI's native .btn / .button-group;
+        they assume the framework base (display, border-width, box-sizing, cursor,
+        transition) already exists. ODC provides it — locally we stub just enough.
+        This is framework scaffold, NOT design. -->
+<style>
+  :root { color-scheme: light; }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* --- native .btn baseline (mirrors OutSystems UI _btn.scss essentials) --- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .btn[disabled], .btn[aria-disabled="true"] { cursor: not-allowed; }
+
+  /* --- native .button-group baseline (mirrors _button-group.scss essentials) --- */
+  .button-group { display: inline-flex; }
+  .button-group-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .button-group-item[disabled] { cursor: not-allowed; }
+
+  /* --- native [data-checkbox] baseline (mirrors OS UI _checkbox.scss essentials) ---
+       The Loop override builds its own ::before box on top of this stripped input. */
+  [data-checkbox] {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+  }
+  [data-checkbox]::before { display: block; }
+  [data-checkbox]::after  { position: absolute; display: block; }
+
+  /* --- native .radio-button baseline (mirrors OS UI _radio-button.scss essentials) ---
+       The Loop override rebuilds the ring+dot via ::before/::after. */
+  .radio-button {
+    appearance: none;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .radio-button:before, .radio-button:after { position: absolute; display: block; }
+  [data-radio-button] {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* --- native [data-switch] baseline (mirrors OS UI _switch.scss essentials) ---
+       OutSystems UI strips the native checkbox and draws the track (:before) +
+       thumb (:after). The Loop override is self-contained and restates these, but
+       the stub keeps the preview honest about the native foundation. */
+  [data-switch] {
+    appearance: none;
+    position: relative;
+    cursor: pointer;
+  }
+  [data-switch]:before,
+  [data-switch]:after { content: ""; position: absolute; display: block; }
+
+  /* --- native .form-control[data-input] baseline (mirrors OS UI _inputs.scss) ---
+       Height, reset, and transition so The Loop tokens land on an honest foundation. */
+  .form-control[data-input],
+  .form-control[data-textarea] {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: border-color 180ms ease, background-color 180ms ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-control[data-textarea] { resize: vertical; min-height: 80px; }
+
+  /* --- native Dropdown pattern baseline (mirrors OS UI _dropdown.scss) --- */
+  .dropdown-container { position: relative; }
+  .dropdown-container > .dropdown-display {
+    display: flex; align-items: center; width: 100%; height: 40px;
+    padding: 0 12px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
+    cursor: pointer; transition: border-color 180ms ease, background-color 180ms ease;
+  }
+  .dropdown-display-content { width: 100%; overflow: hidden; }
+  .dropdown-display-content > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dropdown-list { background: #fff; border: 1px solid #ccc; }
+  .dropdown-popup-row { display: flex; align-items: center; height: 40px; padding: 0 12px; cursor: pointer; }
+  .dropdown-popup-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* preview-only: let the open list flow statically instead of JS-positioned absolute */
+  .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: 4px; }
+
+  /* --- native VirtualSelect baseline (mirrors provider DOM: .vscomp-*) --- */
+  .vscomp-ele-wrapper { display: flex; align-items: center; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
+  .vscomp-toggle-button { display: flex; align-items: center; width: 100%; }
+  .vscomp-value { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; }
+  .vscomp-arrow { width: 8px; height: 8px; flex-shrink: 0; border-right: 1.5px solid #888; border-bottom: 1.5px solid #888; transform: rotate(45deg); }
+  .vscomp-value-tag { display: inline-flex; align-items: center; }
+  .vscomp-value-tag-clear-button { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .vscomp-value-tag-clear-button .vscomp-clear-icon,
+  .vscomp-clear-icon { display: block; width: 10px; height: 10px; -webkit-mask: var(--pv-x) center/contain no-repeat; mask: var(--pv-x) center/contain no-repeat; }
+  :root { --pv-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
+</style>
+
+<!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
+<link rel="stylesheet" href="../dist/theme.css">
+
+<!-- 3) The actual handover override CSS (pasted into Theme CSS, below OutSystems UI). -->
+<link rel="stylesheet" href="../src/blocks/loop-headings.css">
+<link rel="stylesheet" href="../src/blocks/loop-button.css">
+<link rel="stylesheet" href="../src/blocks/loop-button-text.css">
+<link rel="stylesheet" href="../src/blocks/loop-button-group.css">
+<link rel="stylesheet" href="../src/blocks/loop-checkbox.css">
+<link rel="stylesheet" href="../src/blocks/loop-radio-button.css">
+<link rel="stylesheet" href="../src/blocks/loop-text-field.css">
+<link rel="stylesheet" href="../src/blocks/loop-dropdown.css">
+<link rel="stylesheet" href="../src/blocks/loop-switch.css">
+
+<!-- 4) Preview page chrome. NOT part of the design system, but still authored to
+        The Loop brand: tokens only (no ad-hoc hex / raw px), brand elevation,
+        radius, type scale + tracking — and classes only (no inline style attrs in
+        the body). The single hardcoded exceptions are the native OutSystems UI
+        baseline above and ui-monospace for code samples (no brand mono token). -->
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-base);
+    color: var(--color-text-on-light-default);
+    background: var(--color-bg-page-default);
+  }
+
+  /* --- page header --- */
+  .pv-header {
+    padding: var(--space-regular) var(--space-medium);
+    background: var(--color-bg-link-primary-enabled);
+    color: var(--color-white);
+  }
+  .pv-header h1 { margin: 0 0 var(--space-tiny); font-size: var(--font-size-600); font-weight: var(--font-weight-bold); }
+  .pv-header p  { margin: 0; opacity: .85; font-size: var(--font-size-body-small); }
+
+  /* --- layout --- */
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-medium); }
+  section {
+    background: var(--color-bg-container-on-light-lowest);
+    border-radius: var(--radius-medium);
+    padding: var(--space-regular);
+    margin-bottom: var(--space-regular);
+    box-shadow: var(--shadow-low);
+  }
+  section > h2 {
+    margin: 0 0 var(--space-tiny);
+    font-size: var(--font-size-400);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-on-light-headers);
+  }
+  section > .pv-figma { margin: 0 0 var(--space-regular); font-size: var(--font-size-100); color: var(--color-text-on-light-subdued); }
+
+  /* --- component demo rows --- */
+  .pv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-small) var(--space-regular);
+    padding: var(--space-small) 0;
+    border-top: 1px solid var(--color-divider-on-light-default);
+  }
+  .pv-row:first-of-type { border-top: 0; }
+  .pv-row--stack   { flex-direction: column; align-items: stretch; gap: var(--space-xsmall); }
+  .pv-row--end     { align-items: flex-end; }
+  .pv-row--narrow  { max-width: 400px; }
+  .pv-row--measure { max-width: 520px; }
+
+  .pv-label {
+    flex: 0 0 130px;
+    font-size: var(--font-size-100);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    color: var(--color-text-on-light-subdued);
+  }
+  .pv-label--block { flex-basis: auto; margin-bottom: var(--space-xxsmall); }
+  .pv-label--full  { flex-basis: 100%; }
+  .pv-label--wide  { flex-basis: 80px; }
+
+  .pv-note { font-size: var(--font-size-100); color: var(--color-neutral-40); flex-basis: 100%; }
+  .pv-note--spaced { margin: var(--space-small) 0; }
+  .pv-log {
+    flex-basis: 100%;
+    font-family: ui-monospace, monospace;
+    font-size: var(--font-size-100);
+    color: var(--color-blue-70);
+    min-height: 16px;
+  }
+
+  /* --- inline-arrangement helpers (replace ad-hoc inline flex) --- */
+  .pv-inline-set { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-small); }
+  .pv-field { flex: 1; min-width: 160px; }
+  .pv-field--full { width: 100%; }
+  .pv-radio-label { margin-left: var(--space-xxsmall); }
+  .pv-radio-label--tight { margin-left: var(--space-tiny); }
+  .pv-caption { font-size: var(--font-size-100); color: var(--color-text-on-light-subdued); }
+
+  /* --- typography role rows --- */
+  .pv-type-group { margin: 0 0 var(--space-regular); }
+  .pv-type-group-title {
+    margin: 0 0 var(--space-xtiny);
+    font-size: var(--font-size-100);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+    color: var(--color-text-on-light-subdued);
+  }
+  .pv-type-group-note { margin: 0 0 var(--space-xsmall); font-size: var(--font-size-100); color: var(--color-neutral-40); }
+  .pv-type-row {
+    padding: var(--space-small) 0;
+    border-top: 1px solid var(--color-divider-on-light-default);
+  }
+  .pv-type-row h1, .pv-type-row h2, .pv-type-row h3 { margin: 0; }
+  .pv-type-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-tiny) var(--space-xsmall);
+    margin-bottom: var(--space-xxsmall);
+  }
+  .pv-type-name {
+    flex: 0 0 140px;
+    font-size: var(--font-size-100);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-on-light-subdued);
+  }
+  .pv-chip {
+    font-family: ui-monospace, monospace;
+    font-size: var(--font-size-100);
+    color: var(--color-blue-70);
+    background: var(--color-bg-container-on-light-regular);
+    padding: var(--space-xtiny) var(--space-xxsmall);
+    border-radius: var(--radius-base);
+  }
+  .pv-type-spec { font-size: var(--font-size-100); color: var(--color-neutral-40); font-family: ui-monospace, monospace; }
+  .pv-type-sample { margin: 0; color: var(--color-text-on-light-headers); }
+  .pv-off-scale {
+    font-size: var(--font-size-100); font-weight: var(--font-weight-bold);
+    text-transform: uppercase; letter-spacing: var(--letter-spacing-caps);
+    color: var(--color-yellow-90); background: var(--color-yellow-03);
+    padding: var(--space-xtiny) var(--space-tiny); border-radius: var(--radius-pill);
+  }
+
+  /* --- color-utility swatch chrome --- */
+  .pv-swatch { padding: var(--space-tiny) var(--space-xsmall); border-radius: var(--radius-base); }
+
+  /* --- tooltip demo scaffold (static positioning; OS UI JS does it at runtime) --- */
+  .pv-tt-grid { display: flex; flex-wrap: wrap; gap: var(--space-large); align-items: flex-start; padding: var(--space-regular) 0; }
+  .pv-tt-col  { display: flex; flex-direction: column; align-items: center; gap: var(--space-xxsmall); }
+  .pv-tt-col--row { flex-direction: row; }
+  .pv-tt-anchor { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+  .pv-tt-anchor--top { flex-direction: column-reverse; }
+  .pv-tt-anchor--row { flex-direction: row; }
+  .pv-tt-trigger {
+    padding: var(--space-tiny) var(--space-xxsmall);
+    background: var(--color-bg-container-on-light-regular);
+    border-radius: var(--radius-base);
+    font-size: var(--font-size-body-small);
+    cursor: default;
+  }
+  .pv-tt-balloon { position: relative; }
+  .pv-tt-balloon--below { margin-top: var(--space-tiny); }
+  .pv-tt-balloon--above { margin-bottom: var(--space-tiny); }
+  .pv-tt-balloon--side  { margin-left: var(--space-tiny); display: flex; flex-direction: row; align-items: center; }
+  .pv-tt-arrow--up   { left: var(--space-regular); top: calc(var(--space-tiny) * -1); }
+  .pv-tt-arrow--down { left: var(--space-regular); bottom: calc(var(--space-tiny) * -1); }
+  .pv-tt-arrow--side { left: calc(var(--space-tiny) * -1); top: 50%; transform: translateY(-50%); }
+
+  /* --- popover demo scaffold --- */
+  .pv-pop-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
+  .pv-pop-row { display: flex; flex-direction: row; align-items: center; gap: var(--space-xxsmall); }
+  .pv-pop-grid { align-items: flex-start; gap: var(--space-medium); flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<header class="pv-header">
+  <h1>The Loop — Local Component Preview</h1>
+  <p>Real theme tokens (dist/theme.css) + the actual handover CSS/JS, on the native OutSystems UI baseline. Validate fidelity before importing into ODC.</p>
+</header>
+
+<main>
+
+  <!-- ============ TYPOGRAPHY ============ -->
+  <section>
+    <h2>Typography</h2>
+    <p class="pv-figma">tokens/typography-roles.css · Figma node 10995-7259 · Open Sans (FND-002 signed off) · apply via ExtendedClass</p>
+
+    <div class="pv-type-group">
+      <p class="pv-type-group-title">Heading styles</p>
+      <p class="pv-type-group-note">Open Sans Bold · line-height 1.12. H1 Base / H2 Large share 48px; H2 Small / H3 Base share 32px — same visual size, different semantic level.</p>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H1 · Large</span>
+          <code class="pv-chip">.loop-heading-h1-large</code>
+          <span class="pv-type-spec">60px · Bold · lh 1.12 · tracking −3px</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h1-large">Transforming Lives</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H1 · Base</span>
+          <code class="pv-chip">.loop-heading-h1-base</code>
+          <span class="pv-type-spec">48px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h1-base">Annual Report 2025</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H1 · Small</span>
+          <code class="pv-chip">.loop-heading-h1-small</code>
+          <span class="pv-type-spec">36px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h1-small">Country Portfolio Summary</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H1 · Tiny</span>
+          <code class="pv-chip">.loop-heading-h1-tiny</code>
+          <span class="pv-type-spec">28px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h1-tiny">Project Overview</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H2 · Large</span>
+          <code class="pv-chip">.loop-heading-h2-large</code>
+          <span class="pv-type-spec">48px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h2-large">Strategic Priorities</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H2 · Small</span>
+          <code class="pv-chip">.loop-heading-h2-small</code>
+          <span class="pv-type-spec">32px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h2-small">Regional Analysis</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">H3 · Base</span>
+          <code class="pv-chip">.loop-heading-h3-base</code>
+          <span class="pv-type-spec">32px · Bold · lh 1.12</span>
+        </div>
+        <p class="pv-type-sample loop-heading-h3-base">Key Findings</p>
+      </div>
+    </div>
+
+    <div class="pv-type-group">
+      <p class="pv-type-group-title">Body styles</p>
+      <p class="pv-type-group-note">Open Sans Regular · line-height 1.5. Body Tiny Caps uses narrow lh (1.25).</p>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Large</span>
+          <code class="pv-chip">.loop-body-large</code>
+          <span class="pv-type-spec">24px · Regular · lh 1.5 · tracking −0.35px</span>
+        </div>
+        <p class="pv-type-sample loop-body-large">The World Bank Group is a unique global partnership of five institutions working for sustainable solutions that reduce poverty and build shared prosperity in developing countries.</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Medium</span>
+          <code class="pv-chip">.loop-body-medium</code>
+          <span class="pv-type-spec">20px · Regular · lh 1.5 · tracking −0.25px <span class="pv-off-scale">off-scale</span></span>
+        </div>
+        <p class="pv-type-sample loop-body-medium">This section summarises portfolio performance for the current fiscal year, covering active projects across all six operational regions.</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Base</span>
+          <code class="pv-chip">.loop-body-base</code>
+          <span class="pv-type-spec">16px · Regular · lh 1.5 · tracking 0</span>
+        </div>
+        <p class="pv-type-sample loop-body-base">Projects are evaluated against four pillars of sustainable development: economic growth, social inclusion, environmental sustainability, and effective governance.</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Small</span>
+          <code class="pv-chip">.loop-body-small</code>
+          <span class="pv-type-spec">14px · Regular · lh 1.5 · tracking 0</span>
+        </div>
+        <p class="pv-type-sample loop-body-small">For more information on project eligibility criteria, please refer to the operational guidelines section of this document.</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Tiny</span>
+          <code class="pv-chip">.loop-body-tiny</code>
+          <span class="pv-type-spec">12px · Regular · lh 1.5 · tracking +0.25px <span class="pv-off-scale">off-scale</span></span>
+        </div>
+        <p class="pv-type-sample loop-body-tiny">Source: World Bank Group Annual Report 2025. All figures are in USD millions unless otherwise stated.</p>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">Body · Tiny · Caps</span>
+          <code class="pv-chip">.loop-body-tiny-caps</code>
+          <span class="pv-type-spec">12px · Regular · lh 1.25 · all-caps tracking</span>
+        </div>
+        <p class="pv-type-sample loop-body-tiny-caps">World Bank Group · Annual Report · Fiscal Year 2025</p>
+      </div>
+    </div>
+
+    <div class="pv-type-group">
+      <p class="pv-type-group-title">Native element defaults (h1–h3)</p>
+      <p class="pv-type-group-note">OutSystems Heading widget renders these elements. No ExtendedClass needed for the default role. h4–h6 have no Loop spec — left at OutSystems UI defaults.</p>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">h1 element</span>
+          <code class="pv-chip">H1 · Base default</code>
+          <span class="pv-type-spec">48px · Bold · lh 1.12</span>
+        </div>
+        <h1>Annual Report 2025</h1>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">h2 element</span>
+          <code class="pv-chip">H2 · Small default</code>
+          <span class="pv-type-spec">32px · Bold · lh 1.12</span>
+        </div>
+        <h2>Regional Analysis</h2>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">h3 element</span>
+          <code class="pv-chip">H3 · Base default</code>
+          <span class="pv-type-spec">32px · Bold · lh 1.12</span>
+        </div>
+        <h3>Key Findings</h3>
+      </div>
+
+      <div class="pv-type-row">
+        <div class="pv-type-meta">
+          <span class="pv-type-name">h1 + class</span>
+          <code class="pv-chip">.loop-heading-h1-large</code>
+          <span class="pv-type-spec">60px · Bold · lh 1.12 · tracking −3px · class overrides element default</span>
+        </div>
+        <h1 class="loop-heading-h1-large">Transforming Lives</h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON ============ -->
+  <section>
+    <h2>Button — restyle native <code>.btn</code></h2>
+    <p class="pv-figma">handover/loop-button.md · Figma node 15597-766</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Secondary</span>
+      <button class="btn">Button</button>
+      <button class="btn btn-large">Large</button>
+      <button class="btn is-regular">Regular</button>
+      <button class="btn btn-small">Small</button>
+      <button class="btn" disabled>Disabled</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Primary</span>
+      <button class="btn btn-primary">Button</button>
+      <button class="btn btn-primary btn-large">Large</button>
+      <button class="btn btn-primary is-regular">Regular</button>
+      <button class="btn btn-primary btn-small">Small</button>
+      <button class="btn btn-primary" disabled>Disabled</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Ghost / Tertiary</span>
+      <button class="btn btn-ghost">Button</button>
+      <button class="btn btn-ghost btn-large">Large</button>
+      <button class="btn btn-ghost is-regular">Regular</button>
+      <button class="btn btn-ghost btn-small">Small</button>
+      <button class="btn btn-ghost" disabled>Disabled</button>
+      <span class="pv-note">Ghost = <code>Extended Class = "btn-ghost"</code> (the one added modifier).</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">With icon</span>
+      <button class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Add item
+      </button>
+      <span class="pv-note">Icon gap 6px (FND-013).</span>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON TEXT ============ -->
+  <section>
+    <h2>Button Text — native <code>.btn</code> + <code>btn-text</code></h2>
+    <p class="pv-figma">handover/loop-button-text.md · Figma node 15597-4652</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Text button</span>
+      <button class="btn btn-text">Learn more</button>
+      <button class="btn btn-text" disabled>Disabled</button>
+      <span class="pv-note">Tab to it: focus ring is the dedicated high-contrast ORANGE (#b6490c), not blue — FND-015.</span>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON GROUP / SWITCH ============ -->
+  <section>
+    <h2>Button Group &amp; Switch — restyle native <code>.button-group</code></h2>
+    <p class="pv-figma">handover/loop-button-group.md · Figma nodes 15597-2978 / 15597-4070</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Group (3)</span>
+      <div class="button-group" role="group" aria-label="View">
+        <button class="button-group-item">Day</button>
+        <button class="button-group-item button-group-selected-item">Week</button>
+        <button class="button-group-item">Month</button>
+      </div>
+      <span class="pv-note">Pill outer end-caps (32px), 2px joined inner corners.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Switch (2)</span>
+      <div class="button-group" role="group" aria-label="Mode">
+        <button class="button-group-item button-group-selected-item">On</button>
+        <button class="button-group-item">Off</button>
+      </div>
+      <span class="pv-note">A Switch is just a 2-item group.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Single</span>
+      <div class="button-group">
+        <button class="button-group-item">Only</button>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <div class="button-group" role="group" aria-label="Disabled">
+        <button class="button-group-item" disabled>Day</button>
+        <button class="button-group-item button-group-selected-item" disabled>Week</button>
+        <button class="button-group-item" disabled>Month</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUTTON DROPDOWN ============ -->
+  <section>
+    <h2>Button Dropdown — custom Web Component</h2>
+    <p class="pv-figma">handover/loop-button-dropdown.md · Figma node 15597-3469</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Primary</span>
+      <loop-button-dropdown
+        label="Actions"
+        variant="primary"
+        options='[{"value":"edit","label":"Edit"},{"value":"dup","label":"Duplicate"},{"value":"del","label":"Delete"}]'>
+      </loop-button-dropdown>
+
+      <span class="pv-label pv-label--wide">Secondary</span>
+      <loop-button-dropdown
+        label="More"
+        variant="secondary"
+        options='[{"value":"share","label":"Share"},{"value":"export","label":"Export"}]'>
+      </loop-button-dropdown>
+
+      <loop-button-dropdown label="Disabled" disabled
+        options='[{"value":"x","label":"Nope"}]'></loop-button-dropdown>
+
+      <p class="pv-note">Keyboard: focus trigger → Enter/Space/↓ opens · ↑/↓/Home/End navigate · Esc closes &amp; returns focus · click-outside closes.</p>
+      <p class="pv-log" id="lbd-log">last event: —</p>
+    </div>
+  </section>
+
+
+  <!-- ============ CHECKBOX ============ -->
+  <section>
+    <h2>Checkbox — restyle native <code>[data-checkbox]</code></h2>
+    <p class="pv-figma">handover/loop-checkbox.md · Figma node 19336-17679</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Unchecked</span>
+      <input type="checkbox" data-checkbox aria-label="Unchecked">
+      <input type="checkbox" data-checkbox aria-label="Unchecked hover">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Checked</span>
+      <input type="checkbox" data-checkbox checked aria-label="Checked">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Indeterminate</span>
+      <input type="checkbox" data-checkbox id="cb-indet" aria-label="Indeterminate">
+      <span class="pv-note">Indeterminate set via JS below.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <input type="checkbox" data-checkbox disabled aria-label="Disabled unchecked">
+      <input type="checkbox" data-checkbox disabled checked aria-label="Disabled checked">
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Error</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox--error" aria-invalid="true" aria-label="Error unchecked">
+      <input type="checkbox" data-checkbox class="loop-checkbox--error" checked aria-invalid="true" aria-label="Error checked">
+      <span class="pv-note">FND-016: unchecked border #00396b3d ≈ 1.45:1 vs white (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+  </section>
+
+  <!-- ============ RADIO BUTTON ============ -->
+  <section>
+    <h2>Radio Button — restyle native <code>.radio-button</code></h2>
+    <p class="pv-figma">Figma node 19336-18637</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Group (vertical)</span>
+      <div data-radio-group role="radiogroup" aria-label="Vertical group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1a" aria-label="Option A">
+          <label for="r1a">Option A</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1b" checked aria-label="Option B">
+          <label for="r1b">Option B (checked)</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rg1" id="r1c" aria-label="Option C">
+          <label for="r1c">Option C</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <div class="pv-inline-set">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rgsz" id="rsz-xl" aria-label="XLarge">
+          <label for="rsz-xl" class="pv-radio-label">XLarge (28px)</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button loop-radio-large" name="rgsz" id="rsz-l" aria-label="Large">
+          <label for="rsz-l" class="pv-radio-label">Large (24px)</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button loop-radio-regular" name="rgsz" id="rsz-r" aria-label="Regular">
+          <label for="rsz-r" class="pv-radio-label--tight">Regular (20px)</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button loop-radio-small" name="rgsz" id="rsz-s" aria-label="Small">
+          <label for="rsz-s" class="pv-radio-label--tight">Small (16px)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <div data-radio-group role="radiogroup" aria-label="Disabled group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rgd" id="rd1" disabled aria-label="Disabled unchecked">
+          <label for="rd1">Disabled</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rgd" id="rd2" disabled checked aria-label="Disabled checked">
+          <label for="rd2">Disabled (checked)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Error / Required</span>
+      <div data-radio-group class="not-valid" role="radiogroup" aria-label="Error group">
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rge" id="re1" aria-label="Error option A">
+          <label for="re1">Error option A</label>
+        </div>
+        <div data-radio-button>
+          <input type="radio" class="radio-button" name="rge" id="re2" checked aria-label="Error option B">
+          <label for="re2">Error option B (checked)</label>
+        </div>
+      </div>
+      <span class="pv-note">FND-023: required/error state communicated by color only (red ring, no icon) — logged, not re-designed.</span>
+    </div>
+  </section>
+
+  <!-- ============ TEXT FIELD ============ -->
+  <section>
+    <h2>Text Field — restyle native <code>.form-control[data-input]</code></h2>
+    <p class="pv-figma">handover/loop-text-field.md · Figma node 19336-9606</p>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Default (xLarge — 56px)</span>
+      <div class="loop-field">
+        <label data-label for="tf-default">Label</label>
+        <input class="form-control" data-input id="tf-default" type="text" placeholder="Placeholder text">
+        <span class="loop-field__helper">Helper text</span>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes</span>
+      <div class="loop-field pv-field">
+        <label data-label for="tf-xl">xLarge (56px)</label>
+        <input class="form-control" data-input id="tf-xl" type="text" placeholder="xLarge">
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="tf-l">Large (48px)</label>
+        <input class="form-control input-large" data-input id="tf-l" type="text" placeholder="Large">
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="tf-r">Regular (40px)</label>
+        <input class="form-control is-regular" data-input id="tf-r" type="text" placeholder="Regular">
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="tf-s">Small (32px)</label>
+        <input class="form-control input-small" data-input id="tf-s" type="text" placeholder="Small">
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">States</span>
+      <div class="loop-field">
+        <label data-label class="mandatory" for="tf-req">Required</label>
+        <input class="form-control" data-input id="tf-req" type="text" placeholder="Required field">
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-err">Error</label>
+        <input class="form-control not-valid" data-input id="tf-err" type="text" value="Bad input">
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-warn">Warning</label>
+        <input class="form-control is-warning" data-input id="tf-warn" type="text" value="Caution value">
+        <span class="loop-field__helper loop-field__helper--warning">Warning message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-dis">Disabled</label>
+        <input class="form-control" data-input id="tf-dis" type="text" placeholder="Disabled" disabled>
+        <span class="loop-field__helper loop-field__helper--disabled">Cannot edit</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-ro">Read-Only</label>
+        <input class="form-control is-read-only" data-input id="tf-ro" type="text" value="Read only value" readonly>
+      </div>
+      <span class="pv-note">FND-019: resting border #00396b3d ≈ 1.45:1 (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+
+    <div class="pv-row pv-row--narrow">
+      <span class="pv-label">Textarea</span>
+      <div class="loop-field pv-field--full">
+        <label data-label for="tf-ta">Multiline</label>
+        <textarea class="form-control" data-textarea id="tf-ta" placeholder="Type here…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DROPDOWN / SELECT ============ -->
+  <section>
+    <h2>Dropdown / Select — restyle native <code>.dropdown</code> + VirtualSelect <code>.vscomp-*</code></h2>
+    <p class="pv-figma">handover/loop-dropdown.md · Figma nodes 18787-4817 (Select) · 18830-17312 (Multiselect)</p>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Select — states (closed)</span>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-def">Filled</label>
+        <div class="dropdown-container dropdown" id="dd-def">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Patricia Wesley</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-ph">Placeholder</label>
+        <div class="dropdown-container dropdown is-placeholder" id="dd-ph">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-err">Error</label>
+        <div class="dropdown-container dropdown not-valid" id="dd-err">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-warn">Warning</label>
+        <div class="dropdown-container dropdown is-warning" id="dd-warn">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+        <span class="loop-field__helper loop-field__helper--warning">Warning message here</span>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-dis">Disabled</label>
+        <div class="dropdown-container dropdown" id="dd-dis">
+          <div class="dropdown-display dropdown-disabled" tabindex="-1"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Select — open</span>
+      <div class="loop-field loop-field--select pv-dd-static">
+        <label data-label for="dd-open">Select Option</label>
+        <div class="dropdown-container dropdown dropdown-expanded dropdown-expanded-down" id="dd-open">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Bridget Hernandez</span></div></div>
+          <div class="dropdown-list">
+            <div class="scrollable-list scrollable-list-with-scroll">
+              <div class="dropdown-popup-row dropdown-popup-row-selected" tabindex="0"><span>Bridget Hernandez</span></div>
+              <div class="dropdown-popup-row"><span>Bruno Auster</span></div>
+              <div class="dropdown-popup-row"><span>Camila Stevenson</span></div>
+              <div class="dropdown-popup-row"><span>Carl Vedder</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Multi-select — tag chips (<code>.osui-dropdown-tags</code>)</span>
+      <div class="loop-field">
+        <label data-label for="dd-tags">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags">
+          <div class="vscomp-ele-wrapper vscomp-wrapper multiple show-value-as-tags has-value" role="combobox" aria-expanded="false" aria-label="Select one or more options" tabindex="0">
+            <div class="vscomp-toggle-button">
+              <div class="vscomp-value">
+                <span class="vscomp-value-tag">
+                  <span class="vscomp-value-tag-content">Bridget Hernandez</span>
+                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Bridget Hernandez, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
+                </span>
+                <span class="vscomp-value-tag">
+                  <span class="vscomp-value-tag-content">Camila Stevenson</span>
+                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Camila Stevenson, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
+                </span>
+              </div>
+              <div class="vscomp-arrow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">FND-031: Select uses --radius-pill (32px) while the Text Field uses --radius-medium (8px); Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed.</span>
+    </div>
+  </section>
+
+  <!-- ============ TOGGLE / SWITCH ============ -->
+  <section>
+    <h2>Toggle — restyle native <code>[data-switch]</code></h2>
+    <p class="pv-figma">handover/loop-switch.md · Figma node 25344-27822</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Checked / Unchecked</span>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch checked aria-label="On">
+        <span class="loop-toggle__label">On (checked)</span>
+      </label>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch aria-label="Off">
+        <span class="loop-toggle__label">Off (unchecked)</span>
+      </label>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Label position</span>
+      <label class="loop-toggle loop-toggle--left">
+        <input type="checkbox" data-switch checked aria-label="Label left">
+        <span class="loop-toggle__label">Left</span>
+      </label>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch checked aria-label="Label right">
+        <span class="loop-toggle__label">Right</span>
+      </label>
+      <label class="loop-toggle loop-toggle--top">
+        <input type="checkbox" data-switch checked aria-label="Label top">
+        <span class="loop-toggle__label">Top</span>
+      </label>
+      <label class="loop-toggle loop-toggle--bottom">
+        <input type="checkbox" data-switch checked aria-label="Label bottom">
+        <span class="loop-toggle__label">Bottom</span>
+      </label>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <div class="pv-inline-set">
+        <input type="checkbox" data-switch checked aria-label="xLarge (56×32)">
+        <input type="checkbox" data-switch class="loop-toggle-large" checked aria-label="Large (48×26)">
+        <input type="checkbox" data-switch class="loop-toggle-regular" checked aria-label="Regular (40×20)">
+        <input type="checkbox" data-switch class="loop-toggle-small" checked aria-label="Small (32×16)">
+      </div>
+      <span class="pv-note">FND-025: only xLarge has published switch tokens; smaller sizes use observed track dims (padding held at 4px) — flagged.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <label class="loop-toggle loop-toggle--disabled">
+        <input type="checkbox" data-switch checked disabled aria-label="Disabled on">
+        <span class="loop-toggle__label">Disabled (on)</span>
+      </label>
+      <label class="loop-toggle loop-toggle--disabled">
+        <input type="checkbox" data-switch disabled aria-label="Disabled off">
+        <span class="loop-toggle__label">Disabled (off)</span>
+      </label>
+      <span class="pv-note">FND-026: the ON-thumb check glyph (node 25845-30789) is omitted pending its asset/colour token.</span>
+    </div>
+  </section>
+
+  <!-- ============ TOOLTIP ============ -->
+  <section>
+    <h2>Tooltip</h2>
+    <p class="pv-figma">tokens/component-tooltip.css · src/blocks/loop-tooltip.css · Figma node 17874-7113</p>
+    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. Arrow triangles use clip-path; position managed by OutSystems JS at runtime.</p>
+
+    <div class="pv-tt-grid">
+
+      <!-- Dark / Bottom (default: balloon below trigger, arrow pointing up) -->
+      <div class="pv-tt-col">
+        <span class="pv-caption">Dark · Bottom (default)</span>
+        <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
+          <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-bottom">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-dark-bottom" role="tooltip" aria-hidden="false">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark / Top (balloon above trigger, arrow pointing down) -->
+      <div class="pv-tt-col">
+        <span class="pv-caption">Dark · Top</span>
+        <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--top">
+          <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-top">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon top osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--above" id="tt-dark-top" role="tooltip" aria-hidden="false">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow pv-tt-arrow--down"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light / Bottom -->
+      <div class="pv-tt-col">
+        <span class="pv-caption">Light · Bottom</span>
+        <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
+          <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-bottom">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-light-bottom" role="tooltip" aria-hidden="false">
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+            <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light / Left (balloon to the right, arrow pointing right) -->
+      <div class="pv-tt-col">
+        <span class="pv-caption">Light · Left (right-side balloon)</span>
+        <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--row">
+          <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-left">Hover me</div>
+          <div class="osui-tooltip__balloon-wrapper osui-balloon left osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--side" id="tt-light-left" role="tooltip" aria-hidden="false">
+            <div class="osui-tooltip__balloon-arrow pv-tt-arrow--side"></div>
+            <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p class="pv-note pv-note--spaced">FND-027: Light-mode drop-shadow 0px 2px 2px rgba(0,0,0,0.1) has no matching shadow scale token (closest --shadow-low = 0 2px 8px). Implemented exact Figma value as --loop-tooltip-light-shadow.</p>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section>
+    <h2>Notes — custom CSS block <code>.loop-note</code></h2>
+    <p class="pv-figma">handover/loop-note.md · Figma node 26642-61530</p>
+
+    <div class="pv-row pv-row--stack pv-row--measure">
+      <div class="loop-note loop-note--important">
+        <p class="loop-note__body"><span class="loop-note__label">Important: </span>This record requires approval before it can be submitted to the World Bank procurement portal.</p>
+      </div>
+
+      <div class="loop-note loop-note--tip">
+        <p class="loop-note__body"><span class="loop-note__label">Tip: </span>Use keyboard shortcut <strong>Ctrl+S</strong> to save your progress at any time without submitting.</p>
+        <div class="loop-note__action"><a href="#">See all shortcuts</a></div>
+      </div>
+
+      <div class="loop-note loop-note--information">
+        <p class="loop-note__body"><span class="loop-note__label">Information: </span>This record will be reviewed by the compliance team within 3 business days of submission.</p>
+        <div class="loop-note__action"><a href="#">Learn more about compliance</a></div>
+      </div>
+
+      <div class="loop-note loop-note--success">
+        <p class="loop-note__body"><span class="loop-note__label">Success: </span>Your changes have been saved and submitted for approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAG ============ -->
+  <section>
+    <h2>Tag — custom CSS block <code>.loop-tag</code></h2>
+    <p class="pv-figma">Figma node 17313-5502 · richer than native OutSystems UI <code>.tag</code> · radius 48 ≠ pill 32 (FND-028)</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Colors</span>
+      <span class="loop-tag loop-tag--blue"><span class="loop-tag__label">Blue</span></span>
+      <span class="loop-tag loop-tag--purple"><span class="loop-tag__label">Purple</span></span>
+      <span class="loop-tag loop-tag--green"><span class="loop-tag__label">Green</span></span>
+      <span class="loop-tag loop-tag--yellow"><span class="loop-tag__label">Yellow</span></span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes</span>
+      <span class="loop-tag loop-tag--blue loop-tag--small"><span class="loop-tag__label">Small (24)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--regular"><span class="loop-tag__label">Regular (32)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--large"><span class="loop-tag__label">Large (40)</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--xlarge"><span class="loop-tag__label">xLarge (48)</span></span>
+      <span class="pv-note">FND-029: Figma publishes one label size (16) + hpadding (12); heights map to the spacing scale. Large/xLarge vpadding + the off-scale 6.5px small padding are flagged.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">With icon</span>
+      <span class="loop-tag loop-tag--green">
+        <i class="loop-tag__icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 10l4 4 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+        <span class="loop-tag__label">Approved</span>
+      </span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Dismissible</span>
+      <span class="loop-tag loop-tag--blue loop-tag--dismissible">
+        <span class="loop-tag__label">Filter: Active</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove Active filter">×</button>
+      </span>
+      <span class="loop-tag loop-tag--purple loop-tag--dismissible">
+        <span class="loop-tag__label">Region: EAP</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove EAP region">×</button>
+      </span>
+      <span class="pv-note">Tab to the × — focus ring is the brand blue (#0071bc); button carries an aria-label.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Selected</span>
+      <span class="loop-tag loop-tag--blue loop-tag--selected"><span class="loop-tag__label">Blue</span></span>
+      <span class="loop-tag loop-tag--purple loop-tag--selected"><span class="loop-tag__label">Purple</span></span>
+      <span class="loop-tag loop-tag--green loop-tag--selected"><span class="loop-tag__label">Green</span></span>
+      <span class="loop-tag loop-tag--yellow loop-tag--selected"><span class="loop-tag__label">Yellow</span></span>
+      <span class="pv-note">FND-030: Selected = bold label + filled high-bg. Exact per-color selected values pending design confirmation.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Disabled</span>
+      <span class="loop-tag loop-tag--blue loop-tag--disabled"><span class="loop-tag__label">Disabled</span></span>
+      <span class="loop-tag loop-tag--blue loop-tag--disabled loop-tag--dismissible">
+        <span class="loop-tag__label">Disabled</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove" disabled>×</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- ============ SYSTEM ALERT ============ -->
+  <section>
+    <h2>System Alert — custom Web Component <code>&lt;loop-system-alert&gt;</code></h2>
+    <p class="pv-figma">handover/loop-system-alert.md · Figma node 17873-7603</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Single-line (with dismiss)</span>
+
+      <loop-system-alert type="error"
+        title="Connection failed"
+        message="Could not reach the server. Please check your connection."
+        action-label="Retry"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="warning"
+        title="Unsaved changes"
+        message="You have unsaved changes. Save before navigating away."
+        action-label="Save now"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="informative"
+        title="Maintenance window"
+        message="Scheduled maintenance on Saturday 22 June, 02:00–04:00 UTC."
+        action-label="Details"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="offline"
+        title="You are offline"
+        message="Changes will be saved locally and synced when reconnected."
+        dismissible>
+      </loop-system-alert>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Multi-line</span>
+
+      <loop-system-alert type="informative"
+        title="New policy update"
+        message="The World Bank Group procurement policy has been updated effective 1 July 2026. All active projects must be reviewed against the new guidelines before the end of the quarter."
+        action-label="Review policy"
+        action-href="#"
+        dismissible
+        multiline>
+      </loop-system-alert>
+
+      <loop-system-alert type="error"
+        message="An unexpected error occurred while processing your request. Please try again or contact the system administrator if the problem persists."
+        action-label="Contact support"
+        multiline>
+      </loop-system-alert>
+    </div>
+    <p class="pv-note pv-note--spaced">⚠ Pending finding: rgba(255,255,255,0.75) text on the offline background (#8a9db1) may fail WCAG AA contrast — filed for design review.</p>
+    <p class="pv-log" id="sysalert-log">last event: —</p>
+  </section>
+
+  <!-- ============ COLOR REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Color Reference — custom Web Component <code>&lt;loop-color-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-color-reference.js · auto-renders the Live Style Guide from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every primitive ramp with its hex, <code>.background-*</code> / <code>.text-*</code> utility classes and CSS variable. Click any class/variable to copy.</p>
+
+    <!-- Demo: a couple of the generated primitive utilities applied directly -->
+    <div class="pv-row">
+      <span class="pv-label">Utilities</span>
+      <span class="background-blue-50 text-white pv-swatch">.background-blue-50</span>
+      <span class="background-red-10 text-red-70 pv-swatch">.background-red-10 .text-red-70</span>
+      <span class="background-green-03 text-green-60 pv-swatch">.background-green-03 .text-green-60</span>
+    </div>
+
+    <loop-color-reference
+      intro="Primitive color reference, generated live from the WBG / The Loop theme. Attach a class via ExtendedClass; reference a variable in custom CSS.">
+    </loop-color-reference>
+  </section>
+
+  <!-- ============ POPOVER ============ -->
+  <section>
+    <h2>Popover — custom Web Component <code>&lt;loop-popover&gt;</code></h2>
+    <p class="pv-figma">handover/loop-popover.md · Figma node 26345-2762</p>
+    <p class="pv-note pv-note--spaced">Pointers shown open inline (position relative to trigger is set in production by the containing layout). Toggle <code>open</code> to show/hide.</p>
+
+    <div class="pv-row pv-pop-grid">
+
+      <div class="pv-pop-col">
+        <span class="pv-caption">pointer=&quot;top&quot; + title + dismiss</span>
+        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-top').toggleAttribute('open')">Toggle</button>
+        <loop-popover id="pop-top" pointer="top" title="About this field" has-dismiss open>
+          <p>Describes the project priority level used for reporting. Values range from 1 (low) to 5 (critical).</p>
+        </loop-popover>
+      </div>
+
+      <div class="pv-pop-col">
+        <span class="pv-caption">pointer=&quot;bottom&quot; (default)</span>
+        <loop-popover id="pop-bottom" pointer="bottom" open>
+          <p>This is a simple popover with no title and a bottom pointer.</p>
+        </loop-popover>
+        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-bottom').toggleAttribute('open')">Toggle</button>
+      </div>
+
+      <div class="pv-pop-row">
+        <span class="pv-caption">pointer=&quot;left&quot;</span>
+        <loop-popover id="pop-left" pointer="left" title="Left pointer" has-dismiss open>
+          <p>Popover appears to the right of the trigger with the pointer on the left edge.</p>
+        </loop-popover>
+      </div>
+
+      <div class="pv-pop-row">
+        <loop-popover id="pop-right" pointer="right" title="Right pointer" has-dismiss open>
+          <p>Popover appears to the left of the trigger with the pointer on the right edge.</p>
+        </loop-popover>
+        <span class="pv-caption">pointer=&quot;right&quot;</span>
+      </div>
+
+      <div class="pv-pop-col">
+        <span class="pv-caption">pointer=&quot;none&quot;</span>
+        <loop-popover id="pop-none" pointer="none" title="No pointer" has-dismiss open>
+          <p>A floating panel with no pointer triangle. Use for tooltips or menus that don't need directional context.</p>
+        </loop-popover>
+      </div>
+
+    </div>
+    <p class="pv-log" id="popover-log">last event: —</p>
+  </section>
+
+</main>
+
+<!-- 3) The real custom component, loaded exactly as it ships to ODC. -->
+<script src="../src/components/loop-typography-reference.js"></script>
+<script src="../src/components/loop-button-dropdown.js"></script>
+<script src="../src/components/loop-system-alert.js"></script>
+<script src="../src/components/loop-popover.js"></script>
+<script src="../src/components/loop-color-reference.js"></script>
+<script>
+  // Preview-only: surface the component's select/toggle events so you can verify wiring.
+  const log = document.getElementById('lbd-log');
+  document.querySelectorAll('loop-button-dropdown').forEach(el => {
+    el.addEventListener('select', e => { log.textContent = `select → ${JSON.stringify(e.detail)}`; });
+    el.addEventListener('toggle', e => { if (e.detail.open) log.textContent = `toggle → open`; });
+  });
+
+  // Set the indeterminate checkbox state (can't be done in HTML alone).
+  const cbIndet = document.getElementById('cb-indet');
+  if (cbIndet) cbIndet.indeterminate = true;
+
+  // Surface System Alert events.
+  const saLog = document.getElementById('sysalert-log');
+  document.querySelectorAll('loop-system-alert').forEach(el => {
+    el.addEventListener('dismiss', e => { saLog.textContent = `dismiss → type: ${e.detail.type}`; });
+    el.addEventListener('action',  e => { saLog.textContent = `action  → type: ${e.detail.type}`; });
+  });
+
+  // Surface Popover close events.
+  const pvLog = document.getElementById('popover-log');
+  document.querySelectorAll('loop-popover').forEach(el => {
+    el.addEventListener('close', () => { pvLog.textContent = `close ← #${el.id}`; });
+  });
+</script>
+</body>
+</html>

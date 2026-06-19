@@ -1,20 +1,169 @@
-/* colors.css — brand color tokens (source for build:theme)
- * Fill these from design/brand-guidelines.md. These ARE the brand palette.
- * Accessibility note: build to these values exactly. If a pairing fails
- * WCAG 2.2 AA contrast, that is a FINDING (findings/), not a reason to edit here. */
+/* colors.css — WBG / "The Loop" brand color tokens (source for build:theme)
+ * Extracted from Figma: The Loop — Main Library (file aHtnwyPhI8WRbiGHZ8E5Gb)
+ *   primitives + semantic showcase [node:11122-2143], type/role page [node:10995-7259],
+ *   shadows/effects page [node:19737-9489].
+ * These ARE the brand palette — build to these values exactly. A failing WCAG 2.2 AA
+ * pairing is a FINDING (findings/), never a reason to edit a value here.
+ * Canonical system = `lift` + the primitive ramps. Foreign/legacy tokens
+ * (_ITSES / _GDS / Headings Desktop / DS L2.0) are intentionally NOT imported — see findings. */
 :root {
-  /* Neutrals */
-  --color-neutral-0: #FFFFFF;
-  --color-neutral-1: #F8FAFC;
-  --color-neutral-9: #1E293B;
+  /* ---- Brand & generic ---- */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-wb-brand-dark-blue: #002244;          /* $lift-core-color-wb-brand-dark-blue */
 
-  /* Brand */
-  --color-primary:   #000000;  /* TODO: brand primary */
-  --color-secondary: #000000;  /* TODO: brand secondary */
+  /* ---- Primitive ramp · Blue (WB primary hue) ---- */
+  --color-blue-05:  #f6fcff;
+  --color-blue-10:  #e9f7fd;
+  --color-blue-20:  #cde7f9;
+  --color-blue-30:  #a3daff;
+  --color-blue-40:  #169af3;
+  --color-blue-50:  #0071bc;   /* Blue/50 Base — brand primary */
+  --color-blue-60:  #00538a;
+  --color-blue-70:  #004370;
+  --color-blue-80:  #053657;
+  --color-blue-90:  #012740;
+  --color-blue-100: #002035;
+  --color-blue-120: #001c2d;
 
-  /* Semantic */
-  --color-success: #16A34A;
-  --color-warning: #D97706;
-  --color-error:   #DC2626;
-  --color-info:    #2563EB;
+  /* ---- Primitive ramp · Neutral (solid) ---- */
+  --color-neutral-05: #f5f7f9;
+  --color-neutral-10: #e7edf3;
+  --color-neutral-15: #dae3eb;
+  --color-neutral-20: #d4dee8;
+  --color-neutral-30: #bdccdb;
+  --color-neutral-40: #8a9db1;
+  --color-neutral-50: #586e84;
+  --color-neutral-60: #4b5e71;
+  --color-neutral-70: #3d4c5c;
+  --color-neutral-80: #252e37;
+  --color-neutral-90: #181f25;
+  --color-neutral-95: #0c0f12;
+
+  /* ---- Primitive ramp · Neutral (alpha, on #00396b/#00294d/#000d1a bases) ---- */
+  --color-neutral-alpha-02: #00396b08;
+  --color-neutral-alpha-04: #00396b0d;
+  --color-neutral-alpha-08: #00396b14;
+  --color-neutral-alpha-16: #00396b29;
+  --color-neutral-alpha-24: #00396b3d;
+  --color-neutral-alpha-42: #00294d6b;
+  --color-neutral-alpha-57: #00294d91;
+  --color-neutral-alpha-65: #000d1aa6;
+  --color-neutral-alpha-70: #000d1ab2;
+  --color-neutral-alpha-95: #000d1af5;
+
+  /* ---- Primitive ramp · Gray alpha ---- */
+  --color-gray-alpha-black-08: #00000014;
+  --color-gray-alpha-black-16: #00000029;
+  --color-gray-alpha-black-24: #0000003d;
+  --color-gray-alpha-black-48: #0000007a;
+  --color-gray-alpha-black-60: #00000099;
+  --color-gray-alpha-white-16: #ffffff29;
+  --color-gray-alpha-white-24: #ffffff3d;
+  --color-gray-alpha-white-48: #ffffff7a;
+  --color-gray-alpha-white-60: #ffffff99;
+  --color-gray-alpha-white-75: #ffffffbf;
+  --color-gray-alpha-white-90: #ffffffe5;
+
+  /* ---- Primitive ramp · Red ---- */
+  --color-red-10: #fdf2f2;
+  --color-red-20: #f6bcbf;
+  --color-red-30: #ec747a;
+  --color-red-40: #e64750;
+  --color-red-50: #da1e28;
+  --color-red-60: #c91c25;
+  --color-red-70: #9d161d;
+  --color-red-80: #861319;
+  --color-red-90: #550c10;
+
+  /* ---- Primitive ramp · Green ---- */
+  --color-green-03: #f6fef0;   /* $lift-core-color-semantic-green-03 */
+  --color-green-30: #b8ec93;
+  --color-green-on-dark-07:   #56c606;
+  --color-green-on-dark-base: #459e05;
+  --color-green-60: #388004;
+  --color-green-70: #234f03;
+  --color-green-base: #1e4602; /* $lift-core-color-semantic-green-base */
+  --color-green-07: #163102;
+
+  /* ---- Primitive ramp · Yellow ---- */
+  --color-yellow-10: #fff7e6;
+  --color-yellow-03: #fef3d7;
+  --color-yellow-on-dark-base: #ffecc2;
+  --color-yellow-on-dark-07:   #fed881;
+  --color-yellow-50: #e19d00;
+  --color-yellow-60: #ca8d02;
+  --color-yellow-05: #b27c00;
+  --color-yellow-base: #896001;
+  --color-yellow-90: #473201;
+
+  /* ---- Primitive ramp · Purple ---- */
+  --color-purple-10: #f1e1ff;
+  --color-purple-20: #e5c7ff;
+  --color-purple-30: #cd95fe;
+  --color-purple-40: #c17cfe;
+  --color-purple-50: #b25dfe;
+  --color-purple-60: #763ba9;
+  --color-purple-70: #5c01ac;
+  --color-purple-80: #410179;
+  --color-purple-90: #260147;
+
+  /* ---- Accent · Orange ---- */
+  --color-accent-orange-10: #fdebe8;
+  --color-accent-orange-20: #facfc7;
+  --color-accent-orange-30: #f5a799;
+  --color-accent-orange-40: #f17f6a;
+  --color-accent-orange-50: #ec553a;
+  --color-accent-orange-60: #df3416;
+  --color-accent-orange-70: #b12911;
+  --color-accent-orange-80: #821e0d;
+  --color-accent-orange-90: #541408;
+
+  /* ---- Accent · Pale Green ---- */
+  --color-accent-pale-green-10: #e1f4eb;
+  --color-accent-pale-green-20: #b5e3ce;
+  --color-accent-pale-green-30: #59c090;
+  --color-accent-pale-green-40: #4cbb88;
+  --color-accent-pale-green-50: #3b9b6f;
+  --color-accent-pale-green-60: #2d7655;
+  --color-accent-pale-green-70: #296b4d;
+  --color-accent-pale-green-80: #235c42;
+  --color-accent-pale-green-90: #1f513a;
+
+  /* ---- Accent · Teal ---- */
+  --color-accent-teal-10: #e6fcff;
+  --color-accent-teal-20: #a9f4fe;
+  --color-accent-teal-30: #03d7f2;
+  --color-accent-teal-40: #02aac0;
+  --color-accent-teal-50: #0298ac;
+  --color-accent-teal-60: #017d8d;
+  --color-accent-teal-70: #01707e;
+  --color-accent-teal-80: #015e6a;
+  --color-accent-teal-90: #01505b;
+
+  /* ---- Accent · Indigo ---- */
+  --color-accent-indigo-10: #f5f6ff;
+  --color-accent-indigo-20: #e3e6fc;
+  --color-accent-indigo-30: #ced4fd;
+  --color-accent-indigo-40: #9fa9f7;
+  --color-accent-indigo-50: #a8b2ff;
+  --color-accent-indigo-60: #586af3;
+  --color-accent-indigo-70: #2e43e0;
+  --color-accent-indigo-80: #2132b0;
+  --color-accent-indigo-90: #0a1885;
+
+  /* ---- Accent · Magenta ---- */
+  --color-accent-magenta-10: #ffe6f6;
+  --color-accent-magenta-20: #feaee1;
+  --color-accent-magenta-30: #fe7cce;
+  --color-accent-magenta-40: #fd49bb;
+  --color-accent-magenta-50: #fd1caa;
+  --color-accent-magenta-60: #de028d;
+  --color-accent-magenta-70: #ac016d;
+  --color-accent-magenta-80: #79014d;
+  --color-accent-magenta-90: #47012d;
+
+  /* Semantic role tokens (Domain / Text / Icon / Background / Outline / Divider) and the
+   * legacy --color-primary/secondary/... aliases live in semantic-colors.css, which
+   * references these primitives. */
 }

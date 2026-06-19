@@ -1,0 +1,161 @@
+/* loop-system-alert.css — CSS source for <loop-system-alert> Shadow DOM.
+ * Edit here, then mirror into the _css() template string in loop-system-alert.js.
+ * Figma: "System Alerts" [node:17873-7603]. Full-width notification banner.
+ *
+ * Tokens consumed from the theme :root (cascade through Shadow DOM):
+ *   --loop-sysalert-padding-h/v, --loop-sysalert-gap, --loop-sysalert-icon-size,
+ *   --loop-sysalert-title-size, --loop-sysalert-body-size, --loop-sysalert-action-pt,
+ *   --loop-sysalert-{type}-bg, --loop-sysalert-{type}-text */
+
+:host {
+  display: block;
+  width: 100%;
+}
+:host([hidden]) { display: none; }
+
+.lsa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--loop-sysalert-gap, 8px);
+  padding: var(--loop-sysalert-padding-v, 8px) var(--loop-sysalert-padding-h, 12px);
+  min-width: 280px;
+}
+
+.lsa--multiline { align-items: flex-start; }
+
+/* ---- Type backgrounds ---- */
+.lsa--error       { background-color: var(--loop-sysalert-error-bg, #9d161d); }
+.lsa--warning     { background-color: var(--loop-sysalert-warning-bg, #e19d00); }
+.lsa--informative { background-color: var(--loop-sysalert-informative-bg, #004370); }
+.lsa--offline     { background-color: var(--loop-sysalert-offline-bg, #8a9db1); }
+
+/* ---- Content wrapper ---- */
+.lsa__content {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--loop-sysalert-gap, 8px);
+}
+.lsa--multiline .lsa__content { align-items: flex-start; }
+
+/* ---- Icon slot ---- */
+.lsa__icon-slot {
+  display: contents;
+}
+::slotted([slot="icon"]) {
+  flex-shrink: 0;
+  width: var(--loop-sysalert-icon-size, 16px);
+  height: var(--loop-sysalert-icon-size, 16px);
+}
+.lsa--multiline ::slotted([slot="icon"]) {
+  margin-top: 2px; /* aligns icon to cap-height of title text */
+}
+
+/* ---- Text group ---- */
+.lsa__text {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-tiny, 4px);
+  flex-wrap: wrap;
+}
+.lsa--multiline .lsa__text {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* ---- Title ---- */
+.lsa__title {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-sysalert-title-size, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---- Alert body text ---- */
+.lsa__message {
+  margin: 0;
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-sysalert-body-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.25;
+}
+
+/* ---- Type text colors (title + body share the same color per variant) ---- */
+.lsa--error       .lsa__title,
+.lsa--error       .lsa__message,
+.lsa--offline     .lsa__title,
+.lsa--offline     .lsa__message {
+  color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75));
+}
+.lsa--warning     .lsa__title,
+.lsa--warning     .lsa__message {
+  color: var(--loop-sysalert-warning-text, #473201);
+}
+.lsa--informative .lsa__title,
+.lsa--informative .lsa__message {
+  color: var(--loop-sysalert-informative-text, #f6fcff);
+}
+
+/* ---- Action link / button ---- */
+.lsa__action {
+  font-family:     var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:       var(--loop-sysalert-body-size, 14px);
+  font-weight:     var(--font-weight-bold, 700);
+  line-height:     1.25;
+  text-decoration: underline;
+  background:      none;
+  border:          0;
+  padding:         0;
+  cursor:          pointer;
+  white-space:     nowrap;
+  flex-shrink:     0;
+}
+.lsa--multiline .lsa__action { margin-top: var(--loop-sysalert-action-pt, 12px); }
+
+.lsa--error       .lsa__action,
+.lsa--offline     .lsa__action { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-text, #473201); }
+.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-text, #f6fcff); }
+
+.lsa__action:focus-visible {
+  outline:        2px solid currentColor;
+  outline-offset: 2px;
+  border-radius:  2px;
+}
+
+/* ---- Dismiss button ---- */
+.lsa__dismiss {
+  flex-shrink: 0;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  width:       var(--loop-sysalert-icon-size, 16px);
+  height:      var(--loop-sysalert-icon-size, 16px);
+  background:  none;
+  border:      0;
+  padding:     0;
+  cursor:      pointer;
+}
+.lsa--multiline .lsa__dismiss { align-self: flex-start; margin-top: 2px; }
+
+.lsa--error       .lsa__dismiss,
+.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-text, #473201); }
+.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-text, #f6fcff); }
+
+.lsa__dismiss:focus-visible {
+  outline:        2px solid currentColor;
+  outline-offset: 2px;
+  border-radius:  2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lsa, .lsa__action, .lsa__dismiss { transition: none; }
+}

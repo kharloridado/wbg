@@ -1,0 +1,33 @@
+/* component-system-alert.css — WBG / "The Loop" System Alert component tokens
+ * Figma: "System Alerts" [node:17873-7603]. Vanilla JS Web Component (<loop-system-alert>).
+ * CSS custom properties cascade into Shadow DOM so the component reads them here.
+ * Four types: error | warning | informative | offline.
+ * Layout variants: single-line (default) and multiline (attr). */
+:root {
+  /* ---- Geometry ---- */
+  --loop-sysalert-padding-h:  var(--space-xsmall);    /* 12px — Figma: px 12 */
+  --loop-sysalert-padding-v:  var(--space-xxsmall);   /* 8px  — Figma: py 8  */
+  --loop-sysalert-icon-size:  16px;
+  --loop-sysalert-gap:        var(--space-xxsmall);   /* 8px  — gap: icon ↔ text content */
+  --loop-sysalert-action-pt:  var(--space-xsmall);    /* 12px — multiline action padding-top */
+
+  /* ---- Typography ---- */
+  --loop-sysalert-title-size: var(--font-size-300);   /* 16px — loop/System Alert/title */
+  --loop-sysalert-body-size:  var(--font-size-200);   /* 14px — loop/System Alert/alert text */
+
+  /* ---- Type: error ---- */
+  --loop-sysalert-error-bg:   var(--color-bg-container-state-error-high);   /* #9d161d — color-red-70 */
+  --loop-sysalert-error-text: rgba(255, 255, 255, 0.75);                    /* Figma: Gray/Alpha/White/75% — no Loop primitive token yet */
+
+  /* ---- Type: warning ---- */
+  --loop-sysalert-warning-bg:   var(--color-domain-state-warning-regular);  /* #e19d00 — color-yellow-50 */
+  --loop-sysalert-warning-text: var(--color-text-on-light-state-warning);   /* #473201 — color-yellow-90 */
+
+  /* ---- Type: informative ---- */
+  --loop-sysalert-informative-bg:   var(--color-bg-container-state-info-high);  /* #004370 — color-blue-70 */
+  --loop-sysalert-informative-text: var(--color-domain-state-info-low);         /* #f6fcff — color-blue-05 */
+
+  /* ---- Type: offline ---- */
+  --loop-sysalert-offline-bg:   var(--color-domain-interactive-disable);    /* #8a9db1 — color-neutral-40 */
+  --loop-sysalert-offline-text: rgba(255, 255, 255, 0.75);                  /* Figma: Gray/Alpha/White/75% — no Loop primitive token yet */
+}

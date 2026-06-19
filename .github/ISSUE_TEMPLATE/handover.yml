@@ -15,6 +15,25 @@ body:
         - Block: Segmented        -> Patterns Library
     validations: { required: true }
   - type: textarea
+    id: code
+    attributes:
+      label: Code to paste into ODC
+      description: >-
+        Paste the verbatim JS/CSS the developer copies into ODC, each in a collapsed
+        <details> block with the source path in the summary. Tokens travel via
+        dist/theme.css (its own paste) so don't duplicate them here. The ticket must
+        CONTAIN the code — not just point at a repo path.
+      placeholder: |
+        <details>
+        <summary><code>loop-button.css</code> → Theme CSS — paste below OutSystems UI</summary>
+
+        ```css
+        .btn { /* … verbatim file contents … */ }
+        ```
+
+        </details>
+    validations: { required: true }
+  - type: textarea
     id: steps
     attributes:
       label: OutSystems install checklist

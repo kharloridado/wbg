@@ -1,0 +1,69 @@
+{
+  "_note": "Raw variable defs (continued). Nodes 10995-7259 (type/colors page), 10994-5086 (Spacing System), 19737-9489 (Shadows). Phase 0 working file.",
+  "file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
+  "nodes": {
+    "10994-5086_spacing_system": {
+      "Spacing/none": "0", "Spacing/xtiny": "2", "Spacing/tiny": "4", "Spacing/xxsmall": "8",
+      "Spacing/xsmall": "12", "Spacing/small": "16", "Spacing/regular": "24", "Spacing/medium": "32",
+      "Spacing/large": "40", "Spacing/xlarge": "48", "Spacing/xxlarge": "64", "Spacing/huge": "80", "Spacing/xhuge": "96",
+      "token('space.100')": "8", "token('space.200')": "16", "token('space.500')": "40",
+      "_aliases_present": ["Font-size/800=32","Font-size/1000=40","Font-size/1200=60","Heading/Font Weight=700"]
+    },
+    "19737-9489_shadows": {
+      "lift/effects/shadow/default": "#21262d29  (NOTE: colors frame reported #000d1a29 — MODE/DRIFT conflict)",
+      "lift/shadows/lowest": "x0 y0 blur8 spread0",
+      "lift/shadows/low": "x0 y2 blur8 spread0",
+      "lift/shadows/regular": "x0 y4 blur12 spread0",
+      "lift/shadows/medium": "x0 y8 blur20 spread0",
+      "lift/shadows/high": "x0 y5 blur32 spread0",
+      "lift/border radius/radius-4": "16  (NOTE: name says 4 but value 16 — see radius drift)",
+      "font-family/body": "Inter", "font-family/heading": "Poppins", "font-family/label": "Poppins",
+      "lift/body/font-weight/regular": "400", "lift/body/font-weight/semi-bold": "600",
+      "lift/heading/font-weight/bold": "600",
+      "lift/body/text/base/font-size": "16", "lift/body/text/small/font-size": "14", "lift/body/text/tiny/font-size": "12",
+      "lift/label/font-size/large": "20", "font-size/huge-72": "72",
+      "lift/text/on light/default": "#465869", "lift/text/on light/subdued": "#576f88",
+      "lift/text/on light/emphasys": "#21262d", "lift/text/on light/state/disabled": "#bdc9d6",
+      "lift/icon/on light/emphasis": "#465869", "lift/icon/on light/state/warning/regular": "#d97706",
+      "lift/icon/on light/state/disabled": "#bdc9d6",
+      "lift/background/container/on light/low": "#eff2f5", "lift/background/container/on light/regular": "#e4e9ee",
+      "lift/background/container/on light/medium": "#dae1e8", "lift/background/page/light": "#f6f8fa",
+      "lift/outline/on light/regular": "#cad4de", "lift/grid/gutter": "24",
+      "$lift-core-color-wb-brand-dark-blue": "#002244",
+      "_foreign_leaked": ["DS L2.0 Styles/Heading/H3=IBM Plex Sans 24", "_ITSES/Body/Tiny/AllCaps=Open Sans 13", "Neutral/Black/Alpha/87A=#000000de"]
+    },
+    "10995-7259_type_page": {
+      "_lift_type_scale": {
+        "lift/global/font-family/body": "Inter", "lift/global/font family": "Open Sans (CONFLICT vs Inter)",
+        "lift/body/text/tiny/font-size": "12", "lift/body/text/small/font-size": "14",
+        "lift Body/Text/Tiny/All Caps": "Inter Regular 12 lh16 ls1",
+        "lift Body/Text/Small/Regular": "Inter Regular 14 lh1.5 ls0"
+      },
+      "_primitive_type_scale_Open_Sans": {
+        "Global/Font Family": "Open Sans", "Heading/Font Weight": "700", "Body/Font Weight/Regular": "400", "Body/Label/Font Weight": "700",
+        "Font-size/100": "12", "Font-size/200": "14", "Font-size/300": "16", "Font-size/400": "18",
+        "Font-size/500": "20", "Font-size/600": "24", "Font-size/700": "28", "Font-size/800": "32",
+        "Font-size/900": "36", "Font-size/1000": "40", "Font-size/1100": "48", "Font-size/1200": "60",
+        "Heading/H1/Large": "OpenSans Bold 60 lh1.12 ls-3", "Heading/H1/Base": "OpenSans Bold 48",
+        "Heading/H1/Small": "OpenSans Bold 36", "Heading/H1/Tiny": "OpenSans Bold 28",
+        "Heading/H2/Large": "OpenSans Bold 48", "Heading/H2/Small": "OpenSans Bold 32", "Heading/H3/Base": "OpenSans Bold 32",
+        "Body/Text/Base/Regular": "OpenSans Regular 16 lh1.5", "Body/Text/Large/Regular": "OpenSans Regular 24 lh1.5 ls-0.35",
+        "Body/Text/Medium/Regular": "OpenSans Regular 20 lh1.5 ls-0.25", "Body/Text/Small/Regular": "OpenSans Regular 14 lh1.5",
+        "Body/Text/Tiny/Regular": "OpenSans Regular 12 lh1.5 ls0.25"
+      },
+      "_radius": {"Border Radius/Medium": "8", "Border Radius/Large": "16"},
+      "_text_roles": {
+        "Text/On Light/State/Success": "#388004", "Text/On Light/State/Error": "#9d161d",
+        "Text/On Light/State/Disabled": "#00294d6b", "Text/On Dark/Headers": "#fffffff5",
+        "Outline/On Light/Dimmed": "#00396b14", "Outline/On Light/Subdued": "#00396b29"
+      },
+      "_FOREIGN_LEAKED_competing_systems": {
+        "_ITSES (Open Sans)": ["H1/Large=80","H2/Base=40","H3/Base=24","Body/Large=24","Titles/Base=21"],
+        "_GDS (Manrope)": ["H/H2=48","Paragraph/Medium/Regular=18"],
+        "Headings Desktop (Andes/Open Sans)": ["DisplayMedium=Andes 32","Heading=24","Heading S=20"],
+        "DS L2.0 (IBM Plex Sans)": ["Heading/H3=24"],
+        "misc": ["Primary Blue/06=#0071BC","WB Brand/White=#FFFFFF","Drop Shadow/02-Cards","Text/Link=#0071BC","Generic/White","Label/L Open Sans 14","Label/S Open Sans 11"]
+      }
+    }
+  }
+}

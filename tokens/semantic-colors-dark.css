@@ -1,0 +1,86 @@
+/* semantic-colors-dark.css — WBG / "The Loop" semantic role layer · DARK / INVERTED
+ * Extracted from Figma: Semantic Colors [node:11122-2879].
+ *
+ * DEFERRED — NOT imported by tokens/index.css. This phase ships LIGHT mode only.
+ * These roles (On Dark / Elevation Dark / inverted page surface) are parked here so the
+ * extraction work is preserved; reconcile + import them in a later dark-mode phase.
+ * They reference primitives from colors.css, so import colors.css alongside this file
+ * when the dark phase begins.
+ *
+ * Orphan with no primitive: divider-on-dark-default #00538a99 (tracked by FND-006). */
+:root {
+  /* ---- Domain · elevations (dark) ---- */
+  --color-domain-elevation-dark-high:     var(--color-neutral-70);
+  --color-domain-elevation-dark-medium:   var(--color-neutral-80);
+  --color-domain-elevation-dark-regular:  var(--color-neutral-90);
+  --color-domain-elevation-dark-low:      var(--color-neutral-95);
+  --color-domain-elevation-dark-lowest:   var(--color-black);
+
+  /* ---- Background (dark / inverted) ---- */
+  --color-bg-page-default-inverted: var(--color-black);
+  --color-bg-overlay-on-dark-low:      var(--color-gray-alpha-white-16);
+  --color-bg-overlay-on-dark-regular:  var(--color-gray-alpha-white-24);
+  --color-bg-overlay-on-dark-medium:   var(--color-gray-alpha-white-48);
+  --color-bg-container-on-dark-high:    var(--color-neutral-70);
+  --color-bg-container-on-dark-medium:  var(--color-neutral-80);
+  --color-bg-container-on-dark-regular: var(--color-neutral-90);
+  --color-bg-container-on-dark-low:     var(--color-neutral-95);
+  --color-bg-container-on-dark-lowest:  var(--color-black);
+
+  /* ---- Text (on dark) ---- */
+  --color-text-on-dark-default:  var(--color-gray-alpha-white-75);
+  --color-text-on-dark-emphasis: var(--color-gray-alpha-white-90);
+  --color-text-on-dark-subdued:  var(--color-gray-alpha-white-60);
+  --color-text-on-dark-state-success:  var(--color-green-on-dark-07);
+  --color-text-on-dark-state-error:    var(--color-red-50);
+  --color-text-on-dark-state-disabled: var(--color-gray-alpha-white-48);
+  --color-text-on-dark-state-warning:  var(--color-yellow-50);
+  --color-text-on-dark-state-suggest:  var(--color-purple-40);
+  --color-text-on-dark-state-info:     var(--color-blue-40);
+  --color-text-on-dark-link-primary-enabled: var(--color-gray-alpha-white-90);
+  --color-text-on-dark-link-secondary:       var(--color-neutral-05);
+  --color-text-on-dark-link-hover:    var(--color-blue-40);
+  --color-text-on-dark-link-visited:  var(--color-purple-40);
+
+  /* ---- Icon (on dark) ---- */
+  --color-icon-on-dark-primary: var(--color-blue-40);
+  --color-icon-on-dark-alpha-emphasis: var(--color-white);
+  --color-icon-on-dark-alpha-default:  var(--color-gray-alpha-white-75);
+  --color-icon-on-dark-default:  var(--color-neutral-05);
+  --color-icon-on-dark-emphasis: var(--color-white);
+  --color-icon-on-dark-state-disabled: var(--color-neutral-15);
+  --color-icon-on-dark-state-success:  var(--color-green-on-dark-07);
+  --color-icon-on-dark-state-warning:  var(--color-yellow-on-dark-base);
+  --color-icon-on-dark-state-error:    var(--color-red-30);
+  --color-icon-on-dark-state-info:     var(--color-blue-40);
+  --color-icon-on-dark-state-suggest:  var(--color-purple-30);
+  --color-icon-on-dark-link-enabled-primary: var(--color-blue-40);
+  --color-icon-on-dark-link-hover:   var(--color-blue-50);
+  --color-icon-on-dark-link-visited: var(--color-purple-50);
+
+  /* ---- Divider (on dark) ---- */
+  --color-divider-on-dark-emphasis:  var(--color-gray-alpha-white-60);
+  --color-divider-on-dark-default:   #00538a99;   /* FND-006 — orphan alpha, no primitive */
+  --color-divider-on-dark-subdued:   var(--color-gray-alpha-white-24);
+
+  /* ---- Outline (on dark) ---- */
+  --color-outline-on-dark-emphasis: var(--color-blue-40);
+  --color-outline-on-dark-default:  var(--color-neutral-40);
+  --color-outline-on-dark-subdued:  var(--color-neutral-70);
+  --color-outline-on-dark-dimmed:   var(--color-neutral-80);
+  --color-outline-on-dark-state-success-low:        var(--color-green-70);
+  --color-outline-on-dark-state-success-high:       var(--color-green-03);
+  --color-outline-on-dark-state-error-low:          var(--color-red-80);
+  --color-outline-on-dark-state-error-high:         var(--color-red-10);
+  --color-outline-on-dark-state-warning-low:        var(--color-yellow-50);
+  --color-outline-on-dark-state-warning-high:       var(--color-yellow-03);
+  --color-outline-on-dark-state-informational-low:  var(--color-blue-70);
+  --color-outline-on-dark-state-informational-high: var(--color-blue-05);
+  --color-outline-on-dark-state-suggestional-low:   var(--color-purple-80);
+  --color-outline-on-dark-state-suggestional-high:  var(--color-purple-10);
+  --color-outline-on-dark-state-disable: var(--color-gray-alpha-white-48);
+  --color-outline-on-dark-link-enabled:  var(--color-gray-alpha-white-90);
+  --color-outline-on-dark-link-hover:    var(--color-blue-40);
+  --color-outline-on-dark-link-focused:  var(--color-blue-50);
+  --color-outline-on-dark-link-visited:  var(--color-purple-40);
+}

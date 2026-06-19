@@ -1,0 +1,197 @@
+/* ============================================
+   Component: Toggle / Switch  ("The Loop" — loop/toggle)
+   Figma: -The Loop- Main Library · "Toggle" [node:25344-27822]
+          switch component set [node:25344-27924] · default switch [node:25344-27925]
+   Approach: RESTYLE the native OutSystems UI Switch widget ([data-switch]) — NOT a
+             parallel class system. Devs use the standard OutSystems Switch widget; this
+             theme override makes it render as The Loop toggle. (Same pattern as
+             loop-button.css / loop-checkbox.css / loop-radio-button.css.)
+             SELF-CONTAINED: the override supplies its own structural reset
+             (appearance:none on the input; content/position/display on the track :before
+             + thumb :after) rather than leaning on OutSystems UI's baseline switch CSS.
+             So the control renders correctly even where that baseline isn't present
+             (e.g. the local preview), exactly like loop-checkbox.css / loop-radio-button.css.
+   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
+   Escalation Level: L1/L2 (native widget + token-driven theme override).
+
+   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_switch.scss):
+     [data-switch]          → 50×32 box; :empty:before = 48×30 track pill (neutral-5),
+                              :empty:after = 24px thumb, translateX(4px) off / 22px on;
+                              :checked:before = primary; [disabled] = neutral; hover neutral-6.
+     .has-accessible-features [data-switch] → restates colours at higher specificity
+                              (neutral-7/8, focus-inner) — so each conflicting rule below
+                              is restated for `.has-accessible-features` to keep winning.
+   The Loop overrides that baseline to: a 56×32 pill track (transparent border), a 24px
+     white thumb with 4px padding (travel 28px), the WB neutral-60 OFF track, blue-70 ON
+     track, and the interactive hover/pressed/focus brand colours.
+
+   Colour mapping (Figma "Domain/Interactive/On Light/*" + "Icon/On Light/*"):
+     OFF track (unchecked)  → --color-icon-on-light-default            (neutral-60 #4b5e71)
+     ON track  (checked)    → --color-domain-interactive-enabled-primary (blue-70 #004370)
+     ON hover               → --color-domain-interactive-hover          (blue-40 #169af3)
+     ON pressed             → --color-domain-interactive-pressed        (blue-90 #012740)
+     focus ring             → --color-domain-interactive-focused        (blue-50 #0071bc)
+     disabled track         → --color-domain-interactive-disable        (neutral-40 #8a9db1)
+     thumb                  → --color-white
+
+   Sizes (loop/toggle/switch track w×h — default = xLarge): published switch tokens cover
+     only the xLarge default (56×32, circle 24, padding 4). Large/Regular/Small reuse the
+     observed track dimensions (48×26 / 40×20 / 32×16) with padding held at the one
+     published 4px value and circle = height − 2·padding — flagged for confirmation (FND-025).
+
+   Fidelity notes (built faithfully; raised, NOT silently changed):
+     - Label line-height token is published twice with different values (16 vs 18) — FND-024.
+     - The ON thumb carries a 16px check glyph in Figma [node:25845-30789]; its colour/asset
+       weren't published as a token, so the thumb is rendered without the glyph pending the
+       asset — FND-026 (additive detail; colours/geometry are faithful).
+   ============================================ */
+
+/* ---- Track box — hide the native checkbox; :before/:after draw the switch ---- */
+[data-switch],
+.has-accessible-features [data-switch] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;                                     /* positioning context for track + thumb */
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: middle;
+  width: var(--loop-toggle-track-w, 56px);
+  height: var(--loop-toggle-track-h, 32px);
+  background-color: transparent;
+  border: 0px;
+  border-radius: var(--radius-pill, 50px);
+  overflow: initial;
+  cursor: pointer;
+}
+
+/* ---- Track pill (:before) — fill the box, transparent border, OFF = neutral-60 ---- */
+[data-switch]:empty:before,
+.has-accessible-features [data-switch]:empty:before {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 0px;
+  left: 0px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 0px;                                            /* Outline/Transparent */
+  border-radius: var(--radius-pill, 50px);
+  background-color: var(--color-icon-on-light-default);   /* OFF track — neutral-60 #4b5e71 */
+  opacity: 1;
+  transition: background-color 180ms linear, border-color 180ms linear;
+}
+
+/* ---- Thumb (:after) — 24px white circle, OFF sits +4px from the left ---- */
+[data-switch]:empty:after,
+.has-accessible-features [data-switch]:empty:after {
+  content: "";
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  width: var(--loop-toggle-circle, 24px);
+  height: var(--loop-toggle-circle, 24px);
+  top: var(--loop-toggle-padding, 4px);
+  left: 0px;
+  margin-left: 0px;
+  border: 0px;
+  border-radius: 100%;
+  box-shadow: none;
+  background-color: var(--color-white, #ffffff);
+  transform: translateX(var(--loop-toggle-padding, 4px)) translateZ(0);
+  transition: transform 180ms linear, background-color 180ms linear;
+}
+
+/* ---- Checked — blue-70 track, thumb slides to the right ---- */
+[data-switch]:checked:before,
+.has-accessible-features [data-switch]:checked:before {
+  border: 0px;
+  background-color: var(--color-domain-interactive-enabled-primary);   /* blue-70 #004370 */
+}
+[data-switch]:checked:after,
+.has-accessible-features [data-switch]:checked:after {
+  /* travel = track − circle − padding (xLarge: 56−24−4 = 28px; derives per size) */
+  transform: translateX(calc(var(--loop-toggle-track-w, 56px) - var(--loop-toggle-circle, 24px) - var(--loop-toggle-padding, 4px))) translateZ(0);
+}
+
+/* ---- Hover / pressed (the interactive ON track shifts hue) ---- */
+[data-switch]:checked:hover:before,
+.has-accessible-features [data-switch]:checked:hover:before {
+  background-color: var(--color-domain-interactive-hover);     /* blue-40 #169af3 */
+  border: 0px;
+}
+[data-switch]:checked:active:before,
+.has-accessible-features [data-switch]:checked:active:before {
+  background-color: var(--color-domain-interactive-pressed);   /* blue-90 #012740 */
+  border: 0px;
+}
+
+/* ---- Disabled — muted interactive track, white thumb, inert ---- */
+[data-switch][disabled],
+[data-switch][aria-disabled="true"] {
+  pointer-events: none;
+}
+[data-switch][disabled]:empty:before,
+[data-switch][aria-disabled="true"]:empty:before,
+.has-accessible-features [data-switch][disabled]:empty:before {
+  background-color: var(--color-domain-interactive-disable);   /* neutral-40 #8a9db1 */
+  border: 0px;
+}
+[data-switch][disabled]:empty:after,
+[data-switch][aria-disabled="true"]:empty:after,
+.has-accessible-features [data-switch][disabled]:empty:after {
+  background-color: var(--color-white, #ffffff);
+}
+
+/* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own Blue/50 ring ---- */
+[data-switch]:focus-visible {
+  outline: 2px solid var(--color-domain-interactive-focused, var(--color-blue-50));
+  outline-offset: 2px;
+}
+
+/* ---- Sizes — apply via the Switch widget's Extended Class on the input ----
+   Only the geometry vars change; the before/after rules above derive from them.
+   Default (no class) = xLarge (56×32). Track w×h are the observed Figma dimensions;
+   padding is held at the one published 4px value, circle = h − 2·padding (FND-025). */
+[data-switch].loop-toggle-large {
+  --loop-toggle-track-w: 48px;  --loop-toggle-track-h: 26px;  --loop-toggle-circle: 18px;
+}
+[data-switch].loop-toggle-regular {
+  --loop-toggle-track-w: 40px;  --loop-toggle-track-h: 20px;  --loop-toggle-circle: 12px;
+}
+[data-switch].loop-toggle-small {
+  --loop-toggle-track-w: 32px;  --loop-toggle-track-h: 16px;  --loop-toggle-circle: 8px;
+}
+
+/* ============================================================
+   Label wrapper — Switch + label layout (BEM, applied via Extended Class on the
+   container). OutSystems' Switch has no bound label element (unlike Checkbox/Radio),
+   so the label is a sibling laid out by this thin wrapper.
+   ============================================================ */
+.loop-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--loop-toggle-label-gap, 8px);
+  min-height: var(--loop-toggle-row-minh, 40px);
+}
+.loop-toggle__label {
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-toggle-label-size, 16px);
+  font-weight: var(--loop-toggle-label-weight, 400);
+  line-height: var(--loop-toggle-label-leading, 18px);
+  letter-spacing: var(--loop-toggle-label-tracking, 0px);
+  color: var(--color-text-on-light-default);
+}
+/* Label position (Figma "Label Position" = Right [default] / Left / Top / Bottom) */
+.loop-toggle--left   { flex-direction: row-reverse; }
+.loop-toggle--top    { flex-direction: column;         align-items: flex-start; }
+.loop-toggle--bottom { flex-direction: column-reverse; align-items: flex-start; }
+.loop-toggle--disabled .loop-toggle__label {
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) — native animates before/after 180ms ---- */
+@media (prefers-reduced-motion: reduce) {
+  [data-switch]:empty:before,
+  [data-switch]:empty:after { transition: none; }
+}

@@ -16,8 +16,12 @@ Fill this in at project kickoff. The OutSystems skills read these values so they
 ## Conventions (override CLAUDE.md defaults only if this project differs)
 - Prefix: `rnt-`
 - Environment: ODC
-- Spacing base: 4pt
+- Spacing base: unconfirmed — grid spec TBD (don't flag values as "off the 4pt grid"); scale per `tokens/spacing.css`, confirm base/grid with the Loop team
 - Token style: OutSystems UI standard
+
+## Framework reference — OutSystems UI
+- **Source of truth for framework conventions:** [`OutSystems/outsystems-ui`](https://github.com/OutSystems/outsystems-ui), vendored read-only as a git submodule at `vendor/outsystems-ui`, **pinned to `v2.28.1`** — ✅ confirmed to match the target ODC environment's OutSystems UI version (2026-06-17). We build *on top of* this — never edit it (hard rule #1). `git submodule update --init` after cloning.
+- **Brand inheritance:** OutSystems UI declares its whole design-token system as `:root` custom properties (`src/scss/01-foundations/_root.scss`); components resolve `var(--color-…)`, `var(--space-…)`, `var(--border-radius-…)`, `var(--shadow-…)`. `tokens/outsystems-ui-overrides.css` redefines those variables to point at The Loop tokens — bundled **last** in `tokens/index.css` so it wins. Covers **color** (full retint), **spacing** (1:1 name remap), **border-radius** (`soft`→`radius-base`), and **shadow/elevation** (mapped to the Loop lift scale). Result: the framework renders in WBG/"The Loop" branding with no framework edits and no hard-coded values.
 
 ## Findings routing
 - Ticketing: `github`            # default; alternatives: notion | jira

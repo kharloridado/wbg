@@ -1,0 +1,120 @@
+/* loop-button-dropdown.css — source of the shadow styles for <loop-button-dropdown>.
+ * Edit HERE, then mirror into the render() template string in loop-button-dropdown.js
+ * (the component ships as a single drop-in .js with no build step).
+ *
+ * Figma: "Button Dropdown" [node:15597-3469]. Trigger reuses the loop/button spec
+ * (blue-70 primary / blue-70 outline secondary, pill 32, Open Sans 700, tracking -0.5,
+ * 18px chevron icon). The menu/popover detail is not tokenised in Figma, so its
+ * spacing/hover are DERIVED from foundation tokens — see handover note. */
+:host {
+  display: inline-block;
+  position: relative;
+
+  /* token fallback chain → sensible default */
+  --lbd-radius:      var(--radius-pill, 32px);
+  --lbd-pad-y:       var(--space-small, 16px);
+  --lbd-pad-x:       var(--space-medium, 32px);
+  --lbd-gap:         var(--space-button-gap, 6px);
+  --lbd-font:        var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  --lbd-weight:      var(--font-weight-bold, 700);
+  --lbd-size:        var(--font-size-300, 16px);
+  --lbd-tracking:    var(--letter-spacing-button, -0.5px);
+
+  --lbd-primary-bg:  var(--color-bg-link-primary-enabled, #004370);
+  --lbd-primary-fg:  var(--color-white, #ffffff);
+  --lbd-outline:     var(--color-outline-on-light-link-enabled, #004370);
+  --lbd-link-fg:     var(--color-text-on-light-link-primary-enabled, #004370);
+
+  /* menu (derived from foundation tokens) */
+  --lbd-menu-bg:     var(--color-white, #ffffff);
+  --lbd-menu-radius: var(--radius-medium, 8px);
+  --lbd-menu-shadow: var(--shadow-regular, 0 4px 12px rgba(0,13,26,.16));
+  --lbd-item-fg:     var(--color-text-on-light-default, #000d1ab2);
+  --lbd-item-hover:  var(--color-neutral-05, #f5f7f9);
+  --lbd-item-pad-y:  var(--space-xxsmall, 8px);
+  --lbd-item-pad-x:  var(--space-small, 16px);
+  --lbd-focus:       var(--color-outline-on-light-link-enabled, #004370);
+}
+:host([disabled]) { opacity: .5; pointer-events: none; }
+
+.lbd__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lbd-gap);
+  min-height: 56px;
+  padding: var(--lbd-pad-y) var(--lbd-pad-x);
+  border: 1px solid transparent;
+  border-radius: var(--lbd-radius);
+  font-family: var(--lbd-font);
+  font-weight: var(--lbd-weight);
+  font-size: var(--lbd-size);
+  line-height: 1.5;
+  letter-spacing: var(--lbd-tracking);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+/* variant="primary" (default) */
+.lbd__trigger {
+  background-color: var(--lbd-primary-bg);
+  color: var(--lbd-primary-fg);
+}
+:host([variant="secondary"]) .lbd__trigger {
+  background-color: transparent;
+  border-color: var(--lbd-outline);
+  color: var(--lbd-link-fg);
+}
+
+.lbd__icon {
+  width: 18px;            /* loop/button/icon/size small */
+  height: 18px;
+  flex: 0 0 auto;
+  transition: transform 120ms ease;
+}
+:host([open]) .lbd__icon { transform: rotate(180deg); }
+
+.lbd__menu {
+  position: absolute;
+  top: calc(100% + var(--space-tiny, 4px));
+  left: 0px;
+  min-width: 100%;
+  margin: 0px;
+  padding: var(--space-tiny, 4px);
+  list-style: none;
+  background: var(--lbd-menu-bg);
+  border-radius: var(--lbd-menu-radius);
+  box-shadow: var(--lbd-menu-shadow);
+  z-index: 10;
+}
+.lbd__menu[hidden] { display: none; }
+
+.lbd__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--lbd-item-pad-y) var(--lbd-item-pad-x);
+  min-height: 44px;                 /* WCAG 2.2 SC 2.5.8 target size */
+  border: 0px;
+  border-radius: var(--radius-base, 4px);
+  background: transparent;
+  color: var(--lbd-item-fg);
+  font-family: var(--lbd-font);
+  font-size: var(--lbd-size);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.lbd__item:hover,
+.lbd__item:focus-visible { background: var(--lbd-item-hover); }
+.lbd__item:focus-visible {
+  outline: 2px solid var(--lbd-focus);
+  outline-offset: -2px;
+}
+
+.lbd__trigger:focus-visible {
+  outline: 2px solid var(--lbd-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lbd__trigger, .lbd__icon { transition: none; }
+}

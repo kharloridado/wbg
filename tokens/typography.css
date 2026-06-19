@@ -1,13 +1,92 @@
-/* typography.css — type scale + weights */
-:root {
-  --font-family-base: system-ui, sans-serif; /* TODO: brand font */
-  --font-weight-regular: 400;
-  --font-weight-medium:  500;
-  --font-weight-bold:    700;
+/* typography.css — WBG / "The Loop" type scale + weights
+ * Extracted from Figma: type/role page [node:10995-7259], effects page [node:19737-9489].
+ * Font family: Open Sans — brand-owner decision 2026-06-17, resolving FND-002
+ * (the library exposed 6 families: Inter/Open Sans/Poppins/Manrope/Andes/IBM Plex Sans).
+ * Open Sans matches the primitive Heading/* and Body/* type styles in the library. */
 
-  --font-size-s:  14px;
-  --font-size-m:  16px;
-  --font-size-l:  20px;
-  --font-size-xl: 24px;
-  --line-height-base: 1.5;
+/* Load Open Sans from self-hosted ODC Resources (weights 400/600/700 — match
+ * --font-weight-*). Self-hosted (not the Google Fonts CDN @import) so ODC does
+ * not raise offline/PWA warnings — the runtime can cache local resources but not
+ * an external CDN. No italics: the design uses no italic styles.
+ *
+ * SETUP IN ODC: upload open-sans-400/600/700.woff2 as Resources under module
+ * The_Loop_Theme. ODC serves them at /The_Loop_Theme/<filename>. display=swap
+ * avoids invisible text while the font loads; system-ui is the swap fallback. */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/The_Loop_Theme/open-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/The_Loop_Theme/open-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/The_Loop_Theme/open-sans-700.woff2") format("woff2");
+}
+
+:root {
+  /* ---- Font families (Open Sans, per FND-002 sign-off) ---- */
+  --font-family-body:    "Open Sans", system-ui, sans-serif;
+  --font-family-heading: "Open Sans", system-ui, sans-serif;
+  --font-family-label:   "Open Sans", system-ui, sans-serif;
+  --font-family-base:    var(--font-family-body);
+
+  /* ---- Weights ---- */
+  --font-weight-regular:   400;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+
+  /* ---- Type scale (Font-size/NNN ramp) ---- */
+  --font-size-100:  12px;
+  --font-size-200:  14px;
+  --font-size-300:  16px;
+  --font-size-400:  18px;
+  --font-size-500:  20px;
+  --font-size-600:  24px;
+  --font-size-700:  28px;
+  --font-size-800:  32px;
+  --font-size-900:  36px;
+  --font-size-1000: 40px;
+  --font-size-1100: 48px;
+  --font-size-1200: 60px;
+  --font-size-huge-72: 72px;
+
+  /* lift body sizes (semantic) */
+  --font-size-body-tiny:  12px;
+  --font-size-body-small: 14px;
+  --font-size-body-base:  16px;
+  --font-size-label-large: 20px;
+
+  /* ---- Line heights ---- */
+  --line-height-heading: 1.12;
+  --line-height-base:    1.5;
+  --line-height-narrow:  1.25;
+  --line-height-list:    1.8;
+
+  /* ---- Letter spacing (px, from Figma) ---- */
+  --letter-spacing-heading: -3px;
+  --letter-spacing-label:   -1.5px;
+  --letter-spacing-tight:   -0.35px;
+  --letter-spacing-button:  -0.5px;   /* loop/button/label/letter spacing — off the -0.35/-1.5 scale (see findings register) */
+  --letter-spacing-none:    0px;
+  --letter-spacing-caps:    1px;
+}
+
+/* Base page type — apply the brand family + body rhythm to the document root so
+ * every page inherits Open Sans (per FND-002 sign-off). Token-only; the literal
+ * fallback covers the moment before :root resolves / if the theme is pasted alone. */
+html, body {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-body-base, 16px);
+  line-height: var(--line-height-base, 1.5);
 }
