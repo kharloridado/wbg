@@ -1,0 +1,202 @@
+/* ============================================
+   Component: Card  ("The Loop" — loop/card)
+   Figma: -The Loop- Main Library · "Card" [node:20315-6122]
+     · base card (Type=With Padding / No Padding) [node:19547-47101]
+     · multimedia (image hero)                    [node:20315-7404]
+
+   Approach: RESTYLE the native OutSystems UI Card family — NOT a parallel class
+   system. Developers keep using the stock Card / Card Background / Card Sectioned
+   patterns; this theme layer makes them render to The Loop spec. Built one variant
+   at a time in the order below.
+     1. .card           → Loop base card  (white, 8px, FLAT, 24px padding; flush + elevated mods)
+     2. .card-background → Loop multimedia (full-bleed image + bottom scrim + on-dark content)
+     3. .card-sectioned → branded sectioned card (8px, flat, Loop dividers, 24px sections)
+     4. .card inside .list / .card-item → list cards inherit the base treatment
+
+   Location: Theme CSS (loaded after OutSystems UI so it wins on equal specificity,
+   per src/blocks/index.css load order). Escalation Level: L1/L2 (native widget +
+   token-driven theme override). Metrics come from tokens/component-card.css (--loop-card-*).
+
+   NOTE: OutSystems UI v2.28.1 is not vendored in this repo, so the inner class names
+   of Card Background / Card Sectioned are targeted from the documented pattern markup.
+   Confirm the overrides land on the PUBLISHED DOM in a real browser (same caveat as the
+   provider-generated Dropdown DOM).
+
+   Fidelity notes (built faithfully; raised, NOT silently changed):
+     - Loop card shadow tokens (x/y/blur/spread) are all 0 → no elevation, vs OutSystems
+       UI's default card shadow. Built flat.                         → FND-033
+     - Multimedia on-dark text/scrim reference gray-alpha-white PRIMITIVES because the
+       semantic On-Dark role layer is deferred (semantic-colors-dark.css).→ FND-034
+     - The Figma content placeholder uses IBM Plex Sans (foreign family, FND-001); the
+       placeholder here is a dev affordance and uses the brand font instead.
+   ============================================ */
+
+/* =====================================================================
+   1) Native Card  (.card)  — Loop base card
+      White fill, 8px radius, FLAT (no shadow), 24px padding, 24px content gap.
+   ===================================================================== */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--loop-card-gap, 24px);
+  align-items: stretch;
+
+  background-color: var(--loop-card-container-color);          /* white */
+  border: 0;
+  border-radius: var(--loop-card-radius);                      /* 8px */
+  box-shadow: var(--loop-card-shadow);                         /* none — FND-033 */
+  padding: var(--loop-card-padding);                           /* 24px */
+}
+
+/* Type=No Padding — Extended Class `is-flush` (or BEM `card--no-padding`) */
+.card.is-flush,
+.card--no-padding {
+  padding: var(--space-none, 0px);
+}
+
+/* Optional "Classic / Dashboard" elevation — Extended Class `card--elevated` */
+.card--elevated {
+  box-shadow: var(--loop-card-shadow-elevated);               /* --shadow-low */
+}
+
+/* Content placeholder (dev affordance shown before real content is swapped in) */
+.card .loop-card__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  width: 100%;
+  background-color: var(--loop-card-placeholder-bg);          /* #e7edf3 */
+  border-radius: var(--radius-base, 4px);
+  color: var(--loop-card-placeholder-text);                  /* neutral-alpha-42 */
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-200, 14px);
+}
+
+/* =====================================================================
+   2) Card Background  (.card-background)  — Loop multimedia hero
+      Full-bleed image, bottom-anchored content over a blue-90 scrim, on-dark text.
+   ===================================================================== */
+.card-background {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border-radius: var(--loop-card-radius);                     /* 8px */
+  box-shadow: var(--loop-card-shadow);                        /* flat */
+  width: var(--loop-card-multimedia-width);                   /* 464px (override per layout) */
+  max-width: 100%;
+}
+
+/* the background image fills the card */
+.card-background .card-background-image,
+.card-background > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* bottom scrim so on-dark text stays legible over any image */
+.card-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--loop-card-multimedia-scrim);
+  pointer-events: none;
+}
+
+/* content overlay — bottom-aligned, padded, on-dark */
+.card-background .card-background-content,
+.card-background .card-item {
+  position: relative;            /* above the ::after scrim */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-small, 16px);
+  padding: var(--loop-card-multimedia-pad);                  /* 48px */
+}
+
+/* eyebrow ("HAMMER") — 13px bold uppercase, on-dark default */
+.card-background .loop-card__eyebrow {
+  margin: 0;
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-card-multimedia-eyebrow-size, 13px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-narrow, 1.25);
+  text-transform: uppercase;
+  color: var(--loop-card-multimedia-eyebrow);                /* #ffffffbf — FND-034 */
+}
+
+/* title — 20px bold, on-dark emphasis */
+.card-background .loop-card__title,
+.card-background h1, .card-background h2, .card-background h3 {
+  margin: 0;
+  font-family: var(--font-family-heading, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-500, 20px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-narrow, 1.25);
+  letter-spacing: var(--loop-card-multimedia-title-tracking, -0.25px);
+  color: var(--loop-card-multimedia-title);                  /* #ffffffe5 — FND-034 */
+}
+
+/* round media affordance (play / microphone) — white/60 circle */
+.card-background .loop-card__media-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-card-multimedia-icon-size, 64px);
+  height: var(--loop-card-multimedia-icon-size, 64px);
+  border: 0;
+  border-radius: 100px;
+  background-color: var(--loop-card-multimedia-icon-bg);     /* #ffffff99 */
+  color: var(--color-blue-90, #012740);
+  cursor: pointer;
+}
+.card-background .loop-card__media-button:focus-visible {
+  outline: 2px solid var(--color-outline-white, #ffffff);
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   3) Card Sectioned  (.card-sectioned)  — branded sectioned card
+      No exact Loop variant; brand the stock sectioned card: 8px, flat, Loop
+      dividers between sections, 24px section padding.
+   ===================================================================== */
+.card-sectioned {
+  background-color: var(--loop-card-container-color);         /* white */
+  border: 0;
+  border-radius: var(--loop-card-radius);                    /* 8px */
+  box-shadow: var(--loop-card-shadow);                       /* flat */
+  overflow: hidden;                                          /* clip section corners */
+}
+.card-sectioned .card-sectioned-item {
+  padding: var(--loop-card-padding);                         /* 24px */
+}
+/* divider between consecutive sections (Loop outline, not a heavy border) */
+.card-sectioned .card-sectioned-item + .card-sectioned-item {
+  border-top: 1px solid var(--loop-card-divider);            /* neutral-alpha-16 */
+}
+
+/* =====================================================================
+   4) List cards  (.card inside a List / .card-item)
+      Inherit the base .card treatment; just ensure list spacing uses the
+      Loop rhythm. (The base rules above already apply to .card here.)
+   ===================================================================== */
+.list .card,
+.card-item.card {
+  margin-bottom: var(--space-regular, 24px);
+}
+
+/* =====================================================================
+   Reduced motion (WCAG 2.2 SC 2.3.3)
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card-background .loop-card__media-button { transition: none; }
+}
+</content>

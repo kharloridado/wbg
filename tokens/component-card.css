@@ -1,0 +1,49 @@
+/* component-card.css — WBG / "The Loop" Card component tokens
+ * Extracted from Figma: -The Loop- Main Library · "Card" [node:20315-6122]
+ *   base card [node:19547-47101], multimedia [node:20315-7404].
+ * Consumed by src/blocks/loop-card.css — the restyle of the native OutSystems UI
+ * Card family (.card / .card-background / .card-sectioned). Token-only: every value
+ * references a foundation primitive/semantic token (CLAUDE.md hard rule #3).
+ *
+ * Fidelity notes (built faithfully; raised, NOT silently changed):
+ *  - The Loop card SHADOW is defined (`-loop shadows/cards`) but x/y/blur/spread are all
+ *    0 → no visible elevation, vs OutSystems UI's default card shadow. Built FLAT;
+ *    divergence is FND-033 (register-only, low). `--loop-card-shadow-elevated` maps to
+ *    --shadow-low for the optional "Classic / Dashboard" elevation.
+ *  - The multimedia card uses ON-DARK text/scrim over a dark image. The semantic On-Dark
+ *    role layer is parked in semantic-colors-dark.css (not in the light build), so these
+ *    tokens reference the mode-agnostic gray-alpha-white PRIMITIVES directly — FND-034. */
+:root {
+  /* ---- Base card (Type = With Padding / No Padding) ---- */
+  --loop-card-container-color: var(--color-white);       /* loop/card/container color #ffffff */
+  --loop-card-radius:          var(--radius-medium);     /* card/corner radius = 8px */
+  --loop-card-padding:         var(--space-regular);     /* spacing/regular = 24px (With Padding) */
+  --loop-card-gap:             var(--space-regular);     /* content gap = 24px */
+  --loop-card-shadow:          none;                     /* Loop card is flat — see FND-033 */
+  --loop-card-shadow-elevated: var(--shadow-low);        /* optional Classic/Dashboard elevation */
+
+  /* ---- Sectioned card ---- */
+  --loop-card-divider: var(--color-divider-on-light-default);  /* neutral-alpha-16 */
+
+  /* ---- Content placeholder (dev affordance; brand font, NOT the Figma IBM Plex Sans
+         placeholder — that family is foreign, FND-001) ---- */
+  --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* #e7edf3 Neutral/Solid/10 */
+  --loop-card-placeholder-text: var(--color-text-on-light-state-disabled);/* neutral-alpha-42 */
+
+  /* ---- Multimedia card (image hero) ---- */
+  --loop-card-multimedia-width:   464px;                 /* loop/extweb/card/multimedia/width */
+  --loop-card-multimedia-pad:     var(--space-xlarge);   /* spacing/xlarge = 48px */
+  --loop-card-multimedia-gap:     var(--space-regular);  /* 24px */
+  /* bottom-up scrim: blue-90 from 0→full alpha (color-mix keeps the hue while fading) */
+  --loop-card-multimedia-scrim: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-blue-90) 0%, transparent) 31%,
+      var(--color-blue-90) 67%);
+  --loop-card-multimedia-eyebrow:      var(--color-gray-alpha-white-75); /* Text/On Dark/Default #ffffffbf */
+  --loop-card-multimedia-eyebrow-size: 13px;             /* Font-size/150 — no foundation step (cf. Select 13px) */
+  --loop-card-multimedia-title:        var(--color-gray-alpha-white-90); /* Text/On Dark/Emphasis #ffffffe5 */
+  --loop-card-multimedia-title-tracking: -0.25px;        /* Body/Text/Medium tracking — off the -0.35/-1.5 scale */
+  --loop-card-multimedia-icon-bg:      var(--color-gray-alpha-white-60); /* Gray/Alpha/White/60 #ffffff99 */
+  --loop-card-multimedia-icon-size:    64px;             /* play/microphone affordance */
+}
+</content>
