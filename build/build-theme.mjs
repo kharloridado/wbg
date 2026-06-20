@@ -65,6 +65,8 @@ const META = {
   /* Custom component BEM blocks (src/blocks/) */
   "loop-note.css":          { group: "Custom Components", name: "Notes" },
   "loop-tag.css":           { group: "Custom Components", name: "Tag" },
+  "loop-card.css":          { group: "Widget Overrides", name: "Card" },
+  "component-card.css":     { group: "Components",       name: "Card" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)

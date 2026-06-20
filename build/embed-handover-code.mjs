@@ -29,6 +29,7 @@ const MAP = {
   "loop-tooltip.md":         [["src/blocks/loop-tooltip.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-note.md":            [["src/blocks/loop-note.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-tag.md":             [["src/blocks/loop-tag.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
+  "loop-card.md":            [["src/blocks/loop-card.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-button-dropdown.md": [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
   "loop-popover.md":         [["src/components/loop-popover.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
   "loop-system-alert.md":    [["src/components/loop-system-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
