@@ -140,8 +140,13 @@
   --color-background-body:  var(--color-neutral-05);          /* was #f3f6f8 → #f5f7f9 (Loop page bg) */
   --color-background-login: var(--color-white);               /* was #ffffff = #ffffff */
   --overlay-background:     var(--color-gray-alpha-black-24); /* was rgba(0,0,0,.25) → #0000003d */
-  /* --header-color intentionally NOT overridden — left at OutSystems default (#ffffff)
-   * until The Loop specifies a header/chrome color. */
+  /* Layout Top header/chrome → The Loop primary (was OutSystems default #ffffff).
+   * Drives .header background via get-app-settings-background-color('header', --header-color)
+   * in vendor _header.scss. White text/links + the white active underline that this
+   * dark header needs are class-level overrides in outsystems-ui-header.css.
+   * a11y: a primary-blue header makes the Blue/50 focus ring unperceivable on header
+   * links — tracked under FND-012 (flag-don't-fix; ring kept faithful). */
+  --header-color: var(--color-primary);
 
   /* ====== Spacing ====== (OS $osui-sizes → --space-<type>, compiled in _root.scss)
    * The Loop's scale (spacing.css) uses descriptive names but the SAME 4pt values,

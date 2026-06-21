@@ -21,3 +21,5 @@
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";
+/* Layout Top header/menu class overrides — depend on the brand tokens above. */
+@import "./outsystems-ui-header.css";

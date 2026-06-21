@@ -43,6 +43,7 @@ const META = {
   "radius.css":          { group: "Radius",        name: "Border Radius" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
+  "outsystems-ui-header.css":    { group: "OutSystems UI", name: "Layout Top — Header / Menu" },
   "component-field.css":        { group: "Components",       name: "Text Field" },
   "component-toggle.css":       { group: "Components",       name: "Toggle" },
   "component-note.css":         { group: "Components",       name: "Notes" },

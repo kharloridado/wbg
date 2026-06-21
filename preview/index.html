@@ -138,6 +138,58 @@
   .vscomp-value-tag-clear-button .vscomp-clear-icon,
   .vscomp-clear-icon { display: block; width: 10px; height: 10px; -webkit-mask: var(--pv-x) center/contain no-repeat; mask: var(--pv-x) center/contain no-repeat; }
   :root { --pv-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
+
+  /* --- native .header + .app-menu-links baseline (mirrors _header.scss + _menu-app-menu-links.scss) ---
+       Carries the framework DEFAULTS (header #ffffff, neutral-9 links, primary active
+       border) so the cascade is honest — dist/theme.css below retints --header-color →
+       primary and the link/underline colors → white, exactly as ODC would. */
+  :root { --header-color: #ffffff; --header-size: 56px; --border-size-m: 2px; }
+  .header {
+    background-color: var(--background-color-header, var(--header-color));
+    box-shadow: 0 1px 5px 0 rgba(21, 24, 26, 0.1);
+  }
+  .header-top { height: var(--header-size); }
+  .header-content { display: flex; align-items: center; height: 100%; padding: 0 16px; }
+  .header-navigation { flex: 1; height: 100%; }
+  .app-menu-links { display: flex; align-items: center; height: 100%; flex: 1; gap: 24px; }
+  .app-menu-links a {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    color: var(--color-neutral-9);
+    text-decoration: none;
+    border-top: var(--border-size-m) solid transparent;
+    border-bottom: var(--border-size-m) solid transparent;
+  }
+  .app-menu-links a:hover,
+  .app-menu-links a.active { color: var(--color-primary); }
+  .layout:not(.layout-side) .app-menu-links a.active { border-bottom-color: var(--color-primary); }
+
+  /* --- native .osui-submenu baseline (mirrors Pattern/Submenu/_submenu.scss essentials) ---
+       Framework defaults: header text neutral-9/neutral-8, active = primary border + text;
+       the floating __items panel is white (neutral-0) with dark links. dist/theme.css below
+       retints the header bar white and KEEPS the panel dark. */
+  .osui-submenu { cursor: pointer; display: inline-flex; position: relative; height: 100%; }
+  .osui-submenu__header {
+    display: flex; align-items: center; padding: 0 8px;
+    border-top: var(--border-size-m) solid transparent;
+    border-bottom: var(--border-size-m) solid transparent;
+  }
+  .osui-submenu__header__item { display: inline-flex; align-items: center; height: 100%; color: var(--color-neutral-9); }
+  .osui-submenu__header__item a { display: flex; align-items: center; height: 100%; color: var(--color-neutral-8); text-decoration: none; }
+  .osui-submenu.active .osui-submenu__header { border-bottom-color: var(--color-primary); }
+  .osui-submenu.active .osui-submenu__header__item,
+  .osui-submenu.active .osui-submenu__header__item a { color: var(--color-primary); }
+  .osui-submenu__items {
+    background-color: var(--color-neutral-0);
+    border: 1px solid var(--color-neutral-4);
+    border-radius: 4px;
+    box-shadow: var(--shadow-m);
+    display: flex; flex-direction: column; min-width: 160px; padding: 8px 0;
+    position: absolute; left: 0; top: calc(100% + 4px); z-index: 20;
+  }
+  .osui-submenu__items a { color: var(--color-neutral-8); text-decoration: none; padding: 8px 16px; white-space: nowrap; }
+  .osui-submenu__items a.active { color: var(--color-primary); }
 </style>
 
 <!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
@@ -315,6 +367,9 @@
   .pv-pop-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
   .pv-pop-row { display: flex; flex-direction: row; align-items: center; gap: var(--space-xxsmall); }
   .pv-pop-grid { align-items: flex-start; gap: var(--space-medium); flex-wrap: wrap; }
+
+  /* preview-only: let the open submenu panel flow statically instead of JS-positioned absolute */
+  .pv-submenu-static .osui-submenu__items { position: static; margin-top: var(--space-tiny); }
 </style>
 </head>
 <body>
@@ -325,6 +380,39 @@
 </header>
 
 <main>
+
+  <!-- ============ LAYOUT TOP — HEADER / MENU ============ -->
+  <section>
+    <h2>Layout Top — restyle native <code>.header</code> + <code>.app-menu-links</code></h2>
+    <p class="pv-figma">tokens/outsystems-ui-overrides.css (<code>--header-color</code>) + tokens/outsystems-ui-header.css · primary header, white text/links, white active underline</p>
+
+    <div class="layout layout-top">
+      <header class="header header-top">
+        <div class="header-content">
+          <h1 class="application-name">World Bank Group</h1>
+          <nav class="header-navigation">
+            <div class="app-menu-links pv-submenu-static">
+              <a href="#0" class="active">Overview</a>
+              <a href="#0">Projects</a>
+              <a href="#0">Regions</a>
+              <div class="osui-submenu active osui-submenu--is-open">
+                <div class="osui-submenu__header">
+                  <span class="osui-submenu__header__item"><a href="#0">Reports</a></span>
+                </div>
+                <div class="osui-submenu__items">
+                  <a href="#0" class="active">Annual Report</a>
+                  <a href="#0">Regional Briefs</a>
+                  <a href="#0">Data &amp; Statistics</a>
+                </div>
+              </div>
+              <a href="#0">About</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </div>
+    <span class="pv-note">Header bar (incl. the app name + the active <code>.osui-submenu</code> tab) renders white with a white bottom border; the floating submenu panel stays a white popup with dark links. Tab through: the Blue/50 focus ring is low-contrast here — FND-012 (flag-don't-fix).</span>
+  </section>
 
   <!-- ============ TYPOGRAPHY ============ -->
   <section>
