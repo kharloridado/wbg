@@ -64,7 +64,7 @@
   --color-bg-container-secondary: var(--color-blue-40);
   --color-bg-container-on-light-high:    var(--color-neutral-30);
   --color-bg-container-on-light-medium:  var(--color-neutral-20);
-  --color-bg-container-on-light-regular: var(--color-neutral-10);
+  --color-bg-container-on-light-regular: var(--color-neutral-solid-10);
   --color-bg-container-on-light-low:     var(--color-neutral-05);
   --color-bg-container-on-light-lowest:  var(--color-white);
   --color-bg-link-primary-enabled:  var(--color-blue-70);

@@ -27,7 +27,7 @@
 
   /* ---- Content placeholder (dev affordance; brand font, NOT the Figma IBM Plex Sans
          placeholder — that family is foreign, FND-001) ---- */
-  --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* #e7edf3 Neutral/Solid/10 */
+  --loop-card-placeholder-bg:   var(--color-neutral-solid-10);            /* #e7edf3 Neutral/Solid/10 */
   --loop-card-placeholder-text: var(--color-text-on-light-state-disabled);/* neutral-alpha-42 */
 
   /* ---- Multimedia card (image hero) ---- */

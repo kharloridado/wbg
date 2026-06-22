@@ -50,8 +50,8 @@
 /* ===================== Primitive ramp · Neutral (solid) ===================== */
 .background-neutral-05 { background-color: var(--color-neutral-05) !important; }
 .text-neutral-05       { color: var(--color-neutral-05) !important; }
-.background-neutral-10 { background-color: var(--color-neutral-10) !important; }
-.text-neutral-10       { color: var(--color-neutral-10) !important; }
+.background-neutral-solid-10 { background-color: var(--color-neutral-solid-10) !important; }
+.text-neutral-solid-10       { color: var(--color-neutral-solid-10) !important; }
 .background-neutral-15 { background-color: var(--color-neutral-15) !important; }
 .text-neutral-15       { color: var(--color-neutral-15) !important; }
 .background-neutral-20 { background-color: var(--color-neutral-20) !important; }

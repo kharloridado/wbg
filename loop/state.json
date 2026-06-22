@@ -478,6 +478,31 @@
       "node": "20315-7404",
       "status": "register-only",
       "summary": "Multimedia card on-dark text/scrim reference gray-alpha-white / blue-90 primitives directly because the semantic On-Dark role layer is deferred (semantic-colors-dark.css). Revisit in dark-mode phase."
+    },
+    {
+      "id": "FND-035",
+      "type": "consistency",
+      "sev": "medium",
+      "node": "n/a",
+      "status": "resolved",
+      "resolution": "Renamed Loop light primitive --color-neutral-10 -> --color-neutral-solid-10 (2026-06-20); repointed all consumers + regenerated utilities. --color-neutral-10 is now solely OS-UI dark.",
+      "summary": "--color-neutral-10 name collision: Loop solid ramp (light #e7edf3) vs OutSystems UI neutral ramp (dark, loaded last) -> every Loop consumer resolved near-black. Surfaced by Card placeholder + checker."
+    },
+    {
+      "id": "FND-036",
+      "type": "design-token",
+      "sev": "low",
+      "node": "n/a",
+      "status": "register-only",
+      "summary": "loop-checkbox.css references --border-size-s (OS-UI framework token, not defined in Loop theme; 1px fallback). Document reliance on OS-UI base or rebrand."
+    },
+    {
+      "id": "FND-037",
+      "type": "consistency",
+      "sev": "low",
+      "node": "n/a",
+      "status": "register-only",
+      "summary": "--color-warning declared twice on :root: #d97706 (semantic-colors.css legacy alias) vs var(--color-yellow-50) #e19d00 (OS-UI override, wins by load order). Reconcile to one value. Pre-existing; surfaced during theme re-check."
     }
   ],
   "handover_epics": [],

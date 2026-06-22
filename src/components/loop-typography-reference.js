@@ -351,7 +351,7 @@
 .ltr__caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* named roles */
-.ltr__role { padding: 16px 0; border-top: 1px solid var(--color-neutral-10, #e7edf3); }
+.ltr__role { padding: 16px 0; border-top: 1px solid var(--color-neutral-solid-10, #e7edf3); }
 .ltr__role-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 8px; }
 .ltr__role-name { font-weight: 600; font-size: 13px; color: var(--color-text-on-light-headers, #00263e); }
 .ltr__role-spec { font-size: 12px; color: var(--color-text-on-light-subdued, #586e84);
@@ -370,7 +370,7 @@
   color: var(--color-text-on-light-subdued, #586e84);
   padding: 8px 12px; border-bottom: 1px solid var(--color-neutral-15, #dae3eb); }
 .ltr__table tbody td, .ltr__table tbody th { padding: 10px 12px;
-  border-bottom: 1px solid var(--color-neutral-10, #e7edf3); vertical-align: middle; text-align: left; }
+  border-bottom: 1px solid var(--color-neutral-solid-10, #e7edf3); vertical-align: middle; text-align: left; }
 .ltr__scale-sample, .ltr__wt-sample, .ltr__track-sample {
   font-weight: 400; color: var(--color-text-on-light-headers, #00263e);
   font-family: var(--font-family-heading, "Open Sans", system-ui, sans-serif); white-space: nowrap; }
@@ -389,7 +389,7 @@
   padding: 3px 8px; border-radius: 4px; cursor: pointer;
   color: var(--color-text-on-light-link-primary-enabled, #004370); }
 .ltr__copy code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; color: inherit; }
-.ltr__copy:hover { background: var(--color-neutral-10, #e7edf3); }
+.ltr__copy:hover { background: var(--color-neutral-solid-10, #e7edf3); }
 .ltr__copy:focus-visible { outline: 2px solid var(--color-domain-interactive-focused, #0071bc); outline-offset: 1px; }
 .ltr__copy.is-copied { color: var(--color-text-on-light-state-success, #234f03); }
 .ltr__copy.is-copied::after { content: " ✓"; }

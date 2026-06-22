@@ -249,7 +249,7 @@
   color: var(--color-text-on-light-subdued, #586e84);
   padding: 10px 12px; border-bottom: 1px solid var(--color-neutral-15, #dae3eb); }
 .lcr__table tbody td, .lcr__table tbody th { padding: 8px 12px;
-  border-bottom: 1px solid var(--color-neutral-10, #e7edf3); vertical-align: middle; }
+  border-bottom: 1px solid var(--color-neutral-solid-10, #e7edf3); vertical-align: middle; }
 
 .lcr__name { display: flex; align-items: center; gap: 10px; font-weight: 600;
   font-size: 13px; color: var(--color-text-on-light-default, #00263e); white-space: nowrap; }

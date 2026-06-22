@@ -28,7 +28,11 @@
 
   /* ---- Primitive ramp · Neutral (solid) ---- */
   --color-neutral-05: #f5f7f9;
-  --color-neutral-10: #e7edf3;
+  --color-neutral-solid-10: #e7edf3;  /* Figma "Neutral/Solid/10 S". NOT named --color-neutral-10:
+                                         OutSystems UI's neutral ramp runs 0..10 DARK and consumes
+                                         --color-neutral-10 directly, so that name is owned by OS UI
+                                         (remapped dark in outsystems-ui-overrides.css). Naming this
+                                         light value -10 collided and resolved near-black — FND-035. */
   --color-neutral-15: #dae3eb;
   --color-neutral-20: #d4dee8;
   --color-neutral-30: #bdccdb;

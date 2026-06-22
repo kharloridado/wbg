@@ -32,13 +32,13 @@
    * This replaces OutSystems' yellow #ffd337 focus ring with the brand blue.
    * FINDING (a11y/brand): blue-on-blue focus may reduce focus-ring contrast vs the
    * high-contrast yellow default — see findings/tickets/FND-012. focus-inner is left
-   * to inherit (it references --color-neutral-10, remapped below). */
+   * to inherit (it references the OS-UI neutral light step, mapped from Loop solid-10). */
   --color-focus-outer:      var(--color-blue-50);            /* was #ffd337 */
 
   /* ====== Neutral ramp ====== (OS $osui-colors-neutral '0'..'10', light→dark) */
   --color-neutral-0:  var(--color-white);       /* #ffffff = #ffffff */
   --color-neutral-1:  var(--color-neutral-05);  /* #f8f9fa → #f5f7f9 */
-  --color-neutral-2:  var(--color-neutral-10);  /* #f1f3f5 → #e7edf3 */
+  --color-neutral-2:  var(--color-neutral-solid-10);  /* #f1f3f5 → #e7edf3 (Loop Neutral/Solid/10 S) */
   --color-neutral-3:  var(--color-neutral-15);  /* #e9ecef → #dae3eb */
   --color-neutral-4:  var(--color-neutral-20);  /* #dee2e6 → #d4dee8 */
   --color-neutral-5:  var(--color-neutral-30);  /* #ced4da → #bdccdb */
