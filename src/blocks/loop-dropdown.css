@@ -259,6 +259,11 @@
 .osui-dropdown-tags .vscomp-value-tag-clear-button {
   width: var(--loop-select-tag-cross-size, 14px);
   height: var(--loop-select-tag-cross-size, 14px);
+  /* Figma ✕ is an inline icon, not the provider's filled neutral circle —
+     null the circle/absolute positioning the lib injects at runtime. */
+  background: transparent !important;
+  border-radius: 0 !important;
+  position: static !important;
 }
 .osui-dropdown-tags .vscomp-value-tag-clear-button .vscomp-clear-icon {
   background-color: var(--color-icon-on-light-default);
@@ -295,12 +300,68 @@
   color: var(--color-text-on-light-default);
 }
 
+/* ---- Multi-select options: hide the lib's left checkbox; selected row gets a
+        right-aligned check only (Figma node 18830-17312). Affordance change is
+        raised as FND-033; ARIA role=option / aria-selected stay intact. ---- */
+.osui-dropdown-tags .vscomp-option {
+  display: flex;
+  align-items: center;
+}
+.osui-dropdown-tags .vscomp-option .checkbox-icon {
+  display: none;
+}
+.osui-dropdown-tags .vscomp-option-text {
+  width: auto;  /* lib forces calc(100% - 25px) for the checkbox gutter */
+}
+.osui-dropdown-tags .vscomp-option.selected::after {
+  content: "";
+  margin-left: auto;
+  width: calc(var(--loop-select-option-check-size, 14px) / 2);
+  height: var(--loop-select-option-check-size, 14px);
+  border: solid var(--color-icon-on-light-default);  /* #4b5e71 */
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  flex: 0 0 auto;
+}
+
+/* ---- "+N" overflow chip — provider renders .vscomp-value-tag.more-value-count
+        when noOfDisplayValues (set via the block's Extensibility JSON) is below the
+        selected count. Style it as the neutral Figma pill (no clear button). ---- */
+.osui-dropdown-tags .vscomp-value-tag.more-value-count {
+  background-color: var(--loop-select-morecount-bg) !important;
+  border: 1px solid var(--color-outline-on-light-subdued) !important;
+  border-radius: var(--radius-pill) !important;
+  padding: var(--loop-select-morecount-padding-block, 8px) var(--loop-select-morecount-padding-inline, 12px) !important;
+  font-size: var(--font-size-200, 14px);
+  color: var(--color-text-on-light-default);
+}
+
 /* search input inside the open list */
 .osui-dropdown-search .vscomp-search-input,
 .osui-dropdown-tags .vscomp-search-input {
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
   color: var(--color-text-on-light-default);
+}
+
+/* ---- Dropdown Search single: per-option left icon (provider renders it from the
+        option's image_url_or_class). Give it a consistent box + gap to the text. ---- */
+.osui-dropdown-search .vscomp-option {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-field-gap, 8px);
+}
+.osui-dropdown-search .vscomp-option-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: var(--color-icon-on-light-default);
+}
+.osui-dropdown-search .vscomp-option-icon svg,
+.osui-dropdown-search .vscomp-option-icon img {
+  width: 100%;
+  height: 100%;
 }
 
 /* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */

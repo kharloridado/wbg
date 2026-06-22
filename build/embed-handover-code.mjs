@@ -26,6 +26,7 @@ const MAP = {
   "loop-radio-button.md":    [["src/blocks/loop-radio-button.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-switch.md":          [["src/blocks/loop-switch.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-text-field.md":      [["src/blocks/loop-text-field.css", "css", "Theme CSS — paste below OutSystems UI"]],
+  "loop-dropdown.md":        [["src/blocks/loop-dropdown.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tooltip.md":         [["src/blocks/loop-tooltip.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-note.md":            [["src/blocks/loop-note.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-tag.md":             [["src/blocks/loop-tag.css", "css", "Theme CSS (also folded into dist/theme.css)"]],

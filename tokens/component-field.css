@@ -72,4 +72,12 @@
   --loop-select-tag-gap:            var(--space-tiny);         /* 4px — loop/tag/hgap */
   --loop-select-tag-bg:             var(--color-bg-container-on-light-low);   /* #f5f7f9 — Neutral/05 */
   --loop-select-tag-cross-size:     14px;                      /* loop/tag/icon/cross-size */
+
+  /* ---- Open-list option selected check (multi-select shows a right check, no left checkbox) ---- */
+  --loop-select-option-check-size:  14px;                      /* CSS ::after check glyph size on .vscomp-option.selected */
+
+  /* ---- "+N" overflow counter chip (collapsed tags; provider .more-value-count) ---- */
+  --loop-select-morecount-bg:             var(--loop-select-tag-bg);    /* same neutral fill as the tag chip */
+  --loop-select-morecount-padding-block:  var(--space-xxsmall);        /* 8px */
+  --loop-select-morecount-padding-inline: var(--space-xsmall);         /* 12px */
 }

@@ -127,6 +127,9 @@
   .dropdown-popup-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* preview-only: let the open list flow statically instead of JS-positioned absolute */
   .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: 4px; }
+  /* preview-only: VirtualSelect open dropbox flows below the field (lib positions it absolute at runtime) */
+  .pv-dd-static .vscomp-ele-wrapper { flex-wrap: wrap; }
+  .pv-dd-static .vscomp-dropbox-container { width: 100%; margin-top: 4px; }
 
   /* --- native VirtualSelect baseline (mirrors provider DOM: .vscomp-*) --- */
   .vscomp-ele-wrapper { display: flex; align-items: center; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
@@ -890,6 +893,90 @@
         </div>
       </div>
       <span class="pv-note">FND-031: Select uses --radius-pill (32px) while the Text Field uses --radius-medium (8px); Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Multi-select — open list (right check, <em>no</em> left checkbox)</span>
+      <div class="loop-field pv-dd-static">
+        <label data-label for="dd-tags-open">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags-open">
+          <div class="vscomp-ele-wrapper vscomp-wrapper multiple show-value-as-tags has-value focused" role="combobox" aria-expanded="true" aria-label="Select one or more options" tabindex="0">
+            <div class="vscomp-toggle-button">
+              <div class="vscomp-value">
+                <span class="vscomp-value-tag"><span class="vscomp-value-tag-content">In Progress</span><span class="vscomp-value-tag-clear-button" role="button" aria-label="In Progress, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span></span>
+                <span class="vscomp-value-tag"><span class="vscomp-value-tag-content">Done</span><span class="vscomp-value-tag-clear-button" role="button" aria-label="Done, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span></span>
+              </div>
+              <div class="vscomp-arrow"></div>
+            </div>
+            <div class="vscomp-dropbox-container">
+              <div class="vscomp-dropbox">
+                <div class="vscomp-search-wrapper"><input type="text" class="vscomp-search-input" placeholder="Search…" aria-label="Search"></div>
+                <div class="vscomp-options-container">
+                  <div class="vscomp-options-list" role="listbox" aria-multiselectable="true">
+                    <div class="vscomp-options">
+                      <div class="vscomp-option selected" role="option" aria-selected="true" tabindex="-1"><span class="checkbox-icon"></span><span class="vscomp-option-text">In Progress</span></div>
+                      <div class="vscomp-option selected" role="option" aria-selected="true" tabindex="-1"><span class="checkbox-icon"></span><span class="vscomp-option-text">Done</span></div>
+                      <div class="vscomp-option" role="option" aria-selected="false" tabindex="-1"><span class="checkbox-icon"></span><span class="vscomp-option-text">Close</span></div>
+                      <div class="vscomp-option hovered" role="option" aria-selected="false" tabindex="-1"><span class="checkbox-icon"></span><span class="vscomp-option-text">Blocked</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">FND-033: option rows hide the provider's left checkbox; a selected row shows a right-aligned check only. Built as designed; ARIA role=option / aria-selected retained.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Multi-select — "+N" overflow chip (<code>noOfDisplayValues: 3</code>)</span>
+      <div class="loop-field">
+        <label data-label for="dd-tags-more">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags-more">
+          <div class="vscomp-ele-wrapper vscomp-wrapper multiple show-value-as-tags has-value" role="combobox" aria-expanded="false" aria-label="Select one or more options" tabindex="0">
+            <div class="vscomp-toggle-button">
+              <div class="vscomp-value">
+                <span class="vscomp-value-tag"><span class="vscomp-value-tag-content">In Progress</span><span class="vscomp-value-tag-clear-button" role="button" aria-label="In Progress, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span></span>
+                <span class="vscomp-value-tag"><span class="vscomp-value-tag-content">Done</span><span class="vscomp-value-tag-clear-button" role="button" aria-label="Done, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span></span>
+                <span class="vscomp-value-tag"><span class="vscomp-value-tag-content">Close</span><span class="vscomp-value-tag-clear-button" role="button" aria-label="Close, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span></span>
+                <span class="vscomp-value-tag more-value-count">+3</span>
+              </div>
+              <div class="vscomp-arrow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">The +N chip appears once the block's Extensibility JSON sets noOfDisplayValues below the selected count (provider-generated at runtime).</span>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Dropdown Search — open list with option icons (<code>.osui-dropdown-search</code>)</span>
+      <div class="loop-field loop-field--select pv-dd-static">
+        <label data-label for="dd-search">Select Option</label>
+        <div class="osui-dropdown-search" id="dd-search">
+          <div class="vscomp-ele-wrapper vscomp-wrapper has-search-input has-value focused" role="combobox" aria-expanded="true" aria-label="Search and select an option" tabindex="0">
+            <div class="vscomp-toggle-button">
+              <div class="vscomp-value">Bridget Hernandez</div>
+              <div class="vscomp-arrow"></div>
+            </div>
+            <div class="vscomp-dropbox-container">
+              <div class="vscomp-dropbox">
+                <div class="vscomp-search-wrapper"><input type="text" class="vscomp-search-input" placeholder="Search…" aria-label="Search"></div>
+                <div class="vscomp-options-container">
+                  <div class="vscomp-options-list" role="listbox">
+                    <div class="vscomp-option selected" role="option" aria-selected="true" tabindex="-1"><i class="vscomp-option-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 16.5c0-3 2.7-5 6-5s6 2 6 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></i><span class="vscomp-option-text">Bridget Hernandez</span></div>
+                    <div class="vscomp-option" role="option" aria-selected="false" tabindex="-1"><i class="vscomp-option-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 16.5c0-3 2.7-5 6-5s6 2 6 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></i><span class="vscomp-option-text">Bruno Auster</span></div>
+                    <div class="vscomp-option hovered" role="option" aria-selected="false" tabindex="-1"><i class="vscomp-option-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 16.5c0-3 2.7-5 6-5s6 2 6 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></i><span class="vscomp-option-text">Camila Stevenson</span></div>
+                    <div class="vscomp-option" role="option" aria-selected="false" tabindex="-1"><i class="vscomp-option-icon" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 16.5c0-3 2.7-5 6-5s6 2 6 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></i><span class="vscomp-option-text">Carl Vedder</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">Search is on by default in the provider; per-option left icons come from each option's image_url_or_class.</span>
     </div>
   </section>
 
