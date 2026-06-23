@@ -310,7 +310,10 @@
         "FND-033",
         "FND-034"
       ],
-      "note": "Scope = the tab BAR (Lift Tabs / -loop tab / group) shown in the Desktop/Tablet/Mobile examples; standalone pill 'tab item' chip [node:18672-2680] out of scope. Figma node id provided by user 2026-06-23."
+      "note": "Scope = the tab BAR (Lift Tabs / -loop tab / group) shown in the Desktop/Tablet/Mobile examples; standalone pill 'tab item' chip [node:18672-2680] out of scope. Figma node id provided by user 2026-06-23.",
+      "handover": [
+        71
+      ]
     }
   ],
   "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",

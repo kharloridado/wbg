@@ -34,8 +34,10 @@ Round 2 **PASS** after logging both findings (no CSS change). All `--loop-tab-*`
 Both below the `findings.gate = high+` → register-only (no GitHub Bug opened, matching FND-013…032).
 
 ## Board / handover
+- Commit `c407947` on `claude/components-tab-build-dw66k0`.
 - Handover doc `handover/loop-tabs.md` (CSS embedded via `node build/embed-handover-code.mjs`).
-- Handover Task + Project #1 board entry: see this iteration's commit/issue.
+- Handover Task **#71** (`[handover] Tabs — add in OutSystems`) created, assigned, labels `handover,task`.
+  (Project #1 board add is manual — the GitHub MCP available here exposes no Projects v2 op.)
 
 ## Needs-human (to advance further)
 The rest of the to-build queue (#39 Search, #40 Date Picker, #41 Upload, #42 Alert, #43 Toast,
