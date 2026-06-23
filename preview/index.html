@@ -6,209 +6,24 @@
 <title>The Loop — Component Preview</title>
 
 <!--
-  LOAD ORDER mirrors ODC: native OutSystems UI baseline → brand theme tokens →
-  handover overrides (which are pasted into Theme CSS, below OutSystems UI).
-  Equal-specificity .btn rules resolve by source order, so the overrides MUST come
-  after the baseline to win.
+  LOAD ORDER mirrors ODC exactly:
+    1) Real OutSystems UI (ODC) framework base — the vendored submodule compiled by
+       `npm run build:osui`. This is the SAME framework CSS ODC ships, so the preview
+       validates fidelity against the real base, not a hand-written approximation.
+    2) Brand theme tokens (dist/theme.css) — retints OutSystems UI's CSS variables.
+    3) Provider stylesheets (virtual-select, flatpickr) — runtime-injected in ODC.
+    4) The handover override CSS (src/blocks/loop-*.css) — pasted into Theme CSS, BELOW
+       OutSystems UI, so it loads LAST and wins equal-specificity rules by source order.
+       Where a real OutSystems UI rule has HIGHER specificity and an override does NOT
+       win, that is a genuine fidelity finding to surface — which is exactly why the
+       preview is now based on the real framework instead of a stub.
 -->
 
-<!-- 1) Minimal native OutSystems UI baseline.
-        The override files only RESTYLE OutSystems UI's native .btn / .button-group;
-        they assume the framework base (display, border-width, box-sizing, cursor,
-        transition) already exists. ODC provides it — locally we stub just enough.
-        This is framework scaffold, NOT design. -->
-<style>
-  :root { color-scheme: light; }
-  *, *::before, *::after { box-sizing: border-box; }
-
-  /* --- native .btn baseline (mirrors OutSystems UI _btn.scss essentials) --- */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    border: 1px solid currentColor;
-    border-radius: 4px;
-    background: transparent;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .btn[disabled], .btn[aria-disabled="true"] { cursor: not-allowed; }
-
-  /* --- native .button-group baseline (mirrors _button-group.scss essentials) --- */
-  .button-group { display: inline-flex; }
-  .button-group-item {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    background: transparent;
-    cursor: pointer;
-    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .button-group-item[disabled] { cursor: not-allowed; }
-
-  /* --- native [data-checkbox] baseline (mirrors OS UI _checkbox.scss essentials) ---
-       The Loop override builds its own ::before box on top of this stripped input. */
-  [data-checkbox] {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-  }
-  [data-checkbox]::before { display: block; }
-  [data-checkbox]::after  { position: absolute; display: block; }
-
-  /* --- native .radio-button baseline (mirrors OS UI _radio-button.scss essentials) ---
-       The Loop override rebuilds the ring+dot via ::before/::after. */
-  .radio-button {
-    appearance: none;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 0;
-    background: transparent;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .radio-button:before, .radio-button:after { position: absolute; display: block; }
-  [data-radio-button] {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  /* --- native [data-switch] baseline (mirrors OS UI _switch.scss essentials) ---
-       OutSystems UI strips the native checkbox and draws the track (:before) +
-       thumb (:after). The Loop override is self-contained and restates these, but
-       the stub keeps the preview honest about the native foundation. */
-  [data-switch] {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-  }
-  [data-switch]:before,
-  [data-switch]:after { content: ""; position: absolute; display: block; }
-
-  /* --- native .form-control[data-input] baseline (mirrors OS UI _inputs.scss) ---
-       Height, reset, and transition so The Loop tokens land on an honest foundation. */
-  .form-control[data-input],
-  .form-control[data-textarea] {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-    font-size: 14px;
-    line-height: 1.4;
-    transition: border-color 180ms ease, background-color 180ms ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .form-control[data-textarea] { resize: vertical; min-height: 80px; }
-
-  /* --- native validation message baseline (mirrors OS UI _form.scss essentials) ---
-       OutSystems renders <span class="validation-message"> as the default form
-       validation message; out of the box it is font-size-xs (12px) in the generic
-       error colour. The override restyles it to match the Error helper. */
-  span.validation-message {
-    display: block;
-    color: #da1e28;            /* get-text-color('error') → --color-error (Red/50) */
-    font-size: 12px;           /* --font-size-xs */
-  }
-
-  /* --- native Dropdown pattern baseline (mirrors OS UI _dropdown.scss) --- */
-  .dropdown-container { position: relative; }
-  .dropdown-container > .dropdown-display {
-    display: flex; align-items: center; width: 100%; height: 40px;
-    padding: 0 12px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
-    cursor: pointer; transition: border-color 180ms ease, background-color 180ms ease;
-  }
-  .dropdown-display-content { width: 100%; overflow: hidden; }
-  .dropdown-display-content > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dropdown-list { background: #fff; border: 1px solid #ccc; }
-  .dropdown-popup-row { display: flex; align-items: center; height: 40px; padding: 0 12px; cursor: pointer; }
-  .dropdown-popup-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  /* preview-only: let the open list flow statically instead of JS-positioned absolute */
-  .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: 4px; }
-
-  /* --- native VirtualSelect baseline (mirrors provider DOM: .vscomp-*) --- */
-  .vscomp-ele-wrapper { display: flex; align-items: center; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
-  .vscomp-toggle-button { display: flex; align-items: center; width: 100%; }
-  .vscomp-value { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; }
-  .vscomp-arrow { width: 8px; height: 8px; flex-shrink: 0; border-right: 1.5px solid #888; border-bottom: 1.5px solid #888; transform: rotate(45deg); }
-  .vscomp-value-tag { display: inline-flex; align-items: center; }
-  .vscomp-value-tag-clear-button { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-  .vscomp-value-tag-clear-button .vscomp-clear-icon,
-  .vscomp-clear-icon { display: block; width: 10px; height: 10px; -webkit-mask: var(--pv-x) center/contain no-repeat; mask: var(--pv-x) center/contain no-repeat; }
-  :root { --pv-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
-
-  /* --- native .header + .app-menu-links baseline (mirrors _header.scss + _menu-app-menu-links.scss) ---
-       Carries the framework DEFAULTS (header #ffffff, neutral-9 links, primary active
-       border) so the cascade is honest — dist/theme.css below retints --header-color →
-       primary and the link/underline colors → white, exactly as ODC would. */
-  :root { --header-color: #ffffff; --header-size: 56px; --border-size-m: 2px; }
-  .header {
-    background-color: var(--background-color-header, var(--header-color));
-    box-shadow: 0 1px 5px 0 rgba(21, 24, 26, 0.1);
-  }
-  .header-top { height: var(--header-size); }
-  .header-content { display: flex; align-items: center; height: 100%; padding: 0 16px; }
-  .header-navigation { flex: 1; height: 100%; }
-  .app-menu-links { display: flex; align-items: center; height: 100%; flex: 1; gap: 24px; }
-  .app-menu-links a {
-    display: inline-flex;
-    align-items: center;
-    height: 100%;
-    color: var(--color-neutral-9);
-    text-decoration: none;
-    border-top: var(--border-size-m) solid transparent;
-    border-bottom: var(--border-size-m) solid transparent;
-  }
-  .app-menu-links a:hover,
-  .app-menu-links a.active { color: var(--color-primary); }
-  .layout:not(.layout-side) .app-menu-links a.active { border-bottom-color: var(--color-primary); }
-
-  /* --- native .osui-submenu baseline (mirrors Pattern/Submenu/_submenu.scss essentials) ---
-       Framework defaults: header text neutral-9/neutral-8, active = primary border + text;
-       the floating __items panel is white (neutral-0) with dark links. dist/theme.css below
-       retints the header bar white and KEEPS the panel dark. */
-  .osui-submenu { cursor: pointer; display: inline-flex; position: relative; height: 100%; }
-  .osui-submenu__header {
-    display: flex; align-items: center; padding: 0 8px;
-    border-top: var(--border-size-m) solid transparent;
-    border-bottom: var(--border-size-m) solid transparent;
-  }
-  .osui-submenu__header__item { display: inline-flex; align-items: center; height: 100%; color: var(--color-neutral-9); }
-  .osui-submenu__header__item a { display: flex; align-items: center; height: 100%; color: var(--color-neutral-8); text-decoration: none; }
-  .osui-submenu.active .osui-submenu__header { border-bottom-color: var(--color-primary); }
-  .osui-submenu.active .osui-submenu__header__item,
-  .osui-submenu.active .osui-submenu__header__item a { color: var(--color-primary); }
-  .osui-submenu__items {
-    background-color: var(--color-neutral-0);
-    border: 1px solid var(--color-neutral-4);
-    border-radius: 4px;
-    box-shadow: var(--shadow-m);
-    display: flex; flex-direction: column; min-width: 160px; padding: 8px 0;
-    position: absolute; left: 0; top: calc(100% + 4px); z-index: 20;
-  }
-  .osui-submenu__items a { color: var(--color-neutral-8); text-decoration: none; padding: 8px 16px; white-space: nowrap; }
-  .osui-submenu__items a.active { color: var(--color-primary); }
-
-  /* --- native .alert baseline (mirrors OS UI 04-patterns/02-content/_alert.scss) ---
-       Framework defaults: flex row, soft radius, --space-base padding, solid type
-       fills + white text. dist/theme.css (outsystems-ui-alert.css) below restyles
-       this to The Loop "Notes" look — light tint + 1px border + dark body text. */
-  .alert { align-items: center; border-radius: var(--border-radius-soft); display: flex; padding: var(--space-base); }
-  .alert .alert-icon { align-self: flex-start; display: inline-flex; font-size: 24px; margin-right: var(--space-base); }
-  .alert .alert-message { flex: 1; }
-</style>
+<!-- 1) Real OutSystems UI (ODC) framework base. Regenerate with `npm run build:osui`
+        after updating the vendor/outsystems-ui submodule. Replaces the former
+        hand-written "native baseline" stub so the preview is honest about the real
+        cascade (resets, :root tokens, .btn, inputs, .header, .dropdown, .alert, …). -->
+<link rel="stylesheet" href="vendor/outsystems-ui/outsystems-ui.css">
 
 <!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
 <link rel="stylesheet" href="../dist/theme.css">
@@ -233,16 +48,21 @@
 <link rel="stylesheet" href="../src/blocks/loop-checkbox.css">
 <link rel="stylesheet" href="../src/blocks/loop-radio-button.css">
 <link rel="stylesheet" href="../src/blocks/loop-text-field.css">
+<link rel="stylesheet" href="../src/blocks/loop-search.css">
 <link rel="stylesheet" href="../src/blocks/loop-dropdown.css">
 <link rel="stylesheet" href="../src/blocks/loop-datepicker.css">
 <link rel="stylesheet" href="../src/blocks/loop-switch.css">
+<link rel="stylesheet" href="../src/blocks/loop-tooltip.css">
+<link rel="stylesheet" href="../src/blocks/loop-popover.css">
 
 <!-- 4) Preview page chrome. NOT part of the design system, but still authored to
         The Loop brand: tokens only (no ad-hoc hex / raw px), brand elevation,
         radius, type scale + tracking — and classes only (no inline style attrs in
-        the body). The single hardcoded exceptions are the native OutSystems UI
-        baseline above and ui-monospace for code samples (no brand mono token). -->
+        the body). The only non-token exception is ui-monospace for code samples
+        (no brand mono token). The framework base is the real OutSystems UI CSS above. -->
 <style>
+  :root { color-scheme: light; }
+
   html, body {
     margin: 0;
     padding: 0;
@@ -250,6 +70,11 @@
     font-size: var(--font-size-body-base);
     color: var(--color-text-on-light-default);
     background: var(--color-bg-page-default);
+    /* The real OSUI base sets html{overflow:hidden} + html,body{height:100%} because an
+       OutSystems app scrolls inside a .screen-container. This flat preview has no such
+       wrapper, so restore normal document scrolling — otherwise the page can't scroll. */
+    overflow: visible;
+    height: auto;
   }
 
   /* --- page header --- */
@@ -390,14 +215,24 @@
   .pv-tt-balloon--below { margin-top: var(--space-tiny); }
   .pv-tt-balloon--above { margin-bottom: var(--space-tiny); }
   .pv-tt-balloon--side  { margin-left: var(--space-tiny); display: flex; flex-direction: row; align-items: center; }
+  /* Arrow is a rotate(45deg)d square (loop-tooltip.css); --up/--down keep that base
+     rotation, --side must re-compose it alongside its translate. */
   .pv-tt-arrow--up   { left: var(--space-regular); top: calc(var(--space-tiny) * -1); }
   .pv-tt-arrow--down { left: var(--space-regular); bottom: calc(var(--space-tiny) * -1); }
-  .pv-tt-arrow--side { left: calc(var(--space-tiny) * -1); top: 50%; transform: translateY(-50%); }
+  .pv-tt-arrow--side { left: calc(var(--space-tiny) * -1); top: 50%; transform: translateY(-50%) rotate(45deg); }
 
   /* --- popover demo scaffold --- */
   .pv-pop-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
   .pv-pop-row { display: flex; flex-direction: row; align-items: center; gap: var(--space-xxsmall); }
   .pv-pop-grid { align-items: flex-start; gap: var(--space-medium); flex-wrap: wrap; }
+  /* preview-only: native popover panel is JS-positioned absolute in production; here
+     let it flow statically (keep position:relative so the pointer pseudo still anchors). */
+  .pv-pop-static [data-popover] { position: relative; }
+  .pv-pop-static [data-popover] > .popover-bottom { position: relative; display: block; margin: var(--space-xsmall) 0; transform: none; }
+  .pv-pop-static [data-popover] > .popover-top { display: inline-flex; align-items: center; gap: var(--space-tiny); cursor: pointer; }
+
+  /* preview-only: let the open native Dropdown list flow statically instead of JS-positioned absolute */
+  .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: var(--space-tiny); }
 
   /* preview-only: let the open submenu panel flow statically instead of JS-positioned absolute */
   .pv-submenu-static .osui-submenu__items { position: static; margin-top: var(--space-tiny); }
@@ -407,7 +242,7 @@
 
 <header class="pv-header">
   <h1>The Loop — Local Component Preview</h1>
-  <p>Real theme tokens (dist/theme.css) + the actual handover CSS/JS, on the native OutSystems UI baseline. Validate fidelity before importing into ODC.</p>
+  <p>The real OutSystems UI (ODC) framework CSS as the base, then real theme tokens (dist/theme.css) + the actual handover CSS/JS on top — the same cascade as ODC. Validate fidelity before importing.</p>
 </header>
 
 <main>
@@ -968,6 +803,91 @@
     </div>
   </section>
 
+  <!-- ============ SEARCH ============ -->
+  <section>
+    <h2>Search — restyle native <code>.osui-search</code> (inherits the Text Field box)</h2>
+    <p class="pv-figma">handover/loop-search.md · Figma node 17191-8728</p>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Label order</span>
+      <div class="loop-field pv-field">
+        <label data-label for="se-vert">Search Label</label>
+        <div class="osui-search">
+          <div class="osui-search__input">
+            <input class="form-control" data-input id="se-vert" type="search" placeholder="Enter your search">
+          </div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--horizontal pv-field">
+        <label data-label for="se-horiz">Search</label>
+        <div class="osui-search">
+          <div class="osui-search__input">
+            <input class="form-control" data-input id="se-horiz" type="search" placeholder="Enter your search">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes</span>
+      <div class="loop-field pv-field">
+        <label data-label for="se-xl">xLarge (56px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-xlarge" data-input id="se-xl" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-lg">Large (48px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-large" data-input id="se-lg" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-rg">Regular (40px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-regular" data-input id="se-rg" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-sm">Small (32px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-small" data-input id="se-sm" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">States</span>
+      <div class="loop-field">
+        <label data-label for="se-filled">Filled (clear × — Chrome/Edge)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="se-filled" type="search" value="annual report">
+        </div></div>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-err">Error</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control not-valid" data-input id="se-err" type="search" value="bad query">
+        </div></div>
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-warn">Warning</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control is-warning" data-input id="se-warn" type="search" value="caution query">
+        </div></div>
+        <span class="loop-field__helper loop-field__helper--warning">Warning message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-dis">Disabled</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="se-dis" type="search" placeholder="Enter your search" disabled>
+        </div></div>
+      </div>
+      <span class="pv-note">Focused = click into a field (2px Blue/50 inset ring, no height jump). FND-050: the clear × uses the <code>type=search</code> cancel button (WebKit/Blink only). All box/state visuals inherited from the Text Field override.</span>
+    </div>
+  </section>
+
   <!-- ============ DROPDOWN / SELECT ============ -->
   <section>
     <h2>Dropdown / Select — restyle native <code>.dropdown</code> + VirtualSelect <code>.vscomp-*</code></h2>
@@ -1141,7 +1061,7 @@
   <section>
     <h2>Tooltip</h2>
     <p class="pv-figma">tokens/component-tooltip.css · src/blocks/loop-tooltip.css · Figma node 17874-7113</p>
-    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. Arrow triangles use clip-path; position managed by OutSystems JS at runtime.</p>
+    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. The arrow is the native rotate(45°) square (sized via <code>--osui-tooltip-arrow-size</code>) tucked behind the balloon; position managed by OutSystems JS at runtime.</p>
 
     <div class="pv-tt-grid">
 
@@ -1150,7 +1070,7 @@
         <span class="pv-caption">Dark · Bottom (default)</span>
         <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-bottom">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-dark-bottom" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-dark-bottom" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
           </div>
@@ -1162,7 +1082,7 @@
         <span class="pv-caption">Dark · Top</span>
         <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--top">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-top">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon top osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--above" id="tt-dark-top" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon top-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--above" id="tt-dark-top" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--down"></div>
           </div>
@@ -1174,7 +1094,7 @@
         <span class="pv-caption">Light · Bottom</span>
         <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-bottom">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-light-bottom" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-light-bottom" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
           </div>
@@ -1186,7 +1106,7 @@
         <span class="pv-caption">Light · Left (right-side balloon)</span>
         <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--row">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-left">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon left osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--side" id="tt-light-left" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon right-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--side" id="tt-light-left" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--side"></div>
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
           </div>
@@ -1496,7 +1416,7 @@
         multiline>
       </loop-system-alert>
     </div>
-    <p class="pv-note pv-note--spaced">⚠ Pending finding: rgba(255,255,255,0.75) text on the offline background (#8a9db1) may fail WCAG AA contrast — filed for design review.</p>
+    <p class="pv-note pv-note--spaced">⚠ Pending finding (FND-042): white text on the offline background (#8a9db1) fails WCAG AA contrast — white-75 ≈ 2.23:1, white-90 ≈ 2.6:1 — built as designed, filed for design review.</p>
     <p class="pv-log" id="sysalert-log">last event: —</p>
   </section>
 
@@ -1554,51 +1474,61 @@
 
   <!-- ============ POPOVER ============ -->
   <section>
-    <h2>Popover — custom Web Component <code>&lt;loop-popover&gt;</code></h2>
-    <p class="pv-figma">handover/loop-popover.md · Figma node 26345-2762</p>
-    <p class="pv-note pv-note--spaced">Pointers shown open inline (position relative to trigger is set in production by the containing layout). Toggle <code>open</code> to show/hide.</p>
+    <h2>Popover — restyle native OutSystems UI <code>[data-popover]</code> widget</h2>
+    <p class="pv-figma">tokens/component-popover.css · src/blocks/loop-popover.css · Figma node 26345-2762</p>
+    <p class="pv-note pv-note--spaced">The native <code>.popover-bottom</code> panel restyled into The Loop card; the pointer is a CSS pseudo-element keyed to the alignment class. Panels shown statically (production positions them by the trigger).</p>
 
-    <div class="pv-row pv-pop-grid">
+    <div class="pv-row pv-pop-grid pv-pop-static">
 
+      <!-- The goal use case: info trigger → Notifications card, align-center -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;top&quot; + title + dismiss</span>
-        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-top').toggleAttribute('open')">Toggle</button>
-        <loop-popover id="pop-top" pointer="top" title="About this field" has-dismiss open>
-          <p>Describes the project priority level used for reporting. Values range from 1 (low) to 5 (critical).</p>
-        </loop-popover>
+        <span class="pv-caption">align-center (pointer up, centred)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom align-center">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Notifications</div>
+            <div data-container><span style="font-weight: bold;">Fannie Woods</span> has received your request. You’ll be notified soon.<br>September 28, 12:09PM<br></div>
+          </div>
+        </div>
       </div>
 
+      <!-- Default placement (below trigger): pointer up, 24px from leading edge -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;bottom&quot; (default)</span>
-        <loop-popover id="pop-bottom" pointer="bottom" open>
-          <p>This is a simple popover with no title and a bottom pointer.</p>
-        </loop-popover>
-        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-bottom').toggleAttribute('open')">Toggle</button>
+        <span class="pv-caption">default (pointer up-left)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+        </div>
       </div>
 
-      <div class="pv-pop-row">
-        <span class="pv-caption">pointer=&quot;left&quot;</span>
-        <loop-popover id="pop-left" pointer="left" title="Left pointer" has-dismiss open>
-          <p>Popover appears to the right of the trigger with the pointer on the left edge.</p>
-        </loop-popover>
-      </div>
-
-      <div class="pv-pop-row">
-        <loop-popover id="pop-right" pointer="right" title="Right pointer" has-dismiss open>
-          <p>Popover appears to the left of the trigger with the pointer on the right edge.</p>
-        </loop-popover>
-        <span class="pv-caption">pointer=&quot;right&quot;</span>
-      </div>
-
+      <!-- With the optional Figma title divider -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;none&quot;</span>
-        <loop-popover id="pop-none" pointer="none" title="No pointer" has-dismiss open>
-          <p>A floating panel with no pointer triangle. Use for tooltips or menus that don't need directional context.</p>
-        </loop-popover>
+        <span class="pv-caption">loop-popover--divided (title rule)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom loop-popover--divided">
+            <div data-container class="heading6">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flipped above trigger: pointer down -->
+      <div class="pv-pop-col">
+        <span class="pv-caption">align-bottom (pointer down)</span>
+        <div data-popover class="popover popover-expanded">
+          <div data-container class="popover-bottom align-bottom align-center">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-asc fa-1x" aria-hidden="true" data-icon></i></div>
+        </div>
       </div>
 
     </div>
-    <p class="pv-log" id="popover-log">last event: —</p>
   </section>
 
   <!-- ============ MODAL ============ -->
@@ -1608,12 +1538,12 @@
     <p class="pv-note pv-note--spaced">Toggle <code>open</code> to show/hide (or call <code>.show()</code>/<code>.hide()</code>/<code>.toggle()</code>). Centres over a blue-90 @ 90% overlay; ESC and backdrop-click dismiss; focus is trapped and returns to the trigger. Empty slots show placeholders.</p>
 
     <div class="pv-row">
-      <button class="btn btn-primary" onclick="document.getElementById('demo-modal').show()">Open modal (Large)</button>
+      <button class="btn btn-primary" onclick="document.getElementById('demo-modal').show()">Open modal (Medium)</button>
       <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').show()">Open modal (Small)</button>
       <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-ph').show()">Open placeholder-only</button>
     </div>
 
-    <!-- Large, fully composed: heading attr + slotted content + real footer buttons -->
+    <!-- Medium (default), fully composed: heading attr + slotted content + real footer buttons -->
     <loop-modal id="demo-modal" heading="Energy is creating jobs">
       <p>Faithful to the Figma sticker: a 24px bold heading with a leading information icon, the
          circular blue close button, 40px side padding, and a button footer with a tertiary action
@@ -1626,7 +1556,7 @@
     </loop-modal>
 
     <!-- Small variant -->
-    <loop-modal id="demo-modal-sm" size="sm" heading="Confirm deletion">
+    <loop-modal id="demo-modal-sm" size="small" heading="Confirm deletion">
       <p>The Small (456px) variant. This action can't be undone.</p>
       <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
         <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').hide()">Cancel</button>
@@ -1671,7 +1601,6 @@
 <script src="../src/components/loop-typography-reference.js"></script>
 <script src="../src/components/loop-button-dropdown.js"></script>
 <script src="../src/components/loop-system-alert.js"></script>
-<script src="../src/components/loop-popover.js"></script>
 <script src="../src/components/loop-modal.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
 <script src="../src/components/loop-shadow-reference.js"></script>
@@ -1691,12 +1620,6 @@
   document.querySelectorAll('loop-system-alert').forEach(el => {
     el.addEventListener('dismiss', e => { saLog.textContent = `dismiss → type: ${e.detail.type}`; });
     el.addEventListener('action',  e => { saLog.textContent = `action  → type: ${e.detail.type}`; });
-  });
-
-  // Surface Popover close events.
-  const pvLog = document.getElementById('popover-log');
-  document.querySelectorAll('loop-popover').forEach(el => {
-    el.addEventListener('close', () => { pvLog.textContent = `close ← #${el.id}`; });
   });
 
   // Surface Modal open/close events.

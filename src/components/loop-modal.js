@@ -11,7 +11,7 @@
  * Attributes:
  *   open               Boolean — visible; omit/remove to hide (the toggle target)
  *   heading            Title text (fallback when no slot="heading" is provided)
- *   size               "lg" (default, 960px) | "sm" (456px)
+ *   size               "medium" (default, 960px) | "small" (456px)
  *   no-icon            Boolean — hide the leading information icon
  *   no-close           Boolean — hide the ✕ close button (modal still closes via ESC / backdrop)
  *   no-backdrop-close  Boolean — clicking the overlay will NOT dismiss (ESC still works)
@@ -77,7 +77,7 @@ class LoopModal extends HTMLElement {
   /* ---- attribute getters ---- */
   get _isOpen()         { return this.hasAttribute('open'); }
   get _heading()        { return this.getAttribute('heading') || ''; }
-  get _size()           { return this.getAttribute('size') === 'sm' ? 'sm' : 'lg'; }
+  get _size()           { return this.getAttribute('size') === 'small' ? 'small' : 'medium'; }
   get _noIcon()         { return this.hasAttribute('no-icon'); }
   get _noClose()        { return this.hasAttribute('no-close'); }
   get _isStatic()       { return this.hasAttribute('static'); }
@@ -263,7 +263,7 @@ class LoopModal extends HTMLElement {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: var(--loop-modal-width, 960px);
+  max-width: var(--loop-modal-width-medium, 960px);
   max-height: 100%;
   overflow: auto;
   border-radius: var(--loop-modal-radius, 16px);
@@ -271,7 +271,7 @@ class LoopModal extends HTMLElement {
   box-shadow: var(--loop-modal-shadow, none);
 }
 .lmo:focus { outline: none; }
-.lmo--sm { max-width: var(--loop-modal-width-sm, 456px); }
+.lmo--small { max-width: var(--loop-modal-width-small, 456px); }
 
 /* ---- header ---- */
 .lmo__header {

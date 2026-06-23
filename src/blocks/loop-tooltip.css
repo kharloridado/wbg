@@ -1,22 +1,49 @@
 /* ============================================
    Component: Tooltip  ("The Loop" — loop/tooltip)
    Figma: -The Loop- Main Library · "Tooltip" [node:17874-7113]
-   Approach: RESTYLE the native OutSystems UI Tooltip pattern (.osui-tooltip)
-             — NOT a parallel class system. Devs use the standard OutSystems
-             Tooltip pattern; this theme override makes it render as The Loop
-             tooltip.
-   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
+   Approach: RESTYLE the native OutSystems UI Tooltip pattern by driving its own
+             CSS custom properties + the shared Balloon Feature — NOT a parallel
+             class system, and NOT re-styling a sub-node. Devs use the standard
+             OutSystems Tooltip pattern; this theme override makes it render as
+             The Loop tooltip and survives OS UI upgrades.
+   Location: Theme CSS (paste BELOW OutSystems UI so it wins on equal specificity).
 
-   OutSystems DOM structure (captured from published screen — tooltip.md):
-     .osui-tooltip                              — pattern wrapper
-       .osui-tooltip__content                   — trigger slot (any developer content)
-       .osui-tooltip__balloon-wrapper           — floating balloon (positioned by OS JS)
-         .osui-tooltip__balloon-wrapper__balloon  — visible bubble (text container)
-         .osui-tooltip__balloon-arrow             — pointer triangle (position set inline by OS JS)
-   Position class on .osui-tooltip__balloon-wrapper: .bottom | .top | .left | .right
+   OutSystems DOM structure (captured from the live published screen — current
+   runtime uses the shared "Balloon" Feature for the floating bubble):
+     .osui-tooltip                                  — pattern wrapper
+       .osui-tooltip__content                       — trigger slot (role=button, tabindex)
+       .osui-tooltip__balloon-wrapper.osui-balloon  — THE VISIBLE BUBBLE (Balloon Feature)
+                                                       carries bg/shape/shadow/width.
+                                                       Placement token is a FloatingUI
+                                                       value: bottom-start | bottom | top-end
+                                                       | left | right | … (NOT bare .bottom).
+         .osui-tooltip__balloon-wrapper__balloon    — inner text span only (text-wrap)
+         .osui-tooltip__balloon-arrow               — pointer; a square rotate(45deg)d
+                                                       behind the bubble, positioned by
+                                                       OS JS via inline left/top. Sized by
+                                                       --osui-tooltip-arrow-size; coloured by
+                                                       --osui-tooltip-background-color.
+
+   Why we restyle via custom properties (and do NOT clip-path the arrow or select
+   bare .bottom/.top): the visible bubble is .osui-balloon (the wrapper), not the
+   inner __balloon...__balloon span; the arrow is a JS-positioned rotated square, so
+   re-implementing it as a fixed clip-path triangle rotates/mis-positions it; and
+   FloatingUI placement classes are tokens like `bottom-start`, which an exact
+   `.bottom` selector never matches. Setting the native vars sidesteps all three.
+
+   Native hooks we drive (vendor: Pattern/Tooltip/scss/_tooltip.scss +
+   Feature/Balloon/scss/_balloon.scss):
+     --osui-tooltip-background-color  → bubble + arrow fill (one var feeds both)
+     --osui-balloon-shape             → bubble border-radius (block emits an inline
+                                        --border-radius-none on the wrapper; we override
+                                        it on .osui-balloon so the 2px Figma radius wins)
+     --osui-balloon-shadow            → bubble box-shadow (light variant only)
+     --osui-tooltip-arrow-size        → arrow square side (set so the visible triangle
+                                        is the Figma 8×4 — a rotate(45)d square always
+                                        shows base = 2×height, and 8×4 is exactly 2:1)
 
    Variant mapping (Figma "type" → OutSystems ExtendedClass):
-     (none / default)          → Dark  (black bg, white text)
+     (none / default)          → Dark  (black bg, white-90 text, no shadow)
      .loop-tooltip--light      → Light (white bg, dark text + drop-shadow)
    Apply via the Tooltip pattern's "ExtendedClass" property.
 
@@ -24,7 +51,7 @@
      --loop-tooltip-light-bg, --loop-tooltip-light-text, --loop-tooltip-light-shadow,
      --loop-tooltip-radius, --loop-tooltip-padding-block, --loop-tooltip-padding-inline,
      --loop-tooltip-font-size, --loop-tooltip-font-weight, --loop-tooltip-line-height,
-     --loop-tooltip-arrow-width, --loop-tooltip-arrow-height.
+     --loop-tooltip-arrow-height.
 
    Finding:
      FND-027 [design-token/low] — Light-mode drop-shadow 0px 2px 2px rgba(0,0,0,0.1)
@@ -32,68 +59,59 @@
      Implemented exact Figma value; waiting on token from design.
    ============================================ */
 
-/* ---- Cascade context: per-variant bg/text private properties ---- */
+/* ---- Per-variant fill + text (Dark default; Light via ExtendedClass) ----
+   --osui-tooltip-background-color feeds BOTH the bubble and the arrow, so the
+   arrow recolours for free. --_tt-text is the bubble text colour. */
 .osui-tooltip {
-  --_tt-bg:   var(--loop-tooltip-dark-bg,   var(--color-black, #000));
+  --osui-tooltip-background-color: var(--loop-tooltip-dark-bg, var(--color-black, #000));
   --_tt-text: var(--loop-tooltip-dark-text, var(--color-gray-alpha-white-90, rgba(255,255,255,.9)));
-}
-.osui-tooltip.loop-tooltip--light {
-  --_tt-bg:   var(--loop-tooltip-light-bg,   var(--color-white, #fff));
-  --_tt-text: var(--loop-tooltip-light-text,  var(--color-text-on-light-default, rgba(0,13,26,.7)));
+  /* Dark variant carries no shadow in Figma (no dark-shadow token exists). */
+  --osui-balloon-shadow: none;
+  /* Arrow: keep the native rotated square; size it so the visible triangle is 8×4.
+     side = visible height × √2  →  4px × 1.41421356 ≈ 5.657px (base resolves to 8px). */
+  --osui-tooltip-arrow-size: calc(var(--loop-tooltip-arrow-height, 4px) * 1.41421356);
 }
 
-/* ---- Balloon bubble ---- */
-.osui-tooltip__balloon-wrapper__balloon {
-  background-color: var(--_tt-bg);
-  border-radius:    var(--loop-tooltip-radius, 2px);
-  padding:          var(--loop-tooltip-padding-block, 2px) var(--loop-tooltip-padding-inline, 8px);
+.osui-tooltip.loop-tooltip--light {
+  --osui-tooltip-background-color: var(--loop-tooltip-light-bg, var(--color-white, #fff));
+  --_tt-text: var(--loop-tooltip-light-text, var(--color-text-on-light-default, rgba(0,13,26,.7)));
+  --osui-balloon-shadow: var(--loop-tooltip-light-shadow, 0px 2px 2px rgba(0,0,0,.1));
+}
+
+/* ---- The visible bubble IS .osui-balloon (the wrapper), not the inner span ----
+   Equal specificity to the native `.osui-tooltip .osui-balloon` rule, so this wins
+   by source order (theme pasted below OS UI). Declared self-sufficiently (bg / radius
+   / shadow set directly, not only via the native vars) so the restyle doesn't depend
+   on the native var plumbing and survives OS UI version drift.
+
+   NOTE on radius: the Tooltip block emits an inline `--osui-balloon-shape:
+   var(--border-radius-none)` on this same element. An inline custom-property
+   declaration beats a stylesheet one, so overriding `--osui-balloon-shape` here would
+   NOT win — we set `border-radius` directly to the 2px Figma radius instead. */
+.osui-tooltip .osui-balloon {
+  background-color: var(--osui-tooltip-background-color);
+  border-radius:    var(--loop-tooltip-radius, 2px);   /* direct: inline --osui-balloon-shape:none would win otherwise */
+  box-shadow:       var(--osui-balloon-shadow, none);
+  padding: var(--loop-tooltip-padding-block, 2px) var(--loop-tooltip-padding-inline, 8px);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size:   var(--loop-tooltip-font-size, 14px);
   font-weight: var(--loop-tooltip-font-weight, 400);
   line-height: var(--loop-tooltip-line-height, 1.25);
   color:       var(--_tt-text);
-  white-space: nowrap;
+  white-space: nowrap;   /* Figma tooltips are single-line; overrides native wrap + max-width:250px */
 }
 
-/* ---- Light variant: drop-shadow applied to the full balloon+arrow cluster ---- */
-.osui-tooltip.loop-tooltip--light .osui-tooltip__balloon-wrapper {
-  filter: drop-shadow(var(--loop-tooltip-light-shadow, 0px 2px 2px rgba(0,0,0,.1)));
-}
-
-/* ---- Arrow (triangle) ---- */
+/* ---- Arrow: keep the native rotated-square mechanism (a square turned 45° and
+   tucked behind the bubble, positioned by OS JS via inline left/top). Restated here
+   for version-drift safety; we deliberately do NOT clip-path it or branch on
+   placement classes. ---- */
 .osui-tooltip__balloon-arrow {
-  width:            var(--loop-tooltip-arrow-width, 8px);
-  height:           var(--loop-tooltip-arrow-height, 4px);
-  background-color: var(--_tt-bg);
   position:         absolute;
-}
-
-/* bottom balloon (arrow above bubble, pointing up ▲) */
-.osui-tooltip__balloon-wrapper.bottom .osui-tooltip__balloon-arrow {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-/* top balloon (arrow below bubble, pointing down ▼) */
-.osui-tooltip__balloon-wrapper.top .osui-tooltip__balloon-arrow {
-  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
-}
-
-/* left/right balloons — element is taller than wide (4px × 8px) */
-.osui-tooltip__balloon-wrapper.left  .osui-tooltip__balloon-arrow,
-.osui-tooltip__balloon-wrapper.right .osui-tooltip__balloon-arrow {
-  width:  var(--loop-tooltip-arrow-height, 4px);
-  height: var(--loop-tooltip-arrow-width, 8px);
-}
-
-/* right balloon (arrow at left side, pointing left ◀) */
-.osui-tooltip__balloon-wrapper.right .osui-tooltip__balloon-arrow {
-  clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
-}
-
-/* left balloon (arrow at right side, pointing right ▶) */
-.osui-tooltip__balloon-wrapper.left .osui-tooltip__balloon-arrow {
-  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+  width:            var(--osui-tooltip-arrow-size);
+  height:           var(--osui-tooltip-arrow-size);
+  background-color: var(--osui-tooltip-background-color);
+  transform:        rotate(45deg);
 }
 
 /* ---- Focus indicator on the trigger (WCAG 2.2 SC 2.4.7 / 2.4.11) ---- */
@@ -103,7 +121,9 @@
   border-radius:  2px;
 }
 
-/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ----
+   The Balloon Feature animates opacity on open (transition: opacity 300ms). */
 @media (prefers-reduced-motion: reduce) {
-  .osui-tooltip__balloon-wrapper { transition: none; }
+  .osui-tooltip .osui-balloon,
+  .osui-tooltip .osui-balloon--is-open { transition: none; }
 }

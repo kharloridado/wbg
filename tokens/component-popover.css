@@ -1,19 +1,32 @@
 /* component-popover.css — WBG / "The Loop" Popover component tokens
- * Figma: "Popover" [node:26345-2762]. Vanilla JS Web Component (<loop-popover>).
- * CSS custom properties cascade into Shadow DOM so the component reads them here.
- * Pointer positions: top | bottom | left | right | none (default: bottom).
- * Width defaults to 320px; host can override via CSS: loop-popover { --loop-popover-width: 280px; } */
+ * Figma: "Popover" [node:26345-2762]. RESTYLE of the NATIVE OutSystems UI Popover
+ * widget ([data-popover] > .popover-bottom) — NOT a custom Web Component. Devs drop
+ * the stock OutSystems Popover; these tokens + src/blocks/loop-popover.css make its
+ * floating panel render as The Loop popover (white card, 4px radius, drop shadow,
+ * 16px padding, 320px wide, 18×8 pointer) and survive OS UI upgrades.
+ *
+ * Native DOM (legacy [data-popover] widget):
+ *   [data-popover].popover.popover-expanded
+ *     .popover-top                 — the trigger (border:none, padding:none natively)
+ *     .popover-bottom[.align-center][.align-bottom] — THE FLOATING PANEL we restyle.
+ *       align-center → centred under trigger; align-bottom → flipped above trigger.
+ *
+ * Pointer offset: top/bottom pointer sits 24px from the panel's leading edge in Figma
+ * (.dls Pointer x=24); centred when the panel is .align-center. */
 :root {
   /* ---- Geometry ---- */
   --loop-popover-padding-h:        var(--space-small);    /* 16px — loop/popover/horizontal-padding */
   --loop-popover-padding-v:        var(--space-small);    /* 16px — loop/popover/vertical-padding */
   --loop-popover-radius:           var(--radius-base);    /* 4px  — Figma: lift/border-radius/radius-1 */
+  /* FND: Figma drop-shadow 0px 2px 3px rgba(0,0,0,0.12) has no matching scale token
+   * (--shadow-low = 0 2px 8px --shadow-color). Exact Figma value kept; see tooltip FND-027. */
   --loop-popover-shadow:           0px 2px 3px rgba(0, 0, 0, 0.12);  /* Figma drop-shadow */
-  --loop-popover-bg:               var(--color-bg-container-on-light-lowest);  /* #ffffff */
-  --loop-popover-width:            320px;
-  --loop-popover-pointer-w:        18px;                  /* triangle base — Figma */
-  --loop-popover-pointer-h:        8px;                   /* triangle height — Figma */
-  --loop-popover-header-pb:        var(--space-xsmall);   /* 12px — padding-bottom + separator margin */
+  --loop-popover-bg:               var(--color-bg-container-on-light-lowest);  /* #ffffff — Domain/Elevations/Light/Lowest */
+  --loop-popover-width:            320px;                 /* Figma component width */
+  --loop-popover-pointer-w:        18px;                  /* triangle base — Figma .dls Pointer */
+  --loop-popover-pointer-h:        8px;                   /* triangle height — Figma .dls Pointer */
+  --loop-popover-pointer-offset:   24px;                  /* pointer inset from leading edge — Figma .dls Pointer x=24 */
+  --loop-popover-header-gap:       var(--space-small);    /* 16px — title-to-body gap (Figma) */
 
   /* ---- Typography ---- */
   --loop-popover-title-size:       var(--font-size-200);  /* 14px — loop/popover/label */
@@ -25,9 +38,9 @@
   --loop-popover-body-weight:      var(--font-weight-regular);
 
   /* ---- Colors ---- */
-  --loop-popover-title-color:      var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
-  --loop-popover-body-color:       var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
-  --loop-popover-divider-color:    var(--color-divider-on-light-default);    /* --color-neutral-alpha-16 */
-  --loop-popover-dismiss-color:    var(--color-text-on-light-default);       /* rgba(0,13,26,0.7) */
-  --loop-popover-focus:            var(--color-domain-interactive-focused);  /* #0071bc — color-blue-50 */
+  --loop-popover-title-color:      var(--color-text-on-light-headers);        /* #000d1af5 — Text/On Light/Headers */
+  --loop-popover-body-color:       var(--color-text-on-light-default);        /* #000d1ab2 — Text/On Light/Default */
+  --loop-popover-divider-color:    var(--color-divider-on-light-default);     /* #00396b29 — Divider/On Light/Default */
+  --loop-popover-dismiss-color:    var(--color-icon-on-light-default);        /* #4b5e71 — Icon/On Light/Default (xmark) */
+  --loop-popover-focus:            var(--color-outline-on-light-link-enabled);/* #004370 — Outline/On Light/Link/Enabled */
 }

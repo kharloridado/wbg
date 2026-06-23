@@ -235,6 +235,14 @@ toggle/interactive selection wiring · numbers/counter.
 
 
 
+
+
+
+
+
+
+
+
 ## Usage in OutSystems
 Add these classes to a **Container** via `ExtendedClass`:
 

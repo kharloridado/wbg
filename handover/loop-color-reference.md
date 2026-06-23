@@ -370,6 +370,14 @@ it never hard-codes a hex, so the table can't drift from `dist/theme.css`.
 
 
 
+
+
+
+
+
+
+
+
 ## The utility classes
 For every `--color-<name>` primitive, the generator emits:
 ```css

@@ -272,6 +272,14 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 
 
 
+
+
+
+
+
+
+
+
 ## OutSystems UI variant ↔ The Loop mapping
 | OutSystems UI pattern | The Loop variant | Treatment |
 |---|---|---|

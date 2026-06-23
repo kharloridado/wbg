@@ -273,6 +273,14 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 
 
 
+
+
+
+
+
+
+
+
 ## What the override builds
 The native switch pseudo-elements are restyled: `:before` = the 56×32 pill track,
 `:after` = the 24px white thumb (4px padding, travel 28px). Each conflicting rule is

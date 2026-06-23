@@ -223,6 +223,14 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
 
 
 
+
+
+
+
+
+
+
+
 ## Usage in OutSystems
 
 ### Option A — custom block (exact 6-color palette)

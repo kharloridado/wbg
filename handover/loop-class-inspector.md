@@ -423,6 +423,14 @@ recipe in place.
 
 
 
+
+
+
+
+
+
+
+
 ## How to use in ODC (as a Block)
 1. Add `loop-class-inspector.js` to the app **Resources** (Deploy Action: *Deploy to
    Target Directory*) — or load it via a Scripts block on the Style-Guide screen.

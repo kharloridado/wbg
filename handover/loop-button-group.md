@@ -170,6 +170,14 @@ standard OutSystems ButtonGroup widget; no custom class system.
 
 
 
+
+
+
+
+
+
+
+
 ## What the override changes vs OutSystems UI baseline
 - Outer end-caps = pill **32px**; joined inner corners = **2px** (`--radius-xs`, Figma `Button/Border Raduis = 2`).
 - Outlined items in **blue-70**; **selected item filled blue-70** + white label.

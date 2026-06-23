@@ -29,7 +29,11 @@
   --loop-tooltip-font-weight: var(--font-weight-regular); /* 400 */
   --loop-tooltip-line-height: var(--line-height-narrow);  /* 1.25 */
 
-  /* ---- Arrow geometry ---- */
-  --loop-tooltip-arrow-width:  8px;
-  --loop-tooltip-arrow-height: 4px;
+  /* ---- Arrow geometry ----
+   * The native arrow is a rotate(45deg)d square sized by --osui-tooltip-arrow-size,
+   * so the loop-tooltip.css restyle derives that side from -height only (side =
+   * height × √2) and the visible base resolves to 2×height. --arrow-width (8px) is
+   * kept as the informational Figma base; it is not consumed directly. */
+  --loop-tooltip-arrow-width:  8px;   /* informational — base = 2 × height */
+  --loop-tooltip-arrow-height: 4px;   /* drives --osui-tooltip-arrow-size */
 }

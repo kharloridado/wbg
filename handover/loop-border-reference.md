@@ -293,6 +293,14 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
 
 
 
+
+
+
+
+
+
+
+
 ## Using `<loop-border-reference>` in ODC
 1. `npm run build:theme` and paste `dist/theme.css` into the ODC Theme editor (ships the
    `--border-size-*` and `--radius-*` tokens).

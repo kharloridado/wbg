@@ -295,6 +295,14 @@ built to The Loop's already-shipped popup language — it reads as a sibling of 
 
 
 
+
+
+
+
+
+
+
+
 ## State mapping (calendar element → The Loop)
 | Element | How |
 |---|---|

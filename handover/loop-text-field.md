@@ -61,7 +61,8 @@ Class on the field Container.
                                     :focus primary; [disabled] neutral; .not-valid → error
      sizes: .input-small → h32 · .input-large → h48
    The Loop overrides that baseline to: radius 32 ("Modern" mode per the Figma note at
-     node:19336-17326 — pill radius shared with the Select), Open Sans, 16/10 padding
+     node:19336-17326 — single-line inputs use the 32px pill shared with the Select; the
+     multi-line TEXTAREA keeps the 8px Medium radius), Open Sans, 16/10 padding
      (→ 40px tall Regular default), placeholder neutral-alpha-57, a 2px Blue/50 focus
      border, and tinted Error / Warning / Disabled fills.
 
@@ -101,7 +102,7 @@ Class on the field Container.
 
   background-color: var(--color-bg-container-on-light-lowest);     /* white */
   border: 1px solid var(--color-outline-on-light-default);        /* #00396b3d — FND-019 */
-  border-radius: var(--radius-medium, 8px);                       /* 8px — textarea uses Medium radius, not the pill shared with single-line fields */
+  border-radius: var(--loop-field-radius, 32px);                  /* 32px pill — single-line fields share the Select pill; the textarea is overridden to Medium below */
   color: var(--color-text-on-light-default);                      /* neutral-alpha-70 */
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -109,6 +110,12 @@ Class on the field Container.
   font-weight: var(--loop-field-text-weight, 400);
   line-height: var(--loop-field-text-leading, 16px);
   letter-spacing: var(--loop-field-text-tracking, 0.5px);
+}
+
+/* Textarea keeps the Medium (8px) radius — the pill is for single-line fields only.
+   Equal specificity with the shared rule above, so this must follow it (source order wins). */
+.form-control[data-textarea] {
+  border-radius: var(--radius-medium, 8px);
 }
 
 /* Regular (default) — single-line input is 40px tall (16 text + 2×2 ph-pad + 2×10 vpad).
@@ -320,6 +327,14 @@ span.validation-message {
 
 
 
+
+
+
+
+
+
+
+
 ## State mapping (Figma "State" → OutSystems)
 | The Loop | How |
 |---|---|
@@ -350,8 +365,9 @@ span.validation-message {
   `--error` / `--warning` / `--success` / `--disabled`.
 
 ## What the override changes vs OutSystems UI baseline
-- Corner radius **8px** (`--radius-medium`) — the **OutSystems/MUI target** called out in the
-  Figma note (node 19336-17326). The "Modern" collection mode is 32px; OutSystems uses 8.
+- Corner radius **32px pill** (`--loop-field-radius` → `--radius-pill`) on single-line inputs —
+  the Figma "Modern" collection mode (node 19336-17326), shared with the Select so sibling
+  form controls match. The multi-line **textarea** keeps **8px** (`--radius-medium`).
 - Open Sans, padding **16/18** (→ **56px** tall xLarge default), field gap 8px.
 - Placeholder = `neutral-alpha-57` (#00294d91); **2px Blue/50** focus border (padding shrinks
   1px on focus so the box doesn't jump).

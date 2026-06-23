@@ -197,6 +197,14 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
 
 
+
+
+
+
+
+
+
+
 ## Variant mapping (OutSystems Button "Style" → The Loop "Type")
 | The Loop | OutSystems Button | How |
 |---|---|---|

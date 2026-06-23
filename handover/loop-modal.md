@@ -5,7 +5,7 @@ Figma: "Modal/Popup" [node 22049-35100] · canonical sticker "-loop modal" [node
 
 **Approach:** Custom component (no native OutSystems Popup restyle — the Web Component is
 self-contained and fully toggleable). Built as a vanilla JS Web Component (Shadow DOM)
-wrapped in an OutSystems Block. Large (960px) and Small (456px) size variants; four named
+wrapped in an OutSystems Block. Medium (960px, default) and Small (456px) size variants; four named
 slots with placeholder fallbacks; focus trap; body scroll lock; ESC + backdrop dismiss.
 
 ## When to use / How to use
@@ -56,7 +56,7 @@ slots with placeholder fallbacks; focus trap; body scroll lock; ESC + backdrop d
  * Attributes:
  *   open               Boolean — visible; omit/remove to hide (the toggle target)
  *   heading            Title text (fallback when no slot="heading" is provided)
- *   size               "lg" (default, 960px) | "sm" (456px)
+ *   size               "medium" (default, 960px) | "small" (456px)
  *   no-icon            Boolean — hide the leading information icon
  *   no-close           Boolean — hide the ✕ close button (modal still closes via ESC / backdrop)
  *   no-backdrop-close  Boolean — clicking the overlay will NOT dismiss (ESC still works)
@@ -122,7 +122,7 @@ class LoopModal extends HTMLElement {
   /* ---- attribute getters ---- */
   get _isOpen()         { return this.hasAttribute('open'); }
   get _heading()        { return this.getAttribute('heading') || ''; }
-  get _size()           { return this.getAttribute('size') === 'sm' ? 'sm' : 'lg'; }
+  get _size()           { return this.getAttribute('size') === 'small' ? 'small' : 'medium'; }
   get _noIcon()         { return this.hasAttribute('no-icon'); }
   get _noClose()        { return this.hasAttribute('no-close'); }
   get _isStatic()       { return this.hasAttribute('static'); }
@@ -308,7 +308,7 @@ class LoopModal extends HTMLElement {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: var(--loop-modal-width, 960px);
+  max-width: var(--loop-modal-width-medium, 960px);
   max-height: 100%;
   overflow: auto;
   border-radius: var(--loop-modal-radius, 16px);
@@ -316,7 +316,7 @@ class LoopModal extends HTMLElement {
   box-shadow: var(--loop-modal-shadow, none);
 }
 .lmo:focus { outline: none; }
-.lmo--sm { max-width: var(--loop-modal-width-sm, 456px); }
+.lmo--small { max-width: var(--loop-modal-width-small, 456px); }
 
 /* ---- header ---- */
 .lmo__header {
@@ -442,12 +442,20 @@ if (!customElements.get('loop-modal')) {
 
 
 
+
+
+
+
+
+
+
+
 ## API — Attributes
 | Attribute | Values | Description |
 |---|---|---|
 | `open` | Boolean | Visible; toggle to show/hide |
 | `heading` | Text | Heading text (fallback when `slot="heading"` is empty) |
-| `size` | `lg` (default) \| `sm` | Large = 960px, Small = 456px |
+| `size` | `medium` (default) \| `small` | Medium = 960px, Small = 456px |
 | `no-icon` | Boolean | Hide the leading information icon |
 | `no-close` | Boolean | Hide the ✕ close button |
 | `no-backdrop-close` | Boolean | Clicking the overlay will not dismiss |
@@ -481,7 +489,7 @@ if (!customElements.get('loop-modal')) {
   Open modal
 </button>
 
-<!-- Modal (Large, default) -->
+<!-- Modal (Medium, default) -->
 <loop-modal id="my-modal" heading="Energy is creating jobs">
   <p>Your body content goes here.</p>
   <!-- footer buttons: tertiary left, secondary + primary right -->
@@ -493,7 +501,7 @@ if (!customElements.get('loop-modal')) {
 </loop-modal>
 
 <!-- Small variant -->
-<loop-modal id="confirm-modal" size="sm" heading="Confirm deletion">
+<loop-modal id="confirm-modal" size="small" heading="Confirm deletion">
   <p>This action can't be undone.</p>
   <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
     <button class="btn btn-secondary" onclick="document.getElementById('confirm-modal').hide()">Cancel</button>
@@ -548,7 +556,7 @@ than the `heading` text or a custom icon.
 
 ## OutSystems Block wiring
 1. Create Block `Modal` with inputs:
-   - `Heading` (Text), `Size` (Text, default `"lg"`), `NoIcon` (Boolean), `NoClose` (Boolean),
+   - `Heading` (Text), `Size` (Text, default `"medium"`), `NoIcon` (Boolean), `NoClose` (Boolean),
      `NoBackdropClose` (Boolean), `Static` (Boolean)
 2. Events: `OnOpen` (no params), `OnClose` with `Reason` (Text).
 3. Placeholders (see the slot rules above):
@@ -559,7 +567,7 @@ than the `heading` text or a custom icon.
    ```javascript
    var el = document.getElementById($parameters.WidgetId);
    if ($parameters.Heading)         el.setAttribute('heading', $parameters.Heading);
-   if ($parameters.Size === 'sm')   el.setAttribute('size', 'sm');
+   if ($parameters.Size === 'small') el.setAttribute('size', 'small');
    if ($parameters.NoIcon)          el.setAttribute('no-icon', '');
    if ($parameters.NoClose)         el.setAttribute('no-close', '');
    if ($parameters.NoBackdropClose) el.setAttribute('no-backdrop-close', '');
@@ -571,10 +579,44 @@ than the `heading` text or a custom icon.
    el.addEventListener('close', function(e) { $actions.OnClose(e.detail.reason); });
    el.addEventListener('open',  function()  { $actions.OnOpen(); });
    ```
-6. Toggle visibility from a trigger button's OnClick:
-   ```javascript
-   document.getElementById($parameters.ModalId).toggle();
-   ```
+6. Toggle visibility from a trigger button's OnClick — call the reusable **ToggleModal**
+   client action below, passing the **Block** id (it resolves the modal nested inside).
+
+## Reusable Client Action — `ToggleModal`
+A modal placed inside a Block is a **child** of that Block, so a parent screen usually only has
+the **Block's** widget id, not the modal's own id. This one client action accepts either: if you
+hand it the `<loop-modal>` id it uses it directly; if you hand it the Block (or any wrapping
+Container) id it finds the `<loop-modal>` inside. Reuse it from every trigger.
+
+**Client Action `ToggleModal`** — Inputs: `WidgetId` (Text), `Action` (Text: `show` | `hide` |
+`toggle`, default `toggle`). Optional Output: `Found` (Boolean). One JavaScript node:
+
+```javascript
+// WidgetId may be the <loop-modal> id OR the parent Block/Container id (modal is a child).
+var root  = document.getElementById($parameters.WidgetId);
+var modal = !root ? null
+          : (root.tagName && root.tagName.toLowerCase() === 'loop-modal'
+              ? root                                 // id pointed straight at the modal
+              : root.querySelector('loop-modal'));   // id was the Block — find the modal inside
+
+if (modal) {
+  var a = ($parameters.Action || 'toggle').toLowerCase();
+  if      (a === 'show') { modal.show   ? modal.show()   : modal.setAttribute('open', ''); }
+  else if (a === 'hide') { modal.hide   ? modal.hide()   : modal.removeAttribute('open'); }
+  else                   { modal.toggle ? modal.toggle() : modal.toggleAttribute('open'); }
+}
+$parameters.Found = !!modal;   // optional — false if the id resolved to no modal
+```
+
+Notes:
+- The method/attribute fallback (`modal.show ? … : setAttribute('open','')`) keeps it working even
+  if the element hasn't upgraded yet — the component reads the `open` attribute on connect.
+- `querySelector('loop-modal')` matches at any depth and returns the **first** modal in the Block.
+  If a Block hosts several modals, add a `ModalId` input and use `root.querySelector('#'+id)`.
+
+```javascript
+// Trigger button OnClick → ToggleModal( WidgetId: BlockContainer.Id, Action: "show" )
+```
 
 ## Accessibility (WCAG 2.2 AA)
 `role="dialog"` + `aria-modal="true"`; heading linked via `aria-labelledby`; close button has
@@ -587,6 +629,7 @@ dismiss (suppressible); focus ring uses `--loop-modal-close-focus` (#0071bc).
 - [ ] Rebuild `dist/theme.css` and paste into ODC Theme editor (includes `--loop-modal-*` tokens).
 - [ ] Create Block `Modal` with inputs, events, a `Content` Placeholder (default slot) and a `Footer` Placeholder wrapped in a Container carrying the HTML attribute `slot="footer"` (see slot rules).
 - [ ] Wire OnReady JS node for attributes + close/open CustomEvent listeners.
-- [ ] Test Large + Small; test ESC, close button, backdrop click; test `static` + `no-backdrop-close`.
+- [ ] Create the reusable `ToggleModal` client action (resolves modal from a Block id) and call it from triggers.
+- [ ] Test Medium + Small; test ESC, close button, backdrop click; test `static` + `no-backdrop-close`.
 - [ ] Test with all slots populated and all slots empty (placeholder fallbacks).
 - [ ] 1-Click Publish → validate in a **real browser** (Web Components never work in Service Studio Preview).

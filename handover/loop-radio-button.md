@@ -296,6 +296,14 @@ it look like The Loop. No Web Component.
 
 
 
+
+
+
+
+
+
+
+
 ## What the override builds
 The Loop ring + dot are rebuilt from scratch over the native input:
 `:before` = ring (2px border, white interior), `:after` = dot (50% diameter, shown only when `:checked`).

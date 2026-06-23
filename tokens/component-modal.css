@@ -21,8 +21,8 @@
   --loop-modal-bg:            var(--color-bg-container-on-light-lowest); /* #ffffff — Background/Container/On Light/Lowest */
   --loop-modal-radius:        var(--radius-large);     /* 16px — Border Radius/Large (loop/modal outer corner) */
   --loop-modal-side-padding:  var(--space-large);      /* 40px — loop/modal/side padding */
-  --loop-modal-width:         960px;                   /* loop/modal/width — Large desktop */
-  --loop-modal-width-sm:      456px;                   /* Small desktop variant */
+  --loop-modal-width-medium:  960px;                   /* loop/modal/width — Medium (default) desktop */
+  --loop-modal-width-small:   456px;                   /* Small desktop variant */
   --loop-modal-shadow:        none;                    /* flat per Figma (no shadow token) — see header note */
   --loop-modal-gutter:        var(--space-small);      /* 16px — min gap from the dialog to the viewport edge */
   --loop-modal-z:             1000;                    /* overlay stacking context */

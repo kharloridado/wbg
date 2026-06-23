@@ -9,10 +9,12 @@
     "gen:spacing-utilities": "node build/gen-spacing-utilities.mjs",
     "build:theme": "node build/build-theme.mjs",
     "watch:theme": "node build/build-theme.mjs --watch",
+    "build:osui": "node build/build-osui.mjs",
     "preview": "node build/preview-server.mjs",
     "build:theme:min": "lightningcss --bundle --minify --targets '>= 0.25%' tokens/index.css -o dist/theme.min.css"
   },
   "devDependencies": {
-    "lightningcss-cli": "^1.0.0"
+    "lightningcss-cli": "^1.0.0",
+    "sass": "^1.77.4"
   }
 }

@@ -242,6 +242,14 @@ if (!customElements.get('rnt-segmented')) {
 
 
 
+
+
+
+
+
+
+
+
 ## Checklist
 - [ ] Paste `rnt-button.css` into Theme CSS; set Button `ExtendedClass = "rnt-button rnt-button--primary"`
 - [ ] Import `rnt-segmented.js` as a Script resource

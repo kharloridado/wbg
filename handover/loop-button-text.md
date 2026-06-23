@@ -144,6 +144,14 @@ widget's **Extended Class = `btn-text`**.
 
 
 
+
+
+
+
+
+
+
+
 ## What it does
 - No fill, no border; **blue-70** label, Open Sans **700**, tracking **-0.5px**, leading **1.9**.
 - **Underlined in every state** (true link affordance, 2px) — the underline color shifts: rest = blue-70 @55% (`#0043708c`), hover = Blue/40 (`#169af3`), disabled = Neutral/15 (`#dae3eb`). The label color stays blue-70 on hover; pressed = Blue/90.

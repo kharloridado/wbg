@@ -324,6 +324,14 @@ if (!customElements.get('loop-button-dropdown')) {
 
 
 
+
+
+
+
+
+
+
+
 ## API
 - **Attributes:** `label`, `options` (JSON `[{value,label}]`), `variant` (`primary`|`secondary`), `open`, `disabled`
 - **Events:** `select` → `{ value, label }`; `toggle` → `{ open }`

@@ -390,6 +390,14 @@ reference existing semantic tokens already in `dist/theme.css`.
 
 
 
+
+
+
+
+
+
+
+
 ## State / type mapping (Figma → native checkbox)
 | The Loop | OutSystems / DOM | How |
 |---|---|---|

@@ -447,6 +447,14 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 
 
 
+
+
+
+
+
+
+
+
 ## State mapping (Figma "State" → OutSystems)
 | The Loop | How |
 |---|---|

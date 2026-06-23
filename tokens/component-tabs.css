@@ -1,0 +1,52 @@
+/* component-tabs.css — WBG / "The Loop" Tabs (Tab Menu) tokens
+ * Extracted from Figma: "Lift Tabs 3" / "-loop tab / item" [node:18686-5828]
+ * (loop/tabs/* variables). RESTYLE of the native OutSystems UI Tabs pattern
+ * (.osui-tabs) — NOT a parallel component. Devs keep using the standard
+ * OutSystems Tabs widget; consumed by src/blocks/loop-tabs.css.
+ *
+ * Loaded AFTER the foundations (colors/spacing/typography/border) so the var()
+ * references resolve, and BEFORE outsystems-ui-overrides.css (stays last).
+ *
+ * The Loop look = underline tabs: bold labels in a row, a full-width 2px divider
+ * beneath, and a 4px bright-blue active bar sitting on that divider under the
+ * selected tab. Active label darkens to emphasis; the rest are blue-70 links.
+ *
+ * Figma values mapped onto foundations; off-scale / unpublished values flagged:
+ *   - loop/tabs/label/letter spacing = -0.13px — a named Figma token, but off the
+ *     foundation tracking scale (-0.35 / -0.5 / -1.5). Kept verbatim as a
+ *     component token (it is a real design value, not a stray hard-code).
+ *   - active bar height = 4px — no --border-size-* step (s 1 / m 2 / l 3); minted
+ *     raw. The divider uses --border-size-m (2px).
+ *   - compact (tablet/mobile) gap = 20px and v/h-padding = 10px — Figma values for
+ *     the 768/390 frames; 4pt-grid multiples, kept as explicit compact tokens.
+ *   - label line-height = 20px — no --line-height-* ratio token maps to an absolute
+ *     20px value; Figma fixed-px, kept verbatim (same pattern as component-popover). */
+:root {
+  /* ---- Geometry ---- */
+  --loop-tabs-gap:            var(--space-regular);  /* 24px — loop/tabs/gap between tabs (desktop) */
+  --loop-tabs-gap-compact:    20px;                  /* tablet/mobile gap between tabs */
+  --loop-tabs-v-padding:      var(--space-xsmall);   /* 12px — loop/tabs/v-padding (label ↔ active bar) */
+  --loop-tabs-v-padding-compact: 10px;               /* tablet/mobile */
+  --loop-tabs-h-padding:      var(--space-xsmall);   /* 12px — loop/tabs/h-padding (icon ↔ label gap) */
+  --loop-tabs-h-padding-compact: 10px;               /* tablet/mobile */
+  --loop-tabs-indicator-size: 4px;                   /* active bar thickness — off the border-size scale */
+  --loop-tabs-divider-size:   var(--border-size-m);  /* 2px — header bottom divider */
+
+  /* ---- Color ---- */
+  --loop-tabs-divider-color:   var(--color-divider-on-light-subdued);       /* #00396b14 — Divider/On Light/Subdued */
+  --loop-tabs-indicator-color: var(--color-bg-link-primary-hover);          /* #169af3 — Background/Container/On Light/Link/Primary/Hover (blue-40) */
+
+  /* ---- Label typography ---- */
+  --loop-tabs-label-size:         var(--font-size-500);    /* 20px — loop/tabs/label/font size (desktop) */
+  --loop-tabs-label-size-compact: var(--font-size-400);    /* 18px — tablet/mobile */
+  --loop-tabs-label-leading:      20px;                    /* loop/tabs/label/line height */
+  --loop-tabs-label-weight:       var(--font-weight-bold); /* 700 — loop/tabs/label/font weight */
+  --loop-tabs-label-tracking:     -0.13px;                 /* loop/tabs/label/letter spacing — off-scale, kept verbatim */
+  --loop-tabs-label-family:       var(--font-family-label);/* Open Sans — Global/Font Family */
+
+  /* ---- Label color (by state) ---- */
+  --loop-tabs-label-color:          var(--color-text-on-light-link-primary-enabled); /* #004370 — blue-70 (inactive) */
+  --loop-tabs-label-color-active:   var(--color-text-on-light-emphasis);             /* #012740 — blue-90 (active) */
+  --loop-tabs-label-color-hover:    var(--color-text-on-light-emphasis);             /* darken to emphasis on hover (affordance) */
+  --loop-tabs-label-color-disabled: var(--color-text-on-light-state-disabled);       /* neutral-alpha-42 */
+}

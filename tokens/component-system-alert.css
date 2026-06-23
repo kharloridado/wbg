@@ -21,7 +21,7 @@
    * NOTE: Figma uses slightly different message/action shades between single- and multi-line
    * for the same type (e.g. error message white-75 single / white-90 multi; offline the
    * reverse). These are normalized here to the single-line (default-layout) values — logged
-   * as FND-046 (consistency) for design to confirm. Icon color tracks the title color. */
+   * as FND-048 (consistency) for design to confirm. Icon color tracks the title color. */
 
   /* ---- Type: error ---- */
   --loop-sysalert-error-bg:      var(--color-bg-container-state-error-high);  /* #9d161d — color-red-70 */
