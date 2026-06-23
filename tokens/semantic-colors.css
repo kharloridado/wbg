@@ -106,6 +106,10 @@
   --color-text-on-light-link-secondary-enabled: var(--color-neutral-95);
   --color-text-on-light-link-hover:   #066db1;   /* FND-006 — orphan, no primitive */
   --color-text-on-light-link-visited: var(--color-purple-70);
+  /* Link/text-button underline decoration (Figma loop button/text — node:15597-4652) */
+  --color-text-on-light-link-underline-enabled:  #0043708c;            /* blue-70 @ 55% — raw rgba in design, no primitive (FND-033) */
+  --color-text-on-light-link-underline-hover:    var(--color-blue-40); /* #169af3 */
+  --color-text-on-light-link-underline-disabled: var(--color-neutral-15); /* #dae3eb */
 
   /* Text · on state containers (apply on light) */
   --color-text-on-state-info-emphasis:    var(--color-blue-70);

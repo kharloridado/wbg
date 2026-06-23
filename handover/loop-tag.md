@@ -13,6 +13,23 @@ default/hover/focus/disabled/selected.
 **Out of scope (follow-up):** avatar · initials · flag slots · on-dark theme ·
 toggle/interactive selection wiring · numbers/counter.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Tag page.
+
+**What it is.** A pill label (`.loop-tag`) for categories, filters, and selections — optionally with an icon, dismiss, or selected state.
+
+**When to use**
+- Compact metadata labels, active filter chips, or selectable / dismissible tokens.
+
+**When not to use** (reach for instead)
+- A status with a dot/icon → **Badge / Status**.
+- A non-interactive rectangular category label → **Badge / Label**.
+- A clickable action → **Button**.
+
+**How to use**
+- Extended Class `loop-tag loop-tag--<color> loop-tag--<size>` on a Container. Add `--dismissible` (with the dismiss button), `--selected`, `--disabled`, or `--interactive` as needed.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -28,8 +45,13 @@ toggle/interactive selection wiring · numbers/counter.
 
 ```css
 /* loop-tag.css — WBG / "The Loop" Tag block (CSS only, no JS).
- * Figma: "Tag" [node:17313-5502]. Custom component — richer than the native
- * OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
+ * Figma: "Tag" [node:17313-5502]. The Loop PILL tag (radius 48) — richer than the
+ * native OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
+ *
+ * NOTE (2026-06-22): the native OutSystems UI Tag widget (.tag) is restyled to the
+ * The Loop BADGE / LABEL look (rectangle, radius 4) in src/blocks/loop-badge.css —
+ * NOT to this pill. So the pill is reached ONLY via the .loop-tag block below; the
+ * native .tag widget renders as a Badge/Label.
  *
  * OutSystems usage: add "loop-tag loop-tag--<color> loop-tag--<size>" to a
  * Container via ExtendedClass. Colors: blue (default) | purple | green | yellow.
@@ -181,9 +203,37 @@ toggle/interactive selection wiring · numbers/counter.
 @media (prefers-reduced-motion: reduce) {
   .loop-tag--interactive { transition: none; }
 }
+
+/* The native OutSystems UI Tag widget (.tag) is NOT restyled here. It is repointed
+ * to The Loop Badge / Label (rectangle, radius 4) in src/blocks/loop-badge.css.
+ * Reach this pill via the .loop-tag block above. */
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Usage in OutSystems
 Add these classes to a **Container** via `ExtendedClass`:

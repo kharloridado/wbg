@@ -12,7 +12,7 @@
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
    The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/32, and the WB blue-70 primary fill.
+   tracking -0.5, icon gap 6, padding 8/32 (Regular default), and the WB blue-70 primary fill.
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
@@ -35,9 +35,9 @@
 /* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
 .btn {
   gap: var(--space-button-gap, 6px);
-  height: auto;                                        /* let padding drive height (→ 56px) */
-  min-height: 56px;                                    /* Figma default size */
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  height: auto;                                        /* let padding drive height (→ 40px) */
+  min-height: 40px;                                    /* Regular default per FND-043 (reconciled from Figma xLarge/56) — aligns with native h40 */
+  padding: var(--space-xxsmall, 8px) var(--space-medium, 32px);
   border-radius: var(--radius-pill, 32px);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
@@ -101,15 +101,17 @@
 
 /* ---- Sizes — keep native .btn-small / .btn-large, restyle to The Loop heights ----
    Size mapping (OutSystems Button class → The Loop "Size"):
-     (none / base)  → xLarge  (56px, The Loop default)
+     (none / base)  → Regular (40px, The Loop default — aligns with native h40)
+     .btn-xlarge    → xLarge  (56px) — added modifier; OutSystems UI has no native h56
+                      Button size. Apply via Extended Class = "btn-xlarge".
      .btn-large     → Large   (48px)
-     .btn.is-regular → Regular (40px) — added modifier; OutSystems has no native h40
-                       Button size (its baseline .btn is 40px, but The Loop's base is
-                       the 56px xLarge). Apply via Extended Class = "is-regular",
-                       mirroring the Text Field's .is-regular Regular size. */
-.btn-large { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
-.btn.is-regular { min-height: 40px; padding-block: 8px; font-size: var(--font-size-300, 16px); }
-.btn-small { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
+     .btn-regular   → Regular (40px) — explicit alias of the default, for a complete
+                      named scale (mirrors the Text Field's .input-regular).
+     .btn-small     → Small   (32px) */
+.btn-xlarge  { min-height: 56px; padding-block: var(--space-small, 16px); font-size: var(--font-size-300, 16px); }
+.btn-large   { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
+.btn-regular { min-height: 40px; padding-block: var(--space-xxsmall, 8px); font-size: var(--font-size-300, 16px); }
+.btn-small   { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
 .btn:focus-visible {

@@ -9,6 +9,23 @@ a flexible **container shell** (white, 8px radius, **flat — the Figma shadow i
 padding, content placeholder). Built one variant at a time: `.card` → `.card-background` →
 `.card-sectioned` → list cards.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Card page.
+
+**What it is.** A flexible container shell — white, 8px radius, flat (shadow zeroed), 24px padding — native Card family restyled.
+
+**When to use**
+- Group related content into a contained surface — dashboard tiles, list/grid items, media cards, sectioned panels.
+
+**When not to use** (reach for instead)
+- A page-level message → **System Alert**.
+- An inline contextual notice → **Note**.
+- A floating panel anchored to a control → **Popover**.
+
+**How to use**
+- Use the native **Card** widget; variants `.card-background`, `.card-sectioned`, and list cards. Place content in the placeholder.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -227,10 +244,33 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   .card,
   .card-background .loop-card__media-button { transition: none; }
 }
-</content>
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## OutSystems UI variant ↔ The Loop mapping
 | OutSystems UI pattern | The Loop variant | Treatment |
@@ -279,4 +319,3 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   `--color-gray-alpha-white-*` / `--color-blue-90` **primitives** directly, because the semantic
   **On-Dark** role layer is parked in `semantic-colors-dark.css` (not in the light build). Revisit
   when the dark-mode phase lands so these point at semantic On-Dark roles.
-</content>

@@ -12,6 +12,22 @@ Two deliverables that work together:
 
 Figma reference: Live Style Guide "Color values, variables and classes" view.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Color page.
+
+**What it is.** Primitive color utility classes plus `<loop-color-reference>`, which auto-renders the full color reference in the Live Style Guide.
+
+**When to use**
+- Documenting the color system on a Live Style Guide page.
+- Applying a primitive color directly with `.background-<name>` / `.text-<name>`.
+
+**When not to use** (reach for instead)
+- For component theming, prefer **semantic role tokens** over raw primitive utilities so colors stay re-themeable.
+
+**How to use**
+- Drop `<loop-color-reference>` on a Style Guide page — it reads each token's value live from the theme, no rows built by hand.
+
 ## Why this approach
 Building ~129 color rows × (swatch + 4 cells) by hand in ODC is hours of fragile work.
 Instead: paste the theme (classes ship automatically) + drop one JS file + place one
@@ -329,6 +345,30 @@ it never hard-codes a hex, so the table can't drift from `dist/theme.css`.
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## The utility classes
 For every `--color-<name>` primitive, the generator emits:

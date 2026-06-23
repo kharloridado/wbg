@@ -85,6 +85,15 @@
   border-bottom-color: var(--color-white);
 }
 
+/* Expand/collapse arrow → white. The glyph is drawn by the icon font on
+ * .osui-submenu__header__icon:after (vendor _icon-library-odc.scss). Vendor sets no
+ * color, so it inherits the framework's dark text (the icon element is a sibling of
+ * __item, which is the only node whitened above) — a dark chevron on the blue bar.
+ * neutral-0 → white via outsystems-ui-overrides.css. */
+.header .osui-submenu__header__icon:after {
+  color: var(--color-neutral-0);
+}
+
 /* Floating panel (.osui-submenu__items) is a white popup BELOW the header — keep its
  * links dark/legible. Without this they'd inherit the white from `.header .app-menu-links a`
  * above (the panel is a DOM descendant of .app-menu-links) and vanish on white. */
@@ -94,4 +103,34 @@
 
 .header .osui-submenu__items a.active {
   color: var(--color-primary);
+}
+
+/* ── Focus indicator — match The Loop's project-standard 2px outline ring.
+ * The framework styles menu-link focus with `box-shadow: 0 0 0 3px focus-outer`
+ * (a glow, no offset) under `.has-accessible-features`
+ * (vendor _menu-app-menu-links.scss:177-179) — NOT the `outline: 2px solid …;
+ * outline-offset: 2px` ring every other focusable component in The Loop uses.
+ * Neutralize that glow and apply the ring so keyboard focus is consistent.
+ * The `.has-accessible-features …:focus` selectors mirror the framework's so equal/
+ * higher specificity + later load (theme loads after OutSystems UI in ODC) lets them
+ * win; the bare `:focus-visible` selectors cover runtimes without that class.
+ * a11y (FND-012): the Blue/50 ring is low-contrast on the blue header bar — kept
+ * faithful (flag-don't-fix); the white floating panel renders it fine. */
+.header .app-menu-links a:focus-visible,
+.header .osui-submenu__header__item a:focus-visible,
+.has-accessible-features .header .app-menu-links a:focus,
+.has-accessible-features .header .osui-submenu__header__item a:focus {
+  outline: 2px solid var(--color-outline-on-dark-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Floating submenu panel sits on a white popup → on-light focus ring. Declared
+ * after the rule above so it wins for panel links (a DOM descendant of
+ * .app-menu-links — see the panel-color reset above). */
+.header .osui-submenu__items a:focus-visible,
+.has-accessible-features .header .osui-submenu__items a:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  box-shadow: none;
 }

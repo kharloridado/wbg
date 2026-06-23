@@ -7,6 +7,23 @@ Figma: "Notes" [node 26642-61530].
 pure-CSS BEM block (no JS needed). Four types via a modifier class; optional action
 link row. Applied via `ExtendedClass` on any Container widget.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Notes page.
+
+**What it is.** An inline callout box for contextual notices (CSS block), with four types and an optional action link.
+
+**When to use**
+- Contextual inline guidance tied to nearby content — tips, info, or warnings within a form or section.
+
+**When not to use** (reach for instead)
+- A page-level / global message → **System Alert**.
+- A transient hover hint → **Tooltip**.
+- A floating anchored panel → **Popover**.
+
+**How to use**
+- Extended Class `loop-note loop-note--<type>` on a Container; add the optional action link row.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -138,6 +155,30 @@ link row. Applied via `ExtendedClass` on any Container widget.
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Usage in OutSystems
 Add these classes to a **Container** via `ExtendedClass`:

@@ -10,6 +10,24 @@ group). Same widget, same classes — one file covers both (#27 and #28).
 (`.button-group` / `.button-group-item` / `.button-group-selected-item`). Devs use the
 standard OutSystems ButtonGroup widget; no custom class system.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button Group page.
+
+**What it is.** A segmented control — native ButtonGroup restyled. The **Button Switch** is just the 2-option case.
+
+**When to use**
+- Pick **one** option from a small set (2–5) where all options should stay visible at once — view toggles, segmented filters, an A/B switch.
+
+**When not to use** (reach for instead)
+- Many options → **Dropdown / Select**.
+- A single on/off setting → **Switch**.
+- Independent multi-select → **Checkbox** or **Tag**.
+- Firing actions rather than selecting → individual **Buttons**.
+
+**How to use**
+- Use the native **ButtonGroup** widget; the selected item carries `.button-group-selected-item` (driven by OutSystems logic). Button Switch = a 2-item group.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -45,7 +63,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
      .button-group-selected-item      → bg 'primary', text neutral-0 (filled)
      [disabled]                       → neutral
 
-   The Loop overrides: pill OUTER corners (32px), square joined INNER corners (0),
+   The Loop overrides: pill OUTER corners (32px), 2px joined INNER corners
+     (--radius-xs, per Figma "Button/Border Radius = 2" — see FND-004),
      Open Sans 700 / tracking -0.5, and WB blue-70 outline/text + blue-70 selected fill.
 
    Tokens: --radius-pill, --space-medium, --font-family-label,
@@ -58,11 +77,12 @@ standard OutSystems ButtonGroup widget; no custom class system.
      Non-selected outlined items reuse the secondary button treatment.
    ============================================ */
 
-/* ---- Item — The Loop identity + outlined (non-selected) look ---- */
+/* ---- Item — The Loop identity + outlined (non-selected) look ----
+   Default item height is Regular (40px), matching the Button's Regular default. */
 .button-group-item {
-  min-height: 56px;
+  min-height: 40px;                       /* Regular default per FND-043 (reconciled from Figma xLarge/56) */
   height: auto;
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  padding: var(--space-xxsmall, 8px) var(--space-medium, 32px);
 
   background-color: var(--color-bg-link-secondary-enabled);     /* transparent */
   border: 1px solid var(--color-outline-on-light-link-enabled); /* blue-70 */
@@ -74,8 +94,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
   line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* middle items: all corners are joined (inner) — square, no radius */
-  border-radius: 0;
+  /* middle items: all corners are joined (inner) — 2px (Figma Button/Border Radius = 2) */
+  border-radius: var(--radius-xs, 2px);
 }
 
 /* collapse the shared border (keep native behaviour explicit) */
@@ -83,12 +103,12 @@ standard OutSystems ButtonGroup widget; no custom class system.
   border-left: 0px;
 }
 
-/* end caps: outer corners pill (32px), inner corners square (0) */
+/* end caps: outer corners pill (32px), inner (joined) corners 2px (--radius-xs) */
 .button-group-item:first-child {
-  border-radius: var(--radius-pill, 32px) 0 0 var(--radius-pill, 32px);
+  border-radius: var(--radius-pill, 32px) var(--radius-xs, 2px) var(--radius-xs, 2px) var(--radius-pill, 32px);
 }
 .button-group-item:last-child {
-  border-radius: 0 var(--radius-pill, 32px) var(--radius-pill, 32px) 0;
+  border-radius: var(--radius-xs, 2px) var(--radius-pill, 32px) var(--radius-pill, 32px) var(--radius-xs, 2px);
 }
 /* single item (first === last): fully pill */
 .button-group-item:first-child:last-child {
@@ -126,6 +146,30 @@ standard OutSystems ButtonGroup widget; no custom class system.
 
 </details>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## What the override changes vs OutSystems UI baseline
 - Outer end-caps = pill **32px**; joined inner corners = **2px** (`--radius-xs`, Figma `Button/Border Raduis = 2`).
 - Outlined items in **blue-70**; **selected item filled blue-70** + white label.
@@ -141,3 +185,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
 
 ## Open findings linked to this work
 - Shares **FND-013** (off-scale button gap/tracking) via the reused button label tokens.
+- **FND-043** (consistency/fidelity, medium) — the Button Group default item height is **Regular
+  (40px)**, reconciled from the Figma default instance's **xLarge (56px)** to align the button
+  family (parallel to Button, Text Field FND-021, Checkbox FND-038). Built as Regular/40 per
+  stakeholder direction; reconciliation disclosed here and in the Button handover. See
+  `findings/findings-register.md` (FND-043).

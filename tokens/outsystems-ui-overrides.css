@@ -31,14 +31,30 @@
    * --color-domain-interactive-focused / --color-outline-*-link-focused).
    * This replaces OutSystems' yellow #ffd337 focus ring with the brand blue.
    * FINDING (a11y/brand): blue-on-blue focus may reduce focus-ring contrast vs the
-   * high-contrast yellow default — see findings/tickets/FND-012. focus-inner is left
-   * to inherit (it references --color-neutral-10, remapped below). */
+   * high-contrast yellow default — see findings/tickets/FND-012.
+   * focus-inner: the framework compiles it to var(--color-neutral-10) (its DARKEST
+   * neutral). We can't inherit through that name here, because --color-neutral-10 is
+   * a Loop LIGHT primitive (#e7edf3) that must keep its light meaning — see the
+   * neutral-ramp collision note below. So we point focus-inner at the Loop darkest
+   * neutral (--color-neutral-95) directly, by its non-colliding name. */
   --color-focus-outer:      var(--color-blue-50);            /* was #ffd337 */
+  --color-focus-inner:      var(--color-neutral-95);         /* was var(--color-neutral-10) #101213 → #0c0f12 */
 
-  /* ====== Neutral ramp ====== (OS $osui-colors-neutral '0'..'10', light→dark) */
+  /* ====== Neutral ramp ====== (OS $osui-colors-neutral '0'..'10', light→dark)
+   * COLLISION NOTE: OutSystems' ramp ENDS at --color-neutral-10 (its DARKEST step),
+   * but The Loop primitive ramp (colors.css) ALSO defines --color-neutral-10 — as a
+   * LIGHT tone (#e7edf3). It is one and the same custom-property name, so a single
+   * value wins for every consumer. The Loop LIGHT primitive must win: it is the
+   * source of truth painted by .background-neutral-10/.text-neutral-10, referenced by
+   * --color-bg-container-on-light-regular, shown in the Live Style Guide swatches,
+   * AND used by OS's own neutral-2 hover (mapped below → var(--color-neutral-10)).
+   * Letting the dark OS mapping win turned every neutral-2 hover (dropdown items,
+   * list-items, btn, switch, table, checkbox, radio) NEAR-BLACK. So we do NOT remap
+   * --color-neutral-10 here. The only framework consumer of the dark end is the
+   * focus-inner ring, which is set explicitly in the Focus block above. */
   --color-neutral-0:  var(--color-white);       /* #ffffff = #ffffff */
   --color-neutral-1:  var(--color-neutral-05);  /* #f8f9fa → #f5f7f9 */
-  --color-neutral-2:  var(--color-neutral-10);  /* #f1f3f5 → #e7edf3 */
+  --color-neutral-2:  var(--color-neutral-10);  /* #f1f3f5 → #e7edf3 (Loop light; the hover bg) */
   --color-neutral-3:  var(--color-neutral-15);  /* #e9ecef → #dae3eb */
   --color-neutral-4:  var(--color-neutral-20);  /* #dee2e6 → #d4dee8 */
   --color-neutral-5:  var(--color-neutral-30);  /* #ced4da → #bdccdb */
@@ -46,7 +62,9 @@
   --color-neutral-7:  var(--color-neutral-50);  /* #6a7178 → #586e84 */
   --color-neutral-8:  var(--color-neutral-70);  /* #4f575e → #3d4c5c */
   --color-neutral-9:  var(--color-neutral-80);  /* #272b30 → #252e37 */
-  --color-neutral-10: var(--color-neutral-95);  /* #101213 → #0c0f12 */
+  /* --color-neutral-10: intentionally NOT remapped — kept as the Loop LIGHT primitive
+   * (#e7edf3, colors.css). See the collision note above; the dark end OS needs for the
+   * focus ring is delivered via --color-focus-inner in the Focus block. */
 
   /* ====== Semantic ====== (OS $osui-colors-semantic)
    * Aligns with the legacy aliases already in semantic-colors.css. */
@@ -147,6 +165,18 @@
    * a11y: a primary-blue header makes the Blue/50 focus ring unperceivable on header
    * links — tracked under FND-012 (flag-don't-fix; ring kept faithful). */
   --header-color: var(--color-primary);
+
+  /* ====== Font weights ====== (OS $osui-typography-weight → --font-<type>,
+   * compiled in _root.scss). OutSystems UI resolves all weights through
+   * var(--font-light/regular/semi-bold/bold); The Loop defined a parallel
+   * --font-weight-* set (typography.css). Remap OS UI's names onto those tokens so
+   * native widgets (btn, headings, cards, tags, badges…) inherit Loop weights from
+   * one source. Values are identical today (400/600/700) → no visual change; brand
+   * owns the weight from here. 'light' (300) has no Loop weight token and no loaded
+   * Open Sans 300 face — left at the OS default. */
+  --font-regular:   var(--font-weight-regular);   /* 400 = 400 */
+  --font-semi-bold: var(--font-weight-semibold);  /* 600 = 600 */
+  --font-bold:      var(--font-weight-bold);       /* 700 = 700 */
 
   /* ====== Spacing ====== (OS $osui-sizes → --space-<type>, compiled in _root.scss)
    * The Loop's scale (spacing.css) uses descriptive names but the SAME 4pt values,

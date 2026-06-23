@@ -8,6 +8,28 @@ OutSystems UI Button widget** (`.btn` / `.btn-primary`) to The Loop design — s
 the project uses in `outsystems-ui-overrides.css`. Developers keep using the standard
 OutSystems **Button** widget; the theme makes it look like The Loop.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button page.
+
+**What it is.** The Loop action control — a native OutSystems Button restyled to the pill, Open Sans 700, blue-70 identity.
+
+**When to use**
+- Any clickable action that submits, navigates, or triggers something.
+- **Primary** (filled blue-70) — the single most important action on a view.
+- **Secondary** (outlined) — alternative actions next to a Primary.
+- **Ghost / Tertiary** (text, no border) — low-emphasis actions in dense layouts.
+
+**When not to use** (reach for instead)
+- Link-style inline action → **Button Text**.
+- One trigger that opens several actions → **Button Dropdown**.
+- Pick one of a few always-visible options → **Button Group**.
+
+**How to use**
+- Use the native **Button** widget. Style = Primary → filled; Style = None → Secondary (outlined).
+- Ghost: Extended Class = `btn-ghost`. Sizes: default `.btn` is Regular (40); `btn-xlarge` (56), `btn-large` (48), `btn-small` (32), `btn-regular` (40, explicit alias of the default).
+- Icon-only buttons must keep an accessible name (`aria-label`).
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -36,7 +58,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
    The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/32, and the WB blue-70 primary fill.
+   tracking -0.5, icon gap 6, padding 8/32 (Regular default), and the WB blue-70 primary fill.
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
@@ -59,9 +81,9 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 /* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
 .btn {
   gap: var(--space-button-gap, 6px);
-  height: auto;                                        /* let padding drive height (→ 56px) */
-  min-height: 56px;                                    /* Figma default size */
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  height: auto;                                        /* let padding drive height (→ 40px) */
+  min-height: 40px;                                    /* Regular default per FND-043 (reconciled from Figma xLarge/56) — aligns with native h40 */
+  padding: var(--space-xxsmall, 8px) var(--space-medium, 32px);
   border-radius: var(--radius-pill, 32px);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
@@ -125,15 +147,17 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
 /* ---- Sizes — keep native .btn-small / .btn-large, restyle to The Loop heights ----
    Size mapping (OutSystems Button class → The Loop "Size"):
-     (none / base)  → xLarge  (56px, The Loop default)
+     (none / base)  → Regular (40px, The Loop default — aligns with native h40)
+     .btn-xlarge    → xLarge  (56px) — added modifier; OutSystems UI has no native h56
+                      Button size. Apply via Extended Class = "btn-xlarge".
      .btn-large     → Large   (48px)
-     .btn.is-regular → Regular (40px) — added modifier; OutSystems has no native h40
-                       Button size (its baseline .btn is 40px, but The Loop's base is
-                       the 56px xLarge). Apply via Extended Class = "is-regular",
-                       mirroring the Text Field's .is-regular Regular size. */
-.btn-large { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
-.btn.is-regular { min-height: 40px; padding-block: 8px; font-size: var(--font-size-300, 16px); }
-.btn-small { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
+     .btn-regular   → Regular (40px) — explicit alias of the default, for a complete
+                      named scale (mirrors the Text Field's .input-regular).
+     .btn-small     → Small   (32px) */
+.btn-xlarge  { min-height: 56px; padding-block: var(--space-small, 16px); font-size: var(--font-size-300, 16px); }
+.btn-large   { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
+.btn-regular { min-height: 40px; padding-block: var(--space-xxsmall, 8px); font-size: var(--font-size-300, 16px); }
+.btn-small   { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
 .btn:focus-visible {
@@ -149,6 +173,30 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
 </details>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Variant mapping (OutSystems Button "Style" → The Loop "Type")
 | The Loop | OutSystems Button | How |
 |---|---|---|
@@ -159,21 +207,21 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 ## Size mapping (Figma "Size" → OutSystems Button class)
 | The Loop | OutSystems | How |
 |---|---|---|
-| **xLarge** (56px, default) | base `.btn` | native, no extra class |
+| **Regular** (40px, **default**) | base `.btn` | native, no extra class — Loop default per **FND-043** (reconciled from Figma xLarge/56) |
+| **xLarge** (56px) | `.btn` + `btn-xlarge` | Extended Class = `btn-xlarge` (added modifier; OutSystems UI has no native h56 Button size) |
 | **Large** (48px) | `.btn-large` | native size class |
-| **Regular** (40px) | `.btn` + `is-regular` | Extended Class = `is-regular` (added modifier; OutSystems has no native h40 Button size — mirrors the Text Field's `is-regular`) |
 | **Small** (32px) | `.btn-small` | native size class |
 
 ## What the override changes vs OutSystems UI baseline
-- Pill radius **32px**, Open Sans **700**, label tracking **-0.5px**, icon gap **6px**, padding **16/32** (→ 56px tall default).
+- Pill radius **32px**, Open Sans **700**, label tracking **-0.5px**, icon gap **6px**. Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px with 16px block padding.
 - **Primary fill = blue-70 (#004370)** — overridden directly because `.btn-primary` otherwise resolves through `--color-primary` (blue-50), which other components share.
 - Explicit Loop hover/pressed hues (replaces OutSystems' `filter: brightness()` darkening).
-- Sizes: native `.btn-large` → 48px, `.btn-small` → 32px, added `is-regular` → 40px (Regular).
+- Sizes: default `.btn` → 40px (Regular), native `.btn-large` → 48px, `.btn-small` → 32px, added `.btn-xlarge` → 56px (xLarge), `.btn-regular` → 40px (explicit alias of the default).
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into ODC Theme editor (carries the new tokens).
 - [ ] Paste `loop-button.css` into Theme CSS, below OutSystems UI.
-- [ ] Use the native **Button** widget; pick Style = Primary/None. For ghost set Extended Class = `btn-ghost`; for Regular (40px) set Extended Class = `is-regular`.
+- [ ] Use the native **Button** widget; pick Style = Primary/None. For ghost set Extended Class = `btn-ghost`; the default `.btn` is already Regular (40px) — set Extended Class = `btn-xlarge` only when you need the 56px xLarge.
 - [ ] Icon-only buttons: keep an accessible name (`aria-label`).
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).
 

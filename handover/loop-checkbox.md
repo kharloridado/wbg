@@ -9,12 +9,31 @@ project uses for the Button (`loop-button.css`). Developers keep using the stand
 OutSystems **Checkbox** widget; the theme makes it look like The Loop. The box graphic is
 the input's `::before`; the check / dash glyph is its `::after`.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Checkbox page.
+
+**What it is.** The Loop checkbox — native OutSystems Checkbox restyled (box + check/dash glyph).
+
+**When to use**
+- Independent on/off choices.
+- Selecting **zero or more** items from a list.
+- A single consent / agree toggle inside a form that is saved on submit.
+
+**When not to use** (reach for instead)
+- One-of-many **exclusive** choice → **Radio Button**.
+- An instant-apply on/off setting → **Switch**.
+- Choose one from a long list → **Dropdown / Select**.
+
+**How to use**
+- Use the native **Checkbox** widget; supports checked, indeterminate (dash), and disabled.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
 | `src/blocks/loop-checkbox.css` | Theme CSS (paste **below** OutSystems UI so it wins) |
 
-No new global tokens — the component sizing (28px control / 20px box / 4px padding / 4 radius)
+No new global tokens — the component sizing (visible box = named size 28/24/20/16, 4 radius)
 is defined as `--loop-checkbox-*` custom properties scoped to `[data-checkbox]`, and all colors
 reference existing semantic tokens already in `dist/theme.css`.
 
@@ -30,6 +49,7 @@ reference existing semantic tokens already in `dist/theme.css`.
    Component: Checkbox  ("The Loop" — -loop checkbox)
    Figma: -The Loop- Main Library · "Checkbox" [node:19336-17679]
           input atom [node:15848-1644] · box+label [node:15848-1651]
+          size variants [node:19336-17790] · sizes [node:19336-17818]
    Approach: RESTYLE the native OutSystems UI Checkbox widget ([data-checkbox])
              — NOT a parallel class system. Devs use the standard OutSystems
              Checkbox widget; this theme override makes it render as The Loop
@@ -44,47 +64,83 @@ reference existing semantic tokens already in `dist/theme.css`.
      :hover::before             → neutral-6 border
      :checked::before / ::after → primary fill + neutral-0 check (border trick)
      [disabled]                 → neutral-2 fill, neutral-4 border
-   The Loop overrides that baseline to: 28px control / 20px box, radius 4, the
-   WB blue-70 checked fill, a blue-70 hover border, an indeterminate ("Multi")
-   dash, and an Error/Required red-70 type.
+   The Loop overrides that baseline to The Loop identity: a token-sized box,
+   radius 4, the WB blue-70 checked fill, a blue-70 hover border, an indeterminate
+   ("Multi") dash, an Error/Required red-70 type, and the FOUR size variants.
+
+   Sizes (loop/checkbox/icon == visible box · label font/line-height · gap) —
+   box matches the sibling Radio circle at every size:
+     XLarge  .loop-checkbox-xlarge   box 28 · label 16/18 · gap 8 · ls 0
+     Large   .loop-checkbox-large    box 24 · label 14/16 · gap 8 · ls 0
+     Regular (DEFAULT / no class)    box 20 · label 13/15 · gap 4 · ls 0.25
+     Small   .loop-checkbox-small    box 16 · label 12/14 · gap 4 · ls 0.25
+   Default is REGULAR per stakeholder direction (the Figma-assembled instance ships
+   as xLarge, and the DS "How To Use" note lists only 3 sizes — see FND-038). The
+   size class goes on the Checkbox widget's Extended Class (scales the box only), or
+   on a .loop-checkbox-field wrapper (scales box + label together).
 
    Type / state mapping (Figma "State"/"Type"/"Checked" → native):
      Unchecked          → default (no class)
      Checked (Yes)      → :checked
-     Multi              → :indeterminate   (set el.indeterminate = true in JS)
+     Multi              → .loop-checkbox--indeterminate class (Extended Class)
+                          — also matches :indeterminate if set via JS
      Disabled           → [disabled]
+     Hover              → :hover
      Error / Required   → .loop-checkbox--error  /  [aria-invalid="true"]
                           (Extended Class = "loop-checkbox--error"; Required uses
                            the same red treatment per the Figma "Required" state)
-
-   Component tokens (scoped below) trace to Figma `loop/checkbox/*`:
-     control size 28, box 20, padding 4, radius 4 (== --radius-base).
 
    Tokens consumed: --radius-base, --color-bg-container-on-light-lowest,
      --color-outline-on-light-default, --color-outline-primary,
      --color-bg-link-primary-enabled, --color-white,
      --color-domain-state-disable-low, --color-outline-on-light-state-disable-low,
      --color-bg-container-state-error-high, --color-outline-on-light-state-error-high,
-     --color-outline-on-light-link-focused.
+     --color-outline-on-light-link-focused, --color-text-on-light-default,
+     --color-text-on-light-state-disabled, --color-text-on-light-state-error,
+     --space-checkbox-gap, --space-tiny, --space-checkbox-group-column,
+     --font-family-label, --font-weight-regular,
+     --font-size-100/200/300, --letter-spacing-none.
 
-   Fidelity notes (flagged, NOT silently re-shaded):
+   Fidelity notes (flagged, NOT silently re-shaded / re-sized):
      - FND-016 (a11y/contrast): the unchecked border Outline/On-Light/Default
        (#00396b3d ≈ 1.45:1 vs white) fails WCAG 2.2 SC 1.4.11 (3:1 for the
        checkbox boundary). Built as designed; recommendation carried to design.
      - FND-017 (consistency/a11y): the "Required" state renders in error-red by
        default (identical to the Error type), which may read as a validation
        error before the user interacts. Built as designed; confirm intent.
+     - FND-038 (consistency): size system documents 3 sizes but ships 4, and the
+       assembled default is xLarge; built all four with REGULAR as the default per
+       stakeholder direction. Off-scale size metrics (group vpadding 14/12/10/8,
+       Regular 13/15 label, 0.25 letter-spacing) are already tracked under FND-013/FND-022.
+     - Target size: Regular (20px) / Small (16px) controls are below the WCAG 2.2
+       SC 2.5.8 (AA) 24px minimum; in normal usage they meet the standard's SPACING
+       exception (group row gap ≥ 8px keeps 24px target circles from overlapping) and
+       the associated <label> extends the hit area. Built at the design sizes.
    ============================================ */
+
+/* ---- Size tokens — default = REGULAR; also seeds the .loop-checkbox-field wrapper
+   so the paired label inherits the same size bundle. Component tokens trace to
+   Figma loop/checkbox/*; the VISIBLE box fills the named size (28/24/20/16 —
+   matching the sibling Radio circle, which shares loop/checkbox/*), and the
+   check/dash glyphs scale proportionally to the box so they stay correct at
+   every size. (Earlier the box was inset by a padding token, rendering smaller
+   than the radio at the same size — corrected to size the visual, not a frame.) ---- */
+[data-checkbox],
+.loop-checkbox-field {
+  --loop-checkbox-control-size: 20px;                 /* loop/checkbox/icon/{w,h} — Regular */
+  --loop-checkbox-box-size: var(--loop-checkbox-control-size);  /* visible box == named size */
+  --loop-checkbox-radius: var(--radius-base, 4px);    /* loop/checkbox/border radius — constant 4 */
+  --loop-checkbox-glyph: var(--color-white, #ffffff); /* Icon/On Dark/Emphasis */
+  --loop-checkbox-stroke: calc(var(--loop-checkbox-box-size) * 0.125);
+  --loop-checkbox-gap: var(--space-tiny, 4px);        /* loop/checkbox/gap — Regular */
+  --loop-checkbox-label-size: 13px;                   /* loop/checkbox/label/font Size — Regular */
+  --loop-checkbox-label-leading: 15px;               /* loop/checkbox/label/line height — Regular */
+  --loop-checkbox-label-tracking: 0.25px;            /* loop/checkbox/label/letter spacing — Regular */
+  --loop-checkbox-group-row: 10px;                   /* loop/checkbox/group/vpadding — Regular */
+}
 
 /* ---- Base [data-checkbox] → The Loop identity + Unchecked (enabled) look ---- */
 [data-checkbox] {
-  /* component tokens — Figma loop/checkbox/* */
-  --loop-checkbox-control-size: 28px;                 /* loop/checkbox/icon/{width,height} */
-  --loop-checkbox-box-size: 20px;                     /* control - 2*padding */
-  --loop-checkbox-padding: 4px;                       /* loop/checkbox/icon/padding */
-  --loop-checkbox-radius: var(--radius-base, 4px);    /* loop/checkbox/border radius */
-  --loop-checkbox-glyph: var(--color-white, #ffffff); /* Icon/On Dark/Emphasis */
-
   appearance: none;                                   /* hide native control; ::before is the box */
   position: relative;
   box-sizing: border-box;
@@ -94,12 +150,12 @@ reference existing semantic tokens already in `dist/theme.css`.
   cursor: pointer;
 }
 
-/* The visible 20x20 box, centered in the 28px control via the padding token */
+/* The visible box — fills the control (== the named size) */
 [data-checkbox]::before {
   content: "";
   position: absolute;
-  top: var(--loop-checkbox-padding);
-  left: var(--loop-checkbox-padding);
+  top: 0;
+  left: 0;
   width: var(--loop-checkbox-box-size);
   height: var(--loop-checkbox-box-size);
   box-sizing: border-box;
@@ -116,7 +172,7 @@ reference existing semantic tokens already in `dist/theme.css`.
   border-color: var(--color-outline-primary);          /* blue-70 #004370 */
 }
 
-/* ---- Checked → filled blue-70 + white check ---- */
+/* ---- Checked → filled blue-70 + white check (glyph scales with the box) ---- */
 [data-checkbox]:checked::before {
   background: var(--color-bg-link-primary-enabled);     /* blue-70 #004370 */
   border-color: var(--color-bg-link-primary-enabled);
@@ -126,28 +182,33 @@ reference existing semantic tokens already in `dist/theme.css`.
   position: absolute;
   left: 50%;
   top: 46%;                                             /* slight optical lift for the check */
-  width: 10px;
-  height: 5px;
-  border-left: 2.5px solid var(--loop-checkbox-glyph);
-  border-bottom: 2.5px solid var(--loop-checkbox-glyph);
+  width: calc(var(--loop-checkbox-box-size) * 0.5);
+  height: calc(var(--loop-checkbox-box-size) * 0.25);
+  border-left: var(--loop-checkbox-stroke) solid var(--loop-checkbox-glyph);
+  border-bottom: var(--loop-checkbox-stroke) solid var(--loop-checkbox-glyph);
   border-top: 0px;
   border-right: 0px;
   background: none;
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-/* ---- Multi / indeterminate → filled blue-70 + white dash ---- */
-[data-checkbox]:indeterminate::before {
+/* ---- Multi / indeterminate → filled blue-70 + white dash (scales with the box).
+   Driven by the .loop-checkbox--indeterminate class (set as the Checkbox widget's
+   Extended Class) so devs don't have to set el.indeterminate in JS; the native
+   :indeterminate pseudo is kept too so a JS-set tristate still renders. ---- */
+[data-checkbox]:indeterminate::before,
+[data-checkbox].loop-checkbox--indeterminate::before {
   background: var(--color-bg-link-primary-enabled);     /* blue-70 #004370 */
   border-color: var(--color-bg-link-primary-enabled);
 }
-[data-checkbox]:indeterminate::after {
+[data-checkbox]:indeterminate::after,
+[data-checkbox].loop-checkbox--indeterminate::after {
   content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 10px;
-  height: 2.5px;
+  width: calc(var(--loop-checkbox-box-size) * 0.5);
+  height: var(--loop-checkbox-stroke);
   border: 0px;
   border-radius: 1px;
   background: var(--loop-checkbox-glyph);
@@ -163,9 +224,28 @@ reference existing semantic tokens already in `dist/theme.css`.
 [data-checkbox][disabled]::before,
 [data-checkbox][disabled]:checked::before,
 [data-checkbox][disabled]:indeterminate::before,
+[data-checkbox][disabled].loop-checkbox--indeterminate::before,
 [data-checkbox][aria-disabled="true"]::before {
   background: var(--color-domain-state-disable-low);          /* neutral-15 #dae3eb */
   border-color: var(--color-outline-on-light-state-disable-low); /* neutral-20 #d4dee8 */
+}
+
+/* Disabled glyph — re-assert The Loop check/dash over the OutSystems UI baseline,
+   whose [disabled]:checked:after sets `border: var(--border-size-l)` on ALL four
+   sides (it outranks our :checked::after), which thickens the stroke and re-adds
+   the top/right borders — deforming the mark's size. Keep the stroke geometry;
+   recolor to the muted disabled-icon token so it stays legible on the neutral fill. */
+[data-checkbox][disabled]:checked::after,
+[data-checkbox][aria-disabled="true"]:checked::after {
+  border-left: var(--loop-checkbox-stroke) solid var(--color-icon-on-light-state-disabled);   /* neutral-40 */
+  border-bottom: var(--loop-checkbox-stroke) solid var(--color-icon-on-light-state-disabled);
+  border-top: 0px;
+  border-right: 0px;
+}
+[data-checkbox][disabled]:indeterminate::after,
+[data-checkbox][disabled].loop-checkbox--indeterminate::after,
+[data-checkbox][aria-disabled="true"]:indeterminate::after {
+  background: var(--color-icon-on-light-state-disabled);      /* neutral-40 */
 }
 
 /* ---- Error / Required → red-70 outline (unchecked) + fill (checked/multi) ----
@@ -179,12 +259,96 @@ reference existing semantic tokens already in `dist/theme.css`.
 }
 [data-checkbox].loop-checkbox--error:checked::before,
 [data-checkbox].loop-checkbox--error:indeterminate::before,
+[data-checkbox].loop-checkbox--error.loop-checkbox--indeterminate::before,
 [data-checkbox].loop-checkbox--required:checked::before,
 [data-checkbox].loop-checkbox--required:indeterminate::before,
+[data-checkbox].loop-checkbox--required.loop-checkbox--indeterminate::before,
 [data-checkbox][aria-invalid="true"]:checked::before,
-[data-checkbox][aria-invalid="true"]:indeterminate::before {
+[data-checkbox][aria-invalid="true"]:indeterminate::before,
+[data-checkbox][aria-invalid="true"].loop-checkbox--indeterminate::before {
   background: var(--color-bg-container-state-error-high);        /* red-70 #9d161d */
   border-color: var(--color-bg-container-state-error-high);
+}
+
+/* ---- Size modifiers — set the token bundle. Put the class on the Checkbox widget's
+   Extended Class (scales the box) or on a .loop-checkbox-field wrapper (scales the
+   label too, since the tokens inherit). Default (no class) = Regular (above). ---- */
+.loop-checkbox-xlarge {
+  --loop-checkbox-control-size: 28px;                 /* loop/checkbox/icon — XLarge */
+  --loop-checkbox-gap: var(--space-checkbox-gap, 8px);
+  --loop-checkbox-label-size: var(--font-size-300, 16px);
+  --loop-checkbox-label-leading: 18px;
+  --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
+  --loop-checkbox-group-row: 14px;                    /* loop/checkbox/group/vpadding — off-grid, FND-022 */
+}
+.loop-checkbox-large {
+  --loop-checkbox-control-size: 24px;                 /* loop/checkbox/icon — Large */
+  --loop-checkbox-gap: var(--space-checkbox-gap, 8px);
+  --loop-checkbox-label-size: var(--font-size-200, 14px);
+  --loop-checkbox-label-leading: 16px;
+  --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
+  --loop-checkbox-group-row: 12px;
+}
+.loop-checkbox-regular {                              /* explicit Regular — same as default */
+  --loop-checkbox-control-size: 20px;
+  --loop-checkbox-gap: var(--space-tiny, 4px);
+  --loop-checkbox-label-size: 13px;                   /* 13/15 off the type scale — FND-022 */
+  --loop-checkbox-label-leading: 15px;
+  --loop-checkbox-label-tracking: 0.25px;            /* off-scale — FND-022 */
+  --loop-checkbox-group-row: 10px;
+}
+.loop-checkbox-small {
+  --loop-checkbox-control-size: 16px;                 /* loop/checkbox/icon — Small */
+  --loop-checkbox-gap: var(--space-tiny, 4px);
+  --loop-checkbox-label-size: var(--font-size-100, 12px);
+  --loop-checkbox-label-leading: 14px;
+  --loop-checkbox-label-tracking: 0.25px;            /* off-scale — FND-022 */
+  --loop-checkbox-group-row: 8px;
+}
+
+/* ---- Optional field wrapper — box + label laid out with the size's gap.
+   Wrap the Checkbox widget + its Label in a container with .loop-checkbox-field
+   (+ a size class) so the label scales with the box. The label is the
+   .loop-checkbox-field__label element (or any <label>/text inside the field). ---- */
+.loop-checkbox-field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--loop-checkbox-gap);
+}
+.loop-checkbox-field__label,
+.loop-checkbox-field > label {
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--loop-checkbox-label-size);
+  line-height: var(--loop-checkbox-label-leading);
+  letter-spacing: var(--loop-checkbox-label-tracking);
+  color: var(--color-text-on-light-default);          /* #000d1ab2 */
+  cursor: pointer;
+}
+.loop-checkbox-field:has([data-checkbox][disabled]) .loop-checkbox-field__label,
+.loop-checkbox-field:has([data-checkbox][disabled]) > label {
+  color: var(--color-text-on-light-state-disabled);   /* #00294d6b */
+  cursor: default;
+}
+.loop-checkbox-field:has(.loop-checkbox--error) .loop-checkbox-field__label,
+.loop-checkbox-field:has([aria-invalid="true"]) .loop-checkbox-field__label,
+.loop-checkbox-field:has(.loop-checkbox--error) > label,
+.loop-checkbox-field:has([aria-invalid="true"]) > label {
+  color: var(--color-text-on-light-state-error);      /* #9d161d — Required/Error */
+}
+
+/* ---- Group layout — The Loop spacing. Stack checkbox fields with
+   .loop-checkbox-group (vertical, row gap scales per size); .is-horizontal lays
+   them in a row with the 20px column gap. ---- */
+.loop-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--loop-checkbox-group-row, 10px);          /* loop/checkbox/group/vpadding */
+}
+.loop-checkbox-group.is-horizontal {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-checkbox-group-column, 20px);      /* loop/checkbox/group/hpadding */
 }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
@@ -192,13 +356,6 @@ reference existing semantic tokens already in `dist/theme.css`.
   outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
   outline-offset: 2px;
   border-radius: var(--loop-checkbox-radius);
-}
-
-/* ---- Responsive — keep OutSystems' larger touch target on touch devices ---- */
-.tablet [data-checkbox],
-.phone [data-checkbox] {
-  --loop-checkbox-control-size: 32px;
-  --loop-checkbox-box-size: 24px;
 }
 
 /* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
@@ -209,32 +366,57 @@ reference existing semantic tokens already in `dist/theme.css`.
 
 </details>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## State / type mapping (Figma → native checkbox)
 | The Loop | OutSystems / DOM | How |
 |---|---|---|
 | **Unchecked** (enabled) | base `[data-checkbox]` | native, no extra class |
 | **Checked** (Yes) | `:checked` | native checked |
-| **Multi** (indeterminate) | `:indeterminate` | set `el.indeterminate = true` in JS (OnReady / on a flag) |
+| **Multi** (indeterminate) | `.loop-checkbox--indeterminate` | Extended Class = `loop-checkbox--indeterminate` (no JS needed); also matches the native `:indeterminate` if set via JS |
 | **Disabled** | `[disabled]` / `[aria-disabled="true"]` | native Enabled = False |
 | **Error / Required** | `.loop-checkbox--error` or `[aria-invalid="true"]` | Extended Class = `loop-checkbox--error`; OR auto when OutSystems validation sets `aria-invalid` |
 
 ## What the override changes vs OutSystems UI baseline
-- Control **28px** (touch target), visible box **20px**, radius **4px** (centered via 4px padding token).
+- Visible box = the named size (XLarge **28** · Large **24** · Regular **20** · Small **16**), radius **4px** — the box fills the control, matching the sibling Radio circle at each size (no padding-inset frame that shrank the box).
 - **Checked fill = blue-70 (#004370)** with a white check; **hover border = blue-70** (Outline/Primary).
-- Adds an **indeterminate ("Multi") dash** — OutSystems UI has no native indeterminate style.
+- Adds an **indeterminate ("Multi") dash** — OutSystems UI has no native indeterminate style; driven by the `.loop-checkbox--indeterminate` class (Extended Class) so no JS is required.
 - Adds an **Error/Required red-70 type** (`#9d161d`) — box border (unchecked) and fill (checked/multi).
-- Disabled: neutral-15 fill (#dae3eb), neutral-20 border (#d4dee8).
-- Touch (`.tablet`/`.phone`): control grows to 32px / box 24px (keeps OutSystems' larger target).
+- Disabled: neutral-15 fill (#dae3eb), neutral-20 border (#d4dee8). The check/dash **glyph is re-asserted at the correct stroke size** and recolored to the muted disabled-icon token (neutral-40) — the OutSystems UI baseline otherwise re-draws `[disabled]:checked:after` with `border: var(--border-size-l)` on all four sides, deforming the mark.
 
 ## Sizes (XLarge / Large / Regular / Small)
-Per the Figma "Sizes" frame the **box stays constant**; only the **label** text scales with the
-`LABEL SIZE` variable. Label sizing is therefore driven by the field/label typography, **not** the
-checkbox box — no box CSS changes per size.
+The **visible box scales** with the size class — XLarge 28 · Large 24 · Regular 20 (default) · Small 16 —
+filling the control so it matches the sibling Radio circle at each size. The check/dash glyph scales
+proportionally with the box, and the **label** text scales via the `LABEL SIZE` variable. Put the size
+class on the Checkbox widget's Extended Class (scales the box) or on a `.loop-checkbox-field` wrapper
+(scales box + label together).
 
 ## Checklist
 - [ ] Ensure latest `dist/theme.css` is pasted into the ODC Theme editor (provides the semantic color tokens).
 - [ ] Paste `loop-checkbox.css` into Theme CSS, below OutSystems UI.
-- [ ] Use the native **Checkbox** widget. For Multi/indeterminate, set `el.indeterminate = true` in JS.
+- [ ] Use the native **Checkbox** widget. For Multi/indeterminate, set Extended Class = `loop-checkbox--indeterminate` (no JS needed).
 - [ ] For Error/Required, set Extended Class = `loop-checkbox--error` (or rely on OutSystems `aria-invalid`).
 - [ ] Always pair the checkbox with a real `<label>` / accessible name.
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).

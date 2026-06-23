@@ -1,0 +1,64 @@
+/* component-badge-label.css — WBG / "The Loop" Badge / Label component tokens
+ * Extracted from Figma: -The Loop- Main Library · "Badge / label" [node:22966-4806]
+ *   (loop/badge-label/* vars). Consumed by src/blocks/loop-badge.css — a pure-CSS
+ *   BEM block (.loop-badge) AND the restyle of the native OutSystems UI Tag widget
+ *   (.tag → Badge/Label look). Token-only: every value references a foundation
+ *   token, or a flagged component literal where the foundation has no matching
+ *   primitive (CLAUDE.md hard rule #3).
+ *
+ * Loaded AFTER the foundations (colors/semantic/typography/radius) so the var()
+ * references resolve, and BEFORE outsystems-ui-overrides.css (which stays last).
+ *
+ * The Badge / Label is a small rectangular label (radius 4) in two TYPES —
+ * Light (pale fill + coloured border + coloured text) and Heavy (solid fill +
+ * white text) — across six COLORS: neutral, indigo, teal, purple, red, magenta.
+ *
+ * NOT the same as Badge / Status (component-badge-status.css — a dot/icon status
+ * pill) nor the Tag pill (component-tag.css — radius 48). This is the rectangular
+ * category/label badge.
+ *
+ * Fidelity notes (built faithfully; raised, NOT silently changed):
+ *  - Five of the six colour families (indigo/teal/purple/red/magenta, light+heavy)
+ *    have NO primitive in the foundation ramp (colors.css); the badge purple/red
+ *    also differ from the existing Tag / State purple & red roles. Declared as
+ *    component literals → FND-039.
+ *  - label font-weight = 500 (loop/badge-label/label/font-weight), style named
+ *    "SemiBold"; the theme self-hosts Open Sans 400/600/700 only (typography.css),
+ *    so 500 resolves to the 400 face (faux) — same root as Badge Status FND-036
+ *    → FND-040. Encoded verbatim as 500. */
+:root {
+  /* ---- Label typography ---- */
+  --loop-badge-label-font:     var(--font-family-body);  /* Open Sans */
+  --loop-badge-label-size:     16px;                     /* loop/badge-label/label/font-size */
+  --loop-badge-label-leading:  20px;                     /* loop/badge-label/label/line-height */
+  --loop-badge-label-weight:   500;                      /* loop/badge-label/label/font-weight — not in 400/600/700 scale, FND-040 */
+  --loop-badge-label-tracking: 0;                        /* loop/badge-label/label/letter-space */
+
+  /* ---- Geometry ---- */
+  --loop-badge-label-radius: var(--radius-base);  /* 4px — Border Radius/Base */
+  --loop-badge-label-pad-v:  4px;                 /* loop/badge-label/v-padding + v-bottom padding */
+  --loop-badge-label-pad-h:  10px;                /* loop/badge-label/h-left-padding + h-right-padding */
+  --loop-badge-label-border: 1px;                 /* 1px solid (Light shows the colour; Heavy = fill) */
+
+  /* ---- Text on solid (Heavy) + neutral-light text ---- */
+  --loop-badge-label-text-on-heavy: var(--color-gray-alpha-white-90);   /* #ffffffe5 — Text/On Dark/Emphasis */
+  --loop-badge-label-neutral-text:  var(--color-text-on-light-default); /* #000d1ab2 — Text/On Light/Default (neutral Light) */
+
+  /* ---- Colour: neutral (foundation primitives) ---- */
+  --loop-badge-label-neutral-light: var(--color-neutral-10);  /* #e7edf3 — Neutral/Solid/10 */
+  --loop-badge-label-neutral-heavy: var(--color-neutral-60);  /* #4b5e71 — Neutral/Solid/60 */
+
+  /* ---- Colour: indigo / teal / purple / red / magenta ----
+   * No foundation primitive — component literals, verbatim from Figma (FND-039).
+   * For these five, the Light text colour == the heavy hue. */
+  --loop-badge-label-indigo-light:  #d8d9fc;  /* loop/badge-label/indigo-light */
+  --loop-badge-label-indigo-heavy:  #3c40f0;  /* loop/badge-label/indigo-heavy */
+  --loop-badge-label-teal-light:    #cfe9ef;  /* loop/badge-label/teal-light */
+  --loop-badge-label-teal-heavy:    #026e89;  /* loop/badge-label/teal-heavy */
+  --loop-badge-label-purple-light:  #e4dafb;  /* loop/badge-label/purple-light */
+  --loop-badge-label-purple-heavy:  #6427ef;  /* loop/badge-label/purple-heavy */
+  --loop-badge-label-red-light:     #f4dee4;  /* loop/badge-label/red-light */
+  --loop-badge-label-red-heavy:     #b4234d;  /* loop/badge-label/red-heavy */
+  --loop-badge-label-magenta-light: #f2d6f6;  /* loop/badge-label/magenta-light */
+  --loop-badge-label-magenta-heavy: #a028ad;  /* loop/badge-label/magenta-heavy */
+}

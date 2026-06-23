@@ -14,10 +14,15 @@
    Escalation Level: L2 (native widget + token-driven modifier)
 
    Tokens: --space-button-gap, --space-xxsmall, --font-family-label, --font-weight-bold,
-     --font-size-300, --letter-spacing-button, --line-height-base,
+     --font-size-300, --letter-spacing-button, --line-height-button-text,
      --color-text-on-light-link-primary-enabled, --color-blue-90,
+     --color-text-on-light-link-underline-{enabled,hover,disabled},
      --color-bg-link-primary-disabled (Text/On Light/Link/Disabled #8a9db1),
      --color-focus-keyboard-on-light.
+
+   Fidelity note: in Figma the label is a true link — it is UNDERLINED in every state
+     (2px), not only on hover. The underline color shifts per state (rest = blue-70 @55%,
+     hover = blue-40, disabled = neutral-15); the label color itself stays blue-70 on hover.
    ============================================ */
 
 .btn-text {
@@ -33,22 +38,31 @@
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
   font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);
+  line-height: var(--line-height-button-text, 1.9);
   letter-spacing: var(--letter-spacing-button, -0.5px);
-  text-decoration: none;
+
+  /* Permanent link underline (Figma: every state) — 2px, blue-70 @ 55% at rest */
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-text-on-light-link-underline-enabled);  /* #0043708c */
 }
 
-/* Hover/pressed — underline + darken (standard link affordance) */
-.btn-text:hover           { filter: none; text-decoration: underline; }
+/* Hover — keep the blue-70 label; brighten the underline to blue-40 (Figma #169af3) */
+.btn-text:hover {
+  filter: none;
+  color: var(--color-text-on-light-link-primary-enabled);   /* blue-70 — stays */
+  text-decoration-color: var(--color-text-on-light-link-underline-hover);    /* blue-40 #169af3 */
+}
 .desktop .btn-text:hover  { filter: none; }
 .btn-text:active          { color: var(--color-blue-90); }   /* Blue/90 #012740 (Link Pressed) */
 
-/* Disabled — Text/On Light/Link/Disabled #8a9db1 (neutral-40) */
+/* Disabled — Text/On Light/Link/Disabled #8a9db1 (neutral-40); underline neutral-15 */
 .btn-text[disabled],
 .btn-text[aria-disabled="true"] {
   background-color: transparent;
   color: var(--color-bg-link-primary-disabled);              /* #8a9db1 */
-  text-decoration: none;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-text-on-light-link-underline-disabled); /* #dae3eb */
 }
 
 /* Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — The Loop's dedicated high-contrast

@@ -9,6 +9,24 @@ OutSystems UI RadioButtons widget** (`.radio-button` / `[data-radio-group]` /
 Developers keep using the standard OutSystems **RadioButtons** widget; the theme makes
 it look like The Loop. No Web Component.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Radio Button page.
+
+**What it is.** The Loop radio — native OutSystems RadioButtons restyled.
+
+**When to use**
+- Pick **exactly one** from a short, always-visible list (2–6 options).
+
+**When not to use** (reach for instead)
+- Many options → **Dropdown / Select**.
+- Independent multi-select → **Checkbox**.
+- An on/off setting → **Switch**.
+- Compact inline one-of-few → **Button Group**.
+
+**How to use**
+- Use the native **RadioButtons** widget within a single radio group.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -52,10 +70,10 @@ it look like The Loop. No Web Component.
      required / error  → border + dot + label Red/70 #9d161d   (via [data-radio-group].not-valid)
      disabled          → fill #dae3eb (neutral-15), border #d4dee8 (neutral-20), dot #bdccdb (neutral-30)
 
-   Sizes (loop/radio button/width · label font/line-height · gap) — default = XLarge:
-     XLarge (base)        28 · 16/18 · gap 8
+   Sizes (loop/radio button/width · label font/line-height · gap) — default = Regular:
+     .loop-radio-xlarge   28 · 16/18 · gap 8
      .loop-radio-large    24 · 14/16 · gap 8
-     .loop-radio-regular  20 · 13/15 · gap 4   (13/15 off the documented type scale — FND-022)
+     Regular (base)       20 · 13/15 · gap 4   (13/15 off the documented type scale — FND-022)
      .loop-radio-small    16 · 12/14 · gap 4   (label letter-spacing 0.25 off-scale — FND-022)
 
    Tokens consumed: --color-outline-on-light-emphasis, --color-outline-on-light-link-enabled,
@@ -77,8 +95,8 @@ it look like The Loop. No Web Component.
    Restated for `.has-accessible-features` so the override beats the framework's
    higher-specificity accessible rules in both runtimes. */
 .radio-button {
-  width: 28px;                         /* loop/radio button/width — XLarge default */
-  height: 28px;
+  width: 20px;                         /* loop/radio button/width — Regular default */
+  height: 20px;
 }
 
 .radio-button:before,
@@ -159,26 +177,33 @@ it look like The Loop. No Web Component.
   color: var(--color-text-on-light-state-error);                    /* #9d161d */
 }
 
-/* ---- Label — Open Sans 400, On Light/Default, default (XLarge) metrics ---- */
+/* ---- Label — Open Sans 400, On Light/Default, default (Regular) metrics ---- */
 [data-radio-group] label,
 [data-radio-button] label {
-  margin-left: var(--space-checkbox-gap, 8px);   /* loop/checkbox/gap */
+  margin-left: var(--space-tiny, 4px);           /* loop/radio gap — Regular */
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-regular, 400);
-  font-size: var(--font-size-300, 16px);         /* XLarge label */
-  line-height: 18px;
+  font-size: 13px;                               /* Regular label — 13/15 off the type scale, FND-022 */
+  line-height: 15px;
   letter-spacing: var(--letter-spacing-none, 0px);
   color: var(--color-text-on-light-default);     /* #000d1ab2 */
 }
 
 /* ---- Size modifiers (apply via the widget's Extended Class on the input) ----
-   Default (no class) = XLarge (28). The label is the adjacent sibling of the input. */
+   Default (no class) = Regular (20). The label is the adjacent sibling of the input. */
+.radio-button.loop-radio-xlarge { width: 28px; height: 28px; }
+.radio-button.loop-radio-xlarge + label {
+  margin-left: var(--space-checkbox-gap, 8px);
+  font-size: var(--font-size-300, 16px); line-height: 18px;
+}
+
 .radio-button.loop-radio-large  { width: 24px; height: 24px; }
 .radio-button.loop-radio-large + label {
+  margin-left: var(--space-checkbox-gap, 8px);
   font-size: var(--font-size-200, 14px); line-height: 16px;
 }
 
-.radio-button.loop-radio-regular { width: 20px; height: 20px; }
+.radio-button.loop-radio-regular { width: 20px; height: 20px; }   /* explicit alias of the default */
 .radio-button.loop-radio-regular + label {
   margin-left: var(--space-tiny, 4px);
   font-size: 13px; line-height: 15px;            /* 13/15 off the type scale — FND-022 */
@@ -246,6 +271,30 @@ it look like The Loop. No Web Component.
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## What the override builds
 The Loop ring + dot are rebuilt from scratch over the native input:

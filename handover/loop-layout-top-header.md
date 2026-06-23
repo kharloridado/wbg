@@ -14,6 +14,22 @@ active menu item.** Restyles the native `.header` + `.app-menu-links` — no cus
 **Both files are already folded into `dist/theme.css`.** There is **nothing to hand-place per
 block** — the whole change ships in the theme paste.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Layout Top header page.
+
+**What it is.** Branded app chrome — the OutSystems Layout Top header rendered as The Loop (primary-color background, white text/links, white active underline).
+
+**When to use**
+- Any app built on the OutSystems **Layout Top**. The branding applies automatically once the theme is pasted — there is nothing to hand-place per block.
+
+**When not to use** (reach for instead)
+- This is page chrome, not a content component — for a contained surface use a **Card**, for a message use a **System Alert**.
+- Layout **Side** sidebars are intentionally unaffected by this scope.
+
+**How to use**
+- Already folded into `dist/theme.css` — just use the standard **Layout Top** template.
+
 ## Files
 | File | OutSystems destination |
 |---|---|

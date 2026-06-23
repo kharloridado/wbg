@@ -8,6 +8,23 @@ Built as a vanilla JS Web Component (CLAUDE.md hard rule #6 — no Lit/Stencil/R
 wrapped in an OutSystems Block. The trigger reuses the loop/button spec; the menu is
 a shadow-DOM popover.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button Dropdown page.
+
+**What it is.** A button that opens a menu of related actions (custom Web Component + Block).
+
+**When to use**
+- One trigger that reveals several related actions — overflow / "More" menus, row actions, grouped action sets.
+
+**When not to use** (reach for instead)
+- Selecting a **value** from a list → **Dropdown / Select**.
+- A single action → **Button**.
+- Page/section navigation → the Layout Top header menu.
+
+**How to use**
+- Drop the **ButtonDropdown** Block; provide the menu items. Keyboard and focus are handled by the component. Script Include = When invoked.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -282,6 +299,30 @@ if (!customElements.get('loop-button-dropdown')) {
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## API
 - **Attributes:** `label`, `options` (JSON `[{value,label}]`), `variant` (`primary`|`secondary`), `open`, `disabled`

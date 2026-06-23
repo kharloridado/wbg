@@ -7,6 +7,23 @@ Figma: "System Alerts" [node 17873-7603].
 vanilla JS Web Component (Shadow DOM) wrapped in an OutSystems Block. Four types;
 single-line and multi-line layouts; optional icon slot, action link, dismiss button.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the System Alert page.
+
+**What it is.** A full-width, page-level notification banner (Web Component), with four types and optional icon/action/dismiss.
+
+**When to use**
+- Page- or app-level messages that span the width — system status, success/error after an action, global warnings.
+
+**When not to use** (reach for instead)
+- An inline contextual note → **Note**.
+- A transient hover hint → **Tooltip**.
+- Field-level validation → the **Text Field** error state.
+
+**How to use**
+- Drop the **SystemAlert** Block; set the type, single/multi-line layout, and optional icon/action/dismiss. Script Include = Always.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -35,8 +52,10 @@ single-line and multi-line layouts; optional icon slot, action link, dismiss but
  *   message       Alert body text (14px Regular)
  *   action-label  Optional action link/button label (14px Bold underline)
  *   action-href   If present, renders action as <a href>; otherwise fires "action" event
- *   dismissible   Boolean — shows × button; fires "dismiss" event + hides host
- *   multiline     Boolean — stacks title, message and action vertically (icon top-aligned)
+ *   dismissible   Boolean — shows × button; fires "dismiss" event + hides host.
+ *                 Value-aware: absent or "false"/"0" → off; any other value → on.
+ *   multiline     Boolean — stacks title, message and action vertically (icon top-aligned).
+ *                 Value-aware: absent or "false"/"0" → off; any other value → on.
  *
  * Events (bubbles, composed):
  *   dismiss — fired when dismiss button clicked; detail: { type }
@@ -49,9 +68,10 @@ single-line and multi-line layouts; optional icon slot, action link, dismiss but
  * nothing (the banner is page-level, not a modal); focus ring uses currentColor per
  * CLAUDE.md (no silent color substitution).
  *
- * OutSystems: drop loop-system-alert.js into Resources. In a Block, add an HTML element:
- *   <loop-system-alert type="error" title="Title" message="Alert text" dismissible></loop-system-alert>
- * Pass dynamic values via the OutSystems JavaScript node that sets attributes after render.
+ * OutSystems: drop loop-system-alert.js into Resources. In a Block, add an HTML element and
+ * bind attributes declaratively from Block inputs — booleans are value-aware, so:
+ *   dismissible = If(Dismissible, "true", "false")   multiline = If(Multiline, "true", "false")
+ * ODC rewrites the attribute when the input changes; observedAttributes re-renders reactively.
  */
 class LoopSystemAlert extends HTMLElement {
   static get observedAttributes() {
@@ -73,8 +93,17 @@ class LoopSystemAlert extends HTMLElement {
   get _message()     { return this.getAttribute('message') || ''; }
   get _actionLabel() { return this.getAttribute('action-label') || ''; }
   get _actionHref()  { return this.getAttribute('action-href') || ''; }
-  get _dismissible() { return this.hasAttribute('dismissible'); }
-  get _multiline()   { return this.hasAttribute('multiline'); }
+  get _dismissible() { return this._boolAttr('dismissible'); }
+  get _multiline()   { return this._boolAttr('multiline'); }
+
+  // Value-aware boolean: absent or "false"/"0" → off; present with any other value → on.
+  // Lets OutSystems drive it declaratively via If(Flag, "true", "false") (ODC always emits
+  // a value), while bare `<loop-system-alert dismissible>` (value "") still reads as on.
+  _boolAttr(name) {
+    const v = this.getAttribute(name);
+    if (v === null) return false;
+    return v !== 'false' && v !== '0';
+  }
 
   _onDismiss() {
     this.dispatchEvent(new CustomEvent('dismiss', { bubbles: true, composed: true, detail: { type: this._type } }));
@@ -267,6 +296,30 @@ if (!customElements.get('loop-system-alert')) {
 
 </details>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## API — Attributes
 | Attribute | Values | Description |
 |---|---|---|
@@ -275,8 +328,8 @@ if (!customElements.get('loop-system-alert')) {
 | `message` | Text | Alert body text (14px) |
 | `action-label` | Text | Optional action link/button label |
 | `action-href` | URL | If set, action renders as `<a>`; if omitted, fires `action` event |
-| `dismissible` | Boolean | Shows × dismiss button |
-| `multiline` | Boolean | Stacks title + message + action vertically (icon top-aligned) |
+| `dismissible` | Boolean — `false`/`0`/absent = off | Shows × dismiss button |
+| `multiline` | Boolean — `false`/`0`/absent = off | Stacks title + message + action vertically (icon top-aligned) |
 
 ## API — Events
 | Event | Detail | Description |
@@ -313,16 +366,22 @@ if (!customElements.get('loop-system-alert')) {
 ```
 
 ## OutSystems Block wiring
-1. Create Block `SystemAlert`: inputs `Type`, `Title`, `Message`, `ActionLabel`, `ActionHref`, `Dismissible`, `Multiline`; event `OnDismiss`, `OnAction`.
-2. In OnReady, set attributes from inputs via JavaScript node.
+1. Create Block `SystemAlert`: inputs `Type`, `Title`, `Message`, `ActionLabel`, `ActionHref`, `Dismissible` (Boolean), `Multiline` (Boolean); events `OnDismiss`, `OnAction`.
+2. On the `<loop-system-alert>` HTML element, add attributes bound to the inputs (ODC requires a Value expression on every attribute):
+   - `type` → `Type`, `title` → `Title`, `message` → `Message`, `action-label` → `ActionLabel`, `action-href` → `ActionHref`
+   - `dismissible` → `If(Dismissible, "true", "false")`
+   - `multiline` → `If(Multiline, "true", "false")`
+   The boolean attributes are **value-aware** (`"false"`/`"0"`/absent = off), so the `If(...)` expression works directly — no OnReady JavaScript node needed. ODC rewrites the attribute when the input changes and the component re-renders reactively (`observedAttributes`).
 3. Wire `dismiss` CustomEvent → `OnDismiss`. Wire `action` CustomEvent → `OnAction`.
-4. For dynamic server-side messages: use a Block variable + `SetAttribute` on the element.
 
 ## Accessibility (WCAG 2.2 AA)
 `role="alert"` = live region; screen readers announce on insertion. Dismiss has
 `aria-label="Dismiss alert"`. Focus ring uses `currentColor` (visible on all four backgrounds).
-⚠️ **Pending finding:** `rgba(255,255,255,0.75)` text on `offline` background (`#8a9db1`) may
-fail WCAG contrast — exact computation needed. Filed as a11y finding.
+⚠️ **Filed as FND-042 (a11y/contrast, high):** white-75 text (`--color-gray-alpha-white-75`
+`#ffffffbf`) on the `offline` background (`#8a9db1`, neutral-40) computes to ≈ **2.23:1**, failing
+WCAG 2.2 SC 1.4.3 (4.5:1 for normal text) and the 3:1 floor — affects the title, message, action
+and dismiss glyphs on the offline alert. Built **as designed** (brand color not re-shaded);
+disclosed only, per the fidelity-first rule. See `findings/findings-register.md` (FND-042).
 
 ## Checklist
 - [ ] Import `loop-system-alert.js` as Script resource, Include = Always.

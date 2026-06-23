@@ -1,6 +1,11 @@
 /* loop-tag.css — WBG / "The Loop" Tag block (CSS only, no JS).
- * Figma: "Tag" [node:17313-5502]. Custom component — richer than the native
- * OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
+ * Figma: "Tag" [node:17313-5502]. The Loop PILL tag (radius 48) — richer than the
+ * native OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
+ *
+ * NOTE (2026-06-22): the native OutSystems UI Tag widget (.tag) is restyled to the
+ * The Loop BADGE / LABEL look (rectangle, radius 4) in src/blocks/loop-badge.css —
+ * NOT to this pill. So the pill is reached ONLY via the .loop-tag block below; the
+ * native .tag widget renders as a Badge/Label.
  *
  * OutSystems usage: add "loop-tag loop-tag--<color> loop-tag--<size>" to a
  * Container via ExtendedClass. Colors: blue (default) | purple | green | yellow.
@@ -152,3 +157,7 @@
 @media (prefers-reduced-motion: reduce) {
   .loop-tag--interactive { transition: none; }
 }
+
+/* The native OutSystems UI Tag widget (.tag) is NOT restyled here. It is repointed
+ * to The Loop Badge / Label (rectangle, radius 4) in src/blocks/loop-badge.css.
+ * Reach this pill via the .loop-tag block above. */

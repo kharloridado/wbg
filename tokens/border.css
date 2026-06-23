@@ -1,0 +1,15 @@
+/* border.css — WBG / "The Loop" border-size (stroke width) scale.
+ * Companion to radius.css: radius = corner rounding, border = stroke thickness.
+ * Names + values match the OutSystems UI border-size scale
+ * (vendor 00-abstract/_setup-border-vars.scss: 'none' 0, 's' 1px, 'm' 2px, 'l' 3px),
+ * so the framework's own `var(--border-size-*)` references resolve to The Loop theme.
+ * The Loop uses 1px hairlines throughout (see FND-016 / FND-019 outline findings);
+ * `m`/`l` cover emphasis strokes and the high-contrast focus outline.
+ * NOTE: loop-checkbox.css already references --border-size-s / --border-size-l with a
+ * 1px fallback — defining them here removes the fallback dependency. */
+:root {
+  --border-size-none: 0;     /* no stroke */
+  --border-size-s:    1px;   /* hairline — default control/border (--color-outline-on-light-*) */
+  --border-size-m:    2px;   /* emphasis stroke — selected / focused control edge */
+  --border-size-l:    3px;   /* heaviest — high-contrast focus outline */
+}

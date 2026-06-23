@@ -113,6 +113,16 @@
   }
   .form-control[data-textarea] { resize: vertical; min-height: 80px; }
 
+  /* --- native validation message baseline (mirrors OS UI _form.scss essentials) ---
+       OutSystems renders <span class="validation-message"> as the default form
+       validation message; out of the box it is font-size-xs (12px) in the generic
+       error colour. The override restyles it to match the Error helper. */
+  span.validation-message {
+    display: block;
+    color: #da1e28;            /* get-text-color('error') → --color-error (Red/50) */
+    font-size: 12px;           /* --font-size-xs */
+  }
+
   /* --- native Dropdown pattern baseline (mirrors OS UI _dropdown.scss) --- */
   .dropdown-container { position: relative; }
   .dropdown-container > .dropdown-display {
@@ -190,10 +200,30 @@
   }
   .osui-submenu__items a { color: var(--color-neutral-8); text-decoration: none; padding: 8px 16px; white-space: nowrap; }
   .osui-submenu__items a.active { color: var(--color-primary); }
+
+  /* --- native .alert baseline (mirrors OS UI 04-patterns/02-content/_alert.scss) ---
+       Framework defaults: flex row, soft radius, --space-base padding, solid type
+       fills + white text. dist/theme.css (outsystems-ui-alert.css) below restyles
+       this to The Loop "Notes" look — light tint + 1px border + dark body text. */
+  .alert { align-items: center; border-radius: var(--border-radius-soft); display: flex; padding: var(--space-base); }
+  .alert .alert-icon { align-self: flex-start; display: inline-flex; font-size: 24px; margin-right: var(--space-base); }
+  .alert .alert-message { flex: 1; }
 </style>
 
 <!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
 <link rel="stylesheet" href="../dist/theme.css">
+
+<!-- 2b) The VirtualSelect provider's own stylesheet — the SAME library OutSystems'
+        Dropdown Search / Dropdown Tags ship (vendored from virtual-select v1.1.0).
+        Loaded BEFORE the loop-* block CSS so The Loop overrides win the cascade,
+        mirroring how the ODC Theme CSS sits below the runtime-injected provider CSS. -->
+<link rel="stylesheet" href="vendor/virtual-select/virtual-select.min.css">
+
+<!-- 2c) The Flatpickr provider's own stylesheet — the SAME library OutSystems'
+        DatePicker ships in ODC (vendored from flatpickr v4.6.13). Loaded BEFORE the
+        loop-* block CSS so The Loop overrides win the cascade, mirroring how the ODC
+        Theme CSS sits below the runtime-injected provider CSS. -->
+<link rel="stylesheet" href="vendor/flatpickr/flatpickr.min.css">
 
 <!-- 3) The actual handover override CSS (pasted into Theme CSS, below OutSystems UI). -->
 <link rel="stylesheet" href="../src/blocks/loop-headings.css">
@@ -204,6 +234,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-radio-button.css">
 <link rel="stylesheet" href="../src/blocks/loop-text-field.css">
 <link rel="stylesheet" href="../src/blocks/loop-dropdown.css">
+<link rel="stylesheet" href="../src/blocks/loop-datepicker.css">
 <link rel="stylesheet" href="../src/blocks/loop-switch.css">
 
 <!-- 4) Preview page chrome. NOT part of the design system, but still authored to
@@ -596,17 +627,17 @@
     <div class="pv-row">
       <span class="pv-label">Secondary</span>
       <button class="btn">Button</button>
+      <button class="btn btn-xlarge">xLarge</button>
       <button class="btn btn-large">Large</button>
-      <button class="btn is-regular">Regular</button>
       <button class="btn btn-small">Small</button>
       <button class="btn" disabled>Disabled</button>
     </div>
 
     <div class="pv-row">
       <span class="pv-label">Primary</span>
-      <button class="btn btn-primary">Button</button>
+      <button class="btn btn-primary" id="pv-sample-button">Button</button>
+      <button class="btn btn-primary btn-xlarge">xLarge</button>
       <button class="btn btn-primary btn-large">Large</button>
-      <button class="btn btn-primary is-regular">Regular</button>
       <button class="btn btn-primary btn-small">Small</button>
       <button class="btn btn-primary" disabled>Disabled</button>
     </div>
@@ -614,8 +645,8 @@
     <div class="pv-row">
       <span class="pv-label">Ghost / Tertiary</span>
       <button class="btn btn-ghost">Button</button>
+      <button class="btn btn-ghost btn-xlarge">xLarge</button>
       <button class="btn btn-ghost btn-large">Large</button>
-      <button class="btn btn-ghost is-regular">Regular</button>
       <button class="btn btn-ghost btn-small">Small</button>
       <button class="btn btn-ghost" disabled>Disabled</button>
       <span class="pv-note">Ghost = <code>Extended Class = "btn-ghost"</code> (the one added modifier).</span>
@@ -732,8 +763,8 @@
 
     <div class="pv-row">
       <span class="pv-label">Indeterminate</span>
-      <input type="checkbox" data-checkbox id="cb-indet" aria-label="Indeterminate">
-      <span class="pv-note">Indeterminate set via JS below.</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox--indeterminate" aria-label="Indeterminate">
+      <span class="pv-note">Indeterminate (Multi) set via the <code>.loop-checkbox--indeterminate</code> class.</span>
     </div>
 
     <div class="pv-row">
@@ -747,6 +778,41 @@
       <input type="checkbox" data-checkbox class="loop-checkbox--error" aria-invalid="true" aria-label="Error unchecked">
       <input type="checkbox" data-checkbox class="loop-checkbox--error" checked aria-invalid="true" aria-label="Error checked">
       <span class="pv-note">FND-016: unchecked border #00396b3d ≈ 1.45:1 vs white (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes (box)</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox-xlarge" checked aria-label="XLarge 28">
+      <input type="checkbox" data-checkbox class="loop-checkbox-large" checked aria-label="Large 24">
+      <input type="checkbox" data-checkbox checked aria-label="Regular 20 (default)">
+      <input type="checkbox" data-checkbox class="loop-checkbox-small" checked aria-label="Small 16">
+      <span class="pv-note">XLarge 28 · Large 24 · Regular 20 (default) · Small 16 — glyph scales with the box.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Field + label</span>
+      <span class="loop-checkbox-field loop-checkbox-xlarge">
+        <input type="checkbox" data-checkbox id="cbf-xl" checked>
+        <label class="loop-checkbox-field__label" for="cbf-xl">XLarge label</label>
+      </span>
+      <span class="loop-checkbox-field">
+        <input type="checkbox" data-checkbox id="cbf-rg" checked>
+        <label class="loop-checkbox-field__label" for="cbf-rg">Regular label</label>
+      </span>
+      <span class="loop-checkbox-field loop-checkbox-small">
+        <input type="checkbox" data-checkbox id="cbf-sm" checked>
+        <label class="loop-checkbox-field__label" for="cbf-sm">Small label</label>
+      </span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Group</span>
+      <span class="loop-checkbox-group">
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-1" checked><label class="loop-checkbox-field__label" for="cbg-1">Option one</label></span>
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-2"><label class="loop-checkbox-field__label" for="cbg-2">Option two</label></span>
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-3"><label class="loop-checkbox-field__label" for="cbg-3">Option three</label></span>
+      </span>
+      <span class="pv-note">.loop-checkbox-group stacks fields; row gap scales per size (Regular = 10px).</span>
     </div>
   </section>
 
@@ -777,7 +843,7 @@
       <span class="pv-label">Sizes</span>
       <div class="pv-inline-set">
         <div data-radio-button>
-          <input type="radio" class="radio-button" name="rgsz" id="rsz-xl" aria-label="XLarge">
+          <input type="radio" class="radio-button loop-radio-xlarge" name="rgsz" id="rsz-xl" aria-label="XLarge">
           <label for="rsz-xl" class="pv-radio-label">XLarge (28px)</label>
         </div>
         <div data-radio-button>
@@ -843,7 +909,7 @@
       <span class="pv-label pv-label--full">Sizes</span>
       <div class="loop-field pv-field">
         <label data-label for="tf-xl">xLarge (56px)</label>
-        <input class="form-control" data-input id="tf-xl" type="text" placeholder="xLarge">
+        <input class="form-control input-xlarge" data-input id="tf-xl" type="text" placeholder="xLarge">
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-l">Large (48px)</label>
@@ -851,7 +917,7 @@
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-r">Regular (40px)</label>
-        <input class="form-control is-regular" data-input id="tf-r" type="text" placeholder="Regular">
+        <input class="form-control input-regular" data-input id="tf-r" type="text" placeholder="Regular">
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-s">Small (32px)</label>
@@ -869,6 +935,12 @@
         <label data-label for="tf-err">Error</label>
         <input class="form-control not-valid" data-input id="tf-err" type="text" value="Bad input">
         <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-err-native">Error (native validation message)</label>
+        <input class="form-control not-valid" data-input id="tf-err-native" type="text" value="Bad input" aria-describedby="tf-err-native-msg">
+        <span class="validation-message" id="tf-err-native-msg">This field is required.</span>
+        <span class="pv-note">Native OutSystems <code>span.validation-message</code> — now restyled to match the Error helper above (was brighter Red/50, no tracking).</span>
       </div>
       <div class="loop-field">
         <label data-label for="tf-warn">Warning</label>
@@ -956,29 +1028,51 @@
     </div>
 
     <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-label pv-label--block">Multi-select — tag chips (<code>.osui-dropdown-tags</code>)</span>
+      <span class="pv-label pv-label--block">Dropdown Search — searchable single (<code>.osui-dropdown-search</code> · live provider)</span>
+      <div class="loop-field loop-field--select">
+        <label data-label for="dd-search">Select Date</label>
+        <!-- Real VirtualSelect target — the provider builds the .vscomp-* DOM here at runtime. -->
+        <div class="osui-dropdown-search" id="dd-search"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Multi-select / Dropdown Tags — tag chips + “+N” overflow (<code>.osui-dropdown-tags</code> · live provider)</span>
       <div class="loop-field">
         <label data-label for="dd-tags">Select Options</label>
-        <div class="osui-dropdown-tags" id="dd-tags">
-          <div class="vscomp-ele-wrapper vscomp-wrapper multiple show-value-as-tags has-value" role="combobox" aria-expanded="false" aria-label="Select one or more options" tabindex="0">
-            <div class="vscomp-toggle-button">
-              <div class="vscomp-value">
-                <span class="vscomp-value-tag">
-                  <span class="vscomp-value-tag-content">Bridget Hernandez</span>
-                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Bridget Hernandez, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
-                </span>
-                <span class="vscomp-value-tag">
-                  <span class="vscomp-value-tag-content">Camila Stevenson</span>
-                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Camila Stevenson, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
-                </span>
-              </div>
-              <div class="vscomp-arrow"></div>
-            </div>
-          </div>
-        </div>
+        <!-- Real VirtualSelect target — multiple + showValueAsTags + noOfDisplayValues:3 → the Figma “+3” overflow. -->
+        <div class="osui-dropdown-tags" id="dd-tags"></div>
       </div>
-      <span class="pv-note">FND-031: Select uses --radius-pill (32px) while the Text Field uses --radius-medium (8px); Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed.</span>
+      <span class="pv-note">Live: type to search, pick/clear tags, “+N” collapses overflow. The single Select states above stay the server-side <code>.dropdown</code> pattern.</span>
+      <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius now shared: Text Field + Select both use --radius-pill 32px.)</span>
     </div>
+  </section>
+
+  <!-- ============ DATEPICKER (calendar balloon) ============ -->
+  <section>
+    <h2>DatePicker — restyle the Flatpickr calendar balloon (<code>.flatpickr-calendar</code>)</h2>
+    <p class="pv-figma">handover/loop-datepicker.md · ODC provider = Flatpickr v4.6.13 · built to The Loop Select-popup language (no bespoke Figma node)</p>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Live field — click to open the balloon (<code>data-input</code> → real Flatpickr)</span>
+      <div class="loop-field pv-field">
+        <label data-label for="dp-field">Select Date</label>
+        <input class="form-control input-regular" data-input id="dp-field" type="text" placeholder="Pick a date">
+      </div>
+      <span class="pv-note">The balloon is body-appended and styled by loop-datepicker.css. The two calendars below are the same widget pinned open (<code>inline</code>) so the styling stays visible.</span>
+    </div>
+
+    <div class="pv-row pv-row--end pv-row--narrow">
+      <div class="loop-field pv-field">
+        <span class="pv-label pv-label--full">Single date — open</span>
+        <div id="dp-inline"></div>
+      </div>
+      <div class="loop-field pv-field">
+        <span class="pv-label pv-label--full">Range — open</span>
+        <div id="dp-range"></div>
+      </div>
+    </div>
+    <span class="pv-note">FND-044: day marker uses --radius-pill (32px) — the Select pill family — as no picker-specific radius is published. FND-045: "today" ring = blue-70 (the neutral outline family falls below the 3:1 floor, FND-019). Built as designed.</span>
   </section>
 
   <!-- ============ TOGGLE / SWITCH ============ -->
@@ -1021,7 +1115,7 @@
     <div class="pv-row">
       <span class="pv-label">Sizes</span>
       <div class="pv-inline-set">
-        <input type="checkbox" data-switch checked aria-label="xLarge (56×32)">
+        <input type="checkbox" data-switch class="loop-toggle-xlarge" checked aria-label="xLarge (56×32)">
         <input type="checkbox" data-switch class="loop-toggle-large" checked aria-label="Large (48×26)">
         <input type="checkbox" data-switch class="loop-toggle-regular" checked aria-label="Regular (40×20)">
         <input type="checkbox" data-switch class="loop-toggle-small" checked aria-label="Small (32×16)">
@@ -1129,6 +1223,64 @@
     </div>
   </section>
 
+  <!-- ============ ALERT (native, restyled to Notes) ============ -->
+  <section>
+    <h2>Alert — native OutSystems UI <code>.alert</code>, restyled to the Notes look</h2>
+    <p class="pv-figma">tokens/outsystems-ui-alert.css · reuses the <code>--loop-note-*</code> tokens (Figma "Notes" 26642-61530) so the stock <code>.alert</code> widget matches the custom <code>.loop-note</code> block above</p>
+
+    <div class="pv-row pv-row--stack pv-row--measure">
+      <div class="alert alert-info">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></div>
+        <div class="alert-message">This record will be reviewed by the compliance team within 3 business days of submission.</div>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></div>
+        <div class="alert-message">Your changes have been saved and submitted for approval.</div>
+      </div>
+
+      <div class="alert alert-warning">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></div>
+        <div class="alert-message">This record requires approval before it can be submitted to the World Bank procurement portal.</div>
+      </div>
+
+      <div class="alert alert-error">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></div>
+        <div class="alert-message">Submission failed — the procurement portal is unavailable. Try again or contact support.</div>
+      </div>
+    </div>
+    <p class="pv-note pv-note--spaced">Native <code>.alert</code> maps onto the Loop Notes palette: <code>info</code>→information (blue), <code>success</code>→success (green), <code>warning</code>→important (yellow). <code>error</code> has no Note type, so it borrows the Loop red negative-state role.</p>
+  </section>
+
+  <!-- ============ FEEDBACK MESSAGE (native, restyled to Alerts) ============ -->
+  <section>
+    <h2>Feedback Message — native OutSystems UI <code>.feedback-message</code>, restyled to the Alerts look</h2>
+    <p class="pv-figma">tokens/outsystems-ui-feedback-message.css · Figma "Alerts" 17868-4165 · light tinted box with a 4px left accent border, dark body text, color-matched icon — the stock Feedback Message adopts The Loop Alert styling</p>
+
+    <div class="pv-row pv-row--stack pv-row--measure">
+      <div class="feedback-message feedback-message-info">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></i>
+        <span class="feedback-message-text">This record will be reviewed by the compliance team within 3 business days.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-success">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></i>
+        <span class="feedback-message-text">Your changes have been saved and submitted for approval.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-warning">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></i>
+        <span class="feedback-message-text">This record requires approval before it can be submitted.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-error">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></i>
+        <span class="feedback-message-text">Submission failed — the procurement portal is unavailable. Try again.</span>
+      </div>
+    </div>
+    <p class="pv-note pv-note--spaced">The native solid-fill toast is retinted to the Figma Alert per type: <code>error</code> #fdf2f2/#9d161d, <code>warning</code> #fef3d7/#896001, <code>info</code> #f6fcff/#00538a, <code>success</code> #f6fef0/#388004 — backgrounds and accents both pulled from <code>semantic-colors.css</code>.</p>
+  </section>
+
   <!-- ============ TAG ============ -->
   <section>
     <h2>Tag — custom CSS block <code>.loop-tag</code></h2>
@@ -1188,6 +1340,105 @@
         <span class="loop-tag__label">Disabled</span>
         <button type="button" class="loop-tag__dismiss" aria-label="Remove" disabled>×</button>
       </span>
+    </div>
+  </section>
+
+  <!-- ============ BADGE / LABEL ============ -->
+  <section>
+    <h2>Badge / Label — custom CSS block <code>.loop-badge</code> (+ native <code>.tag</code>)</h2>
+    <p class="pv-figma">tokens/component-badge-label.css · src/blocks/loop-badge.css · Figma node 22966-4806 · rectangle, radius 4</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Light (default)</span>
+      <span class="loop-badge loop-badge--neutral">Neutral</span>
+      <span class="loop-badge loop-badge--indigo">Indigo</span>
+      <span class="loop-badge loop-badge--teal">Teal</span>
+      <span class="loop-badge loop-badge--purple">Purple</span>
+      <span class="loop-badge loop-badge--red">Red</span>
+      <span class="loop-badge loop-badge--magenta">Magenta</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Heavy</span>
+      <span class="loop-badge loop-badge--neutral loop-badge--heavy">Neutral</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy">Indigo</span>
+      <span class="loop-badge loop-badge--teal loop-badge--heavy">Teal</span>
+      <span class="loop-badge loop-badge--purple loop-badge--heavy">Purple</span>
+      <span class="loop-badge loop-badge--red loop-badge--heavy">Red</span>
+      <span class="loop-badge loop-badge--magenta loop-badge--heavy">Magenta</span>
+      <span class="pv-note">All 12 pairs verified ≥ 4.5:1 contrast. FND-040: weight 500 ("SemiBold") resolves to the shipped 400 face.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Native Tag</span>
+      <span class="tag">Neutral</span>
+      <span class="tag background-blue">Indigo</span>
+      <span class="tag background-green">Teal</span>
+      <span class="tag background-red">Red</span>
+      <span class="tag tag-heavy background-blue">Heavy</span>
+      <span class="pv-note">The stock OutSystems UI Tag widget (<code>.tag</code>) now renders as a Badge/Label. Colour via the Tag's "Color" (Blue→indigo, Green→teal — FND-039); add <code>tag-heavy</code> for the Heavy fill.</span>
+    </div>
+  </section>
+
+  <!-- ============ BADGE STATUS ============ -->
+  <section>
+    <h2>Badge Status — custom CSS block <code>.loop-badge-status</code></h2>
+    <p class="pv-figma">tokens/component-badge-status.css · src/blocks/loop-badge-status.css · Figma node 18153-7159</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">States × types — Light (dot) · Icon (glyph) · Headline (pill), xlarge</span>
+
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.6 8.4l2.2 2.2 4.6-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="loop-badge-status__label">Success</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="4.7" r="1" fill="#fff"/><rect x="7.1" y="6.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/></svg></span><span class="loop-badge-status__label">Informative</span></span>
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M7.13 1.7a1 1 0 0 1 1.74 0l6.0 10.9a1 1 0 0 1-.87 1.5H1.99a1 1 0 0 1-.87-1.5z" fill="currentColor"/><rect x="7.1" y="5.4" width="1.8" height="4.6" rx="0.9" fill="#fff"/><circle cx="8" cy="11.7" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Warning</span></span>
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Error</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Suggestive</span></span>
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="loop-badge-status__label">Not Started</span></span>
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Sizes — Light dot (success) and Headline pill (error)</span>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--small"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Small</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--regular"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Regular</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--large"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Large</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">xLarge</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--small"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Small</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--regular"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Regular</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--large"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Large</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">xLarge</span></span>
+      </div>
     </div>
   </section>
 
@@ -1268,6 +1519,39 @@
     </loop-color-reference>
   </section>
 
+  <!-- ============ SHADOW REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Shadow Reference — custom Web Component <code>&lt;loop-shadow-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-shadow-reference.js · auto-renders the elevation scale from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every elevation token with a live specimen, its value and a click-to-copy CSS variable.</p>
+
+    <loop-shadow-reference
+      intro="Elevation scale, generated live from the WBG / The Loop theme.">
+    </loop-shadow-reference>
+  </section>
+
+  <!-- ============ BORDER REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Border Reference — custom Web Component <code>&lt;loop-border-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-border-reference.js · auto-renders border size (stroke width) + radius from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element documents both border foundations — the <code>--border-size-*</code> stroke-width scale and the <code>--radius-*</code> corner scale. Use <code>filter</code> to show a single scale per page.</p>
+
+    <loop-border-reference
+      intro="Border size and radius, generated live from the WBG / The Loop theme.">
+    </loop-border-reference>
+  </section>
+
+  <!-- ============ SPACING REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Spacing Reference — custom Web Component <code>&lt;loop-spacing-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-spacing-reference.js · auto-renders the spacing scale + directional margin/padding utilities from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every spacing token with a live bar, its value, the minted <code>.margin-*</code> / <code>.padding-*</code> classes and a click-to-copy CSS variable, plus a directional-variant legend.</p>
+
+    <loop-spacing-reference
+      intro="Spacing scale + directional utilities, generated live from the WBG / The Loop theme.">
+    </loop-spacing-reference>
+  </section>
+
   <!-- ============ POPOVER ============ -->
   <section>
     <h2>Popover — custom Web Component <code>&lt;loop-popover&gt;</code></h2>
@@ -1317,6 +1601,70 @@
     <p class="pv-log" id="popover-log">last event: —</p>
   </section>
 
+  <!-- ============ MODAL ============ -->
+  <section>
+    <h2>Modal — custom Web Component <code>&lt;loop-modal&gt;</code></h2>
+    <p class="pv-figma">tokens/component-modal.css · Figma node 22049-35100</p>
+    <p class="pv-note pv-note--spaced">Toggle <code>open</code> to show/hide (or call <code>.show()</code>/<code>.hide()</code>/<code>.toggle()</code>). Centres over a blue-90 @ 90% overlay; ESC and backdrop-click dismiss; focus is trapped and returns to the trigger. Empty slots show placeholders.</p>
+
+    <div class="pv-row">
+      <button class="btn btn-primary" onclick="document.getElementById('demo-modal').show()">Open modal (Large)</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').show()">Open modal (Small)</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-ph').show()">Open placeholder-only</button>
+    </div>
+
+    <!-- Large, fully composed: heading attr + slotted content + real footer buttons -->
+    <loop-modal id="demo-modal" heading="Energy is creating jobs">
+      <p>Faithful to the Figma sticker: a 24px bold heading with a leading information icon, the
+         circular blue close button, 40px side padding, and a button footer with a tertiary action
+         pinned left while the secondary + primary actions group to the right.</p>
+      <button slot="footer" class="btn" onclick="document.getElementById('demo-modal').hide()">Tertiary</button>
+      <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-secondary" onclick="document.getElementById('demo-modal').hide()">Secondary</button>
+        <button class="btn btn-primary" onclick="document.getElementById('demo-modal').hide()">Primary</button>
+      </div>
+    </loop-modal>
+
+    <!-- Small variant -->
+    <loop-modal id="demo-modal-sm" size="sm" heading="Confirm deletion">
+      <p>The Small (456px) variant. This action can't be undone.</p>
+      <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').hide()">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('demo-modal-sm').hide()">Delete</button>
+      </div>
+    </loop-modal>
+
+    <!-- Placeholder-only: every slot empty → shows the dev scaffold -->
+    <loop-modal id="demo-modal-ph"></loop-modal>
+
+    <p class="pv-log" id="modal-log">last event: —</p>
+  </section>
+
+  <!-- ============ CLASS INSPECTOR (Live Style Guide tool) ============ -->
+  <section>
+    <h2>Class Inspector — custom Web Component <code>&lt;loop-class-inspector&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-class-inspector.js · reads the classes LIVE off a target element so a developer can copy the recipe</p>
+    <p class="pv-note pv-note--spaced">Point it at any widget (by id / selector) or wrap the sample inside it. It lists every class on the element as click-to-copy chips plus a one-click <strong>Copy all</strong>, so the look &amp; feel can be rebuilt in ODC via <code>ExtendedClass</code>.</p>
+
+    <!-- 1) target by id — points at the Primary button above (#pv-sample-button) -->
+    <div class="pv-row">
+      <span class="pv-label">target="#id"</span>
+      <loop-class-inspector
+        target="#pv-sample-button"
+        label="Primary button"
+        heading="Recipe for the primary button">
+      </loop-class-inspector>
+    </div>
+
+    <!-- 2) deep mode — wrap a compound sample, list descendant classes too -->
+    <div class="pv-row">
+      <span class="pv-label">wrapped + deep</span>
+      <loop-class-inspector deep heading="Recipe for this tag" label="Success tag">
+        <span class="loop-tag loop-tag--green loop-tag--regular">Approved</span>
+      </loop-class-inspector>
+    </div>
+  </section>
+
 </main>
 
 <!-- 3) The real custom component, loaded exactly as it ships to ODC. -->
@@ -1324,7 +1672,12 @@
 <script src="../src/components/loop-button-dropdown.js"></script>
 <script src="../src/components/loop-system-alert.js"></script>
 <script src="../src/components/loop-popover.js"></script>
+<script src="../src/components/loop-modal.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
+<script src="../src/components/loop-shadow-reference.js"></script>
+<script src="../src/components/loop-border-reference.js"></script>
+<script src="../src/components/loop-spacing-reference.js"></script>
+<script src="../src/components/loop-class-inspector.js"></script>
 <script>
   // Preview-only: surface the component's select/toggle events so you can verify wiring.
   const log = document.getElementById('lbd-log');
@@ -1332,10 +1685,6 @@
     el.addEventListener('select', e => { log.textContent = `select → ${JSON.stringify(e.detail)}`; });
     el.addEventListener('toggle', e => { if (e.detail.open) log.textContent = `toggle → open`; });
   });
-
-  // Set the indeterminate checkbox state (can't be done in HTML alone).
-  const cbIndet = document.getElementById('cb-indet');
-  if (cbIndet) cbIndet.indeterminate = true;
 
   // Surface System Alert events.
   const saLog = document.getElementById('sysalert-log');
@@ -1349,6 +1698,76 @@
   document.querySelectorAll('loop-popover').forEach(el => {
     el.addEventListener('close', () => { pvLog.textContent = `close ← #${el.id}`; });
   });
+
+  // Surface Modal open/close events.
+  const mdLog = document.getElementById('modal-log');
+  document.querySelectorAll('loop-modal').forEach(el => {
+    el.addEventListener('open',  () => { mdLog.textContent = `open  ← #${el.id}`; });
+    el.addEventListener('close', e => { mdLog.textContent = `close ← #${el.id} (reason: ${e.detail.reason})`; });
+  });
+</script>
+
+<!-- 4) The real VirtualSelect provider (vendored). OutSystems' Dropdown Search /
+        Dropdown Tags blocks drive this same library; here we init it directly so the
+        preview is the live widget, styled to The Loop spec by loop-dropdown.css. -->
+<script src="vendor/virtual-select/virtual-select.min.js"></script>
+<script>
+  // Dropdown Search — single, searchable. Mirrors the Figma "Select" open state.
+  VirtualSelect.init({
+    ele: '#dd-search',
+    placeholder: 'Select project date',
+    search: true,
+    hideClearButton: false,
+    options: [
+      { label: 'Select Item A', value: 'a' },
+      { label: 'Select Item B', value: 'b' },
+      { label: 'Select Item C', value: 'c' },
+      { label: 'Select Item D', value: 'd' },
+      { label: 'Select Item E', value: 'e' },
+      { label: 'Select Item F', value: 'f' },
+      { label: 'Select Item G', value: 'g' },
+      { label: 'Select Item K', value: 'k' },
+    ],
+  });
+
+  // Multi-select / Dropdown Tags — multiple, tags, "+N" overflow. Mirrors Figma "Multi Select".
+  VirtualSelect.init({
+    ele: '#dd-tags',
+    placeholder: 'Select Options',
+    multiple: true,
+    showValueAsTags: true,
+    search: true,
+    disableSelectAll: true,          // no "Select all" row — Figma list is plain options
+    noOfDisplayValues: 3,            // 3 chips then "+N" — the Figma "+3" overflow badge
+    selectedValue: ['in-progress', 'done', 'closed', 'in-review', 'blocked', 'cancelled'],
+    options: [
+      { label: 'In Progress', value: 'in-progress' },
+      { label: 'Done',        value: 'done' },
+      { label: 'Closed',      value: 'closed' },
+      { label: 'In Review',   value: 'in-review' },
+      { label: 'Blocked',     value: 'blocked' },
+      { label: 'Cancelled',   value: 'cancelled' },
+      { label: 'Deferred',    value: 'deferred' },
+    ],
+  });
+</script>
+
+<!-- 5) The real Flatpickr provider (vendored). OutSystems' DatePicker drives this same
+        library in ODC; here we init it directly so the preview is the live calendar
+        balloon, styled to The Loop spec by loop-datepicker.css. -->
+<script src="vendor/flatpickr/flatpickr.min.js"></script>
+<script>
+  const dpToday = new Date();
+  const dpAddDays = (n) => { const d = new Date(dpToday); d.setDate(d.getDate() + n); return d; };
+
+  // Live click-to-open field — the balloon is appended to <body>.
+  flatpickr('#dp-field', { dateFormat: 'M j, Y', defaultDate: dpToday });
+
+  // Single date, pinned open so the styled balloon stays visible in the preview.
+  flatpickr('#dp-inline', { inline: true, defaultDate: dpAddDays(2) });
+
+  // Range, pinned open — shows startRange / inRange / endRange styling.
+  flatpickr('#dp-range', { inline: true, mode: 'range', defaultDate: [dpAddDays(-3), dpAddDays(3)] });
 </script>
 </body>
 </html>

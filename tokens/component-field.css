@@ -13,7 +13,7 @@
  *     no light-mode primitive (rendered borderless via the disable fill)  → FND-018 */
 :root {
   /* ---- Field box (the input) ---- */
-  --loop-field-radius:          var(--radius-medium);          /* 8px — OutSystems/MUI target per Figma note (node:19336-17326); "Modern" mode = 32px */
+  --loop-field-radius:          var(--radius-pill);            /* 32px pill — "Modern" mode per Figma note (node:19336-17326); aligned with the Select pill so sibling form controls share one radius (resolves the FND-031 radius divergence) */
   --loop-field-padding-block:   18px;                          /* loop/field/vpadding — off 4pt grid (FND-018) */
   --loop-field-padding-inline:  var(--space-small);            /* 16px — loop/field/hpadding left|right */
   --loop-field-gap:             var(--space-xxsmall);          /* 8px — loop/Field/hGap (icon ↔ content) */
@@ -42,13 +42,12 @@
      VirtualSelect provider (.osui-dropdown-search / -tags). Field box reuses the
      state COLOURS of the Text Field (shared semantic tokens) but has its OWN box
      metrics — the Select is a pill (--radius-pill 32px) at 13px / ~40px tall, NOT the
-     Text Field's 8px-radius / 16px / 56px box. Divergences flagged, not normalised:
-       - radius = --radius-pill (32px) while the Text Field uses --radius-medium (8px):
-         sibling form controls have divergent corner radii            → FND-031
+     Text Field's 16px / 56px box. The pill radius is now SHARED with the Text Field
+     (both --radius-pill 32px). Remaining divergences flagged, not normalised:
        - vpadding 11px is off the 4pt grid (cf. FND-013/FND-018)       → FND-031
        - Select label/value 13px ≠ 16px used by Text Field & Multi-select → FND-031
      ========================================================================= */
-  --loop-select-radius:           var(--radius-pill);          /* 32px pill — ≠ Text Field's 8px, FND-031 */
+  --loop-select-radius:           var(--radius-pill);          /* 32px pill — shared with the Text Field */
   --loop-select-padding-block:    11px;                        /* loop/field/vpadding (Select) — off 4pt grid, FND-031 */
   --loop-select-padding-inline:   var(--space-small);          /* 16px — loop/field/hpadding left|right */
   --loop-select-gap:              var(--space-xxsmall);        /* 8px — loop/field/hGap (content ↔ chevron) */
@@ -60,6 +59,10 @@
   --loop-select-text-tracking:    0.5px;
   --loop-select-list-radius:      var(--radius-medium);        /* 8px — card/corner radius (popup list) */
   --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px shadow-color — -loop shadows/Low */
+  /* search-box magnifier (Dropdown Search open state). The VirtualSelect provider
+     ships no icon in this build, so the block draws one as a mask; self-contained
+     (no external asset) so it renders identically in preview and ODC. */
+  --loop-select-search-icon:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Ccircle cx='7' cy='7' r='4.5'/%3E%3Cpath d='M10.5 10.5L14 14' stroke-linecap='round'/%3E%3C/svg%3E");
 
   /* ---- Multi-select (DropdownTags) — Figma [node:18830-17312] ---- */
   --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px — loop/multi-select/vpadding */

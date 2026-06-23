@@ -37,14 +37,20 @@ const META = {
   "color-utilities.css": { group: "Colors",        name: "Utilities (roles)" },
   "color-utilities-primitives.css": { group: "Colors", name: "Utilities (primitives)" },
   "spacing.css":         { group: "Spacing",       name: "Scale" },
+  "spacing-utilities.css": { group: "Spacing",     name: "Utilities (directional margin/padding)" },
   "typography.css":      { group: "Typography",    name: "Type" },
   "typography-utilities.css": { group: "Typography", name: "Utilities" },
   "typography-roles.css":     { group: "Typography", name: "Roles" },
-  "radius.css":          { group: "Radius",        name: "Border Radius" },
+  "radius.css":          { group: "Border",        name: "Radius" },
+  "border.css":          { group: "Border",        name: "Size (stroke width)" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
+  "shadow-utilities.css": { group: "Shadows",      name: "Utilities" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
   "outsystems-ui-header.css":    { group: "OutSystems UI", name: "Layout Top — Header / Menu" },
+  "outsystems-ui-alert.css":     { group: "OutSystems UI", name: "Alert (→ Notes look)" },
+  "outsystems-ui-feedback-message.css": { group: "OutSystems UI", name: "Feedback Message (→ Alerts look)" },
   "component-field.css":        { group: "Components",       name: "Text Field" },
+  "component-datepicker.css":   { group: "Components",       name: "DatePicker" },
   "component-toggle.css":       { group: "Components",       name: "Toggle" },
   "component-note.css":         { group: "Components",       name: "Notes" },
   "component-popover.css":      { group: "Components",       name: "Popover" },
@@ -65,8 +71,13 @@ const META = {
   /* Custom component BEM blocks (src/blocks/) */
   "loop-note.css":          { group: "Custom Components", name: "Notes" },
   "loop-tag.css":           { group: "Custom Components", name: "Tag" },
+  "loop-badge.css":         { group: "Custom Components", name: "Badge / Label (+ native Tag)" },
+  "loop-badge-status.css":  { group: "Custom Components", name: "Badge Status" },
   "loop-card.css":          { group: "Widget Overrides", name: "Card" },
   "component-card.css":     { group: "Components",       name: "Card" },
+  "component-modal.css":    { group: "Components",       name: "Modal" },
+  "component-badge-status.css": { group: "Components",   name: "Badge Status" },
+  "component-badge-label.css":  { group: "Components",   name: "Badge / Label" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)
@@ -160,12 +171,17 @@ function buildIndex({ order, map }) {
  * (the provenance/header comment) is kept and re-emitted inside the merged block.
  * Files with no `:root` return inner:null and are emitted as standalone sections. */
 function splitRoot(body) {
-  const i = body.indexOf(":root");
-  if (i === -1) return { preamble: "", inner: null };
-  const open = body.indexOf("{", i);
+  // Match `:root {` as an actual SELECTOR (optional whitespace before the brace),
+  // not the bare word ":root" — a class-only override file may mention ":root" in
+  // its prose comments (e.g. "which only retints the :root --color-* vars"), and a
+  // naive indexOf(":root") would mis-slice it into the consolidated :root block,
+  // leaving it unclosed and breaking every token. See the 2026-06-22 alert restyle.
+  const m = /:root\s*\{/.exec(body);
+  if (!m) return { preamble: "", inner: null };
+  const open = m.index + m[0].length - 1; // position of the matched `{`
   const close = body.lastIndexOf("}");
   return {
-    preamble: body.slice(0, i).trimEnd(),
+    preamble: body.slice(0, m.index).trimEnd(),
     inner: body.slice(open + 1, close).replace(/^\n+/, "").trimEnd(),
   };
 }

@@ -10,6 +10,22 @@ OutSystems **Input** widget; native form **validation** drives the Error state. 
 Label + helper-text arrangement is a thin BEM wrapper (`loop-field`) applied via Extended
 Class on the field Container.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Text Field page.
+
+**What it is.** The Loop input — native OutSystems Input restyled, with a `loop-field` label/helper wrapper.
+
+**When to use**
+- Collect single-line (or multi-line textarea) text or numbers — names, emails, search, amounts — with a label, optional helper text, and validation/error state.
+
+**When not to use** (reach for instead)
+- Choose from preset options → **Dropdown / Select**.
+- An on/off choice → **Switch** or **Checkbox**.
+
+**How to use**
+- Use the native **Input** widget; wrap the field Container with Extended Class `loop-field`. Native form validation drives the Error state. Sizes available via the size classes.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -44,15 +60,16 @@ Class on the field Container.
                                     padding 0/16, font-size-s; :hover neutral-6;
                                     :focus primary; [disabled] neutral; .not-valid → error
      sizes: .input-small → h32 · .input-large → h48
-   The Loop overrides that baseline to: radius 8 (OutSystems/MUI target per the Figma
-     note at node:19336-17326 — "Modern" mode is 32px), Open Sans, 16/18 padding
-     (→ 56px tall xLarge default), placeholder neutral-alpha-57, a 2px Blue/50 focus
+   The Loop overrides that baseline to: radius 32 ("Modern" mode per the Figma note at
+     node:19336-17326 — pill radius shared with the Select), Open Sans, 16/10 padding
+     (→ 40px tall Regular default), placeholder neutral-alpha-57, a 2px Blue/50 focus
      border, and tinted Error / Warning / Disabled fills.
 
    Size mapping (OutSystems Input class → The Loop "Size"):
-     (none / base)   → xLarge  (56px, The Loop default)
+     (none / base)   → Regular (40px, The Loop default)
+     .input-xlarge   → xLarge  (56px) — added modifier (OutSystems UI has no h56 input)
      .input-large    → Large   (48px)
-     .is-regular     → Regular (40px) — added modifier (OutSystems has no "medium")
+     .input-regular  → Regular (40px) — explicit alias of the default
      .input-small    → Small   (32px)
 
    Tokens consumed: --loop-field-* (component-field.css), --radius-medium, --space-*,
@@ -84,7 +101,7 @@ Class on the field Container.
 
   background-color: var(--color-bg-container-on-light-lowest);     /* white */
   border: 1px solid var(--color-outline-on-light-default);        /* #00396b3d — FND-019 */
-  border-radius: var(--loop-field-radius, 8px);
+  border-radius: var(--radius-medium, 8px);                       /* 8px — textarea uses Medium radius, not the pill shared with single-line fields */
   color: var(--color-text-on-light-default);                      /* neutral-alpha-70 */
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -94,9 +111,12 @@ Class on the field Container.
   letter-spacing: var(--loop-field-text-tracking, 0.5px);
 }
 
-/* xLarge (default) — single-line input is 56px tall (16 text + 2×2 ph-pad + 2×18 vpad) */
+/* Regular (default) — single-line input is 40px tall (16 text + 2×2 ph-pad + 2×10 vpad).
+   Overrides the shared rule's --loop-field-padding-block (18px, the xLarge value, which
+   still drives the textarea + the .input-xlarge modifier). */
 .form-control[data-input] {
-  min-height: 56px;
+  min-height: 40px;
+  padding-block: 10px;
 }
 
 /* Placeholder = Text/On Light/Subdued #00294d91 (neutral-alpha-57) — FND-020 */
@@ -112,15 +132,20 @@ Class on the field Container.
   border-color: var(--color-outline-on-light-emphasis);          /* neutral-alpha-42 */
 }
 
-/* Focused — 2px Blue/50 border (Figma "Focused"). Shrink padding 1px so the box does
-   not jump when the border grows from 1→2px. */
+/* Focused — 2px Blue/50 border (Figma "Focused"). Rendered as a 1px border + a
+   contiguous 1px INSET box-shadow of the same colour rather than growing the
+   border to 2px. This keeps border-width (and therefore the content box + padding)
+   unchanged on focus, so it neither nudges the text nor clobbers the icon-reserving
+   padding-left that the Search / Input-with-icon patterns set (those wrap the same
+   .form-control[data-input]; a `padding` shorthand here would reset padding-left and
+   the value would slide under the left icon). Visually a solid 2px Blue/50 ring. */
 .form-control[data-input]:focus,
 .form-control[data-input]:focus-visible,
 .form-control[data-textarea]:focus,
 .form-control[data-textarea]:focus-visible {
   outline: none;
-  border: 2px solid var(--color-outline-on-light-link-focused);  /* Blue/50 #0071bc */
-  padding: calc(var(--loop-field-padding-block, 18px) - 1px) calc(var(--loop-field-padding-inline, 16px) - 1px);
+  border-color: var(--color-outline-on-light-link-focused);      /* Blue/50 #0071bc */
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused);
 }
 
 /* ---- Error — native .not-valid (set by OutSystems form validation) ---- */
@@ -167,12 +192,16 @@ Class on the field Container.
   padding-inline: 0px;
 }
 
-/* ---- Sizes — native .input-large / .input-small + added .is-regular ---- */
+/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular ---- */
+.form-control[data-input].input-xlarge {                         /* xLarge — 56px */
+  min-height: 56px;
+  padding-block: var(--loop-field-padding-block, 18px);
+}
 .form-control[data-input].input-large {                          /* Large — 48px */
   min-height: 48px;
   padding-block: 14px;
 }
-.form-control[data-input].is-regular {                           /* Regular — 40px */
+.form-control[data-input].input-regular {                        /* Regular — 40px (explicit alias of the default) */
   min-height: 40px;
   padding-block: 10px;
 }
@@ -182,10 +211,8 @@ Class on the field Container.
   font-size: var(--font-size-200, 14px);
   line-height: 14px;
 }
-/* keep focus padding compensation correct at each size */
-.form-control[data-input].input-large:focus  { padding-block: 13px; }
-.form-control[data-input].is-regular:focus    { padding-block: 9px; }
-.form-control[data-input].input-small:focus   { padding-block: 5px; }
+/* No per-size focus padding compensation needed: the focus ring is an inset
+   box-shadow, so border-width and padding stay constant across all sizes. */
 
 /* ============================================================
    Field wrapper — Label + Input + Helper layout (BEM, applied via Extended Class)
@@ -242,6 +269,24 @@ Class on the field Container.
 .loop-field__helper--success  { color: var(--color-text-on-light-state-success); }
 .loop-field__helper--disabled { color: var(--color-text-on-light-state-disabled); }
 
+/* ---- Native default validation message (OutSystems form validation) ----
+   At runtime an OutSystems Form does NOT emit .loop-field__helper--error; when a
+   field fails validation the platform renders a sibling <span class="validation-message">
+   (see OutSystems UI _form.scss). Out of the box that span is font-size-xs in the
+   generic error colour (--color-error = Red/50 #da1e28) with no tracking — which reads
+   brighter and lighter than the Error helper shown in the preview. Restyle it to The
+   Loop's helper--error treatment so the live message matches the mockup: Open Sans,
+   12px, 0.5px tracking, in the registered Red/70 state-error text colour.
+   Typography + colour only — OutSystems' own absolute positioning of the span inside
+   .form is left untouched so field layout/spacing is unaffected. */
+span.validation-message {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-helper-size, 12px);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-state-error);     /* Red/70 — matches loop-field__helper--error, not the brighter Red/50 default */
+}
+
 /* ---- Reduced motion (WCAG 2.2 SC 2.3.3) — native uses transition: all 180ms ---- */
 @media (prefers-reduced-motion: reduce) {
   .form-control[data-input],
@@ -250,6 +295,30 @@ Class on the field Container.
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## State mapping (Figma "State" → OutSystems)
 | The Loop | How |

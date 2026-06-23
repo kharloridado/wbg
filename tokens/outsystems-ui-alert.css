@@ -1,0 +1,89 @@
+/* outsystems-ui-alert.css — restyle the native OutSystems UI Alert to "The Loop" Notes look
+ * ----------------------------------------------------------------------------
+ * Companion to outsystems-ui-overrides.css (which only retints the framework's
+ * --color-* custom properties). The native Alert pattern (vendor _alert.scss:
+ * the .alert box, .alert-icon, .alert-message and the .alert-info / .alert-success
+ * / .alert-error / .alert-warning type modifiers) ships as a SOLID color fill with
+ * white text. The Loop "Notes" design (Figma "Notes" 26642-61530,
+ * built as the custom `.loop-note` block) is instead a LIGHT tinted box with a 1px
+ * colored border, dark body text, and a color-matched accent. This file makes the
+ * stock OutSystems Alert ADOPT that Notes look, so a developer who drops the native
+ * Alert widget gets The Loop styling for free — no parallel custom block needed
+ * (memory: restyle native OutSystems widgets, don't build parallel systems).
+ *
+ * SINGLE SOURCE OF TRUTH: the three Alert types that map 1:1 onto a Loop Note type
+ * reuse the SAME --loop-note-* tokens (component-note.css) — edit the Note, the
+ * Alert follows. Native Alert additionally has an `error` type the Notes set does
+ * NOT; it borrows the Loop red "negative" state role from semantic-colors.css.
+ *
+ * Type mapping (native Alert → Loop Note):
+ *   .alert-info    → Note "information" (blue)
+ *   .alert-success → Note "success"     (green)
+ *   .alert-warning → Note "important"   (yellow)
+ *   .alert-error   → (no Note type) Loop red negative state
+ *
+ * No `loop-` prefix: these override OutSystems UI classes directly, mirroring
+ * outsystems-ui-header.css. Loaded after the brand overrides so equal-specificity
+ * rules win by source order (the theme loads after OutSystems UI in ODC). */
+
+/* Box — from the solid fill to the Notes tinted-box geometry. align-items goes to
+ * flex-start because Notes top-align their content (was OS `center`). Background
+ * and border-color are set per type below; the 1px border + 4px radius are shared. */
+.alert {
+  align-items: flex-start;
+  border: 1px solid;
+  border-radius: var(--loop-note-corner-radius, 4px);
+  padding: var(--loop-note-padding-v, 12px) var(--loop-note-padding-h, 16px);
+  color: var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* Icon → the Note's bold colored accent (was white-on-solid). Tighter gap + a
+ * smaller glyph than OS's 24px to read at the Notes' compact scale. */
+.alert .alert-icon {
+  margin-right: var(--space-xxsmall, 8px);
+  font-size: 20px;
+  color: var(--loop-alert-accent, currentColor);
+}
+
+/* Message → Note body text. */
+.alert .alert-message {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-note-body-size, 14px);
+  line-height: var(--loop-note-body-leading, 1.25);
+  font-weight: var(--font-weight-regular, 400);
+  color:       var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Type: info → Note "information" (blue) ---- */
+.alert-info {
+  background-color:    var(--loop-note-information-bg, #f6fcff);
+  border-color:        var(--loop-note-information-border, #169af3);
+  --loop-alert-accent: var(--loop-note-information-label, #00538a);
+}
+
+/* ---- Type: success → Note "success" (green) ---- */
+.alert-success {
+  background-color:    var(--loop-note-success-bg, #f6fef0);
+  border-color:        var(--loop-note-success-border, #388004);
+  --loop-alert-accent: var(--loop-note-success-label, #388004);
+}
+
+/* ---- Type: warning → Note "important" (yellow) ---- */
+.alert-warning {
+  background-color:    var(--loop-note-important-bg, #fef3d7);
+  border-color:        var(--loop-note-important-border, #896001);
+  --loop-alert-accent: var(--loop-note-important-label, #896001);
+}
+
+/* ---- Type: error → Loop red "negative" state (no Note equivalent) ---- */
+.alert-error {
+  background-color:    var(--color-domain-state-negative-low, #fdf2f2);
+  border-color:        var(--color-domain-state-negative-regular, #da1e28);
+  --loop-alert-accent: var(--color-text-on-light-state-error, #9d161d);
+}
+
+/* RTL — mirror the tightened icon gap (native flips to --space-base = 16px). */
+.is-rtl .alert .alert-icon {
+  margin-left: var(--space-xxsmall, 8px);
+  margin-right: 0;
+}

@@ -31,9 +31,9 @@
      The Loop re-enables it to draw the Figma down-chevron.
 
    Fidelity notes (built faithfully; raised, NOT silently changed):
-     - Field radius = --radius-pill (32px) while the Text Field uses --radius-medium
-       (8px): sibling form controls diverge; Select label/value 13px ≠ 16px used by the
-       Text Field & Multi-select; vpadding 11px off the 4pt grid    → FND-031
+     - Select label/value 13px ≠ 16px used by the Text Field & Multi-select; vpadding
+       11px off the 4pt grid                                        → FND-031
+       (the radius now matches: both Text Field and Select use --radius-pill 32px)
      - Popup-list border (Figma #dae1e8, a lift token with no WBG primitive) substituted
        to --color-outline-on-light-subdued                          → FND-032
      - Resting border --color-outline-on-light-default (#00396b3d) ≈ 1.45:1 on white,
@@ -54,7 +54,7 @@
 
   background-color: var(--color-bg-container-on-light-lowest);     /* white */
   border: 1px solid var(--color-outline-on-light-default);        /* #00396b3d — FND-019 */
-  border-radius: var(--loop-select-radius);                      /* --radius-pill 32px — FND-031 */
+  border-radius: var(--loop-select-radius);                      /* --radius-pill 32px — shared with Text Field */
   color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -192,7 +192,7 @@
   min-height: 40px;
   background-color: var(--color-bg-container-on-light-lowest) !important;  /* white */
   border: 1px solid var(--color-outline-on-light-default) !important;      /* #00396b3d */
-  border-radius: var(--loop-select-radius) !important;                    /* --radius-pill 32px — FND-031 */
+  border-radius: var(--loop-select-radius) !important;                    /* --radius-pill 32px — shared with Text Field */
   color: var(--color-text-on-light-default);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-300, 16px);                                   /* multi-select value = 16px */
@@ -295,12 +295,68 @@
   color: var(--color-text-on-light-default);
 }
 
-/* search input inside the open list */
+/* search box inside the open list — Figma shows a magnifier + tokenised field
+   (fig "Select" open state). The provider gives us a 40px row with a bottom rule. */
+.osui-dropdown-search .vscomp-search-container,
+.osui-dropdown-tags .vscomp-search-container {
+  border-bottom: 1px solid var(--color-outline-on-light-subdued);
+  padding: var(--space-xtiny, 4px) var(--loop-select-padding-inline, 16px);
+}
+/* leading magnifier glyph (provider ships none in this build) */
+.osui-dropdown-search .vscomp-search-container::before,
+.osui-dropdown-tags .vscomp-search-container::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-right: var(--space-xxsmall, 8px);
+  background-color: var(--color-icon-on-light-subdued);
+  -webkit-mask: var(--loop-select-search-icon) center / contain no-repeat;
+  mask: var(--loop-select-search-icon) center / contain no-repeat;
+}
 .osui-dropdown-search .vscomp-search-input,
 .osui-dropdown-tags .vscomp-search-input {
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
   color: var(--color-text-on-light-default);
+}
+
+/* =====================================================================
+   3) Live-provider refinements — DOM only the runtime VirtualSelect emits
+      (option checkbox glyph, "+N" overflow alias). Authored against the real
+      .vscomp-* output so the preview = the live widget, styled to The Loop.
+   ===================================================================== */
+
+/* Multi-select option rows: Figma shows NO left checkbox box — selected rows get a
+   right-aligned check, unselected rows are bare (fig "Multi Select" open state).
+   The provider draws a left .checkbox-icon (square when unchecked, tick when
+   selected); we move it to the trailing edge and suppress the unchecked square. */
+.osui-dropdown-tags .vscomp-option .vscomp-option-text { order: 1; }
+.osui-dropdown-tags .vscomp-option .checkbox-icon {
+  order: 2;
+  margin-left: auto;          /* push the marker to the trailing edge */
+  margin-right: 0;
+  width: 16px;
+  height: 16px;
+}
+/* unchecked rows: no marker at all (provider draws a square checkbox by default) */
+.osui-dropdown-tags .vscomp-option:not(.selected) .checkbox-icon { display: none; }
+/* selected rows: a clean brand check mark (fully redefined so the provider's
+   purple-tick geometry never partially wins on equal specificity) */
+.osui-dropdown-tags .vscomp-option.selected .checkbox-icon::after {
+  width: 60%;
+  height: 100%;
+  margin: 0 auto;
+  border: 2px solid var(--color-icon-on-light-link-enabled);   /* Blue/70 — selected marker */
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(45deg) translate(-1px, -2px);
+}
+
+/* "+N" overflow alias — provider tags it .more-value-count (no clear button).
+   Keep it a compact neutral pill: informational, not removable (Figma "+3"). */
+.osui-dropdown-tags .vscomp-value-tag.more-value-count {
+  font-weight: var(--font-weight-semibold, 600);
 }
 
 /* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */

@@ -19,7 +19,8 @@
      .button-group-selected-item      → bg 'primary', text neutral-0 (filled)
      [disabled]                       → neutral
 
-   The Loop overrides: pill OUTER corners (32px), square joined INNER corners (0),
+   The Loop overrides: pill OUTER corners (32px), 2px joined INNER corners
+     (--radius-xs, per Figma "Button/Border Radius = 2" — see FND-004),
      Open Sans 700 / tracking -0.5, and WB blue-70 outline/text + blue-70 selected fill.
 
    Tokens: --radius-pill, --space-medium, --font-family-label,
@@ -32,11 +33,12 @@
      Non-selected outlined items reuse the secondary button treatment.
    ============================================ */
 
-/* ---- Item — The Loop identity + outlined (non-selected) look ---- */
+/* ---- Item — The Loop identity + outlined (non-selected) look ----
+   Default item height is Regular (40px), matching the Button's Regular default. */
 .button-group-item {
-  min-height: 56px;
+  min-height: 40px;                       /* Regular default per FND-043 (reconciled from Figma xLarge/56) */
   height: auto;
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  padding: var(--space-xxsmall, 8px) var(--space-medium, 32px);
 
   background-color: var(--color-bg-link-secondary-enabled);     /* transparent */
   border: 1px solid var(--color-outline-on-light-link-enabled); /* blue-70 */
@@ -48,8 +50,8 @@
   line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* middle items: all corners are joined (inner) — square, no radius */
-  border-radius: 0;
+  /* middle items: all corners are joined (inner) — 2px (Figma Button/Border Radius = 2) */
+  border-radius: var(--radius-xs, 2px);
 }
 
 /* collapse the shared border (keep native behaviour explicit) */
@@ -57,12 +59,12 @@
   border-left: 0px;
 }
 
-/* end caps: outer corners pill (32px), inner corners square (0) */
+/* end caps: outer corners pill (32px), inner (joined) corners 2px (--radius-xs) */
 .button-group-item:first-child {
-  border-radius: var(--radius-pill, 32px) 0 0 var(--radius-pill, 32px);
+  border-radius: var(--radius-pill, 32px) var(--radius-xs, 2px) var(--radius-xs, 2px) var(--radius-pill, 32px);
 }
 .button-group-item:last-child {
-  border-radius: 0 var(--radius-pill, 32px) var(--radius-pill, 32px) 0;
+  border-radius: var(--radius-xs, 2px) var(--radius-pill, 32px) var(--radius-pill, 32px) var(--radius-xs, 2px);
 }
 /* single item (first === last): fully pill */
 .button-group-item:first-child:last-child {

@@ -8,6 +8,22 @@ OutSystems UI Switch widget** (`[data-switch]`) to The Loop design — same patt
 `loop-button.css` / `loop-radio-button.css`. Developers keep using the standard
 OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Component.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Toggle / Switch page.
+
+**What it is.** The Loop toggle — native OutSystems Switch restyled.
+
+**When to use**
+- An instant on/off setting that takes effect **immediately**, with no Save — e.g. enable notifications, dark mode, a feature flag.
+
+**When not to use** (reach for instead)
+- A choice that only applies on Submit/Save → **Checkbox**.
+- One of multiple options → **Radio Button** or **Button Group**.
+
+**How to use**
+- Use the native **Switch** widget; supports on, off, and disabled.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -58,10 +74,11 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
      disabled track         → --color-domain-interactive-disable        (neutral-40 #8a9db1)
      thumb                  → --color-white
 
-   Sizes (loop/toggle/switch track w×h — default = xLarge): published switch tokens cover
-     only the xLarge default (56×32, circle 24, padding 4). Large/Regular/Small reuse the
-     observed track dimensions (48×26 / 40×20 / 32×16) with padding held at the one
-     published 4px value and circle = height − 2·padding — flagged for confirmation (FND-025).
+   Sizes (loop/toggle/switch track w×h — default = Regular): published switch tokens cover
+     only the xLarge size (56×32, circle 24, padding 4); the default base is Regular (40×20,
+     circle 12). xLarge/Large/Small reuse the observed track dimensions
+     (56×32 / 48×26 / 32×16) with padding held at the one published 4px value and
+     circle = height − 2·padding — flagged for confirmation (FND-025).
 
    Fidelity notes (built faithfully; raised, NOT silently changed):
      - Label line-height token is published twice with different values (16 vs 18) — FND-024.
@@ -73,14 +90,20 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 /* ---- Track box — hide the native checkbox; :before/:after draw the switch ---- */
 [data-switch],
 .has-accessible-features [data-switch] {
+  /* Size geometry — default is Regular (40×20, circle 12); .loop-toggle-* override these.
+     Only these vars change per size; the :before/:after rules derive from them. */
+  --loop-toggle-track-w: 40px;
+  --loop-toggle-track-h: 20px;
+  --loop-toggle-circle: 12px;
+  --loop-toggle-padding: 4px;
   appearance: none;
   -webkit-appearance: none;
   position: relative;                                     /* positioning context for track + thumb */
   display: inline-block;
   box-sizing: border-box;
   vertical-align: middle;
-  width: var(--loop-toggle-track-w, 56px);
-  height: var(--loop-toggle-track-h, 32px);
+  width: var(--loop-toggle-track-w, 40px);
+  height: var(--loop-toggle-track-h, 20px);
   background-color: transparent;
   border: 0px;
   border-radius: var(--radius-pill, 50px);
@@ -175,8 +198,11 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 
 /* ---- Sizes — apply via the Switch widget's Extended Class on the input ----
    Only the geometry vars change; the before/after rules above derive from them.
-   Default (no class) = xLarge (56×32). Track w×h are the observed Figma dimensions;
+   Default (no class) = Regular (40×20). Track w×h are the observed Figma dimensions;
    padding is held at the one published 4px value, circle = h − 2·padding (FND-025). */
+[data-switch].loop-toggle-xlarge {
+  --loop-toggle-track-w: 56px;  --loop-toggle-track-h: 32px;  --loop-toggle-circle: 24px;
+}
 [data-switch].loop-toggle-large {
   --loop-toggle-track-w: 48px;  --loop-toggle-track-h: 26px;  --loop-toggle-circle: 18px;
 }
@@ -222,6 +248,30 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## What the override builds
 The native switch pseudo-elements are restyled: `:before` = the 56×32 pill track,

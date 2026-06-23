@@ -1,0 +1,59 @@
+/* component-modal.css — WBG / "The Loop" Modal component tokens
+ * Extracted from Figma: -The Loop- Main Library · "Modal/Popup" [node:22049-35100]
+ *   canonical sticker "-loop modal" [node:22200-69277].
+ * Consumed by src/components/loop-modal.js — the <loop-modal> vanilla Web Component.
+ * These custom properties cascade into the component's Shadow DOM. Token-only: every
+ * value references a foundation primitive/semantic token (CLAUDE.md hard rule #3).
+ *
+ * The Loop modal is a white dialog with a 16px radius (Border Radius/Large), 40px side
+ * padding (loop/modal/side padding), centred over a blue-90 @ 90% overlay
+ * (effects/modal/overlay = #012740e5). Three stacked regions inside the side padding:
+ *   header (info icon + 24px bold title + circular blue close)  →  content  →  footer (buttons).
+ *
+ * Fidelity notes (built faithfully; raised, NOT silently changed):
+ *  - The Figma sticker carries NO drop-shadow effect — the Loop modal reads flat over the
+ *    dark overlay, vs OutSystems UI's default Popup `--shadow-xl`. Built FLAT — same
+ *    brand-intent flatness as the Card (FND-034); raised as FND-046. `--loop-modal-shadow: none`.
+ *  - effects/modal/overlay (#012740e5) has no foundation alpha primitive, so the overlay is
+ *    composed with color-mix() over the blue-90 PRIMITIVE — same technique as the Card scrim. */
+:root {
+  /* ---- Dialog box ---- */
+  --loop-modal-bg:            var(--color-bg-container-on-light-lowest); /* #ffffff — Background/Container/On Light/Lowest */
+  --loop-modal-radius:        var(--radius-large);     /* 16px — Border Radius/Large (loop/modal outer corner) */
+  --loop-modal-side-padding:  var(--space-large);      /* 40px — loop/modal/side padding */
+  --loop-modal-width:         960px;                   /* loop/modal/width — Large desktop */
+  --loop-modal-width-sm:      456px;                   /* Small desktop variant */
+  --loop-modal-shadow:        none;                    /* flat per Figma (no shadow token) — see header note */
+  --loop-modal-gutter:        var(--space-small);      /* 16px — min gap from the dialog to the viewport edge */
+  --loop-modal-z:             1000;                    /* overlay stacking context */
+
+  /* ---- Overlay / backdrop ----
+     effects/modal/overlay = #012740e5 → blue-90 @ 90% (color-mix keeps the hue while adding alpha) */
+  --loop-modal-overlay:       color-mix(in srgb, var(--color-blue-90) 90%, transparent);
+
+  /* ---- Header (info icon + title + close) ---- */
+  --loop-modal-header-pt:     var(--space-regular);    /* 24px — loop/modal/close top-padding */
+  --loop-modal-header-pb:     var(--space-small);      /* 16px — spacing/small */
+  --loop-modal-title-gap:     var(--space-xxsmall);    /* 8px  — icon↔title ("Title and icon" gap) */
+  --loop-modal-icon-size:     24px;                    /* circle-info — information icon */
+  --loop-modal-icon-pt:       var(--space-xtiny);      /* 2px  — optical baseline nudge (spacing/xtiny) */
+  --loop-modal-icon-color:    var(--color-icon-on-light-primary);  /* #004370 — Icon/On Light/Primary (blue-70) */
+
+  /* ---- Title typography (.UI Component/Modal/heading) ---- */
+  --loop-modal-title-size:    var(--font-size-600);    /* 24px — loop/modal/modal heading */
+  --loop-modal-title-weight:  var(--font-weight-bold); /* 700 */
+  --loop-modal-title-color:   var(--color-text-on-light-emphasis); /* #012740 — Text/On Light/Emphasis (blue-90) */
+  --loop-modal-title-leading: normal;                  /* Figma lineHeight 100% — single-line heading */
+
+  /* ---- Close button (circular, top-right) ---- */
+  --loop-modal-close-size:    40px;                    /* outer circle / hit area */
+  --loop-modal-close-bg:      var(--color-blue-40);    /* #169af3 — Blue/40 */
+  --loop-modal-close-icon:    var(--color-white);      /* white ✕ glyph */
+  --loop-modal-close-glyph:   16px;                    /* ✕ icon-font size inside the 40px circle */
+  --loop-modal-close-focus:   var(--color-domain-interactive-focused); /* #0071bc — focus ring (a11y, no visual design change) */
+
+  /* ---- Content + footer ---- */
+  --loop-modal-content-pb:    var(--space-large);      /* 40px — spacing/large (gap below content) */
+  --loop-modal-footer-pb:     var(--space-large);      /* 40px — spacing/large (footer bottom padding) */
+  --loop-modal-footer-gap:    var(--space-xxsmall);    /* 8px  — gap between footer buttons */
+}

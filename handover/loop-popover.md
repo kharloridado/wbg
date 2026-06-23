@@ -7,6 +7,24 @@ Figma: "Popover" [node 26345-2762].
 vanilla JS Web Component (Shadow DOM) wrapped in an OutSystems Block. Four pointer
 positions plus none; optional title header with dismiss button; default width 320px.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Popover page.
+
+**What it is.** A floating contextual panel anchored to a trigger (Web Component), with a pointer position and optional title/dismiss.
+
+**When to use**
+- Reveal extra content or actions **on demand**, anchored to a control — info panels, small forms, secondary content.
+
+**When not to use** (reach for instead)
+- A short text hint → **Tooltip**.
+- A menu of actions → **Button Dropdown**.
+- A page-level banner → **System Alert**.
+- A persistent inline notice → **Note**.
+
+**How to use**
+- Drop the **Popover** Block; set the pointer position, optional title/dismiss, default 320px width. Script Include = When invoked.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -253,6 +271,30 @@ if (!customElements.get('loop-popover')) {
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## API — Attributes
 | Attribute | Values | Description |

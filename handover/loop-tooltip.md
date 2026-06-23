@@ -8,6 +8,23 @@ OutSystems UI Tooltip pattern** (`.osui-tooltip` / `.osui-balloon`) to The Loop 
 Developers keep using the standard OutSystems **Tooltip** pattern; the theme makes it
 look like The Loop. No Web Component.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Tooltip page.
+
+**What it is.** The Loop tooltip — native OutSystems Tooltip pattern restyled.
+
+**When to use**
+- Brief, supplementary text revealed on hover/focus — label clarifications, icon-button names, terse help.
+
+**When not to use** (reach for instead)
+- Rich content or actions → **Popover**.
+- Persistent guidance → **Note**.
+- A page-level message → **System Alert**.
+
+**How to use**
+- Use the native **Tooltip** pattern; set the content and position.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -134,6 +151,30 @@ look like The Loop. No Web Component.
 ```
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## What the override builds
 

@@ -10,28 +10,28 @@
  * an external CDN. No italics: the design uses no italic styles.
  *
  * SETUP IN ODC: upload open-sans-400/600/700.woff2 as Resources under module
- * The_Loop_Theme. ODC serves them at /The_Loop_Theme/<filename>. display=swap
+ * TheLoopTheme. ODC serves them at /TheLoopTheme/<filename>. display=swap
  * avoids invisible text while the font loads; system-ui is the swap fallback. */
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/The_Loop_Theme/open-sans-400.woff2") format("woff2");
+  src: url("/TheLoopTheme/open-sans-400.woff2") format("woff2");
 }
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("/The_Loop_Theme/open-sans-600.woff2") format("woff2");
+  src: url("/TheLoopTheme/open-sans-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("/The_Loop_Theme/open-sans-700.woff2") format("woff2");
+  src: url("/TheLoopTheme/open-sans-700.woff2") format("woff2");
 }
 
 :root {
@@ -72,6 +72,7 @@
   --line-height-base:    1.5;
   --line-height-narrow:  1.25;
   --line-height-list:    1.8;
+  --line-height-button-text: 1.9;   /* loop button/text label leading (Figma node:15597-4652) */
 
   /* ---- Letter spacing (px, from Figma) ---- */
   --letter-spacing-heading: -3px;

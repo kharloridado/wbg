@@ -9,8 +9,11 @@
 @import "./loop-radio-button.css";
 @import "./loop-text-field.css";
 @import "./loop-dropdown.css";
+@import "./loop-datepicker.css";
 @import "./loop-switch.css";
 @import "./loop-tooltip.css";
 @import "./loop-note.css";
 @import "./loop-tag.css";
+@import "./loop-badge.css";
+@import "./loop-badge-status.css";
 @import "./loop-card.css";

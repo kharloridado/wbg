@@ -26,21 +26,32 @@ const MAP = {
   "loop-radio-button.md":    [["src/blocks/loop-radio-button.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-switch.md":          [["src/blocks/loop-switch.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-text-field.md":      [["src/blocks/loop-text-field.css", "css", "Theme CSS — paste below OutSystems UI"]],
+  "loop-dropdown.md":        [["src/blocks/loop-dropdown.css", "css", "Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)"]],
+  "loop-datepicker.md":      [["src/blocks/loop-datepicker.css", "css", "Theme CSS — paste below OutSystems UI (Flatpickr provider CSS is runtime-injected)"]],
   "loop-tooltip.md":         [["src/blocks/loop-tooltip.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-note.md":            [["src/blocks/loop-note.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-tag.md":             [["src/blocks/loop-tag.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
+  "loop-badge.md":           [["src/blocks/loop-badge.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-card.md":            [["src/blocks/loop-card.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-button-dropdown.md": [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
   "loop-popover.md":         [["src/components/loop-popover.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
+  "loop-modal.md":           [["src/components/loop-modal.js",   "js", "Script resource (Theme/Library), Include = When invoked"]],
   "loop-system-alert.md":    [["src/components/loop-system-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+  "loop-badge-status.md":    [["src/blocks/loop-badge-status.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-color-reference.md": [["src/components/loop-color-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
-  "loop-type-reference.md":  [["src/components/loop-type-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  "loop-type-reference.md":  [["src/components/loop-typography-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  "loop-shadow-reference.md":  [["src/components/loop-shadow-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  "loop-border-reference.md":  [["src/components/loop-border-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  "loop-spacing-reference.md": [["src/components/loop-spacing-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  "loop-class-inspector.md": [["src/components/loop-class-inspector.js", "js", "Add to Resources — load on the Style-Guide screen"]],
   "EXAMPLE-rnt-segmented.md":[["src/components/rnt-segmented.js", "js", "Script resource (Theme Library), Include = When invoked"]],
 };
 
 function section(artifacts) {
   const blocks = artifacts.map(([rel, lang, dest]) => {
-    const code = readFileSync(join(root, rel), "utf8").replace(/\s+$/, "");
+    let code;
+    try { code = readFileSync(join(root, rel), "utf8").replace(/\s+$/, ""); }
+    catch { throw new Error(`missing source: ${rel}`); }
     const file = basename(rel);
     return [
       `<details>`,
@@ -69,17 +80,40 @@ for (const [md, artifacts] of Object.entries(MAP)) {
   const path = join(handoverDir, md);
   let text;
   try { text = readFileSync(path, "utf8"); } catch { console.warn(`skip (missing): ${md}`); continue; }
-  if (text.includes(MARKER)) { console.log(`skip (already has section): ${md}`); continue; }
 
   const lines = text.split("\n");
+  let block;
+  try { block = section(artifacts).split("\n"); }
+  catch (e) { console.warn(`skip (${e.message}): ${md}`); continue; }
+  let out;
+
+  const markerIdx = lines.findIndex((l) => l.trimEnd() === MARKER);
+  if (markerIdx !== -1) {
+    // REFRESH an existing section in place (verbatim source may have changed),
+    // so re-running after editing the source keeps the ticket in sync.
+    let endIdx = lines.findIndex((l, i) => i > markerIdx && /^##\s+/.test(l));
+    if (endIdx === -1) endIdx = lines.length;
+    // drop trailing blank lines between the old section and the next heading
+    let tail = endIdx;
+    while (tail > markerIdx + 1 && lines[tail - 1].trim() === "") tail--;
+    const before = lines.slice(0, markerIdx);
+    const after = lines.slice(tail);
+    out = [...before, ...block, ...(after.length ? ["", ...after] : [])];
+    const next = out.join("\n");
+    if (next === text) { console.log(`unchanged: ${md}`); continue; }
+    writeFileSync(path, next);
+    console.log(`refreshed: ${md}`);
+    changed++;
+    continue;
+  }
+
   const filesIdx = lines.findIndex((l) => /^##\s+Files\b/.test(l));
   if (filesIdx === -1) { console.warn(`skip (no "## Files"): ${md}`); continue; }
   // insert before the next "## " heading after the Files table
   let nextIdx = lines.findIndex((l, i) => i > filesIdx && /^##\s+/.test(l));
   if (nextIdx === -1) nextIdx = lines.length;
 
-  const block = section(artifacts).split("\n");
-  const out = [...lines.slice(0, nextIdx), ...block, "", ...lines.slice(nextIdx)];
+  out = [...lines.slice(0, nextIdx), ...block, "", ...lines.slice(nextIdx)];
   writeFileSync(path, out.join("\n"));
   console.log(`updated: ${md}`);
   changed++;
