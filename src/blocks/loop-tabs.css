@@ -1,0 +1,108 @@
+/* ============================================
+   Component: Tabs  ("The Loop" — the "Lift Tabs" bar)
+   Figma: -The Loop- Main Library
+     · page "⤵ ✅ Tab & Tab Group"  [node:18672-2679]
+     · tab BAR ("-loop tab / group") [node:18683-4865]  ← built here
+
+   Approach: RESTYLE the native OutSystems UI Tabs pattern — NOT a parallel class
+   system. Devs reach for the stock OutSystems Tabs block; this layer makes its
+   header render as The Loop's underlined tab bar:
+     .tabs > .tabs-header[role=tablist] > .tabs-header-item[role=tab]
+            (+ .active) > .tabs-header-item-content
+     .tabs > .tabs-content > .tabs-content-item
+
+   Location: Theme CSS (loaded after OutSystems UI so it wins on equal specificity).
+   Escalation Level: L1/L2 (native widget + token-driven theme override). The native
+   Tabs pattern already ships role=tablist/tab/tabpanel + Arrow-key roving focus and
+   panel switching, so no JS is added — this is purely the brand skin.
+
+   The bar = a horizontal row of bold text tabs (Open Sans 700 / 20px), 24px apart,
+   sitting on a full-width subdued hairline divider; the active tab is emphasis-blue
+   with a 2px underline indicator, and hovering any tab previews that underline.
+
+   Fidelity notes (built faithfully; raised, NOT silently changed):
+     - label letter-spacing -0.13px is off the -0.35/-1.5 tracking scale       → FND-033
+     - label line-height 20px == font-size (ratio 1.0), tighter than the
+       1.12–1.25 heading rhythm                                                → FND-033
+     - active/hover underline = Blue/40 #169af3 ≈ 3.0:1 on white; as a 2px
+       graphical indicator it sits on the 3:1 SC 1.4.11 minimum (cf. FND-011)  → FND-034
+   ============================================ */
+
+/* ---- The bar: full-width subdued baseline divider; tabs laid out 24px apart ---- */
+.tabs > .tabs-header {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: var(--loop-tab-gap, 24px);
+  border-bottom: var(--loop-tab-divider-size, 1px) solid var(--loop-tab-divider-color);
+}
+
+/* ---- Tab (enabled / inactive) ---- */
+.tabs > .tabs-header > .tabs-header-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxsmall, 8px);                  /* label ↔ icon, when an icon is present */
+  margin: 0;
+  padding: var(--loop-tab-padding-block, 12px) var(--loop-tab-padding-inline, 12px);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  color: var(--loop-tab-label-color);              /* #004370 blue-70 */
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-tab-label-size, 20px);
+  font-weight: var(--loop-tab-label-weight, 700);
+  line-height: var(--loop-tab-label-leading, 20px);
+  letter-spacing: var(--loop-tab-label-tracking, -0.13px);
+
+  /* the underline indicator — transparent until hover/active so the row never jumps */
+  border-bottom: var(--loop-tab-indicator-size, 2px) solid transparent;
+  margin-bottom: calc(-1 * var(--loop-tab-divider-size, 1px));   /* overlap the bar divider */
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+/* icon glyph inside a tab (OutSystems UI .icon) tracks the label colour */
+.tabs > .tabs-header > .tabs-header-item .icon {
+  color: inherit;
+}
+
+/* ---- Hover — preview the underline indicator ---- */
+.tabs > .tabs-header > .tabs-header-item:hover {
+  border-bottom-color: var(--loop-tab-indicator-color);   /* #169af3 blue-40 — FND-034 */
+}
+
+/* ---- Selected / active — emphasis label + persistent underline ---- */
+.tabs > .tabs-header > .tabs-header-item.active,
+.tabs > .tabs-header > .tabs-header-item[aria-selected="true"] {
+  color: var(--loop-tab-label-color-active);              /* #012740 blue-90 */
+  border-bottom-color: var(--loop-tab-indicator-color);   /* #169af3 blue-40 */
+}
+
+/* ---- Disabled — native .disabled / [disabled] / aria-disabled ---- */
+.tabs > .tabs-header > .tabs-header-item.disabled,
+.tabs > .tabs-header > .tabs-header-item[disabled],
+.tabs > .tabs-header > .tabs-header-item[aria-disabled="true"] {
+  color: var(--loop-tab-label-color-disabled);           /* #00294d6b neutral-alpha-42 */
+  border-bottom-color: transparent;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ---- Keyboard focus — 2px Blue/50 brand ring (cf. FND-012); offset inward so the
+   ring is visible without disturbing the underline indicator ---- */
+.tabs > .tabs-header > .tabs-header-item:focus-visible {
+  outline: 2px solid var(--loop-tab-focus-ring);          /* #0071bc blue-50 */
+  outline-offset: -2px;
+  border-radius: var(--radius-base, 4px);
+}
+
+/* ---- Size: Large (tablet / mobile) — apply .tabs--large via ExtendedClass.
+   XLarge (20px) is the desktop default above. ---- */
+.tabs.tabs--large > .tabs-header > .tabs-header-item {
+  font-size: var(--loop-tab-label-size-large, 18px);
+}
+
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .tabs > .tabs-header > .tabs-header-item { transition: none; }
+}

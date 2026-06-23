@@ -1,0 +1,46 @@
+/* component-tab.css — WBG / "The Loop" Tabs component tokens
+ * Extracted from Figma: "⤵ ✅ Tab & Tab Group" page [node:18672-2679];
+ *   the tab BAR ("Lift Tabs" / -loop tab / group) [node:18683-4865] is the form
+ *   built here — a horizontal row of text tabs with a full-width subdued divider
+ *   and a coloured underline indicator under the active/hovered tab. (The standalone
+ *   pill "tab item" chip [node:18672-2680] is out of scope for this build.)
+ *
+ * These are the label + metrics + state colours consumed by the native-Tabs restyle
+ * in src/blocks/loop-tabs.css. Each value references a foundation-scale token where one
+ * exists; component-only metrics are declared here.
+ *
+ * Loaded AFTER the foundation files (colors/spacing/typography/radius) so the var()
+ * references resolve, and BEFORE outsystems-ui-overrides.css (which must stay last).
+ *
+ * Off-scale / orphan values are flagged, NOT silently normalised (CLAUDE.md the-one-rule):
+ *   - label letter-spacing -0.13px is off the -0.35/-1.5 tracking scale (cf. the button
+ *     label -0.5px, FND-017)                                            → FND-033
+ *   - label line-height 20px == font-size (ratio 1.0) is tighter than the 1.12–1.25
+ *     heading rhythm; declared as a component metric                    → FND-033
+ *   - active/hover underline = Blue/40 #169af3 ≈ 3.0:1 on white; as a 2px graphical
+ *     indicator it sits on the 3:1 SC 1.4.11 minimum (cf. FND-011)      → FND-034 */
+:root {
+  /* ---- Label (Open Sans Bold) — Figma ".UI Component/Tab Menu/Label" ---- */
+  --loop-tab-label-size:      var(--font-size-label-large);   /* 20px — loop/tabs/label/font size */
+  --loop-tab-label-weight:    var(--font-weight-bold);        /* 700  — loop/tabs/label/font weight */
+  --loop-tab-label-leading:   20px;                           /* loop/tabs/label/line height — ratio 1.0 (FND-033) */
+  --loop-tab-label-tracking:  -0.13px;                        /* loop/tabs/label/letter spacing — off-scale (FND-033) */
+
+  /* ---- Bar metrics ---- */
+  --loop-tab-padding-block:   var(--space-xsmall);            /* 12px — loop/tabs/v-padding */
+  --loop-tab-padding-inline:  var(--space-xsmall);            /* 12px — loop/tabs/h-padding */
+  --loop-tab-gap:             var(--space-regular);           /* 24px — loop/tabs/gap between tabs */
+  --loop-tab-indicator-size:  2px;                            /* underline indicator thickness */
+  --loop-tab-divider-size:    1px;                            /* full-width bar baseline divider */
+
+  /* ---- State colours ---- */
+  --loop-tab-label-color:         var(--color-text-on-light-link-primary-enabled); /* #004370 blue-70 — enabled (inactive) */
+  --loop-tab-label-color-active:  var(--color-text-on-light-emphasis);             /* #012740 blue-90 — selected */
+  --loop-tab-label-color-disabled:var(--color-text-on-light-state-disabled);       /* #00294d6b neutral-alpha-42 */
+  --loop-tab-indicator-color:     var(--color-outline-on-light-link-hover);        /* #169af3 blue-40 — hover/active underline (FND-034) */
+  --loop-tab-divider-color:       var(--color-divider-on-light-subdued);           /* #00396b14 — Divider/On Light/Subdued (exact) */
+  --loop-tab-focus-ring:          var(--color-outline-on-light-link-focused);      /* #0071bc blue-50 — brand focus ring (cf. FND-012) */
+
+  /* ---- Large size step (tablet / mobile) — XLarge 20px is the desktop default ---- */
+  --loop-tab-label-size-large:    var(--font-size-400);       /* 18px — Large variant */
+}
