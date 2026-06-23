@@ -6,7 +6,7 @@
   "status": "composites-in-progress",
   "mode": "library",
   "phase": "composites",
-  "pause_reason": "Dropdown/Select (#38) now BUILT (checker PASS) from Figma nodes 18787-4817 (Select) + 18830-17312 (Multiselect) + rendered DOM the user supplied 2026-06-18. Still BLOCKED on design input for the REST of the to-build queue (#39-54: Search, Date Picker, Upload, Alert, Toast, Badge, Progress Bar, Card, Tabs, Accordion, Modal, Breadcrumbs, Pagination, Avatar) — none carry Figma node ids yet. Provide node ids + (for provider/JS patterns) rendered OutSystems HTML to advance further.",
+  "pause_reason": "Tabs (#49) BUILT (checker PASS) from Figma node 18683-4865 (tab bar) on page 18672-2679, provided by the user 2026-06-23 — restyle of the native OutSystems UI Tabs pattern, scope = the underlined Lift Tabs bar. Still BLOCKED on design input for the REST of the to-build queue (#39-48, #50-54: Search, Date Picker, Upload, Alert, Toast, Badge, Progress Bar, Card, Accordion, Modal, Breadcrumbs, Pagination, Avatar) — none carry Figma node ids yet. Provide node ids + (for provider/JS patterns) rendered OutSystems HTML to advance further.",
   "project": {
     "owner": "kharloridado",
     "number": 1,
@@ -26,7 +26,7 @@
     "after_primitives": "pause",
     "after_composites": "continue"
   },
-  "iteration": 3,
+  "iteration": 4,
   "tiers": [
     "foundations",
     "primitives",
@@ -293,6 +293,27 @@
       "handover": [
         66
       ]
+    },
+    {
+      "id": "cmp-tabs",
+      "tier": "composites",
+      "level": "L1/L2",
+      "node": "18683-4865",
+      "node_page": "18672-2679",
+      "artifact": "src/blocks/loop-tabs.css",
+      "tokens": "tokens/component-tab.css",
+      "approach": "restyle native OutSystems UI Tabs pattern (.tabs/.tabs-header/.tabs-header-item) as the underlined Lift Tabs bar; no JS (native pattern provides ARIA + keyboard)",
+      "status": "built",
+      "checker": "PASS (round 2 — findings logged)",
+      "handover_doc": "handover/loop-tabs.md",
+      "findings": [
+        "FND-033",
+        "FND-034"
+      ],
+      "note": "Scope = the tab BAR (Lift Tabs / -loop tab / group) shown in the Desktop/Tablet/Mobile examples; standalone pill 'tab item' chip [node:18672-2680] out of scope. Figma node id provided by user 2026-06-23.",
+      "handover": [
+        71
+      ]
     }
   ],
   "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",
@@ -444,6 +465,22 @@
       "node": "18787-4817",
       "status": "register-only",
       "summary": "Dropdown popup-list border #dae1e8 (foreign lift token, no WBG primitive) substituted to --color-outline-on-light-subdued"
+    },
+    {
+      "id": "FND-033",
+      "type": "design-token",
+      "sev": "low",
+      "node": "18683-4865",
+      "status": "register-only",
+      "summary": "Tabs label letter-spacing -0.13px off the -0.35/-1.5 tracking scale; label line-height 20px equals font-size (ratio 1.0)"
+    },
+    {
+      "id": "FND-034",
+      "type": "a11y/contrast",
+      "sev": "medium",
+      "node": "18683-4865",
+      "status": "register-only",
+      "summary": "Tabs active/hover underline Blue/40 #169af3 ≈ 3.02:1 on white (2px graphical indicator on the 3:1 SC 1.4.11 floor; cf. FND-011)"
     }
   ],
   "handover_epics": [],

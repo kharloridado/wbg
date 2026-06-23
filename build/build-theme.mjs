@@ -50,6 +50,7 @@ const META = {
   "component-system-alert.css": { group: "Components",       name: "System Alert" },
   "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
   "component-tag.css":          { group: "Components",       name: "Tag" },
+  "component-tab.css":          { group: "Components",       name: "Tabs" },
   /* Widget override sections (src/blocks/) */
   "loop-headings.css":      { group: "Widget Overrides", name: "Headings (h1–h3)" },
   "loop-button.css":        { group: "Widget Overrides", name: "Button" },
@@ -61,6 +62,7 @@ const META = {
   "loop-dropdown.css":      { group: "Widget Overrides", name: "Dropdown / Select" },
   "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
+  "loop-tabs.css":          { group: "Widget Overrides", name: "Tabs" },
   /* Custom component BEM blocks (src/blocks/) */
   "loop-note.css":          { group: "Custom Components", name: "Notes" },
   "loop-tag.css":           { group: "Custom Components", name: "Tag" },

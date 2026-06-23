@@ -18,6 +18,7 @@
 @import "./component-system-alert.css";
 @import "./component-tooltip.css";
 @import "./component-tag.css";
+@import "./component-tab.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";
