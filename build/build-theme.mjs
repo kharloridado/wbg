@@ -56,6 +56,7 @@ const META = {
   "component-note.css":         { group: "Components",       name: "Notes" },
   "component-popover.css":      { group: "Components",       name: "Popover" },
   "component-system-alert.css": { group: "Components",       name: "System Alert" },
+  "component-alert.css":        { group: "Components",       name: "Alert" },
   "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
   "component-tag.css":          { group: "Components",       name: "Tag" },
   /* Widget override sections (src/blocks/) */

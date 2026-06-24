@@ -38,6 +38,7 @@ const MAP = {
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-modal.md":           [["src/components/loop-modal.js",   "js", "Script resource (Theme/Library), Include = When invoked"]],
   "loop-system-alert.md":    [["src/components/loop-system-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+  "loop-alert.md":           [["src/components/loop-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
   "loop-badge-status.md":    [["src/blocks/loop-badge-status.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-color-reference.md": [["src/components/loop-color-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
   "loop-type-reference.md":  [["src/components/loop-typography-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],

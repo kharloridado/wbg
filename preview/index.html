@@ -1420,6 +1420,68 @@
     <p class="pv-log" id="sysalert-log">last event: —</p>
   </section>
 
+  <!-- ============ ALERT ============ -->
+  <section>
+    <h2>Alert — custom Web Component <code>&lt;loop-alert&gt;</code></h2>
+    <p class="pv-figma">handover/loop-alert.md · Figma node 17868-4165</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Single-line (icon · title · message · action · dismiss)</span>
+
+      <loop-alert type="error"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="warning"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="information"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="success"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Multi-line (stacked)</span>
+
+      <loop-alert type="error"
+        title="Title"
+        message="Message with more than 2 lines of information."
+        action-label="Action"
+        action-href="#"
+        dismissible
+        multiline>
+      </loop-alert>
+
+      <loop-alert type="information"
+        title="Title"
+        message="Message with more than 2 lines of information."
+        action-label="Action"
+        dismissible
+        multiline>
+      </loop-alert>
+    </div>
+
+    <p class="pv-note pv-note--spaced">ℹ Finding (FND-054): Figma uses a near-black secondary link (#0c0f12) for the Action on the Information multi-line variant only; normalized to primary #004370 across all types/layouts, filed for design review.</p>
+    <p class="pv-log" id="alert-log">last event: —</p>
+  </section>
+
   <!-- ============ COLOR REFERENCE (Live Style Guide) ============ -->
   <section>
     <h2>Color Reference — custom Web Component <code>&lt;loop-color-reference&gt;</code></h2>
@@ -1601,6 +1663,7 @@
 <script src="../src/components/loop-typography-reference.js"></script>
 <script src="../src/components/loop-button-dropdown.js"></script>
 <script src="../src/components/loop-system-alert.js"></script>
+<script src="../src/components/loop-alert.js"></script>
 <script src="../src/components/loop-modal.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
 <script src="../src/components/loop-shadow-reference.js"></script>
@@ -1620,6 +1683,13 @@
   document.querySelectorAll('loop-system-alert').forEach(el => {
     el.addEventListener('dismiss', e => { saLog.textContent = `dismiss → type: ${e.detail.type}`; });
     el.addEventListener('action',  e => { saLog.textContent = `action  → type: ${e.detail.type}`; });
+  });
+
+  // Surface Alert events.
+  const alLog = document.getElementById('alert-log');
+  document.querySelectorAll('loop-alert').forEach(el => {
+    el.addEventListener('dismiss', e => { alLog.textContent = `dismiss → type: ${e.detail.type}`; });
+    el.addEventListener('action',  e => { alLog.textContent = `action  → type: ${e.detail.type}`; });
   });
 
   // Surface Modal open/close events.
