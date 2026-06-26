@@ -59,6 +59,23 @@ Both findings (bugs) and handovers (tasks) can live on the same GitHub **Project
 - `npm run build:theme:min` → `dist/theme.min.css` via lightningcss (optional
   minified build; strips comments, so NOT the file pasted into ODC).
 
+### All commands
+
+| Command | What it does |
+| --- | --- |
+| `npm install` | Install build deps (lightningcss-cli, sass). |
+| `npm run build:theme` | Assemble `tokens/*.css` → `dist/theme.css` (commented, TOC'd, single `:root`). Paste into ODC. |
+| `npm run watch:theme` | Same, rebuilding on token changes. |
+| `npm run build:theme:min` | Minified `dist/theme.min.css` (not for ODC paste). |
+| `npm run gen:color-utilities` | Generate `.background-*` / `.text-*` utility classes (`tokens/color-utilities*.css`). |
+| `npm run gen:type-utilities` | Generate `.font-size-*` / `.font-weight-*` classes (`tokens/typography-utilities.css`). |
+| `npm run gen:spacing-utilities` | Generate directional margin/padding classes (`tokens/spacing-utilities.css`). |
+| `npm run build:osui` | Compile the vendored OutSystems UI submodule → `preview/vendor/outsystems-ui/outsystems-ui.css` (the preview's real OSUI base). |
+| `npm run preview` | Zero-dep static server (port 8088) serving `preview/index.html` over http:// for the local component preview. |
+| `node build/embed-handover-code.mjs` | Idempotently embed source CSS/JS into the `handover/*.md` "Code to paste into ODC" blocks. Re-run after editing a handed-over source file. |
+
+The `gen:*` outputs are GENERATED — edit the generator in `build/`, not the emitted `tokens/*-utilities.css`. There is no separate test/lint step; the **`@checker` agent** is the validation gate (see below).
+
 ## Hard rules (inherited from figma-to-outsystems orchestrator)
 
 1. Never edit the OutSystems UI module directly.
@@ -72,3 +89,29 @@ Both findings (bugs) and handovers (tasks) can live on the same GitHub **Project
 ## Workflow
 
 Hybrid: Claude.ai for design analysis + generation, Claude Code for Git operations on the private repo.
+
+## Architecture map
+
+The repo turns Figma designs into three OutSystems-pasteable artifacts: **theme tokens**, **block CSS overrides**, and **Web Component JS**. How they fit together:
+
+**Token layering (`tokens/`).** `tokens/index.css` is the single `@import` manifest and the order is load-bearing:
+primitives (`colors`, `spacing`, `typography`, `radius`, `border`, `shadows`) → semantic role layer (`semantic-colors.css`) → generated utility classes → per-component token files (`component-*.css`) → **OutSystems UI overrides LAST** (`outsystems-ui-overrides.css`, `-header`, `-alert`, `-feedback-message`) so their `:root` redefinitions win over the framework defaults. `build/build-theme.mjs` lifts every file's `:root` into ONE consolidated block, keeps comments, and prepends an OutSystems-UI-style TOC. When you add a token file: add it to `index.css` AND to the `META` map in `build-theme.mjs`.
+
+**`src/` — two delivery shapes:**
+- `src/blocks/*.css` — BEM `ExtendedClass` overrides that **restyle native OutSystems UI widgets** (button, dropdown, switch, text-field…). Prefer overriding native `.btn`/`.dropdown`/etc. classes over building parallel systems. These are handed over as paste-in CSS.
+- `src/components/*.js` (+ matching `.css`) — vanilla JS **Web Components** for L5 builds that don't exist in OSUI (`loop-alert`, `loop-modal`, `loop-toast`, `loop-system-alert`, plus the Live Style Guide reference components `loop-*-reference.js`). No Lit/Stencil/React.
+
+**Local preview (`preview/`).** `preview/index.html` is the Live Style Guide harness. Layer 1 is the **real** compiled OSUI CSS (`npm run build:osui`), layer 2 is `dist/theme.css`, layer 3 is the `src/` overrides + Web Components. Chrome must stay token-only and class-only (no inline styles / ad-hoc hex). Serve with `npm run preview`, then validate in a real browser — never trust Service Studio Preview for Web Components.
+
+**The design loop (`.claude/` + `loop/`).** `/design-loop` (or `loop/run.sh`) drives an autonomous Figma→OutSystems loop defined by `loop/goal.md`. Per component: **`@maker`** builds one artifact faithfully → **`@checker`** independently validates (fidelity, token-only, BEM, Web Component correctness, accessibility flag-don't-fix) and returns PASS/FAIL. On PASS it commits, opens a handover Task, and updates the Style Guide. State is resumable via `loop/state.json`; `loop/REPORT.md` summarizes the run.
+
+**The agentic-review gate (lean, single checker).** The `@checker` is the project's code review. It runs in this order — detail lives in `.claude/agents/checker.md`:
+1. **Deterministic gate (hard wall):** `npm run build:theme` must exit 0 + schema/contrast resolve, *before* any subjective judgment. A broken build is an instant FAIL.
+2. **Risk-tiered depth:** scrutiny scales to blast radius — `trivial` (utility/config) gets a glance, `core` (L5 Web Components, interactive composites) gets the full stack. Not a uniform gate.
+3. **Adversarial finding challenge:** every finding (raised or suspected) must survive a refutation against *real rendered usage* before it's filed (the FND-011 pattern). Refuted ones are `not-reproduced` (register-only, never a bug). Never flag "off the 4pt grid" — the spacing base is TBD (the FND-005/013/018/022 false-positive class).
+4. **Decision-log capture:** `@maker` and `@checker` emit their reasoning / alternatives ruled out / assumptions; these persist to `state.json` and the handover so the human reviewer isn't reconstructing intent.
+5. **Review metrics:** `loop/REPORT.md` carries a `## Review metrics` block each run (auto-pass vs needs-human, findings filed vs challenged-out, rounds, tier coverage, det-gate pass rate).
+
+**Two GitHub outputs.** Design conflicts become **findings** (Bug issues; mirrored in `findings/findings-register.md`, payloads in `findings/tickets/`). Generated code becomes **handovers** (Task issues; bodies in `handover/*.md` with the verbatim code embedded by `build/embed-handover-code.mjs`). Both routed via `gh` per the routing block above.
+
+**`vendor/outsystems-ui/`** is the OSUI git submodule — the source of truth for real rendered widget DOM/SCSS when designing an override. Read it; never edit it.
