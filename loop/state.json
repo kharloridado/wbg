@@ -27,6 +27,10 @@
     "after_composites": "continue"
   },
   "iteration": 3,
+  "review_schema": {
+    "note": "Agentic-review fields (see .claude/agents/checker.md). Per built item: risk_tier (trivial|standard|core = checker depth applied), det_gate (pass|fail = npm run build:theme + schema/contrast), confidence (high|medium|low), rounds (checker rounds to PASS), decision_log (maker + checker reasoning / alternatives ruled out / assumptions). Per finding: disposition (filed = real, opened/register; not-reproduced = refuted by the checker's adversarial challenge, register-only with usage evidence, never a bug) + challenged_by (round it was refuted in).",
+    "metrics_source": "REPORT.md '## Review metrics' is computed from these fields each run."
+  },
   "tiers": [
     "foundations",
     "primitives",
@@ -284,6 +288,11 @@
       "approach": "restyle native Dropdown pattern (.dropdown) + VirtualSelect provider (.osui-dropdown-search/-tags)",
       "status": "built",
       "checker": "PASS (round 2 — finding-ID hygiene)",
+      "risk_tier": "standard",
+      "det_gate": "pass",
+      "confidence": "high",
+      "rounds": 2,
+      "decision_log": "Restyled the native Dropdown pattern + VirtualSelect provider rather than building a parallel component (restyle-native-outsystems-widgets). Ruled out a custom Web Component: native pattern carries the a11y/keyboard behaviour for free. Assumed Select node 18787-4817 metrics over Text Field's where they diverged (flagged as FND-031, not silently reconciled).",
       "handover_doc": "handover/loop-dropdown.md",
       "findings": [
         "FND-031",
@@ -453,6 +462,7 @@
       "sev": "low",
       "node": "18787-4817",
       "status": "register-only",
+      "disposition": "filed",
       "summary": "Select field metrics diverge from Text Field & scale: pill --radius-pill 32px vs Text Field --radius-medium 8px; vpadding 11px off-grid; 13px text vs 16px"
     },
     {
@@ -461,6 +471,7 @@
       "sev": "low",
       "node": "18787-4817",
       "status": "register-only",
+      "disposition": "filed",
       "summary": "Dropdown popup-list border #dae1e8 (foreign lift token, no WBG primitive) substituted to --color-outline-on-light-subdued"
     },
     {
