@@ -64,6 +64,12 @@ built-in per-type icon (slot-overridable), action link, dismiss button.
  *   multi-line  — icon top-left; title / message / action stacked left-aligned in a column;
  *                 dismiss × top-right.
  *
+ * Type classes: the rendered root carries OutSystems UI's native alert type vocabulary —
+ * `<div class="loop-alert alert alert-<type>">` where <type> is OSUI's modifier suffix
+ * (error / warning / info / success; "information" maps to `alert-info`). The component
+ * speaks the same type classes as the stock OSUI Alert (vendor _alert.scss) rather than a
+ * parallel `loop-alert--<type>` set; `loop-alert` + `loop-alert__*` remain the structural hooks.
+ *
  * Attributes:
  *   type          "error" | "warning" | "information" | "success"  (default: "error")
  *   title         Optional bold title text (14px Bold)
@@ -113,6 +119,19 @@ class LoopAlert extends HTMLElement {
   attributeChangedCallback(n, o, v) { if (o !== v) this._render(); }
 
   get _type()        { return this.getAttribute('type') || 'error'; }
+  // Normalize whatever's bound to `type` to ONE canonical semantic type used for both the
+  // icon and the OSUI class. Tolerant on purpose: trims/lowercases, accepts the `info` alias,
+  // AND strips a leading `alert-` so binding the OSUI class form (`alert-info`, `alert-success`)
+  // resolves too — otherwise an unrecognized value silently fell back to `error` (the reported
+  // ODC bug: passing `alert-info` always rendered as error).
+  get _semanticType() {
+    const raw = this._type.trim().toLowerCase().replace(/^alert-/, '');
+    return { error: 'error', warning: 'warning', information: 'information', info: 'information', success: 'success' }[raw] || 'error';
+  }
+  // Map the semantic type onto OutSystems UI's NATIVE alert modifier suffix so the host adopts
+  // the stock `.alert` / `.alert-<type>` class vocabulary (vendor _alert.scss). Only `information`
+  // differs (OSUI uses `info`); the rest are 1:1.
+  get _osuiType()    { return this._semanticType === 'information' ? 'info' : this._semanticType; }
   get _title()       { return this.getAttribute('title') || ''; }
   get _message()     { return this.getAttribute('message') || ''; }
   get _actionLabel() { return this.getAttribute('action-label') || ''; }
@@ -158,7 +177,7 @@ class LoopAlert extends HTMLElement {
   }
 
   _render() {
-    const t            = this._type;
+    const t            = this._semanticType;
     const multiline    = this._multiline;
     const title        = this._title;
     const message      = this._message;
@@ -192,7 +211,7 @@ class LoopAlert extends HTMLElement {
     // multi-line:  __text is a real column holding title / message / action.
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
-      <div class="loop-alert loop-alert--${t}${multiline ? ' loop-alert--multiline' : ''}" role="alert" part="alert">
+      <div class="loop-alert alert alert-${this._osuiType}${multiline ? ' loop-alert--multiline' : ''}" role="alert" part="alert">
         <div class="loop-alert__content" part="content">
           ${iconHtml}
           <div class="loop-alert__text" part="text">
@@ -236,11 +255,13 @@ class LoopAlert extends HTMLElement {
   padding: var(--loop-alert-padding-v-multi, 8px) var(--loop-alert-padding-h-multi, 12px);
 }
 
-/* Per-type background (low) + accent border (all sides; left is thicker via border-left-width) */
-.loop-alert--error       { background-color: var(--loop-alert-error-bg, #fdf2f2);       border-color: var(--loop-alert-error-accent, #9d161d); }
-.loop-alert--warning     { background-color: var(--loop-alert-warning-bg, #fef3d7);     border-color: var(--loop-alert-warning-accent, #896001); }
-.loop-alert--information { background-color: var(--loop-alert-information-bg, #f6fcff); border-color: var(--loop-alert-information-accent, #00538a); }
-.loop-alert--success     { background-color: var(--loop-alert-success-bg, #f6fef0);     border-color: var(--loop-alert-success-accent, #388004); }
+/* Per-type background (low) + accent border (all sides; left is thicker via border-left-width).
+ * Keyed on OutSystems UI's native alert type modifiers (.alert-error/-warning/-info/-success)
+ * so the component speaks the same type vocabulary as the stock OSUI Alert. */
+.alert-error   { background-color: var(--loop-alert-error-bg, #fdf2f2);       border-color: var(--loop-alert-error-accent, #9d161d); }
+.alert-warning { background-color: var(--loop-alert-warning-bg, #fef3d7);     border-color: var(--loop-alert-warning-accent, #896001); }
+.alert-info    { background-color: var(--loop-alert-information-bg, #f6fcff); border-color: var(--loop-alert-information-accent, #00538a); }
+.alert-success { background-color: var(--loop-alert-success-bg, #f6fef0);     border-color: var(--loop-alert-success-accent, #388004); }
 
 .loop-alert__content {
   flex: 1 0 0;
@@ -262,11 +283,11 @@ class LoopAlert extends HTMLElement {
 .loop-alert--multiline .loop-alert__icon,
 .loop-alert--multiline ::slotted([slot="icon"]) { margin-top: 2px; }
 
-/* icon color = per-type accent */
-.loop-alert--error       .loop-alert__icon { color: var(--loop-alert-error-accent, #9d161d); }
-.loop-alert--warning     .loop-alert__icon { color: var(--loop-alert-warning-accent, #896001); }
-.loop-alert--information .loop-alert__icon { color: var(--loop-alert-information-accent, #00538a); }
-.loop-alert--success     .loop-alert__icon { color: var(--loop-alert-success-accent, #388004); }
+/* icon color = per-type accent (keyed on the native OSUI alert type modifiers) */
+.alert-error   .loop-alert__icon { color: var(--loop-alert-error-accent, #9d161d); }
+.alert-warning .loop-alert__icon { color: var(--loop-alert-warning-accent, #896001); }
+.alert-info    .loop-alert__icon { color: var(--loop-alert-information-accent, #00538a); }
+.alert-success .loop-alert__icon { color: var(--loop-alert-success-accent, #388004); }
 
 /* single-line: promote title + message into the content flex row; multi-line: real column */
 .loop-alert__text { display: contents; }
@@ -350,8 +371,6 @@ if (!customElements.get('loop-alert')) {
 
 </details>
 
-
-
 ## API — Attributes
 | Attribute | Values | Description |
 |---|---|---|
@@ -421,6 +440,52 @@ type's `*/low` tint — all four pairings clear the 4.5:1 normal-text minimum.
 type/layout **except** the Information multi-line variant, which uses a near-black secondary
 link color (`#0c0f12`). Normalized to primary `#004370` for all types/layouts here; logged in
 `findings/findings-register.md` for design to confirm the intended Information-multiline color.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported custom
+Web Component <loop-alert> for the WBG "The Loop" design system.
+
+Context (already done manually — do NOT re-create or edit these):
+- dist/theme.css and any block CSS are already pasted into the ODC Theme editor.
+- loop-alert.js is already imported as a Script resource (Theme/Library), Include = Always. It defines the custom element <loop-alert>.
+- Do NOT write CSS, author/modify JavaScript, or edit the Theme. Your job is only the
+  Block, its inputs/events, the attribute bindings, the event wiring, and any Client
+  Actions that drive it.
+
+Task — reference every element by the exact name given. Take the exact inputs, attribute
+bindings, events and any global helper from this handover's "API — Attributes / Methods /
+Events" tables (paste the relevant table into the chat so I work from real names):
+
+1. Create a Block named "Alert". Add one input per attribute (use the documented
+   default) and one event per CustomEvent. Model enumerable attributes (variant / type /
+   size / position / status) as Static Entities — one record per allowed value, with a
+   single Text attribute (e.g. "Value") set as the record Identifier (delete the default
+   Id/Label/Order/Is_Active) holding the literal the component expects — not free Text;
+   keep free-form text as Text and flags as Boolean. Do NOT add a string Id input or set
+   the element's id; OutSystems generates ids at runtime (see step 4).
+2. Place <loop-alert> in the Block. Bind each attribute to its input with a Value expression
+   (ODC requires one on every attribute). Static-Entity inputs bind directly (e.g.
+   type = Type) since their Value attribute is the identifier; Booleans use
+   If(Flag, "true", "false") — not presence.
+3. Wire each CustomEvent to its Block event via a "Run JavaScript" handler that
+   addEventListener's the event on the <loop-alert> element and raises the Block event.
+4. If the component exposes a global helper (see its API section), give the element/Block
+   a Name and pass its platform-generated runtime .Id, e.g.
+   window.LoopX.show($parameters.WidgetId) where the WidgetId input = <WidgetName>.Id.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values (styling
+comes from var(--token) in the Theme). After generating, list every element you created by
+name and flag anything you could not finish.
+
+Work iteratively: create the Block interface in step 1 and show it to me before wiring.
+```
 
 ## Checklist
 - [ ] Import `loop-alert.js` as Script resource, Include = Always.

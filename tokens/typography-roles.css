@@ -106,3 +106,41 @@
   letter-spacing:   var(--letter-spacing-caps);
   text-transform:   uppercase;
 }
+
+/* ================================================================
+   Label roles — Open Sans Bold, tracking -1.5px (Figma Heading/Label/*).
+   "Use this style for labels in cards, tables, columns, etc." Sizes are
+   responsive via the shared scale steps (see typography.css breakpoints).
+   ================================================================ */
+
+.loop-label-medium {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1100);  /* 48px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-solid);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-base {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1000);  /* 40px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-small {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-900);   /* 36px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-tiny {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-700);   /* 28px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
+}

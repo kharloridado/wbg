@@ -1,97 +1,71 @@
-/* ============================================
-   Component: Button  ("The Loop" — loop/button)
-   Figma: -The Loop- Main Library · "Button" [node:15597-766]
-   Approach: RESTYLE the native OutSystems UI Button widget (.btn / .btn-primary)
-             — NOT a parallel class system. Devs use the standard OutSystems Button
-             widget; this theme override makes it render as The Loop button.
-   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
-   Escalation Level: L1/L2 (native widget + token-driven theme override)
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_btn.scss):
-     .btn          → outlined: white bg, currentColor border, text 'primary', radius soft, h40, fw semi-bold
-     .btn-primary  → filled:   bg/border 'primary', text neutral-0
-     .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
-   The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 8/32 (Regular default), and the WB blue-70 primary fill.
-
-   Variant mapping (OutSystems Button "Style" → The Loop "Type"):
-     (none / base .btn)  → Secondary (outlined blue-70)
-     .btn-primary        → Primary  (filled blue-70)
-     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — the ONE added modifier,
-                            since OutSystems UI has no native ghost button style.
-
-   Tokens consumed: --radius-pill, --space-small, --space-medium, --space-button-gap,
-     --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
-     --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
-     --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
-     --color-bg-link-secondary-{hover,pressed,disabled},
-     --color-bg-link-tertiary-{hover,pressed,disabled},
-     --color-text-on-light-state-disabled.
-
-   Fidelity note: secondary/ghost HOVER fill (blue-40 / blue-20) under the blue-70 label
-     is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
-   ============================================ */
+/* loop-button.css — Button: native .btn restyle (not a parallel class system) */
 
 /* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
 .btn {
   gap: var(--space-button-gap, 6px);
-  height: auto;                                        /* let padding drive height (→ 40px) */
-  min-height: 40px;                                    /* Regular default per FND-043 (reconciled from Figma xLarge/56) — aligns with native h40 */
-  padding: var(--space-xxsmall, 8px) var(--space-medium, 32px);
+  height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
+  padding-block: 0;
+  padding-inline: var(--space-medium, 32px);
   border-radius: var(--radius-pill, 32px);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
   font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);           /* 24px @16px */
+  line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* Secondary / outlined (base, no variant class) — blue-70, transparent fill */
+  /* Secondary / outlined (base, no variant class) */
   background-color: transparent;
-  border-color: var(--color-outline-on-light-link-enabled);   /* blue-70 */
-  color: var(--color-text-on-light-link-primary-enabled);     /* blue-70 */
+  border-color: var(--color-outline-on-light-link-enabled);
+  color: var(--color-text-on-light-link-primary-enabled);
 }
 
-/* Use The Loop's EXACT hover/pressed hues instead of OutSystems' brightness filter */
+/* Use The Loop's exact hover/pressed hues instead of OutSystems' brightness filter */
 .btn:hover,
 .desktop .btn:hover,
 .btn:hover:active {
   filter: none;
 }
-.btn:hover           { background-color: var(--color-bg-link-secondary-hover); }   /* blue-40 — FND-014 */
-.btn:active          { background-color: var(--color-bg-link-secondary-pressed); } /* blue-30 */
+.btn:hover {
+  background-color: var(--color-bg-link-secondary-hover);
+  border-color:     var(--color-bg-link-secondary-hover);
+  color:            var(--color-text-on-light-emphasis);
+}
+.btn:active {
+  background-color: var(--color-bg-link-secondary-pressed);
+  border-color:     var(--color-text-on-light-link-primary-enabled);
+  color:            var(--color-text-on-light-link-primary-enabled);
+}
 .btn[disabled],
 .btn[aria-disabled="true"] {
-  background-color: var(--color-bg-link-secondary-disabled);  /* white */
-  border-color: var(--color-text-on-light-state-disabled);    /* neutral-alpha-42 */
+  background-color: var(--color-bg-link-secondary-disabled);
+  border-color: var(--color-text-on-light-state-disabled);
   color: var(--color-text-on-light-state-disabled);
 }
 
-/* ---- .btn-primary → The Loop Primary (filled blue-70) ---- */
+/* ---- .btn-primary → Primary (filled) ---- */
 .btn-primary {
-  background-color: var(--color-bg-link-primary-enabled);     /* blue-70 #004370 */
+  background-color: var(--color-bg-link-primary-enabled);
   border-color: var(--color-bg-link-primary-enabled);
   color: var(--color-white, #ffffff);
 }
-.btn-primary:hover  { background-color: var(--color-bg-link-primary-hover);  border-color: var(--color-bg-link-primary-hover);  }  /* blue-40 */
-.btn-primary:active { background-color: var(--color-bg-link-primary-pressed); border-color: var(--color-bg-link-primary-pressed); } /* blue-90 */
+.btn-primary:hover  { background-color: var(--color-bg-link-primary-hover);  border-color: var(--color-bg-link-primary-hover);  color: var(--color-text-on-light-emphasis); }
+.btn-primary:active { background-color: var(--color-bg-link-primary-pressed); border-color: var(--color-bg-link-primary-pressed); color: var(--color-white, #ffffff); }
 .btn-primary[disabled],
 .btn-primary[aria-disabled="true"] {
-  background-color: var(--color-bg-link-primary-disabled);    /* neutral-40 */
+  background-color: var(--color-bg-link-primary-disabled);
   border-color: var(--color-bg-link-primary-disabled);
   color: var(--color-white, #ffffff);
 }
 
-/* ---- .btn.btn-ghost → The Loop Ghost / Tertiary (text-fill, no border) ----
-   The single added modifier (OutSystems UI has no native ghost button). Apply via
-   the Button widget's Extended Class = "btn-ghost". */
+/* ---- .btn.btn-ghost → Ghost / Tertiary (text-fill, no border) ---- */
 .btn-ghost {
   background-color: transparent;
   border-color: transparent;
-  color: var(--color-text-on-light-link-primary-enabled);     /* blue-70 */
+  color: var(--color-text-on-light-link-primary-enabled);
 }
-.btn-ghost:hover  { background-color: var(--color-bg-link-tertiary-hover); }    /* blue-20 */
-.btn-ghost:active { background-color: var(--color-bg-link-tertiary-pressed); }  /* blue-30 */
+.btn-ghost:hover  { background-color: var(--color-bg-link-tertiary-hover); }
+.btn-ghost:active { background-color: var(--color-bg-link-tertiary-pressed); }
 .btn-ghost[disabled],
 .btn-ghost[aria-disabled="true"] {
   background-color: transparent;
@@ -99,21 +73,13 @@
   color: var(--color-text-on-light-state-disabled);
 }
 
-/* ---- Sizes — keep native .btn-small / .btn-large, restyle to The Loop heights ----
-   Size mapping (OutSystems Button class → The Loop "Size"):
-     (none / base)  → Regular (40px, The Loop default — aligns with native h40)
-     .btn-xlarge    → xLarge  (56px) — added modifier; OutSystems UI has no native h56
-                      Button size. Apply via Extended Class = "btn-xlarge".
-     .btn-large     → Large   (48px)
-     .btn-regular   → Regular (40px) — explicit alias of the default, for a complete
-                      named scale (mirrors the Text Field's .input-regular).
-     .btn-small     → Small   (32px) */
-.btn-xlarge  { min-height: 56px; padding-block: var(--space-small, 16px); font-size: var(--font-size-300, 16px); }
-.btn-large   { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
-.btn-regular { min-height: 40px; padding-block: var(--space-xxsmall, 8px); font-size: var(--font-size-300, 16px); }
-.btn-small   { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
+/* ---- Sizes — native .btn-small/.btn-large + added .btn-xlarge/.btn-regular ---- */
+.btn-xlarge  { height: var(--loop-btn-h-xlarge, 56px);  font-size: var(--font-size-300, 16px); }
+.btn-large   { height: var(--loop-btn-h-large, 48px);   font-size: var(--font-size-300, 16px); }
+.btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
+.btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
 
-/* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
+/* ---- Focus indicator — design's own brand color ---- */
 .btn:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-enabled, var(--color-blue-70));
   outline-offset: 2px;

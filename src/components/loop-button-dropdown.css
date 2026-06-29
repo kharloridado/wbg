@@ -1,16 +1,8 @@
-/* loop-button-dropdown.css — source of the shadow styles for <loop-button-dropdown>.
- * Edit HERE, then mirror into the render() template string in loop-button-dropdown.js
- * (the component ships as a single drop-in .js with no build step).
- *
- * Figma: "Button Dropdown" [node:15597-3469]. Trigger reuses the loop/button spec
- * (blue-70 primary / blue-70 outline secondary, pill 32, Open Sans 700, tracking -0.5,
- * 18px chevron icon). The menu/popover detail is not tokenised in Figma, so its
- * spacing/hover are DERIVED from foundation tokens — see handover note. */
+/* loop-button-dropdown.css — <loop-button-dropdown> Shadow-DOM CSS (mirror into the render() template string in loop-button-dropdown.js) */
 :host {
   display: inline-block;
   position: relative;
 
-  /* token fallback chain → sensible default */
   --lbd-radius:      var(--radius-pill, 32px);
   --lbd-pad-y:       var(--space-small, 16px);
   --lbd-pad-x:       var(--space-medium, 32px);
@@ -25,7 +17,7 @@
   --lbd-outline:     var(--color-outline-on-light-link-enabled, #004370);
   --lbd-link-fg:     var(--color-text-on-light-link-primary-enabled, #004370);
 
-  /* menu (derived from foundation tokens) */
+  /* menu */
   --lbd-menu-bg:     var(--color-white, #ffffff);
   --lbd-menu-radius: var(--radius-medium, 8px);
   --lbd-menu-shadow: var(--shadow-regular, 0 4px 12px rgba(0,13,26,.16));
@@ -66,7 +58,7 @@
 }
 
 .lbd__icon {
-  width: 18px;            /* loop/button/icon/size small */
+  width: 18px;
   height: 18px;
   flex: 0 0 auto;
   transition: transform 120ms ease;
@@ -93,7 +85,7 @@
   width: 100%;
   text-align: left;
   padding: var(--lbd-item-pad-y) var(--lbd-item-pad-x);
-  min-height: 44px;                 /* WCAG 2.2 SC 2.5.8 target size */
+  min-height: 44px;                 /* WCAG 2.2 target size */
   border: 0px;
   border-radius: var(--radius-base, 4px);
   background: transparent;

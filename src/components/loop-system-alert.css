@@ -1,11 +1,4 @@
-/* loop-system-alert.css — CSS source for <loop-system-alert> Shadow DOM.
- * Edit here, then mirror into the _css() template string in loop-system-alert.js.
- * Figma: "System Alerts" [node:17873-7603]. Full-width notification banner.
- *
- * Tokens consumed from the theme :root (cascade through Shadow DOM):
- *   --loop-sysalert-padding-h/v, --loop-sysalert-gap, --loop-sysalert-icon-size,
- *   --loop-sysalert-title-size, --loop-sysalert-body-size, --loop-sysalert-action-pt,
- *   --loop-sysalert-{type}-bg, --loop-sysalert-{type}-text */
+/* loop-system-alert.css — <loop-system-alert> Shadow-DOM CSS (mirror into the _css() template string in loop-system-alert.js) */
 
 :host {
   display: block;
@@ -24,13 +17,13 @@
 
 .lsa--multiline { align-items: flex-start; }
 
-/* ---- Type backgrounds ---- */
+/* Type backgrounds */
 .lsa--error       { background-color: var(--loop-sysalert-error-bg, #9d161d); }
 .lsa--warning     { background-color: var(--loop-sysalert-warning-bg, #e19d00); }
 .lsa--informative { background-color: var(--loop-sysalert-informative-bg, #004370); }
 .lsa--offline     { background-color: var(--loop-sysalert-offline-bg, #8a9db1); }
 
-/* ---- Content wrapper ---- */
+/* Content wrapper */
 .lsa__content {
   flex: 1 0 0;
   min-width: 0;
@@ -40,7 +33,7 @@
 }
 .lsa--multiline .lsa__content { align-items: flex-start; }
 
-/* ---- Icon slot ---- */
+/* Icon slot */
 .lsa__icon-slot {
   display: contents;
 }
@@ -50,10 +43,10 @@
   height: var(--loop-sysalert-icon-size, 16px);
 }
 .lsa--multiline ::slotted([slot="icon"]) {
-  margin-top: 2px; /* aligns icon to cap-height of title text */
+  margin-top: 2px; /* align icon to title cap-height */
 }
 
-/* ---- Text group ---- */
+/* Text group */
 .lsa__text {
   flex: 1 0 0;
   min-width: 0;
@@ -68,7 +61,7 @@
   gap: 0;
 }
 
-/* ---- Title ---- */
+/* Title */
 .lsa__title {
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size:   var(--loop-sysalert-title-size, 16px);
@@ -78,7 +71,7 @@
   flex-shrink: 0;
 }
 
-/* ---- Alert body text ---- */
+/* Body text */
 .lsa__message {
   margin: 0;
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -87,7 +80,7 @@
   line-height: 1.25;
 }
 
-/* ---- Type text colors (title + body share the same color per variant) ---- */
+/* Type text colors */
 .lsa--error       .lsa__title,
 .lsa--error       .lsa__message,
 .lsa--offline     .lsa__title,
@@ -103,7 +96,7 @@
   color: var(--loop-sysalert-informative-text, #f6fcff);
 }
 
-/* ---- Action link / button ---- */
+/* Action link / button */
 .lsa__action {
   font-family:     var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size:       var(--loop-sysalert-body-size, 14px);
@@ -130,7 +123,7 @@
   border-radius:  2px;
 }
 
-/* ---- Dismiss button ---- */
+/* Dismiss button */
 .lsa__dismiss {
   flex-shrink: 0;
   display:     flex;

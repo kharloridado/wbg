@@ -86,22 +86,29 @@ theme**, so the samples can't drift from `dist/theme.css`.
   const STYLES = {
     heading: {
       title: "Heading styles",
-      note: "Open Sans Bold. Headings use the 1.12 (heading) line-height. Note: H1 Base and H2 Large share 48px; H2 Small and H3 Base share 32px — differentiated by semantic level and position in layout, not by visual size.",
-      roles: [
-        { label: "H1 · Large",  size: "1200", weight: "bold", lh: "heading", ls: "heading",
-          sample: "Transforming Lives",          cls: "loop-heading-h1-large" },
-        { label: "H1 · Base",   size: "1100", weight: "bold", lh: "heading", ls: null,
-          sample: "Annual Report 2025",          cls: "loop-heading-h1-base"  },
-        { label: "H1 · Small",  size: "900",  weight: "bold", lh: "heading", ls: null,
-          sample: "Country Portfolio Summary",   cls: "loop-heading-h1-small" },
-        { label: "H1 · Tiny",   size: "700",  weight: "bold", lh: "heading", ls: null,
-          sample: "Project Overview",            cls: "loop-heading-h1-tiny"  },
-        { label: "H2 · Large",  size: "1100", weight: "bold", lh: "heading", ls: null,
-          sample: "Strategic Priorities",        cls: "loop-heading-h2-large" },
-        { label: "H2 · Small",  size: "800",  weight: "bold", lh: "heading", ls: null,
-          sample: "Regional Analysis",           cls: "loop-heading-h2-small" },
-        { label: "H3 · Base",   size: "800",  weight: "bold", lh: "heading", ls: null,
-          sample: "Key Findings",                cls: "loop-heading-h3-base"  },
+      note: "Open Sans Bold · line-height 1.12. Each level carries the size variants Figma defines, for different content densities. H1 Base / H2 Large share 48px; H2 Small / H3 Base share 32px — same visual size, different semantic level.",
+      // Grouped by heading level to mirror the Figma Heading/H{n}/{variant} structure.
+      levels: [
+        { level: "H1", roles: [
+          { label: "Large", size: "1200", weight: "bold", lh: "heading", ls: "heading",
+            sample: "Transforming Lives",          cls: "loop-heading-h1-large" },
+          { label: "Base",  size: "1100", weight: "bold", lh: "heading", ls: null,
+            sample: "Annual Report 2025",          cls: "loop-heading-h1-base"  },
+          { label: "Small", size: "900",  weight: "bold", lh: "heading", ls: null,
+            sample: "Country Portfolio Summary",   cls: "loop-heading-h1-small" },
+          { label: "Tiny",  size: "700",  weight: "bold", lh: "heading", ls: null,
+            sample: "Project Overview",            cls: "loop-heading-h1-tiny"  },
+        ] },
+        { level: "H2", roles: [
+          { label: "Large", size: "1100", weight: "bold", lh: "heading", ls: null,
+            sample: "Strategic Priorities",        cls: "loop-heading-h2-large" },
+          { label: "Small", size: "800",  weight: "bold", lh: "heading", ls: null,
+            sample: "Regional Analysis",           cls: "loop-heading-h2-small" },
+        ] },
+        { level: "H3", roles: [
+          { label: "Base",  size: "800",  weight: "bold", lh: "heading", ls: null,
+            sample: "Key Findings",                cls: "loop-heading-h3-base"  },
+        ] },
       ],
     },
     body: {
@@ -210,40 +217,51 @@ theme**, so the samples can't drift from `dist/theme.css`.
       return `<button type="button" class="ltr__copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}"><code>${esc(text)}</code></button>`;
     }
 
+    /* ---- a single named-role specimen row ---- */
+    _roleRow(r) {
+      const sizeVar = `--font-size-${r.size}`;
+      const weightVar = `--font-weight-${r.weight}`;
+      const lhVar = `--line-height-${r.lh}`;
+      const px = val(sizeVar) || "";
+      const wt = val(weightVar) || "";
+      let lsLabel = "default", lsCopy = "";
+      if (typeof r.ls === "string") {
+        lsLabel = (val(`--letter-spacing-${r.ls}`) || "") + ` (${r.ls})`;
+        lsCopy = `--letter-spacing-${r.ls}`;
+      } else if (r.ls && r.ls.px) {
+        lsLabel = `${r.ls.px}${r.ls.off ? " · off-scale" : ""}`;
+      }
+      const spec = `${px} · weight ${wt} · lh ${val(lhVar)} · tracking ${lsLabel}`;
+      const offTag = (r.ls && r.ls.off) ? ` <span class="ltr__tag">off-scale</span>` : "";
+      return `
+        <div class="ltr__role">
+          <div class="ltr__role-head">
+            <span class="ltr__role-name">${esc(r.label)}</span>
+            <span class="ltr__role-spec">${esc(spec)}${offTag}</span>
+          </div>
+          <p class="ltr__sample ${esc(r.cls)}" aria-hidden="true">${esc(r.sample)}</p>
+          <div class="ltr__role-tokens">
+            ${this._copyBtn("." + r.cls)} ${this._copyBtn(sizeVar)} ${this._copyBtn(weightVar)} ${this._copyBtn(lhVar)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
+          </div>
+        </div>`;
+    }
+
     /* ---- named type styles ---- */
+    /* Flat groups (body) list roles directly; level groups (headings) nest
+       roles under an H1/H2/H3 sub-header to mirror Figma's structure. */
     _stylesHtml(group) {
-      const rows = group.roles.map((r) => {
-        const sizeVar = `--font-size-${r.size}`;
-        const weightVar = `--font-weight-${r.weight}`;
-        const lhVar = `--line-height-${r.lh}`;
-        const px = val(sizeVar) || "";
-        const wt = val(weightVar) || "";
-        let lsLabel = "default", lsCopy = "";
-        if (typeof r.ls === "string") {
-          lsLabel = (val(`--letter-spacing-${r.ls}`) || "") + ` (${r.ls})`;
-          lsCopy = `--letter-spacing-${r.ls}`;
-        } else if (r.ls && r.ls.px) {
-          lsLabel = `${r.ls.px}${r.ls.off ? " · off-scale" : ""}`;
-        }
-        const spec = `${px} · weight ${wt} · lh ${val(lhVar)} · tracking ${lsLabel}`;
-        const offTag = (r.ls && r.ls.off) ? ` <span class="ltr__tag">off-scale</span>` : "";
-        return `
-          <div class="ltr__role">
-            <div class="ltr__role-head">
-              <span class="ltr__role-name">${esc(r.label)}</span>
-              <span class="ltr__role-spec">${esc(spec)}${offTag}</span>
-            </div>
-            <p class="ltr__sample ${esc(r.cls)}" aria-hidden="true">${esc(r.sample)}</p>
-            <div class="ltr__role-tokens">
-              ${this._copyBtn("." + r.cls)} ${this._copyBtn(sizeVar)} ${this._copyBtn(weightVar)} ${this._copyBtn(lhVar)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
-            </div>
-          </div>`;
-      }).join("");
+      const body = group.levels
+        ? group.levels.map((lvl) => `
+            <div class="ltr__level">
+              <h4 class="ltr__level-title">${esc(lvl.level)}</h4>
+              ${lvl.roles.map((r) => this._roleRow(r)).join("")}
+            </div>`).join("")
+        : group.roles.map((r) => this._roleRow(r)).join("");
       return `
         <div class="ltr__group">
           <h3 class="ltr__group-title">${esc(group.title)}</h3>
           <p class="ltr__group-note">${esc(group.note)}</p>
-          ${rows}
+          ${body}
         </div>`;
     }
 
@@ -396,6 +414,13 @@ theme**, so the samples can't drift from `dist/theme.css`.
 .ltr__group-note code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 12px; }
 .ltr__caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
+/* heading-level sub-groups (H1 / H2 / H3) */
+.ltr__level { margin: 0 0 8px; }
+.ltr__level-title { margin: 20px 0 0; font-size: 12px; font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-on-light-subdued, #586e84); }
+.ltr__level:first-of-type .ltr__level-title { margin-top: 4px; }
+.ltr__level .ltr__role:first-of-type { border-top: none; }
+
 /* named roles */
 .ltr__role { padding: 16px 0; border-top: 1px solid var(--color-neutral-10, #e7edf3); }
 .ltr__role-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 8px; }
@@ -486,36 +511,6 @@ h3 { font-family: var(--font-family-heading,'Open Sans',system-ui,sans-serif); f
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## The utility classes
 For every `--font-size-<name>` and `--font-weight-<name>` token:
 ```css
@@ -540,16 +535,20 @@ npm run build:theme           # folds it into dist/theme.css
 ## Named type styles (the Figma roles, Open Sans)
 Rendered by the component; here for reference.
 
-**Headings — Bold (700), line-height 1.12:**
-| Role | Size | Token |
-|---|---|---|
-| H1 · Large | 60px (tracking −3px) | `--font-size-1200` |
-| H1 · Base | 48px | `--font-size-1100` |
-| H1 · Small | 36px | `--font-size-900` |
-| H1 · Tiny | 28px | `--font-size-700` |
-| H2 · Large | 48px | `--font-size-1100` |
-| H2 · Small | 32px | `--font-size-800` |
-| H3 · Base | 32px | `--font-size-800` |
+**Headings — Bold (700), line-height 1.12.** Grouped by level to mirror the Figma
+`Heading/H{n}/{variant}` structure; each level carries only the size variants Figma
+defines (H1 → 4, H2 → 2, H3 → 1 — no H5/H6, no fabricated variants). H1 Base / H2 Large
+share 48px; H2 Small / H3 Base share 32px — same visual size, different semantic level.
+
+| Level | Variant | Size | Class | Token |
+|---|---|---|---|---|
+| **H1** | Large | 60px (tracking −3px) | `.loop-heading-h1-large` | `--font-size-1200` |
+| **H1** | Base | 48px | `.loop-heading-h1-base` | `--font-size-1100` |
+| **H1** | Small | 36px | `.loop-heading-h1-small` | `--font-size-900` |
+| **H1** | Tiny | 28px | `.loop-heading-h1-tiny` | `--font-size-700` |
+| **H2** | Large | 48px | `.loop-heading-h2-large` | `--font-size-1100` |
+| **H2** | Small | 32px | `.loop-heading-h2-small` | `--font-size-800` |
+| **H3** | Base | 32px | `.loop-heading-h3-base` | `--font-size-800` |
 
 **Body — Regular (400), line-height 1.5 (labels Bold 700):**
 | Role | Size | Tracking |
@@ -590,6 +589,26 @@ Each class / variable chip is **click-to-copy** (✓ cue).
 - Illustrative samples are `aria-hidden`; the spec text + tokens carry the meaning.
 - Copy buttons have `aria-label`s; focus ring uses `--color-domain-interactive-focused`;
   `prefers-reduced-motion` honored.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, place the Style-Guide reference element <loop-typography-reference> on the Style Guide
+screen for the WBG "The Loop" design system.
+
+Context (already done): loop-typography-reference.js is added under Resources and loads on the Style-Guide
+screen; dist/theme.css is in the Theme. It is a self-contained display component.
+
+Task: add the <loop-typography-reference> element to the Style Guide screen where this specimen belongs.
+There are no inputs or events to wire. Do NOT write CSS or JavaScript.
+
+Constraints: never edit the OutSystems UI module; add no styles. Report what you placed.
+```
 
 ## Checklist
 - [ ] `npm run build:theme`; paste `dist/theme.css` into the ODC Theme editor.

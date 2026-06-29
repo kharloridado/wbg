@@ -11,7 +11,7 @@
     "watch:theme": "node build/build-theme.mjs --watch",
     "build:osui": "node build/build-osui.mjs",
     "preview": "node build/preview-server.mjs",
-    "build:theme:min": "lightningcss --bundle --minify --targets '>= 0.25%' tokens/index.css -o dist/theme.min.css"
+    "build:theme:min": "lightningcss --bundle --minify --targets \">= 0.25%\" tokens/index.css -o dist/theme.min.css"
   },
   "devDependencies": {
     "lightningcss-cli": "^1.0.0",

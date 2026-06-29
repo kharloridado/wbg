@@ -12,10 +12,14 @@ Figma: "Badge / label" [node 22966-4806].
   `.loop-tag` block — see `handover/loop-tag.md`.
 
 **Scope (this build):** 6 colors (neutral / indigo / teal / purple / red / magenta) ×
-2 types (Light / Heavy). Light = pale fill + colored border + colored text; Heavy = solid
-fill + white text.
-**Not in scope:** icon/leading slot, dismiss, sizes (the Badge/Label is single-size in Figma).
-Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
+2 types (Light / Heavy) × 4 sizes (xLarge / Large / Regular / Small). Light = pale fill +
+colored border + colored text; Heavy = solid fill + white text. **Sizes** come from Figma's
+"Component Sizes" collection (node 22966-4808): xLarge 16/20 · Large 14/17 · Regular 13/17 ·
+Small 11/14 (font/line-height); **Regular is the default** (no class). Font, line-height,
+padding and tracking scale together; the outline stays a zero-layout inset box-shadow so
+height = line-height + 2·v-pad (28 / 25 / 21 / 18). Off-scale size values flagged → FND-056.
+**Not in scope:** icon/leading slot, dismiss. Those live on the Tag pill (`loop-tag`) and
+Badge Status (`loop-badge-status`).
 
 ## When to use / How to use
 
@@ -31,7 +35,7 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
 - An interactive, dismissible, or pill-shaped token → **Tag**.
 
 **How to use**
-- Extended Class `loop-badge loop-badge--<color> loop-badge--<type>` (`--light` / `--heavy`) on a Container/Text — or simply drop a native **Tag** widget, which renders as this Badge.
+- Extended Class `loop-badge loop-badge--<color> loop-badge--<type>` (`--light` / `--heavy`) — add `loop-badge--xlarge` / `--large` / `--small` for size (Regular is the default, no class) — on a Container/Text — or simply drop a native **Tag** widget, which renders as this Badge.
 
 ## Files
 | File | OutSystems destination |
@@ -47,33 +51,8 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
 <summary><code>loop-badge.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* loop-badge.css — WBG / "The Loop" Badge / Label (CSS only, no JS).
- * Figma: "Badge / label" [node:22966-4806]. A small rectangular category/label
- * badge in two TYPES (Light / Heavy) × six COLORS (neutral / indigo / teal /
- * purple / red / magenta). Tokens: tokens/component-badge-label.css.
- *
- * Two ways to render the SAME look:
- *  1. Custom block — add "loop-badge loop-badge--<colour> [loop-badge--heavy]" to a
- *     Container/Text via ExtendedClass.
- *  2. Native OutSystems UI Tag widget — restyled at the bottom of this file so the
- *     standard .tag renders IDENTICAL to .loop-badge (rectangle, radius 4). Pick the
- *     colour via the Tag's "Color" (.background-*) and add .tag-heavy (ExtendedClass)
- *     for the Heavy type. (Decided 2026-06-22: native Tag repoints to Badge/Label —
- *     the Tag PILL stays available via the .loop-tag block.)
- *
- * Geometry note (2026-06-22): the 1px outline is drawn with an INSET BOX-SHADOW, not
- * a layout border. A real border would add 2px to the height (30px vs Figma's 28px)
- * and, on the native Tag, fights the framework's fixed `height: 32px`. The box-shadow
- * outline is purely visual, so the rendered height = line-height + padding = 28px for
- * BOTH Light and Heavy, and `vertical-align: middle` keeps the badge centred inline
- * with adjacent text / table cells.
- *
- * Rendered markup (custom block):
- *   <span class="loop-badge loop-badge--indigo">Status</span>            <!-- Light -->
- *   <span class="loop-badge loop-badge--indigo loop-badge--heavy">Status</span>  <!-- Heavy -->
- *
- * Scope: 6 colours × {Light, Heavy}. The Tag pill (.loop-tag, radius 48) is a
- * separate component (src/blocks/loop-tag.css). */
+/* loop-badge.css — Badge / Label: .loop-badge block + native .tag restyle (CSS only) */
+/* Outline is an inset box-shadow, not a border, so it adds no height at any size. */
 
 .loop-badge {
   display: inline-flex;
@@ -81,20 +60,55 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
   justify-content: center;
   vertical-align: middle;
   box-sizing: border-box;
-  padding: var(--loop-badge-label-pad-v, 4px) var(--loop-badge-label-pad-h, 10px);
+  /* Size routes through internal --_lbl-* vars that default to the Regular tokens; the size modifiers below flip them. */
+  padding: var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-r, var(--loop-badge-label-pad-r, 6px)) var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-l, var(--loop-badge-label-pad-l, 8px));
   border-radius: var(--loop-badge-label-radius, 4px);
   box-shadow: inset 0 0 0 var(--loop-badge-label-border, 1px) var(--_loop-badge-outline, transparent);
   font-family: var(--loop-badge-label-font, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-badge-label-size, 16px);
-  line-height: var(--loop-badge-label-leading, 20px);
-  letter-spacing: var(--loop-badge-label-tracking, 0);
+  font-size: var(--_lbl-font, var(--loop-badge-label-size, 13px));
+  line-height: var(--_lbl-leading, var(--loop-badge-label-leading, 17px));
+  letter-spacing: var(--_lbl-tracking, var(--loop-badge-label-tracking, 0.25px));
   font-weight: var(--loop-badge-label-weight, 500);
   text-transform: capitalize;
   white-space: nowrap;
 }
 
+/* ---- Size modifiers (xLarge/Large/Regular/Small; Regular is the bare default) ---- */
+.loop-badge--xlarge {
+  --_lbl-font:    var(--loop-badge-label-xlarge-size, 16px);
+  --_lbl-leading: var(--loop-badge-label-xlarge-leading, 20px);
+  --_lbl-tracking: var(--loop-badge-label-xlarge-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-xlarge-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-xlarge-pad-l, 10px);
+  --_lbl-pad-r:   var(--loop-badge-label-xlarge-pad-r, 10px);
+}
+.loop-badge--large {
+  --_lbl-font:    var(--loop-badge-label-large-size, 14px);
+  --_lbl-leading: var(--loop-badge-label-large-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-large-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-large-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-large-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-large-pad-r, 8px);
+}
+.loop-badge--regular {
+  --_lbl-font:    var(--loop-badge-label-regular-size, 13px);
+  --_lbl-leading: var(--loop-badge-label-regular-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-regular-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-regular-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-regular-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-regular-pad-r, 6px);
+}
+.loop-badge--small {
+  --_lbl-font:    var(--loop-badge-label-small-size, 11px);
+  --_lbl-leading: var(--loop-badge-label-small-leading, 14px);
+  --_lbl-tracking: var(--loop-badge-label-small-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-small-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-small-pad-l, 4px);
+  --_lbl-pad-r:   var(--loop-badge-label-small-pad-r, 4px);
+}
+
 /* ---- Light type (default): pale fill + coloured outline + coloured text ----
- * Neutral is special: its text is the neutral on-light default, not the heavy hue. */
+ * Neutral text is the on-light default, not the heavy hue. */
 .loop-badge,
 .loop-badge--neutral {
   background-color: var(--loop-badge-label-neutral-light, #e7edf3);
@@ -118,44 +132,26 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
 .loop-badge--heavy.loop-badge--magenta { background-color: var(--loop-badge-label-magenta-heavy, #a028ad); --_loop-badge-outline: var(--loop-badge-label-magenta-heavy, #a028ad); }
 
 /* ============================================================================
- * Native OutSystems UI Tag (.tag) → The Loop Badge / Label look
+ * Native OutSystems UI Tag (.tag) → Badge / Label look
  * ----------------------------------------------------------------------------
- * The OutSystems UI Tag pattern (vendor 04-patterns/02-content/_tag.scss) is, in
- * its native form, a RECTANGULAR FILLED label (semi-bold, fixed h32, min-width
- * 32px, square corners) — the closest native widget to The Loop Badge / Label.
- * This restyles it so the standard Tag renders IDENTICAL to .loop-badge (rect,
- * radius 4), reusing the same --loop-badge-label-* tokens — no parallel class
- * system (CLAUDE.md hard rule; "restyle native widgets" memory).
- *
- * The framework Tag fixes `height: 32px` and `line-height: 1`; both are reset here
- * (height:auto + min-height:0 + the Badge line-height) so the box is the Badge's
- * 28px, not a 32px slab. Outline via inset box-shadow (see geometry note above).
- *
- * Devs keep using the native Tag widget: pick the colour via its "Color" property
- * (.background-*) and add .tag-heavy (ExtendedClass) for the Heavy type. These
- * overrides win because the theme loads after OutSystems UI in ODC.
- *
- * Palette mapping note (FND-039): The Loop badge palette (neutral/indigo/teal/
- * purple/red/magenta) doesn't line up 1:1 with the native Tag colour enum, so the
- * nearest native colour classes are mapped — blue→indigo and green→teal are
- * approximations; default (no colour) = neutral. Use the .loop-badge block when an
- * exact colour name matters.
+ * Reset the framework Tag's fixed height:32px/line-height:1 (height:auto +
+ * min-height:0 + the Badge line-height) so the box is the Badge height, not a slab.
  * ============================================================================ */
 .tag {
   box-sizing: border-box;
-  min-width: 0;             /* drop native 32px min-width — badge hugs its label */
-  height: auto;             /* was fixed 32px */
-  min-height: 0;            /* belt-and-braces: clear any inherited fixed height */
+  min-width: 0;             /* drop native 32px min-width */
+  height: auto;
+  min-height: 0;            /* clear any inherited fixed height */
   vertical-align: middle;
   align-items: center;
   justify-content: center;
-  padding: var(--loop-badge-label-pad-v, 4px) var(--loop-badge-label-pad-h, 10px);
+  padding: var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-r, var(--loop-badge-label-pad-r, 6px)) var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-l, var(--loop-badge-label-pad-l, 8px));
   border-radius: var(--loop-badge-label-radius, 4px);
   box-shadow: inset 0 0 0 var(--loop-badge-label-border, 1px) var(--_loop-badge-outline, transparent);
   font-family: var(--loop-badge-label-font, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-badge-label-size, 16px);
-  line-height: var(--loop-badge-label-leading, 20px);
-  letter-spacing: var(--loop-badge-label-tracking, 0);
+  font-size: var(--_lbl-font, var(--loop-badge-label-size, 13px));
+  line-height: var(--_lbl-leading, var(--loop-badge-label-leading, 17px));
+  letter-spacing: var(--_lbl-tracking, var(--loop-badge-label-tracking, 0.25px));
   font-weight: var(--loop-badge-label-weight, 500);
   text-transform: capitalize;
 
@@ -163,6 +159,40 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
   background-color: var(--loop-badge-label-neutral-light, #e7edf3);
   color:            var(--loop-badge-label-neutral-text, #000d1ab2);
   --_loop-badge-outline: var(--loop-badge-label-neutral-heavy, #4b5e71);
+}
+
+/* ---- Size modifiers (.tag-xlarge / -large / -small; Regular is the default) ---- */
+.tag.tag-xlarge {
+  --_lbl-font:    var(--loop-badge-label-xlarge-size, 16px);
+  --_lbl-leading: var(--loop-badge-label-xlarge-leading, 20px);
+  --_lbl-tracking: var(--loop-badge-label-xlarge-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-xlarge-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-xlarge-pad-l, 10px);
+  --_lbl-pad-r:   var(--loop-badge-label-xlarge-pad-r, 10px);
+}
+.tag.tag-large {
+  --_lbl-font:    var(--loop-badge-label-large-size, 14px);
+  --_lbl-leading: var(--loop-badge-label-large-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-large-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-large-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-large-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-large-pad-r, 8px);
+}
+.tag.tag-regular {
+  --_lbl-font:    var(--loop-badge-label-regular-size, 13px);
+  --_lbl-leading: var(--loop-badge-label-regular-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-regular-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-regular-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-regular-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-regular-pad-r, 6px);
+}
+.tag.tag-small {
+  --_lbl-font:    var(--loop-badge-label-small-size, 11px);
+  --_lbl-leading: var(--loop-badge-label-small-leading, 14px);
+  --_lbl-tracking: var(--loop-badge-label-small-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-small-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-small-pad-l, 4px);
+  --_lbl-pad-r:   var(--loop-badge-label-small-pad-r, 4px);
 }
 
 /* ---- Colour classes (native Tag "Color") → The Loop badge palette (Light) ---- */
@@ -187,50 +217,6 @@ Those live on the Tag pill (`loop-tag`) and Badge Status (`loop-badge-status`).
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Usage in OutSystems
 
 ### Option A — custom block (exact 6-color palette)
@@ -243,11 +229,14 @@ loop-badge loop-badge--indigo loop-badge--heavy   ← Heavy
 
 - **Color:** `--neutral` (default) | `--indigo` | `--teal` | `--purple` | `--red` | `--magenta`
 - **Type:** Light (default, no class) | `--heavy`
+- **Size:** Regular (default, no class) | `--xlarge` | `--large` | `--small` (`--regular` is an explicit alias)
 
 Rendered markup:
 ```html
-<span class="loop-badge loop-badge--indigo">Status</span>
+<span class="loop-badge loop-badge--indigo">Status</span>                       <!-- Regular -->
 <span class="loop-badge loop-badge--indigo loop-badge--heavy">Status</span>
+<span class="loop-badge loop-badge--indigo loop-badge--xlarge">Status</span>
+<span class="loop-badge loop-badge--indigo loop-badge--small">Status</span>
 ```
 
 ### Option B — native Tag widget (restyled)
@@ -256,6 +245,7 @@ Drop a stock **Tag** widget. It renders as a Badge/Label automatically.
   `Blue → indigo`, `Green → teal`, `Violet/Grape/Purple → purple`, `Red → red`, `Magenta → magenta`,
   none → neutral.
 - **Type:** add `tag-heavy` via `ExtendedClass` for the Heavy fill.
+- **Size:** add `tag-xlarge` / `tag-large` / `tag-small` via `ExtendedClass` (Regular is the default).
 
 > Palette caveat (FND-039): the native Tag color enum doesn't line up 1:1 with the badge palette;
 > `Blue→indigo` and `Green→teal` are approximations. Use **Option A** when an exact color name matters.
@@ -263,11 +253,13 @@ Drop a stock **Tag** widget. It renders as a Badge/Label automatically.
 ## API (key CSS tokens)
 | Token | Default | Description |
 |---|---|---|
-| `--loop-badge-label-radius` | `4px` (`--radius-base`) | Corner radius |
-| `--loop-badge-label-pad-v` / `-pad-h` | `4px` / `10px` | Vertical / horizontal padding |
-| `--loop-badge-label-size` | `16px` | Label size |
-| `--loop-badge-label-leading` | `20px` | Label line-height |
-| `--loop-badge-label-weight` | `500` | Label weight (renders 400 — see FND-040) |
+| `--loop-badge-label-radius` | `4px` (`--radius-base`) | Corner radius (all sizes) |
+| `--loop-badge-label-{size,leading,pad-v,pad-l,pad-r,tracking}` | Regular | Default-size alias (= Regular) |
+| `--loop-badge-label-xlarge-{size,leading,pad-v,pad-l,pad-r,tracking}` | `16 / 20 / 4 / 10 / 10 / 0` | xLarge scale |
+| `--loop-badge-label-large-{…}` | `14 / 17 / 4 / 8 / 8 / 0` | Large scale |
+| `--loop-badge-label-regular-{…}` | `13 / 17 / 2 / 8 / 6 / 0.25px` | Regular scale (default; asymmetric pad) |
+| `--loop-badge-label-small-{…}` | `11 / 14 / 2 / 4 / 4 / 0.25px` | Small scale |
+| `--loop-badge-label-weight` | `500` | Label weight (renders Medium — see FND-040) |
 | `--loop-badge-label-{color}-light` / `-heavy` | per color | Fill (Light) / fill+text source (Heavy) |
 | `--loop-badge-label-text-on-heavy` | `#ffffffe5` | White text on Heavy fill |
 
@@ -292,12 +284,43 @@ Drop a stock **Tag** widget. It renders as a Badge/Label automatically.
   primitive and the badge purple/red differ from the Tag/State roles; declared as component literals.
 - **FND-040** (brand/a11y) — label weight `500` ("SemiBold") resolves to the `400` face (Open Sans
   ships 400/600/700 only); same root as Badge Status FND-036.
+- **FND-056** (design-token) — the Badge/Label size scale (node 22966-4808) carries off-foundation
+  values: Regular `13px` & Small `11px` font-size (type scale is 12/14/16…), `0.25px` tracking
+  (off the letter-spacing scale; same precedent as loop-tag), and Regular's asymmetric `8/6` padding.
+  Built faithfully as flagged literals; needs a published type/space primitive (or symmetric padding) to confirm.
 
 See `findings/findings-register.md`.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Badge to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-badge.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild `dist/theme.css` (`npm run build:theme`) and paste into the ODC Theme editor.
 - [ ] **Option A:** add a Container with ExtendedClass `loop-badge loop-badge--<color>` (+ `loop-badge--heavy`).
 - [ ] **Option B:** drop a native Tag widget, set Color, add `tag-heavy` for Heavy.
-- [ ] Test all 6 colors × Light/Heavy.
+- [ ] Test all 6 colors × Light/Heavy × xLarge/Large/Regular/Small.
 - [ ] 1-Click Publish → validate in a **real browser**.

@@ -43,42 +43,10 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 <summary><code>loop-card.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* ============================================
-   Component: Card  ("The Loop" — loop/card)
-   Figma: -The Loop- Main Library · "Card" [node:20315-6122]
-     · base card (Type=With Padding / No Padding) [node:19547-47101]
-     · multimedia (image hero)                    [node:20315-7404]
-
-   Approach: RESTYLE the native OutSystems UI Card family — NOT a parallel class
-   system. Developers keep using the stock Card / Card Background / Card Sectioned
-   patterns; this theme layer makes them render to The Loop spec. Built one variant
-   at a time in the order below.
-     1. .card           → Loop base card  (white, 8px, FLAT, 24px padding; flush + elevated mods)
-     2. .card-background → Loop multimedia (full-bleed image + bottom scrim + on-dark content)
-     3. .card-sectioned → branded sectioned card (8px, flat, Loop dividers, 24px sections)
-     4. .card inside .list / .card-item → list cards inherit the base treatment
-
-   Location: Theme CSS (loaded after OutSystems UI so it wins on equal specificity,
-   per src/blocks/index.css load order). Escalation Level: L1/L2 (native widget +
-   token-driven theme override). Metrics come from tokens/component-card.css (--loop-card-*).
-
-   NOTE: OutSystems UI v2.28.1 is not vendored in this repo, so the inner class names
-   of Card Background / Card Sectioned are targeted from the documented pattern markup.
-   Confirm the overrides land on the PUBLISHED DOM in a real browser (same caveat as the
-   provider-generated Dropdown DOM).
-
-   Fidelity notes (built faithfully; raised, NOT silently changed):
-     - Loop card shadow tokens (x/y/blur/spread) are all 0 → no elevation, vs OutSystems
-       UI's default card shadow. Built flat.                         → FND-033
-     - Multimedia on-dark text/scrim reference gray-alpha-white PRIMITIVES because the
-       semantic On-Dark role layer is deferred (semantic-colors-dark.css).→ FND-034
-     - The Figma content placeholder uses IBM Plex Sans (foreign family, FND-001); the
-       placeholder here is a dev affordance and uses the brand font instead.
-   ============================================ */
+/* loop-card.css — Card: native OutSystems UI Card family restyle (not a parallel class system) */
 
 /* =====================================================================
-   1) Native Card  (.card)  — Loop base card
-      White fill, 8px radius, FLAT (no shadow), 24px padding, 24px content gap.
+   1) Native Card  (.card)  — base card
    ===================================================================== */
 .card {
   display: flex;
@@ -86,22 +54,22 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   gap: var(--loop-card-gap, 24px);
   align-items: stretch;
 
-  background-color: var(--loop-card-container-color);          /* white */
+  background-color: var(--loop-card-container-color);
   border: 0;
-  border-radius: var(--loop-card-radius);                      /* 8px */
-  box-shadow: var(--loop-card-shadow);                         /* none — FND-033 */
-  padding: var(--loop-card-padding);                           /* 24px */
+  border-radius: var(--loop-card-radius);
+  box-shadow: var(--loop-card-shadow);
+  padding: var(--loop-card-padding);
 }
 
-/* Type=No Padding — Extended Class `is-flush` (or BEM `card--no-padding`) */
+/* Type=No Padding — Extended Class is-flush (or BEM card--no-padding) */
 .card.is-flush,
 .card--no-padding {
   padding: var(--space-none, 0px);
 }
 
-/* Optional "Classic / Dashboard" elevation — Extended Class `card--elevated` */
+/* Optional elevation — Extended Class card--elevated */
 .card--elevated {
-  box-shadow: var(--loop-card-shadow-elevated);               /* --shadow-low */
+  box-shadow: var(--loop-card-shadow-elevated);
 }
 
 /* Content placeholder (dev affordance shown before real content is swapped in) */
@@ -111,16 +79,15 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   justify-content: center;
   min-height: 150px;
   width: 100%;
-  background-color: var(--loop-card-placeholder-bg);          /* #e7edf3 */
+  background-color: var(--loop-card-placeholder-bg);
   border-radius: var(--radius-base, 4px);
-  color: var(--loop-card-placeholder-text);                  /* neutral-alpha-42 */
+  color: var(--loop-card-placeholder-text);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
 }
 
 /* =====================================================================
-   2) Card Background  (.card-background)  — Loop multimedia hero
-      Full-bleed image, bottom-anchored content over a blue-90 scrim, on-dark text.
+   2) Card Background  (.card-background)  — multimedia hero
    ===================================================================== */
 .card-background {
   position: relative;
@@ -128,9 +95,9 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  border-radius: var(--loop-card-radius);                     /* 8px */
-  box-shadow: var(--loop-card-shadow);                        /* flat */
-  width: var(--loop-card-multimedia-width);                   /* 464px (override per layout) */
+  border-radius: var(--loop-card-radius);
+  box-shadow: var(--loop-card-shadow);
+  width: var(--loop-card-multimedia-width);
   max-width: 100%;
 }
 
@@ -163,10 +130,10 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   flex-direction: column;
   justify-content: flex-end;
   gap: var(--space-small, 16px);
-  padding: var(--loop-card-multimedia-pad);                  /* 48px */
+  padding: var(--loop-card-multimedia-pad);
 }
 
-/* eyebrow ("HAMMER") — 13px bold uppercase, on-dark default */
+/* eyebrow — bold uppercase, on-dark */
 .card-background .loop-card__eyebrow {
   margin: 0;
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -174,10 +141,10 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   font-weight: var(--font-weight-bold, 700);
   line-height: var(--line-height-narrow, 1.25);
   text-transform: uppercase;
-  color: var(--loop-card-multimedia-eyebrow);                /* #ffffffbf — FND-034 */
+  color: var(--loop-card-multimedia-eyebrow);
 }
 
-/* title — 20px bold, on-dark emphasis */
+/* title — on-dark emphasis */
 .card-background .loop-card__title,
 .card-background h1, .card-background h2, .card-background h3 {
   margin: 0;
@@ -186,10 +153,10 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   font-weight: var(--font-weight-bold, 700);
   line-height: var(--line-height-narrow, 1.25);
   letter-spacing: var(--loop-card-multimedia-title-tracking, -0.25px);
-  color: var(--loop-card-multimedia-title);                  /* #ffffffe5 — FND-034 */
+  color: var(--loop-card-multimedia-title);
 }
 
-/* round media affordance (play / microphone) — white/60 circle */
+/* round media affordance (play / microphone) */
 .card-background .loop-card__media-button {
   display: inline-flex;
   align-items: center;
@@ -198,7 +165,7 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   height: var(--loop-card-multimedia-icon-size, 64px);
   border: 0;
   border-radius: 100px;
-  background-color: var(--loop-card-multimedia-icon-bg);     /* #ffffff99 */
+  background-color: var(--loop-card-multimedia-icon-bg);
   color: var(--color-blue-90, #012740);
   cursor: pointer;
 }
@@ -209,28 +176,24 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 
 /* =====================================================================
    3) Card Sectioned  (.card-sectioned)  — branded sectioned card
-      No exact Loop variant; brand the stock sectioned card: 8px, flat, Loop
-      dividers between sections, 24px section padding.
    ===================================================================== */
 .card-sectioned {
-  background-color: var(--loop-card-container-color);         /* white */
+  background-color: var(--loop-card-container-color);
   border: 0;
-  border-radius: var(--loop-card-radius);                    /* 8px */
-  box-shadow: var(--loop-card-shadow);                       /* flat */
+  border-radius: var(--loop-card-radius);
+  box-shadow: var(--loop-card-shadow);
   overflow: hidden;                                          /* clip section corners */
 }
 .card-sectioned .card-sectioned-item {
-  padding: var(--loop-card-padding);                         /* 24px */
+  padding: var(--loop-card-padding);
 }
-/* divider between consecutive sections (Loop outline, not a heavy border) */
+/* divider between consecutive sections */
 .card-sectioned .card-sectioned-item + .card-sectioned-item {
-  border-top: 1px solid var(--loop-card-divider);            /* neutral-alpha-16 */
+  border-top: 1px solid var(--loop-card-divider);
 }
 
 /* =====================================================================
    4) List cards  (.card inside a List / .card-item)
-      Inherit the base .card treatment; just ensure list spacing uses the
-      Loop rhythm. (The base rules above already apply to .card here.)
    ===================================================================== */
 .list .card,
 .card-item.card {
@@ -238,7 +201,7 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 }
 
 /* =====================================================================
-   Reduced motion (WCAG 2.2 SC 2.3.3)
+   Reduced motion
    ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .card,
@@ -247,38 +210,6 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 ```
 
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## OutSystems UI variant ↔ The Loop mapping
 | OutSystems UI pattern | The Loop variant | Treatment |
@@ -308,6 +239,33 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   white/60 round media button.
 - `.card-sectioned` is branded white/flat/8px with a Loop **divider** (`--color-divider-on-light-default`)
   between sections and 24px section padding.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Card to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-card.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-card-*` tokens).

@@ -38,23 +38,7 @@ link row. Applied via `ExtendedClass` on any Container widget.
 <summary><code>loop-note.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* loop-note.css — WBG / "The Loop" Notes callout block (CSS only, no JS).
- * Figma: "Notes" [node:26642-61530]. Custom component — not a native OS widget.
- * Four types: important (default) | tip | information | success.
- *
- * OutSystems usage: add "loop-note loop-note--<type>" to a Container via ExtendedClass.
- * Place child content directly inside:
- *   - .loop-note__body  (p or span) — note text; wrap the bold type prefix in .loop-note__label
- *   - .loop-note__action (optional) — action link/button row below body
- *
- * Example OutSystems HTML (rendered):
- *   <div class="loop-note loop-note--information">
- *     <p class="loop-note__body">
- *       <span class="loop-note__label">Information: </span>
- *       Body text here.
- *     </p>
- *     <div class="loop-note__action"><a href="#">Learn more</a></div>
- *   </div> */
+/* loop-note.css — Notes callout block (CSS-only custom component): .loop-note + --important/--tip/--information/--success */
 
 .loop-note {
   display: flex;
@@ -156,38 +140,6 @@ link row. Applied via `ExtendedClass` on any Container widget.
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Usage in OutSystems
 Add these classes to a **Container** via `ExtendedClass`:
 
@@ -228,6 +180,33 @@ Container (loop-note loop-note--information)
 Action link/button has focus ring in `--color-domain-interactive-focused` (blue-50 `#0071bc`).
 No interactive element inside the note itself — purely informational. Screen readers read
 the full text content naturally.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Note to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-note.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild `dist/theme.css` (`npm run build:theme`) and paste into the ODC Theme editor.

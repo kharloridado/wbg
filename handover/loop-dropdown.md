@@ -52,47 +52,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 <summary><code>loop-dropdown.css</code> → Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)</summary>
 
 ```css
-/* ============================================
-   Component: Dropdown / Select  ("The Loop" — loop/select + loop/multi-select)
-   Figma: -The Loop- Main Library
-     · "Select"      [node:18787-4817]  (states frame 18770-10424)
-     · "Multiselect" [node:18830-17312] (Dropdown Tags)
-
-   Approach: RESTYLE the two native OutSystems UI dropdown widgets — NOT a parallel
-   class system:
-     1. Dropdown PATTERN  → .dropdown-container.dropdown / .dropdown-display / .dropdown-list
-        (server-side single Select; the simple Select in Figma)
-     2. VirtualSelect PROVIDER → .osui-dropdown-search (searchable single) and
-        .osui-dropdown-tags (multi-select with tag chips); rendered as .vscomp-* DOM.
-   Devs reach for the stock OutSystems Dropdown / Dropdown Search / Dropdown Tags
-   blocks; this layer makes them render to The Loop spec.
-
-   Location: Theme CSS (loaded after OutSystems UI so it wins on equal specificity).
-   Escalation Level: L1/L2 (native widget + token-driven theme override). The
-   VirtualSelect provider ships its own CSS injected at runtime, so a few field-box
-   properties use !important to guarantee the brand pill wins over the provider.
-
-   Field box reuses the Text Field's STATE COLOURS (shared semantic tokens) but has
-   its OWN metrics — a 32px-radius pill, 13px text, ~40px tall (see component-field.css
-   --loop-select-*). Focus = 2px Blue/50 border (brand ring — FND-012), matching the
-   Text Field rather than the native primary/yellow ring.
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_dropdown.scss):
-     .dropdown-display → neutral-0 bg, 1px neutral-5 border, radius-soft, h40,
-       padding 0/base, font-size-s; :hover neutral-6; :focus / .dropdown-expanded
-       primary; .not-valid → error; [disabled]/.dropdown-disabled → neutral fill.
-     The container's .dropdown-display:after is `content:none` (no native chevron) —
-     The Loop re-enables it to draw the Figma down-chevron.
-
-   Fidelity notes (built faithfully; raised, NOT silently changed):
-     - Select label/value 13px ≠ 16px used by the Text Field & Multi-select; vpadding
-       11px off the 4pt grid                                        → FND-031
-       (the radius now matches: both Text Field and Select use --radius-pill 32px)
-     - Popup-list border (Figma #dae1e8, a lift token with no WBG primitive) substituted
-       to --color-outline-on-light-subdued                          → FND-032
-     - Resting border --color-outline-on-light-default (#00396b3d) ≈ 1.45:1 on white,
-       below the 3:1 non-text-contrast minimum (WCAG 2.2 SC 1.4.11) → FND-019 (shared)
-   ============================================ */
+/* loop-dropdown.css — Dropdown / Select: native Dropdown pattern + VirtualSelect provider restyle */
 
 /* =====================================================================
    1) Native Dropdown PATTERN — single Select  (.dropdown-container.dropdown)
@@ -101,14 +61,13 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 /* ---- Field box (Default / Filled / Selected share this) ---- */
 .dropdown-container.dropdown > div.dropdown-display,
 .dropdown-container.dropdown > select.dropdown-display {
-  height: auto;
-  min-height: 40px;
+  height: var(--loop-select-h, 40px);   /* pinned height so the border never grows the box */
   padding: var(--loop-select-padding-block, 11px) var(--loop-select-padding-inline, 16px);
   gap: var(--loop-select-gap, 8px);
 
-  background-color: var(--color-bg-container-on-light-lowest);     /* white */
-  border: 1px solid var(--color-outline-on-light-default);        /* #00396b3d — FND-019 */
-  border-radius: var(--loop-select-radius);                      /* --radius-pill 32px — shared with Text Field */
+  background-color: var(--color-bg-container-on-light-lowest);
+  border: 1px solid var(--color-outline-on-light-default);
+  border-radius: var(--loop-select-radius);
   color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -118,8 +77,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   letter-spacing: var(--loop-select-text-tracking, 0.5px);
 }
 
-/* label sizing for a Select field — the shared .loop-field label rule sizes it 16px
-   (Text Field); the Select label is 13px (FND-031), applied via this modifier. */
+/* Select label is 13px, vs the shared .loop-field 16px label */
 .loop-field--select [data-label],
 .loop-field--select label {
   font-size: var(--loop-select-label-size, 13px);
@@ -161,23 +119,22 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   border: 1px solid var(--color-outline-on-light-emphasis);
 }
 
-/* ---- Focused / Expanded — 2px Blue/50 brand ring (FND-012); shrink padding 1px
-   so the box does not jump when the border grows 1→2px ---- */
+/* ---- Focused / Expanded — 2px brand ring; shrink padding 1px so the box doesn't jump as the border grows 1→2px ---- */
 .dropdown-container.dropdown > div.dropdown-display:focus,
 .dropdown-container.dropdown > div.dropdown-display:focus-visible,
 .dropdown-container.dropdown > select.dropdown-display:focus,
 .dropdown-container.dropdown.dropdown-expanded > div.dropdown-display {
   outline: none;
-  border: 2px solid var(--color-outline-on-light-link-focused);  /* Blue/50 #0071bc */
+  border: 2px solid var(--color-outline-on-light-link-focused);
   padding: calc(var(--loop-select-padding-block, 11px) - 1px) calc(var(--loop-select-padding-inline, 16px) - 1px);
 }
 
 /* ---- Error — native .not-valid on the container ---- */
 .dropdown-container.dropdown.not-valid > div.dropdown-display,
 .dropdown-container.dropdown.not-valid > select.dropdown-display {
-  background-color: var(--color-bg-container-state-error-low);    /* Red/10 #fdf2f2 */
-  border-color: var(--color-outline-on-light-state-error-high);  /* Red/70 #9d161d */
-  color: var(--color-text-on-state-error-emphasis);              /* Red/80 #861319 */
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
 }
 .dropdown-container.dropdown.not-valid > div.dropdown-display::after {
   border-color: var(--color-icon-on-light-state-error);
@@ -186,18 +143,18 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 /* ---- Warning — added modifier .is-warning (no native dropdown warning state) ---- */
 .dropdown-container.dropdown.is-warning > div.dropdown-display,
 .dropdown-container.dropdown.is-warning > select.dropdown-display {
-  background-color: var(--color-domain-state-warning-low);        /* Yellow/03 #fef3d7 */
-  border-color: var(--color-outline-on-light-state-warning-high); /* Yellow base #896001 */
-  color: var(--color-text-on-state-warning-emphasis);            /* Yellow/90 #473201 */
+  background-color: var(--color-domain-state-warning-low);
+  border-color: var(--color-outline-on-light-state-warning-high);
+  color: var(--color-text-on-state-warning-emphasis);
 }
 
 /* ---- Disabled — native .dropdown-disabled / [disabled] ---- */
 .dropdown-container.dropdown > div.dropdown-display.dropdown-disabled,
 .dropdown-container.dropdown > div.dropdown-display[disabled],
 .dropdown-container.dropdown > select.dropdown-display[disabled] {
-  background-color: var(--color-domain-state-disable-low);        /* Neutral/15 #dae3eb */
+  background-color: var(--color-domain-state-disable-low);
   border-color: var(--color-domain-state-disable-low);
-  color: var(--color-text-on-light-state-disabled);              /* neutral-alpha-42 */
+  color: var(--color-text-on-light-state-disabled);
 }
 .dropdown-container.dropdown > div.dropdown-display.dropdown-disabled::after,
 .dropdown-container.dropdown > div.dropdown-display[disabled]::after {
@@ -206,8 +163,8 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 
 /* ---- Popup list ---- */
 .dropdown-container.dropdown > div.dropdown-list {
-  background-color: var(--color-bg-container-on-light-lowest);    /* white */
-  border: 1px solid var(--color-outline-on-light-subdued);       /* Figma list border #dae1e8 is a lift token w/ no WBG primitive → mapped to outline-subdued, FND-032 */
+  background-color: var(--color-bg-container-on-light-lowest);
+  border: 1px solid var(--color-outline-on-light-subdued);
   border-radius: var(--loop-select-list-radius, 8px);
   box-shadow: var(--loop-select-list-shadow);
 }
@@ -226,7 +183,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 }
 .dropdown-container.dropdown .dropdown-popup-row:hover,
 .dropdown-container.dropdown .dropdown-popup-row-selected:hover {
-  background-color: var(--color-bg-container-on-light-low);       /* #f5f7f9 */
+  background-color: var(--color-bg-container-on-light-low);
 }
 .dropdown-container.dropdown .dropdown-popup-row-selected {
   background-color: var(--color-bg-container-on-light-low);
@@ -236,7 +193,6 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 
 /* =====================================================================
    2) VirtualSelect PROVIDER — Dropdown Search (single) + Dropdown Tags (multi)
-      .osui-dropdown-search / .osui-dropdown-tags  →  .vscomp-* runtime DOM.
       A few field-box props use !important to beat the provider's own injected CSS.
    ===================================================================== */
 
@@ -244,12 +200,12 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 .osui-dropdown-search .vscomp-ele-wrapper,
 .osui-dropdown-tags .vscomp-ele-wrapper {
   min-height: 40px;
-  background-color: var(--color-bg-container-on-light-lowest) !important;  /* white */
-  border: 1px solid var(--color-outline-on-light-default) !important;      /* #00396b3d */
-  border-radius: var(--loop-select-radius) !important;                    /* --radius-pill 32px — shared with Text Field */
+  background-color: var(--color-bg-container-on-light-lowest) !important;
+  border: 1px solid var(--color-outline-on-light-default) !important;
+  border-radius: var(--loop-select-radius) !important;
   color: var(--color-text-on-light-default);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-300, 16px);                                   /* multi-select value = 16px */
+  font-size: var(--font-size-300, 16px);
 }
 .osui-dropdown-tags .vscomp-ele-wrapper.multiple {
   border-radius: var(--loop-select-radius, 32px) !important;
@@ -281,10 +237,10 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   border-color: var(--color-icon-on-light-default) !important;
 }
 
-/* focused state — 2px Blue/50 brand ring (FND-012) */
+/* focused state */
 .osui-dropdown-search .vscomp-ele-wrapper.focused,
 .osui-dropdown-tags .vscomp-ele-wrapper.focused {
-  border: 2px solid var(--color-outline-on-light-link-focused) !important;  /* Blue/50 #0071bc */
+  border: 2px solid var(--color-outline-on-light-link-focused) !important;
   box-shadow: none !important;
 }
 
@@ -301,7 +257,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   gap: var(--loop-select-tag-gap, 4px);
   padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px);
   border-radius: var(--loop-select-tag-radius, 48px) !important;
-  background-color: var(--loop-select-tag-bg) !important;             /* Neutral/05 #f5f7f9 */
+  background-color: var(--loop-select-tag-bg) !important;
   color: var(--color-text-on-light-default);
   font-size: var(--font-size-300, 16px);
   line-height: var(--font-size-300, 16px);
@@ -327,7 +283,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 .osui-dropdown-search .vscomp-dropbox,
 .osui-dropdown-tags .vscomp-dropbox {
   background-color: var(--color-bg-container-on-light-lowest) !important;
-  border: 1px solid var(--color-outline-on-light-subdued) !important;   /* see FND-032 */
+  border: 1px solid var(--color-outline-on-light-subdued) !important;
   border-radius: var(--loop-select-list-radius, 8px) !important;
   box-shadow: var(--loop-select-list-shadow) !important;
 }
@@ -341,7 +297,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 .osui-dropdown-search .vscomp-option.focused,
 .osui-dropdown-tags .vscomp-option.hovered,
 .osui-dropdown-tags .vscomp-option.focused {
-  background-color: var(--color-bg-container-on-light-low) !important;  /* #f5f7f9 */
+  background-color: var(--color-bg-container-on-light-low) !important;
 }
 .osui-dropdown-search .vscomp-option.selected,
 .osui-dropdown-tags .vscomp-option.selected {
@@ -349,8 +305,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   color: var(--color-text-on-light-default);
 }
 
-/* search box inside the open list — Figma shows a magnifier + tokenised field
-   (fig "Select" open state). The provider gives us a 40px row with a bottom rule. */
+/* search box inside the open list */
 .osui-dropdown-search .vscomp-search-container,
 .osui-dropdown-tags .vscomp-search-container {
   border-bottom: 1px solid var(--color-outline-on-light-subdued);
@@ -377,14 +332,10 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 
 /* =====================================================================
    3) Live-provider refinements — DOM only the runtime VirtualSelect emits
-      (option checkbox glyph, "+N" overflow alias). Authored against the real
-      .vscomp-* output so the preview = the live widget, styled to The Loop.
    ===================================================================== */
 
-/* Multi-select option rows: Figma shows NO left checkbox box — selected rows get a
-   right-aligned check, unselected rows are bare (fig "Multi Select" open state).
-   The provider draws a left .checkbox-icon (square when unchecked, tick when
-   selected); we move it to the trailing edge and suppress the unchecked square. */
+/* Move the provider's left .checkbox-icon to the trailing edge and suppress the
+   unchecked square, so selected rows get a right-aligned check and others are bare. */
 .osui-dropdown-tags .vscomp-option .vscomp-option-text { order: 1; }
 .osui-dropdown-tags .vscomp-option .checkbox-icon {
   order: 2;
@@ -401,19 +352,18 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   width: 60%;
   height: 100%;
   margin: 0 auto;
-  border: 2px solid var(--color-icon-on-light-link-enabled);   /* Blue/70 — selected marker */
+  border: 2px solid var(--color-icon-on-light-link-enabled);
   border-top-color: transparent;
   border-left-color: transparent;
   transform: rotate(45deg) translate(-1px, -2px);
 }
 
-/* "+N" overflow alias — provider tags it .more-value-count (no clear button).
-   Keep it a compact neutral pill: informational, not removable (Figma "+3"). */
+/* "+N" overflow alias (.more-value-count) — a compact, non-removable neutral pill */
 .osui-dropdown-tags .vscomp-value-tag.more-value-count {
   font-weight: var(--font-weight-semibold, 600);
 }
 
-/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
+/* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .dropdown-container.dropdown > div.dropdown-display,
   .dropdown-container.dropdown > div.dropdown-display::after,
@@ -423,37 +373,6 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 ```
 
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## State mapping (Figma "State" → OutSystems)
 | The Loop | How |
@@ -483,6 +402,33 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 - Tinted **Error** (red) / **Warning** (yellow) / **Disabled** (neutral) fills + borders.
 - Popup **list**: white, 8px radius, low shadow, subtle border.
 - Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48), 14px clear icon.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Dropdown to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-dropdown.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-select-*` tokens).

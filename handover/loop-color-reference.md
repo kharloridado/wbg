@@ -346,38 +346,6 @@ it never hard-codes a hex, so the table can't drift from `dist/theme.css`.
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## The utility classes
 For every `--color-<name>` primitive, the generator emits:
 ```css
@@ -435,6 +403,26 @@ Group keys: `brand`, `blue`, `neutral`, `neutral-alpha`, `gray-alpha`, `red`, `g
 - Swatches are decorative (`aria-hidden`); the hex + name carry the meaning.
 - Copy buttons have `aria-label`s; focus ring uses
   `--color-domain-interactive-focused`; `prefers-reduced-motion` honored.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, place the Style-Guide reference element <loop-color-reference> on the Style Guide
+screen for the WBG "The Loop" design system.
+
+Context (already done): loop-color-reference.js is added under Resources and loads on the Style-Guide
+screen; dist/theme.css is in the Theme. It is a self-contained display component.
+
+Task: add the <loop-color-reference> element to the Style Guide screen where this specimen belongs.
+There are no inputs or events to wire. Do NOT write CSS or JavaScript.
+
+Constraints: never edit the OutSystems UI module; add no styles. Report what you placed.
+```
 
 ## Checklist
 - [ ] `npm run build:theme` and paste `dist/theme.css` into the ODC Theme editor.

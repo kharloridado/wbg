@@ -45,38 +45,14 @@ state hue (per Figma).
 <summary><code>loop-badge-status.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* loop-badge-status.css — WBG / "The Loop" Badge Status block (CSS only, no JS).
- * Figma: "Badge / Status" [node:18153-7159]. Custom component — no native OutSystems UI
- * equivalent (the native Badge is a notification-count bubble).
- *
- * A status indicator + label for lists, dashboards, data tables and diagrams. Applied as
- * plain markup (ExtendedClass on a Container, or an HTML element in a Block) — NOT a Web
- * Component. Tokens live in tokens/component-badge-status.css (folded into dist/theme.css).
- *
- * Markup: add "loop-badge-status loop-badge-status--<state> [loop-badge-status--<size>]
- * [loop-badge-status--headline]" to a span, then nest an indicator + a label.
- *   • Light  → an empty <span class="loop-badge-status__dot">  (CSS-drawn coloured dot)
- *   • Icon   → <span class="loop-badge-status__icon">…inline SVG…</span> (paints currentColor)
- *   • Headline → add the --headline modifier (dot/icon + label inside a bordered, tinted pill)
- * In-progress uses the icon slot + "loop-badge-status__icon--spin" (spinner SVG).
- *
- * Example OutSystems HTML (rendered):
- *   <span class="loop-badge-status loop-badge-status--success loop-badge-status--regular">
- *     <span class="loop-badge-status__dot" aria-hidden="true"></span>
- *     <span class="loop-badge-status__label">Approved</span>
- *   </span>
- *
- * The label colour is the SAME neutral dark for every state — only the dot / icon / pill
- * border carries the state hue (per Figma). States: success | informational | warning |
- * error | suggestive | not-started | in-progress. Sizes: small | regular (default) |
- * large | xlarge. */
+/* loop-badge-status.css — Badge / Status: indicator + label, CSS-only markup component */
+/* The label colour is the same neutral dark for every state; only the dot/icon/pill border carries the state hue. */
 
 .loop-badge-status {
   display: inline-flex;
   align-items: center;
-  align-self: center;      /* if a host flex/grid container stretches its items
-                              (OutSystems Columns/Group default), keep the natural height */
-  vertical-align: middle;  /* sit centred on the text baseline in inline contexts */
+  align-self: center;      /* keep natural height if a host flex/grid container stretches its items */
+  vertical-align: middle;
   gap: var(--_lbs-gap);
   box-sizing: border-box;
   max-width: 100%;
@@ -87,6 +63,8 @@ state hue (per Figma).
   --_lbs-dot:  var(--loop-badge-status-regular-dot, 10px);
   --_lbs-gap:  var(--loop-badge-status-regular-gap, 4px);
   --_lbs-h:    var(--loop-badge-status-regular-headline-h, 24px);  /* headline pill height */
+  --_lbs-pl:   var(--loop-badge-status-regular-pad-left, 8px);     /* headline left padding */
+  --_lbs-pr:   var(--loop-badge-status-regular-pad-right, 10px);   /* headline right padding */
   /* indicator hue — overridden per state below */
   --_lbs-indicator: currentColor;
   font-family:    var(--loop-badge-status-label-family, "Open Sans", system-ui, sans-serif);
@@ -102,21 +80,25 @@ state hue (per Figma).
   --_lbs-font: var(--loop-badge-status-small-font, 12px);   --_lbs-lead: var(--loop-badge-status-small-leading, 14px);
   --_lbs-icon: var(--loop-badge-status-small-icon, 14px);   --_lbs-dot:  var(--loop-badge-status-small-dot, 8px);
   --_lbs-gap:  var(--loop-badge-status-small-gap, 4px);     --_lbs-h:    var(--loop-badge-status-small-headline-h, 22px);
+  --_lbs-pl:   var(--loop-badge-status-small-pad-left, 6px); --_lbs-pr:  var(--loop-badge-status-small-pad-right, 8px);
 }
 .loop-badge-status--regular {
   --_lbs-font: var(--loop-badge-status-regular-font, 14px); --_lbs-lead: var(--loop-badge-status-regular-leading, 14px);
   --_lbs-icon: var(--loop-badge-status-regular-icon, 16px); --_lbs-dot:  var(--loop-badge-status-regular-dot, 10px);
   --_lbs-gap:  var(--loop-badge-status-regular-gap, 4px);   --_lbs-h:    var(--loop-badge-status-regular-headline-h, 24px);
+  --_lbs-pl:   var(--loop-badge-status-regular-pad-left, 8px); --_lbs-pr: var(--loop-badge-status-regular-pad-right, 10px);
 }
 .loop-badge-status--large {
   --_lbs-font: var(--loop-badge-status-large-font, 16px);   --_lbs-lead: var(--loop-badge-status-large-leading, 16px);
   --_lbs-icon: var(--loop-badge-status-large-icon, 18px);   --_lbs-dot:  var(--loop-badge-status-large-dot, 12px);
   --_lbs-gap:  var(--loop-badge-status-large-gap, 4px);     --_lbs-h:    var(--loop-badge-status-large-headline-h, 32px);
+  --_lbs-pl:   var(--loop-badge-status-large-pad-left, 10px); --_lbs-pr: var(--loop-badge-status-large-pad-right, 12px);
 }
 .loop-badge-status--xlarge {
   --_lbs-font: var(--loop-badge-status-xlarge-font, 18px);  --_lbs-lead: var(--loop-badge-status-xlarge-leading, 20px);
   --_lbs-icon: var(--loop-badge-status-xlarge-icon, 20px);  --_lbs-dot:  var(--loop-badge-status-xlarge-dot, 14px);
   --_lbs-gap:  var(--loop-badge-status-xlarge-gap, 6px);    --_lbs-h:    var(--loop-badge-status-xlarge-headline-h, 40px);
+  --_lbs-pl:   var(--loop-badge-status-xlarge-pad-left, 12px); --_lbs-pr: var(--loop-badge-status-xlarge-pad-right, 14px);
 }
 
 /* ---- Label ---- */
@@ -163,13 +145,10 @@ state hue (per Figma).
 .loop-badge-status--in-progress  { --_lbs-indicator: var(--loop-badge-status-in-progress-indicator, #004370); }
 
 /* ---- Headline: dot/icon + label inside a bordered, tinted pill ----
- * The 1px outline is drawn as an INSET box-shadow, NOT a real `border`, so it takes ZERO
- * layout space — the pill height is identical with or without it (a real border adds 2px:
- * top+bottom). Height is also pinned to the per-size Figma pill height so it's deterministic
- * in any host. Horizontal padding only; content is centred via align-items. */
+ * 1px outline is an inset box-shadow (zero layout) and the height is pinned per size, so the pill height never shifts. */
 .loop-badge-status--headline {
   height: var(--_lbs-h);
-  padding: 0 var(--loop-badge-status-pad-right, 14px) 0 var(--loop-badge-status-pad-left, 12px);
+  padding: 0 var(--_lbs-pr) 0 var(--_lbs-pl);
   border-radius: var(--loop-badge-status-radius, 4px);
 }
 .loop-badge-status--headline.loop-badge-status--success      { background: var(--loop-badge-status-success-bg, #f6fef0);      box-shadow: inset 0 0 0 1px var(--loop-badge-status-success-border, #388004); }
@@ -182,48 +161,6 @@ state hue (per Figma).
 ```
 
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Class API
 | Class | Purpose |
@@ -295,6 +232,33 @@ All glyphs use `fill="currentColor"` / `stroke="currentColor"`, so the state mod
 - The `in-progress` spinner stops under `prefers-reduced-motion`.
 - Label text colour is the neutral `Text/On Light/Default` on every (tinted/white) background — high contrast.
 - ⚠️ **Pending finding (FND-036):** the Figma label weight token is `500`, but the theme ships Open Sans `400/600/700` only, so `500` renders as `400` (faux). The Figma style name is "SemiBold" (600) — design to confirm whether to ship a 500 face or change the token to 600.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for BadgeStatus to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-badge-status.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild `dist/theme.css` and paste into ODC Theme editor (includes the `loop-badge-status` block + `--loop-badge-status-*` tokens).

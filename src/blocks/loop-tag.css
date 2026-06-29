@@ -1,34 +1,13 @@
-/* loop-tag.css — WBG / "The Loop" Tag block (CSS only, no JS).
- * Figma: "Tag" [node:17313-5502]. The Loop PILL tag (radius 48) — richer than the
- * native OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
- *
- * NOTE (2026-06-22): the native OutSystems UI Tag widget (.tag) is restyled to the
- * The Loop BADGE / LABEL look (rectangle, radius 4) in src/blocks/loop-badge.css —
- * NOT to this pill. So the pill is reached ONLY via the .loop-tag block below; the
- * native .tag widget renders as a Badge/Label.
- *
- * OutSystems usage: add "loop-tag loop-tag--<color> loop-tag--<size>" to a
- * Container via ExtendedClass. Colors: blue (default) | purple | green | yellow.
- * Sizes: small | regular (default) | large | xlarge.
- *
- * Example OutSystems HTML (rendered):
- *   <span class="loop-tag loop-tag--blue loop-tag--regular loop-tag--dismissible">
- *     <i class="loop-tag__icon" aria-hidden="true"><!-- icon glyph --></i>
- *     <span class="loop-tag__label">Label</span>
- *     <button type="button" class="loop-tag__dismiss" aria-label="Remove">×</button>
- *   </span>
- *
- * Scope (this build): colors · sizes · icon slot · dismissible · states
- * default/hover/focus/disabled/selected. Out of scope (follow-up): avatar,
- * initials, flag slots, on-dark theme, toggle/interactive selection wiring. */
+/* loop-tag.css — Tag: The Loop pill tag block (CSS only); native .tag is the Badge/Label, see loop-badge.css */
 
 .loop-tag {
   display: inline-flex;
   align-items: center;
   gap: var(--loop-tag-gap, 4px);
   box-sizing: border-box;
-  min-height: var(--loop-tag-h-regular, 32px);
-  padding: var(--loop-tag-padding-v, 8px) var(--loop-tag-padding-h, 12px);
+  height: var(--loop-tag-h-regular, 32px);             /* pinned height so the 1px border never grows the box */
+  padding-block: 0;
+  padding-inline: var(--loop-tag-padding-h, 12px);
   border: 1px solid;
   border-radius: var(--loop-tag-radius, 48px);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -68,17 +47,17 @@
   color:            var(--loop-tag-yellow-text, #896001);
 }
 
-/* ---- Sizes (min-height; label size held constant per Figma) ---- */
-.loop-tag--small   { min-height: var(--loop-tag-h-small, 24px);   padding-top: var(--loop-tag-padding-v-sm, 6.5px); padding-bottom: var(--loop-tag-padding-v-sm, 6.5px); }
-.loop-tag--regular { min-height: var(--loop-tag-h-regular, 32px); }
-.loop-tag--large   { min-height: var(--loop-tag-h-large, 40px); }
-.loop-tag--xlarge  { min-height: var(--loop-tag-h-xlarge, 48px); }
+/* ---- Sizes (label size held constant) ---- */
+.loop-tag--small   { height: var(--loop-tag-h-small, 24px); }
+.loop-tag--regular { height: var(--loop-tag-h-regular, 32px); }
+.loop-tag--large   { height: var(--loop-tag-h-large, 40px); }
+.loop-tag--xlarge  { height: var(--loop-tag-h-xlarge, 48px); }
 
 /* ---- Label ---- */
 .loop-tag__label {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;   /* Figma: label truncates past 200px (tooltip on hover) */
+  max-width: 200px;   /* truncate past 200px */
 }
 
 /* ---- Leading icon slot ---- */
@@ -96,6 +75,48 @@
   width: 100%;
   height: 100%;
 }
+
+/* ---- Meta Tag — leading slot variants (avatar / initials / flag); add "loop-tag--meta", slot is the first child ---- */
+.loop-tag--meta { padding-inline-start: var(--loop-tag-meta-lpad, 8px); }
+
+/* Round avatar (image) */
+.loop-tag__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  width:  var(--loop-tag-meta-size, 24px);
+  height: var(--loop-tag-meta-size, 24px);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.loop-tag__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Round initials badge */
+.loop-tag__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width:  var(--loop-tag-meta-size, 24px);
+  height: var(--loop-tag-meta-size, 24px);
+  border-radius: 50%;
+  background-color: var(--loop-tag-initials-bg, #004370);
+  color: var(--loop-tag-initials-color, #fff);
+  font-size:      var(--loop-tag-initials-size, 10px);
+  line-height:    var(--loop-tag-initials-size, 10px);
+  font-weight:    var(--loop-tag-initials-weight, 700);
+  letter-spacing: var(--loop-tag-initials-tracking, 0.25px);
+}
+
+/* Flag (rectangular image, slightly rounded) */
+.loop-tag__flag {
+  display: inline-flex;
+  flex-shrink: 0;
+  width:  var(--loop-tag-flag-w, 25px);
+  height: var(--loop-tag-flag-h, 18px);
+  border-radius: var(--loop-tag-flag-radius, 2px);
+  overflow: hidden;
+}
+.loop-tag__flag img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ---- Dismiss button ---- */
 .loop-tag__dismiss {
@@ -158,6 +179,4 @@
   .loop-tag--interactive { transition: none; }
 }
 
-/* The native OutSystems UI Tag widget (.tag) is NOT restyled here. It is repointed
- * to The Loop Badge / Label (rectangle, radius 4) in src/blocks/loop-badge.css.
- * Reach this pill via the .loop-tag block above. */
+/* The native .tag widget is restyled as the Badge/Label in loop-badge.css, not here; reach this pill via .loop-tag. */

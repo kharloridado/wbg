@@ -38,60 +38,12 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 <summary><code>loop-switch.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Toggle / Switch  ("The Loop" — loop/toggle)
-   Figma: -The Loop- Main Library · "Toggle" [node:25344-27822]
-          switch component set [node:25344-27924] · default switch [node:25344-27925]
-   Approach: RESTYLE the native OutSystems UI Switch widget ([data-switch]) — NOT a
-             parallel class system. Devs use the standard OutSystems Switch widget; this
-             theme override makes it render as The Loop toggle. (Same pattern as
-             loop-button.css / loop-checkbox.css / loop-radio-button.css.)
-             SELF-CONTAINED: the override supplies its own structural reset
-             (appearance:none on the input; content/position/display on the track :before
-             + thumb :after) rather than leaning on OutSystems UI's baseline switch CSS.
-             So the control renders correctly even where that baseline isn't present
-             (e.g. the local preview), exactly like loop-checkbox.css / loop-radio-button.css.
-   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
-   Escalation Level: L1/L2 (native widget + token-driven theme override).
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_switch.scss):
-     [data-switch]          → 50×32 box; :empty:before = 48×30 track pill (neutral-5),
-                              :empty:after = 24px thumb, translateX(4px) off / 22px on;
-                              :checked:before = primary; [disabled] = neutral; hover neutral-6.
-     .has-accessible-features [data-switch] → restates colours at higher specificity
-                              (neutral-7/8, focus-inner) — so each conflicting rule below
-                              is restated for `.has-accessible-features` to keep winning.
-   The Loop overrides that baseline to: a 56×32 pill track (transparent border), a 24px
-     white thumb with 4px padding (travel 28px), the WB neutral-60 OFF track, blue-70 ON
-     track, and the interactive hover/pressed/focus brand colours.
-
-   Colour mapping (Figma "Domain/Interactive/On Light/*" + "Icon/On Light/*"):
-     OFF track (unchecked)  → --color-icon-on-light-default            (neutral-60 #4b5e71)
-     ON track  (checked)    → --color-domain-interactive-enabled-primary (blue-70 #004370)
-     ON hover               → --color-domain-interactive-hover          (blue-40 #169af3)
-     ON pressed             → --color-domain-interactive-pressed        (blue-90 #012740)
-     focus ring             → --color-domain-interactive-focused        (blue-50 #0071bc)
-     disabled track         → --color-domain-interactive-disable        (neutral-40 #8a9db1)
-     thumb                  → --color-white
-
-   Sizes (loop/toggle/switch track w×h — default = Regular): published switch tokens cover
-     only the xLarge size (56×32, circle 24, padding 4); the default base is Regular (40×20,
-     circle 12). xLarge/Large/Small reuse the observed track dimensions
-     (56×32 / 48×26 / 32×16) with padding held at the one published 4px value and
-     circle = height − 2·padding — flagged for confirmation (FND-025).
-
-   Fidelity notes (built faithfully; raised, NOT silently changed):
-     - Label line-height token is published twice with different values (16 vs 18) — FND-024.
-     - The ON thumb carries a 16px check glyph in Figma [node:25845-30789]; its colour/asset
-       weren't published as a token, so the thumb is rendered without the glyph pending the
-       asset — FND-026 (additive detail; colours/geometry are faithful).
-   ============================================ */
+/* loop-switch.css — Switch: native [data-switch] restyle (self-contained :before track + :after thumb) */
 
 /* ---- Track box — hide the native checkbox; :before/:after draw the switch ---- */
 [data-switch],
 .has-accessible-features [data-switch] {
-  /* Size geometry — default is Regular (40×20, circle 12); .loop-toggle-* override these.
-     Only these vars change per size; the :before/:after rules derive from them. */
+  /* Size geometry — only these vars change per size; :before/:after derive from them */
   --loop-toggle-track-w: 40px;
   --loop-toggle-track-h: 20px;
   --loop-toggle-circle: 12px;
@@ -122,9 +74,9 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 0px;                                            /* Outline/Transparent */
+  border: 0px;
   border-radius: var(--radius-pill, 50px);
-  background-color: var(--color-icon-on-light-default);   /* OFF track — neutral-60 #4b5e71 */
+  background-color: var(--color-icon-on-light-default);   /* OFF track */
   opacity: 1;
   transition: background-color 180ms linear, border-color 180ms linear;
 }
@@ -153,23 +105,23 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 [data-switch]:checked:before,
 .has-accessible-features [data-switch]:checked:before {
   border: 0px;
-  background-color: var(--color-domain-interactive-enabled-primary);   /* blue-70 #004370 */
+  background-color: var(--color-domain-interactive-enabled-primary);
 }
 [data-switch]:checked:after,
 .has-accessible-features [data-switch]:checked:after {
-  /* travel = track − circle − padding (xLarge: 56−24−4 = 28px; derives per size) */
+  /* travel = track − circle − padding */
   transform: translateX(calc(var(--loop-toggle-track-w, 56px) - var(--loop-toggle-circle, 24px) - var(--loop-toggle-padding, 4px))) translateZ(0);
 }
 
 /* ---- Hover / pressed (the interactive ON track shifts hue) ---- */
 [data-switch]:checked:hover:before,
 .has-accessible-features [data-switch]:checked:hover:before {
-  background-color: var(--color-domain-interactive-hover);     /* blue-40 #169af3 */
+  background-color: var(--color-domain-interactive-hover);
   border: 0px;
 }
 [data-switch]:checked:active:before,
 .has-accessible-features [data-switch]:checked:active:before {
-  background-color: var(--color-domain-interactive-pressed);   /* blue-90 #012740 */
+  background-color: var(--color-domain-interactive-pressed);
   border: 0px;
 }
 
@@ -181,7 +133,7 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 [data-switch][disabled]:empty:before,
 [data-switch][aria-disabled="true"]:empty:before,
 .has-accessible-features [data-switch][disabled]:empty:before {
-  background-color: var(--color-domain-interactive-disable);   /* neutral-40 #8a9db1 */
+  background-color: var(--color-domain-interactive-disable);
   border: 0px;
 }
 [data-switch][disabled]:empty:after,
@@ -196,10 +148,7 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   outline-offset: 2px;
 }
 
-/* ---- Sizes — apply via the Switch widget's Extended Class on the input ----
-   Only the geometry vars change; the before/after rules above derive from them.
-   Default (no class) = Regular (40×20). Track w×h are the observed Figma dimensions;
-   padding is held at the one published 4px value, circle = h − 2·padding (FND-025). */
+/* ---- Sizes — apply via the Switch widget's Extended Class; only the geometry vars change ---- */
 [data-switch].loop-toggle-xlarge {
   --loop-toggle-track-w: 56px;  --loop-toggle-track-h: 32px;  --loop-toggle-circle: 24px;
 }
@@ -213,11 +162,7 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   --loop-toggle-track-w: 32px;  --loop-toggle-track-h: 16px;  --loop-toggle-circle: 8px;
 }
 
-/* ============================================================
-   Label wrapper — Switch + label layout (BEM, applied via Extended Class on the
-   container). OutSystems' Switch has no bound label element (unlike Checkbox/Radio),
-   so the label is a sibling laid out by this thin wrapper.
-   ============================================================ */
+/* ---- Label wrapper — Switch has no bound label, so the label is a sibling laid out here ---- */
 .loop-toggle {
   display: inline-flex;
   align-items: center;
@@ -232,7 +177,7 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   letter-spacing: var(--loop-toggle-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
-/* Label position (Figma "Label Position" = Right [default] / Left / Top / Bottom) */
+/* Label position — Right (default) / Left / Top / Bottom */
 .loop-toggle--left   { flex-direction: row-reverse; }
 .loop-toggle--top    { flex-direction: column;         align-items: flex-start; }
 .loop-toggle--bottom { flex-direction: column-reverse; align-items: flex-start; }
@@ -248,38 +193,6 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 ```
 
 </details>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## What the override builds
 The native switch pseudo-elements are restyled: `:before` = the 56×32 pill track,
@@ -317,6 +230,33 @@ a sibling laid out by the wrapper. Default = label **Right**.
 | Large | `loop-toggle-large` | 48×26, circle 18 |
 | Regular | `loop-toggle-regular` | 40×20, circle 12 |
 | Small | `loop-toggle-small` | 32×16, circle 8 |
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Switch to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-switch.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-toggle-*` tokens).

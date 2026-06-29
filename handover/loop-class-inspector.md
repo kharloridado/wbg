@@ -401,36 +401,6 @@ recipe in place.
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## How to use in ODC (as a Block)
 1. Add `loop-class-inspector.js` to the app **Resources** (Deploy Action: *Deploy to
    Target Directory*) — or load it via a Scripts block on the Style-Guide screen.
@@ -475,6 +445,26 @@ recipe in place.
   "Copied: …".
 - Focus rings use `--color-domain-interactive-focused`; `prefers-reduced-motion` honored.
 - Shadow DOM scopes the styling so the tool can't leak into the component it inspects.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, place the Style-Guide reference element <loop-class-inspector> on the Style Guide
+screen for the WBG "The Loop" design system.
+
+Context (already done): loop-class-inspector.js is added under Resources and loads on the Style-Guide
+screen; dist/theme.css is in the Theme. It is a self-contained display component.
+
+Task: add the <loop-class-inspector> element to the Style Guide screen where this specimen belongs.
+There are no inputs or events to wire. Do NOT write CSS or JavaScript.
+
+Constraints: never edit the OutSystems UI module; add no styles. Report what you placed.
+```
 
 ## Checklist
 - [ ] Add `loop-class-inspector.js` to Resources; load it on the Style-Guide screen.

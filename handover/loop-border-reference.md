@@ -29,32 +29,40 @@ Figma reference: effects page [node:19737-9489] · type page [node:10995-7259].
 
 ## The two border scales
 
+Each row carries the **utility class to drop on an element** (via `ExtendedClass`) as well
+as the token — the Style-Guide page renders both as click-to-copy chips.
+
 **Border size (stroke width)** — `tokens/border.css` (`--border-size-*`). Names + values
-match the OutSystems UI border-size scale so the framework's own `var(--border-size-*)`
-references resolve to The Loop theme. (Fills a real gap: `loop-checkbox.css` already
-referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
+match the OutSystems UI border-size scale, so the framework's own `.border-size-*` utility
+classes and `var(--border-size-*)` references resolve to The Loop theme — no Loop class
+needed. (Fills a real gap: `loop-checkbox.css` already referenced `--border-size-s` /
+`--border-size-l` with only a 1px fallback.) Each `.border-size-<name>` sets all four edges
+(`solid currentColor`); per-edge variants `.border-{top,right,bottom,left}-{s,m,l}` exist too.
 
-| Token | Value | Use |
-|---|---|---|
-| `--border-size-none` | `0` | No stroke |
-| `--border-size-s` | `1px` | Hairline — default control / divider border |
-| `--border-size-m` | `2px` | Emphasis — selected / focused control edge |
-| `--border-size-l` | `3px` | Heaviest — high-contrast focus outline |
+| Token | Class (OS UI native) | Value | Use |
+|---|---|---|---|
+| `--border-size-none` | `.border-size-none` | `0` | No stroke |
+| `--border-size-s` | `.border-size-s` | `1px` | Hairline — default control / divider border |
+| `--border-size-m` | `.border-size-m` | `2px` | Emphasis — selected / focused control edge |
+| `--border-size-l` | `.border-size-l` | `3px` | Heaviest — high-contrast focus outline |
 
-**Border radius (corners)** — `tokens/radius.css` (`--radius-*`).
+**Border radius (corners)** — `tokens/radius.css` (`--radius-*`) + the matching Loop
+`.border-radius-*` classes in `tokens/radius-utilities.css`. These extend the OutSystems UI
+`.border-radius-*` family (which ships only `soft`/`rounded`/`circle`) with one class per
+Loop step; `.border-radius-base` is the Loop-named alias of OS UI's `.border-radius-soft`.
 
-| Token | Value | Use |
-|---|---|---|
-| `--radius-xs` | `2px` | Joined inner corners (button group) |
-| `--radius-base` | `4px` | Default control radius |
-| `--radius-medium` | `8px` | Cards, larger surfaces |
-| `--radius-large` | `16px` | Large containers, modals |
-| `--radius-pill` | `32px` | Fully-rounded pill (buttons, tags) |
+| Token | Class | Value | Use |
+|---|---|---|---|
+| `--radius-xs` | `.border-radius-xs` | `2px` | Joined inner corners (button group) |
+| `--radius-base` | `.border-radius-base` | `4px` | Default control radius |
+| `--radius-medium` | `.border-radius-medium` | `8px` | Cards, larger surfaces |
+| `--radius-large` | `.border-radius-large` | `16px` | Large containers, modals |
+| `--radius-pill` | `.border-radius-pill` | `32px` | Fully-rounded pill (buttons, tags) |
 
 ## Files
 | File | OutSystems destination |
 |---|---|
-| `tokens/border.css`, `tokens/radius.css` | Included automatically in `dist/theme.css` — paste theme into the ODC Theme editor |
+| `tokens/border.css`, `tokens/radius.css`, `tokens/radius-utilities.css` | Included automatically in `dist/theme.css` — paste theme into the ODC Theme editor |
 | `src/components/loop-border-reference.js` | Add to the app's **Resources** (or a Scripts folder), set to load on the Style-Guide screen |
 
 ## Code to paste into ODC
@@ -78,6 +86,11 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
  * token live via getComputedStyle(:root) at render time, so specimens always match
  * dist/theme.css (tokens/border.css = --border-size-*, tokens/radius.css = --radius-*).
  * The SIZES and RADII name lists mirror those files.
+ *
+ * Each row also documents the UTILITY CLASS to drop on an element (via ExtendedClass),
+ * not just the token, with its own click-to-copy chip:
+ *   - border size   → native OutSystems UI `.border-size-<name>` (resolves to --border-size-*)
+ *   - border radius → Loop `.border-radius-<name>` (tokens/radius-utilities.css → --radius-*)
  *
  * Attributes:
  *   heading   Optional section heading (default: "Borders · size & radius")
@@ -159,6 +172,7 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
     _sizeHtml() {
       const rows = SIZES.map((s) => {
         const v = `--border-size-${s.name}`;
+        const cls = `.border-size-${s.name}`;
         const resolved = val(v) || "—";
         return `
           <tr>
@@ -166,6 +180,7 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
               <span class="lbr__size-chip" aria-hidden="true" style="border-bottom-width:var(${v})"></span>
               <span class="lbr__cap-name">${esc(s.label)}</span>
             </th>
+            <td>${this._copyBtn(cls)}</td>
             <td class="lbr__mono">${esc(resolved)}</td>
             <td class="lbr__use">${esc(s.use)}</td>
             <td>${this._copyBtn(v)}</td>
@@ -174,10 +189,10 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
       return `
         <div class="lbr__group">
           <h3 class="lbr__group-title">Border size · stroke width</h3>
-          <p class="lbr__group-note">Stroke-width scale (<code>--border-size-*</code>). Apply with <code>border: var(--border-size-s) solid …</code> in custom CSS. Names match OutSystems UI so the framework's own <code>var(--border-size-*)</code> references resolve to The Loop theme.</p>
+          <p class="lbr__group-note">Stroke-width scale (<code>--border-size-*</code>). Drop the native OutSystems UI <code>.border-size-&lt;name&gt;</code> class via <strong>ExtendedClass</strong> (sets all four edges, <code>solid currentColor</code>; per-edge variants <code>.border-top/right/bottom/left-{s,m,l}</code>), or reference the variable in custom CSS (<code>border: var(--border-size-s) solid …</code>). Names match OutSystems UI so the framework's own <code>var(--border-size-*)</code> references resolve to The Loop theme.</p>
           <div class="lbr__table-wrap"><table class="lbr__table">
-            <caption class="lbr__caption">Border-size tokens, values and CSS variables</caption>
-            <thead><tr><th scope="col">Size</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
+            <caption class="lbr__caption">Border-size tokens, utility classes, values and CSS variables</caption>
+            <thead><tr><th scope="col">Size</th><th scope="col">Class</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div>
         </div>`;
@@ -187,6 +202,7 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
     _radiusHtml() {
       const rows = RADII.map((r) => {
         const v = `--radius-${r.name}`;
+        const cls = `.border-radius-${r.name}`;
         const resolved = val(v) || "—";
         return `
           <tr>
@@ -194,6 +210,7 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
               <span class="lbr__radius-chip" aria-hidden="true" style="border-radius:var(${v})"></span>
               <span class="lbr__cap-name">${esc(r.label)}</span>
             </th>
+            <td>${this._copyBtn(cls)}</td>
             <td class="lbr__mono">${esc(resolved)}</td>
             <td class="lbr__use">${esc(r.use)}</td>
             <td>${this._copyBtn(v)}</td>
@@ -202,10 +219,10 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
       return `
         <div class="lbr__group">
           <h3 class="lbr__group-title">Border radius · corners</h3>
-          <p class="lbr__group-note">Corner-radius scale (<code>--radius-*</code>). Apply with <code>border-radius: var(--radius-medium)</code> in custom CSS.</p>
+          <p class="lbr__group-note">Corner-radius scale (<code>--radius-*</code>). Drop the Loop <code>.border-radius-&lt;name&gt;</code> class via <strong>ExtendedClass</strong> (tokens/radius-utilities.css — extends the OutSystems UI <code>.border-radius-*</code> family, which only ships <code>soft</code>/<code>rounded</code>/<code>circle</code>; <code>.border-radius-base</code> is the Loop alias of OS UI's <code>.border-radius-soft</code>), or reference the variable in custom CSS (<code>border-radius: var(--radius-medium)</code>).</p>
           <div class="lbr__table-wrap"><table class="lbr__table">
-            <caption class="lbr__caption">Border-radius tokens, values and CSS variables</caption>
-            <thead><tr><th scope="col">Radius</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
+            <caption class="lbr__caption">Border-radius tokens, utility classes, values and CSS variables</caption>
+            <thead><tr><th scope="col">Radius</th><th scope="col">Class</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div>
         </div>`;
@@ -287,20 +304,6 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Using `<loop-border-reference>` in ODC
 1. `npm run build:theme` and paste `dist/theme.css` into the ODC Theme editor (ships the
    `--border-size-*` and `--radius-*` tokens).
@@ -321,6 +324,15 @@ referenced `--border-size-s` / `--border-size-l` with only a 1px fallback.)
 | `intro` | — | Intro line under the heading |
 | `filter` | (all) | Comma list of section keys to show: `size`, `radius` |
 
+### Applying as utility classes (ExtendedClass)
+Drop these on any widget via **ExtendedClass** (hard rule #7) — no custom CSS needed:
+```
+.border-size-s          → 1px solid currentColor on all edges (OS UI native)
+.border-bottom-m        → 2px bottom edge only (OS UI native)
+.border-radius-medium   → 8px corners (Loop, tokens/radius-utilities.css)
+.border-radius-pill     → 32px fully-rounded
+```
+
 ### Consuming in component CSS
 ```css
 .my-control { border: var(--border-size-s) solid var(--color-outline-on-light-default);
@@ -339,6 +351,26 @@ When you add or rename a token, mirror the name in the manifests at the top of
   token name carry the meaning.
 - Copy buttons have `aria-label`s; focus ring uses `--color-domain-interactive-focused`;
   `prefers-reduced-motion` honored.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, place the Style-Guide reference element <loop-border-reference> on the Style Guide
+screen for the WBG "The Loop" design system.
+
+Context (already done): loop-border-reference.js is added under Resources and loads on the Style-Guide
+screen; dist/theme.css is in the Theme. It is a self-contained display component.
+
+Task: add the <loop-border-reference> element to the Style Guide screen where this specimen belongs.
+There are no inputs or events to wire. Do NOT write CSS or JavaScript.
+
+Constraints: never edit the OutSystems UI module; add no styles. Report what you placed.
+```
 
 ## Checklist
 - [ ] `npm run build:theme` and paste `dist/theme.css` into the ODC Theme editor.

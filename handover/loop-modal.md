@@ -436,20 +436,6 @@ if (!customElements.get('loop-modal')) {
 
 </details>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## API — Attributes
 | Attribute | Values | Description |
 |---|---|---|
@@ -623,6 +609,52 @@ Notes:
 `aria-label="Close dialog"`; **focus trap** (Tab cycles within the modal, Shift+Tab reverses);
 focus returns to the trigger on close; **body scroll locked** while open; ESC and backdrop
 dismiss (suppressible); focus ring uses `--loop-modal-close-focus` (#0071bc).
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported custom
+Web Component <loop-modal> for the WBG "The Loop" design system.
+
+Context (already done manually — do NOT re-create or edit these):
+- dist/theme.css and any block CSS are already pasted into the ODC Theme editor.
+- loop-modal.js is already imported as a Script resource (Theme/Library), Include = When invoked. It defines the custom element <loop-modal>.
+- Do NOT write CSS, author/modify JavaScript, or edit the Theme. Your job is only the
+  Block, its inputs/events, the attribute bindings, the event wiring, and any Client
+  Actions that drive it.
+
+Task — reference every element by the exact name given. Take the exact inputs, attribute
+bindings, events and any global helper from this handover's "API — Attributes / Methods /
+Events" tables (paste the relevant table into the chat so I work from real names):
+
+1. Create a Block named "Modal". Add one input per attribute (use the documented
+   default) and one event per CustomEvent. Model enumerable attributes (variant / type /
+   size / position / status) as Static Entities — one record per allowed value, with a
+   single Text attribute (e.g. "Value") set as the record Identifier (delete the default
+   Id/Label/Order/Is_Active) holding the literal the component expects — not free Text;
+   keep free-form text as Text and flags as Boolean. Do NOT add a string Id input or set
+   the element's id; OutSystems generates ids at runtime (see step 4).
+2. Place <loop-modal> in the Block. Bind each attribute to its input with a Value expression
+   (ODC requires one on every attribute). Static-Entity inputs bind directly (e.g.
+   type = Type) since their Value attribute is the identifier; Booleans use
+   If(Flag, "true", "false") — not presence.
+3. Wire each CustomEvent to its Block event via a "Run JavaScript" handler that
+   addEventListener's the event on the <loop-modal> element and raises the Block event.
+4. If the component exposes a global helper (see its API section), give the element/Block
+   a Name and pass its platform-generated runtime .Id, e.g.
+   window.LoopX.show($parameters.WidgetId) where the WidgetId input = <WidgetName>.Id.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values (styling
+comes from var(--token) in the Theme). After generating, list every element you created by
+name and flag anything you could not finish.
+
+Work iteratively: create the Block interface in step 1 and show it to me before wiring.
+```
 
 ## Checklist
 - [ ] Import `loop-modal.js` as Script resource, Include = **When invoked**.

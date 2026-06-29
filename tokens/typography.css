@@ -72,6 +72,8 @@
   --line-height-narrow:  1.25;
   --line-height-list:    1.8;
   --line-height-button-text: 1.9;   /* loop button/text label leading */
+  --line-height-label:   1.15;      /* Figma Heading/Label Base/Small/Tiny (115%) */
+  --line-height-solid:   1;         /* Figma Heading/Label Medium (100%) */
 
   /* ---- Letter spacing (px, from Figma) ---- */
   --letter-spacing-heading: -3px;
@@ -87,4 +89,35 @@ html, body {
   font-family: var(--font-family-base, "Open Sans");
   font-size: var(--font-size-body-base, 16px);
   line-height: var(--line-height-base, 1.5);
+}
+
+/* ================================================================
+   Responsive type — form-factor sizes (Desktop / Tablet / Phone)
+   ----------------------------------------------------------------
+   OutSystems UI sets `body.phone` / `body.tablet` on the page at runtime
+   (desktop = default, no class), so we redefine the DISPLAY scale steps
+   (700–1200 + huge-72) under those classes. Body steps (100–600) stay
+   fixed — body copy should not shrink on small screens. Every value below
+   is an existing step on the Figma `Font-size/NNN` scale (no new sizes
+   invented); only the breakpoint→step assignment is a build proposal, since
+   the Figma type page exposes no breakpoint axis. See finding FND-059.
+   Custom properties set on <body> inherit into descendants (incl. shadow
+   DOM), so the heading roles + native h1–h3 respond automatically. ================================================================ */
+body.tablet {
+  --font-size-1200: 48px;   /* 60 → 48 */
+  --font-size-1100: 40px;   /* 48 → 40 */
+  --font-size-1000: 36px;   /* 40 → 36 */
+  --font-size-900:  32px;   /* 36 → 32 */
+  --font-size-800:  28px;   /* 32 → 28 */
+  --font-size-700:  28px;   /* 28 (hold) */
+  --font-size-huge-72: 60px;/* 72 → 60 */
+}
+body.phone {
+  --font-size-1200: 40px;   /* 60 → 40 */
+  --font-size-1100: 36px;   /* 48 → 36 */
+  --font-size-1000: 32px;   /* 40 → 32 */
+  --font-size-900:  28px;   /* 36 → 28 */
+  --font-size-800:  24px;   /* 32 → 24 */
+  --font-size-700:  24px;   /* 28 → 24 */
+  --font-size-huge-72: 48px;/* 72 → 48 */
 }

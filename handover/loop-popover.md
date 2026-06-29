@@ -44,53 +44,9 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
 <summary><code>loop-popover.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Popover  ("The Loop" — loop/popover)
-   Figma: -The Loop- Main Library · "Popover" [node:26345-2762]
-   Approach: RESTYLE the native OutSystems UI Popover widget ([data-popover]) by
-             overriding its floating panel (.popover-bottom) + adding the Figma
-             pointer triangle as a pseudo-element — NOT a parallel class system and
-             NOT a custom Web Component. Devs drop the stock OutSystems Popover; this
-             theme override makes it render as The Loop popover and survives OS UI
-             upgrades.
-   Location: Theme CSS (paste BELOW OutSystems UI so it wins on equal specificity).
+/* loop-popover.css — Popover: native [data-popover] restyle (.popover-bottom panel + CSS pointer triangle) */
 
-   Native OutSystems DOM (legacy [data-popover] widget — captured from the runtime
-   markup the dev pastes):
-     [data-popover].popover.popover-expanded
-       .popover-top                  — the trigger (OS UI sets border:none, padding:none)
-       .popover-bottom               — THE FLOATING PANEL we restyle into the card
-         .align-center               — centred horizontally under the trigger
-         .align-bottom               — flipped ABOVE the trigger (pointer flips down)
-       (panel content is author-supplied: a .heading6 title + body text, etc.)
-
-   Native hooks we override (vendor: 03-widgets/_popover.scss + _popover-odc.scss):
-     .popover-bottom  bg / border / radius / shadow / padding / max-width / color
-       → Figma card: white, 4px radius, 0 2px 3px rgba(0,0,0,.12) drop-shadow,
-         16px padding, 320px wide, NO border (Figma has shadow only).
-
-   Pointer: native popover has no arrow; Figma does (18×8 triangle, 24px from the
-   leading edge). Added as .popover-bottom::before — a pure CSS border-triangle in
-   the panel's own background colour, so it recolours for free and adds zero layout.
-   It points UP off the top edge by default (panel below trigger); .align-bottom
-   flips it DOWN off the bottom edge; .align-center centres it.
-
-   Tokens consumed: --loop-popover-bg, --loop-popover-radius, --loop-popover-shadow,
-     --loop-popover-padding-v/-h, --loop-popover-width, --loop-popover-pointer-w/-h,
-     --loop-popover-pointer-offset, --loop-popover-header-gap, --loop-popover-title-*,
-     --loop-popover-body-*, --loop-popover-title-color, --loop-popover-body-color,
-     --loop-popover-divider-color, --loop-popover-dismiss-color, --loop-popover-focus.
-
-   Finding:
-     Figma drop-shadow 0px 2px 3px rgba(0,0,0,0.12) has no matching scale token
-     (--shadow-low = 0 2px 8px --shadow-color). Implemented exact Figma value and
-     flagged in tokens/component-popover.css — waiting on a token from design.
-   ============================================ */
-
-/* ---- The floating panel IS the Figma card ----
-   Equal specificity to native `[data-popover] > .popover-bottom`, so this wins by
-   source order (theme pasted below OS UI). Declared self-sufficiently (bg / radius /
-   shadow / padding set directly) so the restyle survives OS UI version drift. */
+/* ---- The floating panel IS the Figma card ---- */
 [data-popover] > .popover-bottom {
   position:      relative;   /* anchor for the pointer pseudo-element */
   box-sizing:    border-box;
@@ -99,13 +55,11 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
   min-width:     auto;
 
   background-color: var(--loop-popover-bg, #fff);
-  border:        0;   /* Figma popover has NO border — shadow only */
+  border:        0;   /* no border — shadow only */
   border-radius: var(--loop-popover-radius, 4px);
   box-shadow:    var(--loop-popover-shadow, 0px 2px 3px rgba(0, 0, 0, 0.12));
   padding:       var(--loop-popover-padding-v, 16px) var(--loop-popover-padding-h, 16px);
 
-  /* Default body typography — Figma loop/popover/body (12px Regular). Title text
-     re-bumps to 14px Bold via the .heading6 rule below. */
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size:   var(--loop-popover-body-size, 12px);
   font-weight: var(--loop-popover-body-weight, 400);
@@ -113,9 +67,7 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
   color:       var(--loop-popover-body-color, rgba(0, 13, 26, 0.7));
 }
 
-/* ---- Title — Figma loop/popover/label (14px Bold). The OutSystems author marks the
-   title with .heading6 (see goal markup); we map that to the Figma popover title.
-   Scoped to .popover-bottom so the global .heading6 utility is untouched elsewhere. */
+/* ---- Title — author marks it .heading6; scoped so the global .heading6 utility is untouched ---- */
 [data-popover] > .popover-bottom .heading6 {
   font-family:    var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size:      var(--loop-popover-title-size, 14px);
@@ -125,21 +77,18 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
   color:          var(--loop-popover-title-color, rgba(0, 13, 26, 0.96));
 }
 
-/* Optional Figma divider under the title — opt-in so it never appears on the plain
-   margin-only example. Add class "loop-popover--divided" to .popover-bottom. */
+/* Optional divider under the title — opt-in via .loop-popover--divided */
 [data-popover] > .popover-bottom.loop-popover--divided .heading6 {
   padding-bottom: var(--loop-popover-header-gap, 16px);
   border-bottom:  1px solid var(--loop-popover-divider-color, rgba(0, 57, 107, 0.16));
   margin-bottom:  var(--loop-popover-header-gap, 16px);
 }
 
-/* ---- Pointer triangle (Figma .dls Pointer, 18×8). Pure CSS border-triangle in the
-   panel's own bg colour; points UP off the top edge by default (panel below trigger).
-   24px from the leading edge per Figma; centred when .align-center. ---- */
+/* ---- Pointer triangle — CSS border-triangle in the panel's own bg; points up by default ---- */
 [data-popover] > .popover-bottom::before {
   content:  "";
   position: absolute;
-  bottom:   100%;   /* sit directly above the top edge */
+  bottom:   100%;
   left:     var(--loop-popover-pointer-offset, 24px);
   width:    0;
   height:   0;
@@ -154,10 +103,10 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
   transform: translateX(-50%);
 }
 
-/* Panel flipped ABOVE the trigger → pointer flips to the bottom edge, points DOWN. */
+/* Panel flipped above the trigger → pointer flips to the bottom edge, points down. */
 [data-popover] > .popover-bottom.align-bottom::before {
   bottom:        auto;
-  top:           100%;   /* sit directly below the bottom edge */
+  top:           100%;
   border-bottom: 0;
   border-top:    var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
 }
@@ -183,7 +132,6 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
 ```
 
 </details>
-
 
 ## What the override builds
 
@@ -242,3 +190,30 @@ border-triangle in the card's own background colour (so it recolours for free, z
 | ID | Severity | Issue |
 |---|---|---|
 | — | low | Figma drop-shadow `0px 2px 3px rgba(0,0,0,0.12)` has no matching scale token (`--shadow-low` = `0 2px 8px --shadow-color`). Implemented the exact Figma value as `--loop-popover-shadow`. Same shape as tooltip FND-027 — pending a shallow shadow token from design. |
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Popover to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-popover.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```

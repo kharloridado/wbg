@@ -1,20 +1,4 @@
-/* loop-note.css — WBG / "The Loop" Notes callout block (CSS only, no JS).
- * Figma: "Notes" [node:26642-61530]. Custom component — not a native OS widget.
- * Four types: important (default) | tip | information | success.
- *
- * OutSystems usage: add "loop-note loop-note--<type>" to a Container via ExtendedClass.
- * Place child content directly inside:
- *   - .loop-note__body  (p or span) — note text; wrap the bold type prefix in .loop-note__label
- *   - .loop-note__action (optional) — action link/button row below body
- *
- * Example OutSystems HTML (rendered):
- *   <div class="loop-note loop-note--information">
- *     <p class="loop-note__body">
- *       <span class="loop-note__label">Information: </span>
- *       Body text here.
- *     </p>
- *     <div class="loop-note__action"><a href="#">Learn more</a></div>
- *   </div> */
+/* loop-note.css — Notes callout block (CSS-only custom component): .loop-note + --important/--tip/--information/--success */
 
 .loop-note {
   display: flex;

@@ -12,6 +12,11 @@
  * dist/theme.css (tokens/border.css = --border-size-*, tokens/radius.css = --radius-*).
  * The SIZES and RADII name lists mirror those files.
  *
+ * Each row also documents the UTILITY CLASS to drop on an element (via ExtendedClass),
+ * not just the token, with its own click-to-copy chip:
+ *   - border size   → native OutSystems UI `.border-size-<name>` (resolves to --border-size-*)
+ *   - border radius → Loop `.border-radius-<name>` (tokens/radius-utilities.css → --radius-*)
+ *
  * Attributes:
  *   heading   Optional section heading (default: "Borders · size & radius")
  *   intro     Optional intro line under the heading
@@ -92,6 +97,7 @@
     _sizeHtml() {
       const rows = SIZES.map((s) => {
         const v = `--border-size-${s.name}`;
+        const cls = `.border-size-${s.name}`;
         const resolved = val(v) || "—";
         return `
           <tr>
@@ -99,6 +105,7 @@
               <span class="lbr__size-chip" aria-hidden="true" style="border-bottom-width:var(${v})"></span>
               <span class="lbr__cap-name">${esc(s.label)}</span>
             </th>
+            <td>${this._copyBtn(cls)}</td>
             <td class="lbr__mono">${esc(resolved)}</td>
             <td class="lbr__use">${esc(s.use)}</td>
             <td>${this._copyBtn(v)}</td>
@@ -107,10 +114,10 @@
       return `
         <div class="lbr__group">
           <h3 class="lbr__group-title">Border size · stroke width</h3>
-          <p class="lbr__group-note">Stroke-width scale (<code>--border-size-*</code>). Apply with <code>border: var(--border-size-s) solid …</code> in custom CSS. Names match OutSystems UI so the framework's own <code>var(--border-size-*)</code> references resolve to The Loop theme.</p>
+          <p class="lbr__group-note">Stroke-width scale (<code>--border-size-*</code>). Drop the native OutSystems UI <code>.border-size-&lt;name&gt;</code> class via <strong>ExtendedClass</strong> (sets all four edges, <code>solid currentColor</code>; per-edge variants <code>.border-top/right/bottom/left-{s,m,l}</code>), or reference the variable in custom CSS (<code>border: var(--border-size-s) solid …</code>). Names match OutSystems UI so the framework's own <code>var(--border-size-*)</code> references resolve to The Loop theme.</p>
           <div class="lbr__table-wrap"><table class="lbr__table">
-            <caption class="lbr__caption">Border-size tokens, values and CSS variables</caption>
-            <thead><tr><th scope="col">Size</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
+            <caption class="lbr__caption">Border-size tokens, utility classes, values and CSS variables</caption>
+            <thead><tr><th scope="col">Size</th><th scope="col">Class</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div>
         </div>`;
@@ -120,6 +127,7 @@
     _radiusHtml() {
       const rows = RADII.map((r) => {
         const v = `--radius-${r.name}`;
+        const cls = `.border-radius-${r.name}`;
         const resolved = val(v) || "—";
         return `
           <tr>
@@ -127,6 +135,7 @@
               <span class="lbr__radius-chip" aria-hidden="true" style="border-radius:var(${v})"></span>
               <span class="lbr__cap-name">${esc(r.label)}</span>
             </th>
+            <td>${this._copyBtn(cls)}</td>
             <td class="lbr__mono">${esc(resolved)}</td>
             <td class="lbr__use">${esc(r.use)}</td>
             <td>${this._copyBtn(v)}</td>
@@ -135,10 +144,10 @@
       return `
         <div class="lbr__group">
           <h3 class="lbr__group-title">Border radius · corners</h3>
-          <p class="lbr__group-note">Corner-radius scale (<code>--radius-*</code>). Apply with <code>border-radius: var(--radius-medium)</code> in custom CSS.</p>
+          <p class="lbr__group-note">Corner-radius scale (<code>--radius-*</code>). Drop the Loop <code>.border-radius-&lt;name&gt;</code> class via <strong>ExtendedClass</strong> (tokens/radius-utilities.css — extends the OutSystems UI <code>.border-radius-*</code> family, which only ships <code>soft</code>/<code>rounded</code>/<code>circle</code>; <code>.border-radius-base</code> is the Loop alias of OS UI's <code>.border-radius-soft</code>), or reference the variable in custom CSS (<code>border-radius: var(--radius-medium)</code>).</p>
           <div class="lbr__table-wrap"><table class="lbr__table">
-            <caption class="lbr__caption">Border-radius tokens, values and CSS variables</caption>
-            <thead><tr><th scope="col">Radius</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
+            <caption class="lbr__caption">Border-radius tokens, utility classes, values and CSS variables</caption>
+            <thead><tr><th scope="col">Radius</th><th scope="col">Class</th><th scope="col">Value</th><th scope="col">Use</th><th scope="col">CSS Variable</th></tr></thead>
             <tbody>${rows}</tbody>
           </table></div>
         </div>`;
