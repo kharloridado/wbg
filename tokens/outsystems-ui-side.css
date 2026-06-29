@@ -101,9 +101,20 @@
   color: var(--color-primary);
 }
 
-/* ── Profile block at the foot: name (Bold 16) + role (Regular 12), on-light text. */
+/* ── Profile block at the foot: avatar on the LEFT, name (Bold 16) stacked over
+ * role (Regular 12) to its right, on-light text. Natively `.app-login-info` is
+ * block (avatar above text) and `.user-info` is a row (name beside role) — both
+ * wrong for this design, so set the avatar↔text row and the name/role column. */
 .layout-side .app-login-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
   color: var(--color-text-on-light-default);
+}
+.layout-side .app-login-info .user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 .layout-side .app-login-info .user-info__name {
   font-size: var(--font-size-300);
