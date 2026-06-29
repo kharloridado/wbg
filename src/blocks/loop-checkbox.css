@@ -139,6 +139,16 @@
   background: var(--color-domain-state-disable-low);          /* neutral-15 #dae3eb */
   border-color: var(--color-outline-on-light-state-disable-low); /* neutral-20 #d4dee8 */
 }
+/* Re-assert dash geometry for disabled indeterminate — the OS UI baseline adds
+ * border-based styling to [disabled]::after that makes the mark appear thicker. */
+[data-checkbox][disabled]:indeterminate::after,
+[data-checkbox][aria-disabled="true"]:indeterminate::after {
+  width: 10px;
+  height: 2.5px;
+  border: 0;
+  border-radius: 1px;
+  background: var(--color-white, #ffffff);
+}
 
 /* ---- Error / Required → red-70 outline (unchecked) + fill (checked/multi) ----
    Apply via the Checkbox widget Extended Class = "loop-checkbox--error", or it
