@@ -135,10 +135,18 @@
   flex: 1 0 auto;
 }
 /* Collapse truly-empty OPTIONAL placeholders so they leave no ghost gap
- * (OutSystems tags an unfilled placeholder `.placeholder-empty` at runtime). */
+ * (OutSystems tags an unfilled placeholder `.placeholder-empty` at runtime).
+ * Scope to DIRECT children of the slot wrappers only — a bare descendant
+ * selector also matched the native Breadcrumbs widget's per-item separator
+ * slot (also `.placeholder-empty`, holding the default chevron) and wiped the
+ * separators, collapsing "Dashboard › List › Detail" into one run-on word. */
 .layout-side .content .loop-content__breadcrumbs:empty,
 .layout-side .content .loop-content__actions:empty,
-.layout-side .content .placeholder-empty {
+.layout-side .content .loop-content__breadcrumbs > .placeholder-empty,
+.layout-side .content .loop-content__actions > .placeholder-empty,
+.layout-side .content .loop-content__title > .placeholder-empty,
+.layout-side .content .loop-content__body > .placeholder-empty,
+.layout-side .content .loop-content__footer > .placeholder-empty {
   display: none;
 }
 
@@ -168,15 +176,39 @@
   font-size: var(--font-size-200);
   line-height: var(--line-height-base);
 }
+/* Crumb labels: blue links; the current (last) crumb is subdued + unlinked.
+ * Targets the native OutSystems Breadcrumbs DOM (`.breadcrumbs-item .title`)
+ * as well as plain anchors, so it works whichever breadcrumb widget is used. */
+.loop-content__breadcrumbs .breadcrumbs-item .title,
 .loop-content__breadcrumbs a {
   color: var(--color-text-on-light-link-hover);
   text-decoration: none;
 }
 .loop-content__breadcrumbs a:hover { text-decoration: underline; }
-.loop-content__breadcrumbs .loop-icon,
-.loop-content__breadcrumbs i { color: var(--color-icon-on-light-primary); }
+.loop-content__breadcrumbs .breadcrumbs-item:last-child .title,
 .loop-content__breadcrumbs [aria-current],
-.loop-content__breadcrumbs .is-current { color: var(--color-text-on-light-subdued); }
+.loop-content__breadcrumbs .is-current {
+  color: var(--color-text-on-light-subdued);
+}
+/* Separator: the native per-item chevron slot rendered as a thin grey "|"
+ * (Figma uses a vertical bar, not a chevron); none trails the last crumb. */
+.loop-content__breadcrumbs .breadcrumbs-item > .placeholder-empty .icon {
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-content__breadcrumbs .breadcrumbs-item > .placeholder-empty .icon::before {
+  content: "|";
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+}
+.loop-content__breadcrumbs .breadcrumbs-item:last-child > .placeholder-empty {
+  display: none;
+}
+/* Leading home / custom crumb icon (a filled icon slot, not the separator) → dark. */
+.loop-content__breadcrumbs .loop-icon,
+.loop-content__breadcrumbs .breadcrumbs-item .title .icon,
+.loop-content__breadcrumbs .breadcrumbs-content > .icon {
+  color: var(--color-icon-on-light-primary);
+}
 .loop-content__breadcrumbs-sep { color: var(--color-text-on-light-state-disabled); }
 
 /* Utility actions (FAQ, language) — right-aligned; the controls inside are
