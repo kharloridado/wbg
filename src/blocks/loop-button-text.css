@@ -1,61 +1,75 @@
 /* ============================================
    Component: Button Text  ("The Loop" — loop/button/text)
    Figma: "Button Text" [node:15597-4652]
+   Re-validated: 2026-06-29 (kharloridado review)
 
-   A link-style text button: no fill, no border, blue-70 label. Distinct from the
-   Button's GHOST variant (which keeps button padding + a light hover fill); Button
-   Text is inline/link-like and gets a dedicated high-contrast ORANGE keyboard-focus
-   ring (Keyboard Focus/On Light #b6490c) instead of the blue ring used elsewhere.
+   A link-style text button: no fill, no border, blue-70 label, UNDERLINED IN EVERY
+   STATE (only the underline colour shifts per state). Distinct from the Button's GHOST
+   variant. Dedicated high-contrast ORANGE keyboard-focus ring (#b6490c).
 
-   Approach: RESTYLE the native OutSystems UI Button (.btn) with a `btn-text` modifier
-     — OutSystems UI has no native text/link button style, so this is the one added
-     modifier (apply via the Button widget's Extended Class = "btn-text").
+   Approach: RESTYLE the native OutSystems UI Button (.btn) with a `btn-text` modifier.
+     Apply via Button widget's Extended Class = "btn-text".
    Location: Theme CSS (paste below OutSystems UI so it wins).
    Escalation Level: L2 (native widget + token-driven modifier)
 
-   Tokens: --space-button-gap, --space-xxsmall, --font-family-label, --font-weight-bold,
-     --font-size-300, --letter-spacing-button, --line-height-base,
-     --color-text-on-light-link-primary-enabled, --color-blue-90,
-     --color-bg-link-primary-disabled (Text/On Light/Link/Disabled #8a9db1),
+   Figma state summary (node:15597-4652):
+     Enabled  — label #004370, underline rgba(0,67,112,0.55) 2px
+     Hover    — label #004370 (unchanged), underline #169af3 (Blue/40)
+     Disabled — label #8a9db1, underline #dae3eb (Neutral/15)
+     Focus    — 1px solid #b6490c border-radius:2px outline (tight, offset 0)
+
+   Tokens: --space-button-gap, --font-family-label, --font-weight-bold,
+     --font-size-300, --letter-spacing-button,
+     --color-text-on-light-link-primary-enabled,
+     --color-text-on-light-link-underline-enabled,
+     --color-blue-40, --color-neutral-15,
+     --color-bg-link-primary-disabled,
      --color-focus-keyboard-on-light.
    ============================================ */
 
 .btn-text {
-  min-height: 44px;                                    /* WCAG 2.2 SC 2.5.8 target size (implementation-level) */
+  min-height: 44px;                                    /* WCAG 2.2 SC 2.5.8 target size */
   height: auto;
   gap: var(--space-button-gap, 6px);
-  padding: var(--space-xxsmall, 8px);                  /* minimal click padding around the label */
+  padding: 2px 2px 4px;                               /* Figma container: pt-2 pb-4 px-2 */
 
   background-color: transparent;
-  border: 0px;
-  color: var(--color-text-on-light-link-primary-enabled);   /* blue-70 #004370 */
+  border: 0;
+  border-radius: 2px;                                  /* matches focus-ring radius */
+  color: var(--color-text-on-light-link-primary-enabled, #004370);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
   font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);
+  line-height: 1.9;                                    /* Figma: lh 1.9, not base 1.5 */
   letter-spacing: var(--letter-spacing-button, -0.5px);
-  text-decoration: none;
+
+  /* Underline in EVERY state — colour shifts per state via text-decoration-color */
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-text-on-light-link-underline-enabled, rgba(0,67,112,0.55));
 }
 
-/* Hover/pressed — underline + darken (standard link affordance) */
-.btn-text:hover           { filter: none; text-decoration: underline; }
-.desktop .btn-text:hover  { filter: none; }
-.btn-text:active          { color: var(--color-blue-90); }   /* Blue/90 #012740 (Link Pressed) */
+/* Hover — underline shifts to Blue/40; label colour stays blue-70 */
+.btn-text:hover {
+  filter: none;
+  text-decoration-color: var(--color-blue-40, #169af3);
+}
+.desktop .btn-text:hover { filter: none; }
 
-/* Disabled — Text/On Light/Link/Disabled #8a9db1 (neutral-40) */
+/* Disabled — Neutral/40 label, Neutral/15 underline */
 .btn-text[disabled],
 .btn-text[aria-disabled="true"] {
   background-color: transparent;
-  color: var(--color-bg-link-primary-disabled);              /* #8a9db1 */
-  text-decoration: none;
+  color: var(--color-bg-link-primary-disabled, #8a9db1);
+  text-decoration-color: var(--color-neutral-15, #dae3eb);
 }
 
-/* Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — The Loop's dedicated high-contrast
-   ORANGE keyboard-focus ring (not the blue used on filled/outlined buttons). */
+/* Focus indicator — tight 1px orange ring (Figma: Keyboard Focus/On Light #b6490c)
+   outline inherits border-radius:2px in modern browsers (Chrome 94+, Firefox 92+). */
 .btn-text:focus-visible {
-  outline: 2px solid var(--color-focus-keyboard-on-light, #b6490c);
-  outline-offset: 2px;
+  outline: 1px solid var(--color-focus-keyboard-on-light, #b6490c);
+  outline-offset: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
