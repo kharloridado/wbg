@@ -174,9 +174,14 @@
   min-height: 100%;
   background: linear-gradient(135deg, var(--color-bg-page-start), var(--color-bg-page-end));
 }
-/* The main screen-content region grows so the footer sinks to the bottom. */
+/* The main screen-content region grows so the footer sinks to the bottom, and
+ * insets its content so it aligns with the header/title (left edge) and breathes
+ * from the chrome — the bare MainContent placeholder has no padding of its own.
+ * Horizontal inset matches the header's var(--space-xlarge) so all three edges
+ * (breadcrumb, title, body, footer) line up. */
 .layout-side .content > .loop-content__body {
   flex: 1 0 auto;
+  padding: var(--space-regular) var(--space-xlarge) var(--space-xlarge);
 }
 /* Collapse truly-empty OPTIONAL placeholders so they leave no ghost gap
  * (OutSystems tags an unfilled placeholder `.placeholder-empty` at runtime).
