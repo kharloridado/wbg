@@ -8,14 +8,44 @@
  * The panel width token --side-menu-size lives in outsystems-ui-overrides.css. */
 
 /* ── Panel: white surface (native neutral-0) + a dimmed right edge and the brand
- * regular drop shadow; 12px inline padding (Figma "spacing R layout"). */
+ * regular drop shadow; 12px inline padding (Figma "spacing R layout").
+ * Fixed-height FLEX COLUMN so the three regions (logo / scrollable menu /
+ * profile) share the panel and the profile stays pinned at the foot — natively
+ * the panel is `display:block`, so a tall menu list pushed the profile (User
+ * Info) below the fixed panel and out of view. */
 .layout-side .app-menu-content {
+  display: flex;
+  flex-direction: column;
   border-right: var(--border-size-s) solid var(--color-outline-on-light-dimmed);
   box-shadow: var(--shadow-regular);
   padding-inline: var(--space-xsmall);
 }
+/* Menu list takes the slack and scrolls; profile holds its height at the foot. */
+.layout-side .app-menu-links {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.layout-side .app-login-info {
+  flex: 0 0 auto;
+}
+/* Hairline dividers (Figma #00396b29): under the logo row and above the profile. */
+.layout-side .header-logo {
+  border-bottom: var(--border-size-s) solid var(--color-divider-on-light-default);
+}
+.layout-side .app-login-info {
+  border-top: var(--border-size-s) solid var(--color-divider-on-light-default);
+}
 
-/* ── Logo row: brand-emphasis label, Open Sans Bold 18 / blue-90 (#012740). */
+/* ── Logo row: brand-emphasis label, Open Sans Bold 18 / blue-90 (#012740);
+ * laid out as a row (logo + label, then a trailing collapse toggle pushed to
+ * the right edge by the label growing to fill). */
+.layout-side .header-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+}
+.layout-side .header-logo .application-name { flex: 1 1 auto; }
 .layout-side .header-logo,
 .layout-side .app-logo {
   color: var(--color-text-on-light-emphasis);
@@ -124,11 +154,14 @@
  * has none); the footer is static brand chrome. Block: `loop-content`.
  * ════════════════════════════════════════════════════════════════════════════ */
 
-/* Content column stacks: header → screen content → footer pinned to the foot. */
+/* Content column stacks: header → screen content → footer pinned to the foot.
+ * Background: the "Form page" subtle diagonal light-blue gradient (FND-059); the
+ * white screen card and the dark footer paint over it. */
 .layout-side .content {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  background: linear-gradient(135deg, var(--color-bg-page-start), var(--color-bg-page-end));
 }
 /* The main screen-content region grows so the footer sinks to the bottom. */
 .layout-side .content > .loop-content__body {
@@ -241,7 +274,10 @@
   justify-content: space-between;
   gap: var(--space-small);
   margin-top: auto;
-  padding: var(--space-xxsmall) var(--space-xlarge);
+  /* 64px-tall bar (Figma "Footer External Web Thin CF", 1600×64): 24px block
+   * padding over the ~16px institutions line. */
+  min-height: var(--space-xxlarge);
+  padding: var(--space-regular) var(--space-xlarge);
   background-color: var(--color-bg-footer-external);
   color: var(--color-white);
 }

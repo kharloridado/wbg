@@ -78,6 +78,10 @@
   --color-bg-container-state-info-low:  var(--color-blue-05);
   --color-bg-container-state-info-high: var(--color-blue-70);
   --color-bg-footer-external: #1a1a1a;   /* WBG external dark footer — orphan, no primitive (FND-058) */
+  /* "Form page" content background — a subtle diagonal light-blue gradient
+   * (Figma raw fill, not a bound variable). Orphan, no primitive (FND-059). */
+  --color-bg-page-start: #e8f5fc;
+  --color-bg-page-end:   #e3e6fc;
 
   /* ---- Text (on light) ---- */
   --color-text-on-light-subdued:  #000d1a91;   /* orphan alpha — no primitive */
