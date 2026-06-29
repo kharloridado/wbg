@@ -1,33 +1,13 @@
-/* outsystems-ui-header.css — Layout Top branded chrome (class-level)
- * ----------------------------------------------------------------------------
- * Companion to outsystems-ui-overrides.css. The header BACKGROUND is set there
- * via the `--header-color` token (→ var(--color-primary)). This file carries the
- * class-level overrides that token alone can't express: white text/links and a
- * white underline under the active menu item, on the now-dark primary header.
- *
- * Why class rules (not a :root remap): the framework resolves menu-link text from
- * `neutral-9` and the hover/active/underline color from `primary`
- * (vendor _menu-app-menu-links.scss:36,44-46,84-86). Remapping those primitives
- * would retint the whole app — so we override the native classes directly instead
- * (no `loop-` prefix; these restyle OutSystems UI, they don't add a parallel system).
- *
- * Scope: everything is nested under `.header` so a Layout Side sidebar (white bg)
- * is NOT turned white-on-white. The active underline is additionally limited to
- * non-side layouts, mirroring the framework selector so equal specificity + later
- * load (theme loads after OutSystems UI in ODC) lets it win.
- *
- * a11y (FND-012): the Blue/50 focus ring (--color-focus-outer) is low-contrast on
- * this blue header. Kept faithful (flag-don't-fix) — see findings/findings-register.md. */
+/* outsystems-ui-header.css — Layout Top branded header overrides (class-level).
+ * White text/links + active underline on the dark primary header; scoped under
+ * .header so a Layout Side sidebar is unaffected. */
 
-/* Generic header text → white (header content, expressions). */
+/* Generic header text → white. */
 .header {
   color: var(--color-white);
 }
 
-/* Application name / any heading in the header → white.
- * loop-headings.css gives bare h1–h3 the dark `--color-text-on-light-headers`
- * (element specificity 0,0,1); the ODC ApplicationTitle renders the app name as a
- * heading, so it needs an explicit white override here to beat that element rule. */
+/* App name / headings in the header → white (beats the bare h1–h3 element rule). */
 .header .application-name,
 .header h1,
 .header h2,
@@ -44,8 +24,7 @@
   color: var(--color-white);
 }
 
-/* Menu links: white in every state (default/hover/active) on the blue header.
- * Overrides framework neutral-9 (default) and primary (hover/active). */
+/* Menu links: white in every state on the blue header. */
 .header .app-menu-links a,
 .header .app-menu-links a:hover,
 .header .app-menu-links a.active {
@@ -57,13 +36,10 @@
   border-bottom-color: var(--color-white);
 }
 
-/* ── Submenu (osui-submenu) — the dropdown menu groups that sit ON the header bar.
- * Only the HEADER BAR part (.osui-submenu__header*) is on the blue surface and goes
- * white; the floating panel (.osui-submenu__items) is a white popup and is reset
- * back to its dark framework colors further down. Mirrors vendor _submenu.scss
- * (header text neutral-9/neutral-8, active/hover = primary border + primary text). */
+/* ── Submenu (osui-submenu) on the header bar: the header-bar part goes white;
+ * the floating panel (.osui-submenu__items) is reset to dark colors further down. */
 
-/* Header-bar text → white (resting, hover, and the neutral-9 hover override). */
+/* Header-bar text → white. */
 .header .osui-submenu__header__item,
 .header .osui-submenu__header__item a,
 .header .osui-submenu__header__item a:hover,
@@ -71,7 +47,7 @@
   color: var(--color-white);
 }
 
-/* Active / open submenu: header text white (framework uses primary). */
+/* Active / open submenu: header text white. */
 .header .osui-submenu.active .osui-submenu__header__item,
 .header .osui-submenu.active .osui-submenu__header__item a,
 .header .osui-submenu.active--is-open .osui-submenu__header__item,
@@ -79,24 +55,18 @@
   color: var(--color-white);
 }
 
-/* Header-bar bottom border → white on active and on hover (framework uses primary). */
+/* Header-bar bottom border → white on active and hover. */
 .header .osui-submenu.active .osui-submenu__header,
 .header .osui-submenu__header:hover {
   border-bottom-color: var(--color-white);
 }
 
-/* Expand/collapse arrow → white. The glyph is drawn by the icon font on
- * .osui-submenu__header__icon:after (vendor _icon-library-odc.scss). Vendor sets no
- * color, so it inherits the framework's dark text (the icon element is a sibling of
- * __item, which is the only node whitened above) — a dark chevron on the blue bar.
- * neutral-0 → white via outsystems-ui-overrides.css. */
+/* Expand/collapse arrow → white (neutral-0 maps to white in the overrides). */
 .header .osui-submenu__header__icon:after {
   color: var(--color-neutral-0);
 }
 
-/* Floating panel (.osui-submenu__items) is a white popup BELOW the header — keep its
- * links dark/legible. Without this they'd inherit the white from `.header .app-menu-links a`
- * above (the panel is a DOM descendant of .app-menu-links) and vanish on white. */
+/* Floating panel (.osui-submenu__items) is a white popup — keep its links dark/legible. */
 .header .osui-submenu__items a {
   color: var(--color-neutral-8);
 }
@@ -105,17 +75,8 @@
   color: var(--color-primary);
 }
 
-/* ── Focus indicator — match The Loop's project-standard 2px outline ring.
- * The framework styles menu-link focus with `box-shadow: 0 0 0 3px focus-outer`
- * (a glow, no offset) under `.has-accessible-features`
- * (vendor _menu-app-menu-links.scss:177-179) — NOT the `outline: 2px solid …;
- * outline-offset: 2px` ring every other focusable component in The Loop uses.
- * Neutralize that glow and apply the ring so keyboard focus is consistent.
- * The `.has-accessible-features …:focus` selectors mirror the framework's so equal/
- * higher specificity + later load (theme loads after OutSystems UI in ODC) lets them
- * win; the bare `:focus-visible` selectors cover runtimes without that class.
- * a11y (FND-012): the Blue/50 ring is low-contrast on the blue header bar — kept
- * faithful (flag-don't-fix); the white floating panel renders it fine. */
+/* ── Focus indicator — replace the framework glow with The Loop's 2px outline ring.
+ * The bare :focus-visible selectors cover runtimes without .has-accessible-features. */
 .header .app-menu-links a:focus-visible,
 .header .osui-submenu__header__item a:focus-visible,
 .has-accessible-features .header .app-menu-links a:focus,
@@ -125,9 +86,7 @@
   box-shadow: none;
 }
 
-/* Floating submenu panel sits on a white popup → on-light focus ring. Declared
- * after the rule above so it wins for panel links (a DOM descendant of
- * .app-menu-links — see the panel-color reset above). */
+/* Floating submenu panel sits on a white popup → on-light focus ring. */
 .header .osui-submenu__items a:focus-visible,
 .has-accessible-features .header .osui-submenu__items a:focus {
   outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));

@@ -1,0 +1,8 @@
+/* component-button.css — Button height tokens (applied as fixed height so the border never shifts size) */
+:root {
+  /* ---- Sizes (pinned, applied as fixed height) ---- */
+  --loop-btn-h-xlarge:  56px;   /* xLarge (added modifier) */
+  --loop-btn-h-large:   48px;   /* Large */
+  --loop-btn-h-regular: 40px;   /* Regular (default) */
+  --loop-btn-h-small:   32px;   /* Small */
+}

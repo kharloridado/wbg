@@ -1,13 +1,4 @@
-/* semantic-colors-dark.css — WBG / "The Loop" semantic role layer · DARK / INVERTED
- * Extracted from Figma: Semantic Colors [node:11122-2879].
- *
- * DEFERRED — NOT imported by tokens/index.css. This phase ships LIGHT mode only.
- * These roles (On Dark / Elevation Dark / inverted page surface) are parked here so the
- * extraction work is preserved; reconcile + import them in a later dark-mode phase.
- * They reference primitives from colors.css, so import colors.css alongside this file
- * when the dark phase begins.
- *
- * Orphan with no primitive: divider-on-dark-default #00538a99 (tracked by FND-006). */
+/* semantic-colors-dark.css — semantic role layer · dark / inverted (deferred, not imported) */
 :root {
   /* ---- Domain · elevations (dark) ---- */
   --color-domain-elevation-dark-high:     var(--color-neutral-70);
@@ -60,7 +51,7 @@
 
   /* ---- Divider (on dark) ---- */
   --color-divider-on-dark-emphasis:  var(--color-gray-alpha-white-60);
-  --color-divider-on-dark-default:   #00538a99;   /* FND-006 — orphan alpha, no primitive */
+  --color-divider-on-dark-default:   #00538a99;   /* orphan alpha — no primitive */
   --color-divider-on-dark-subdued:   var(--color-gray-alpha-white-24);
 
   /* ---- Outline (on dark) ---- */

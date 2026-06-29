@@ -1,29 +1,16 @@
-/* component-toggle.css — WBG / "The Loop" Toggle (switch) component tokens
- * Extracted from Figma: "Toggle" [node:25344-27822] · switch component set
- * [node:25344-27924] (loop/toggle/switch/* and loop/toggle/label/* variables).
- * These are the track + thumb + label metrics consumed by the native-switch restyle
- * in src/blocks/loop-switch.css. Each value references a foundation-scale token where
- * one exists; the track/thumb geometry is component-only and declared here.
- *
- * Loaded AFTER the foundation files (colors/spacing/typography) so the var()
- * references resolve, and BEFORE outsystems-ui-overrides.css (which must stay last).
- *
- * Conflicts flagged, NOT silently normalised (CLAUDE.md the-one-rule):
- *   - label line-height is published twice with different values:
- *     `loop/Toggle/Label/Line Height` = 16 vs `loop/toggle/label/line height` = 18.
- *     Built on the 18 used by the assembled component instance.            → FND-024 */
+/* component-toggle.css — Toggle (switch) component tokens (track + thumb + label; native-switch restyle) */
 :root {
-  /* ---- Track + thumb geometry (xLarge default; loop/toggle/switch/*) ---- */
-  --loop-toggle-track-w:    56px;                 /* loop/toggle/switch/width */
-  --loop-toggle-track-h:    32px;                 /* loop/toggle/switch/height */
-  --loop-toggle-circle:     24px;                 /* loop/toggle/switch/circle size */
-  --loop-toggle-padding:    var(--space-tiny);    /* 4px — loop/toggle/switch/padding */
+  /* ---- Track + thumb geometry (xLarge default) ---- */
+  --loop-toggle-track-w:    56px;
+  --loop-toggle-track-h:    32px;
+  --loop-toggle-circle:     24px;
+  --loop-toggle-padding:    var(--space-tiny);    /* 4px */
 
-  /* ---- Label (loop/toggle/label/*) ---- */
-  --loop-toggle-label-size:    var(--font-size-300);      /* 16px — loop/toggle/label/font Size */
-  --loop-toggle-label-weight:  var(--font-weight-regular);/* 400  — loop/toggle/label/font weight */
-  --loop-toggle-label-leading: 18px;                      /* loop/toggle/label/line height (16 vs 18 — FND-024) */
-  --loop-toggle-label-tracking: var(--letter-spacing-none);/* 0   — loop/toggle/label/letter spacing */
-  --loop-toggle-label-gap:     var(--space-xxsmall);      /* 8px  — loop/toggle/label/gap (input↔label) */
-  --loop-toggle-row-minh:      var(--space-large);        /* 40px — loop/toggle/label/minH (row height) */
+  /* ---- Label ---- */
+  --loop-toggle-label-size:    var(--font-size-300);      /* 16px */
+  --loop-toggle-label-weight:  var(--font-weight-regular);/* 400 */
+  --loop-toggle-label-leading: 18px;                      /* published as 16 vs 18; built on 18 */
+  --loop-toggle-label-tracking: var(--letter-spacing-none);/* 0 */
+  --loop-toggle-label-gap:     var(--space-xxsmall);      /* 8px  — input ↔ label */
+  --loop-toggle-row-minh:      var(--space-large);        /* 40px — row height */
 }

@@ -1,54 +1,42 @@
-/* component-alert.css — WBG / "The Loop" Alert component tokens
- * Figma: "Alerts" [node:17868-4165]. Vanilla JS Web Component (<loop-alert>).
- * CSS custom properties cascade into Shadow DOM so the component reads them here.
- * Four types: error | warning | information | success.
- * Layout variants: single-line (default) and multiline (attr).
- *
- * Distinct from <loop-system-alert> (the dark full-width status banner): this is the
- * LIGHT, contextual alert — tinted background + a 4px LEFT accent border (plus 1px
- * top/right/bottom in the same accent), dark text, left icon + title + message +
- * action link + dismiss ×. Sits alongside Notes (component-note.css) in the family. */
+/* component-alert.css — Alert component tokens (vanilla JS Web Component <loop-alert>); light contextual alert */
 :root {
   /* ---- Geometry ---- */
-  --loop-alert-corner-radius:    var(--radius-base);     /* 4px  — border-radius/base */
-  --loop-alert-accent-width:     4px;                    /* left accent border (Figma border-l-4) */
-  --loop-alert-hairline-width:   1px;                    /* top/right/bottom border (Figma border-b/r/t) */
-  --loop-alert-padding-h:        var(--space-small);     /* 16px — single-line inline padding (spacing/small) */
-  --loop-alert-padding-h-multi:  var(--space-xsmall);    /* 12px — multi-line inline padding (spacing/xsmall) */
-  --loop-alert-padding-v-multi:  var(--space-xxsmall);   /* 8px  — multi-line block padding (spacing/xxsmall) */
-  --loop-alert-gap:              var(--space-small);      /* 16px — single-line content gap (icon ↔ text ↔ action) */
-  --loop-alert-gap-multi:        var(--space-xxsmall);   /* 8px  — multi-line content gap (icon ↔ text column) */
-  --loop-alert-action-pt:        var(--space-xsmall);    /* 12px — multi-line action top-padding (lift/spacing/space-3) */
+  --loop-alert-corner-radius:    var(--radius-base);     /* 4px */
+  --loop-alert-accent-width:     4px;                    /* left accent border */
+  --loop-alert-hairline-width:   1px;                    /* top/right/bottom border */
+  --loop-alert-padding-h:        var(--space-small);     /* 16px — single-line inline padding */
+  --loop-alert-padding-h-multi:  var(--space-xsmall);    /* 12px — multi-line inline padding */
+  --loop-alert-padding-v-multi:  var(--space-xxsmall);   /* 8px  — multi-line block padding */
+  --loop-alert-gap:              var(--space-small);      /* 16px — single-line content gap */
+  --loop-alert-gap-multi:        var(--space-xxsmall);   /* 8px  — multi-line content gap */
+  --loop-alert-action-pt:        var(--space-xsmall);    /* 12px — multi-line action top-padding */
   --loop-alert-icon-size:        16px;
-  --loop-alert-min-height:       40px;                   /* Figma: single-line height */
-  --loop-alert-min-width:        230px;                  /* Figma: min-width (both layouts) */
+  --loop-alert-min-height:       40px;                   /* single-line height */
+  --loop-alert-min-width:        230px;                  /* min-width (both layouts) */
 
   /* ---- Typography ---- */
-  --loop-alert-title-size: var(--font-size-200);   /* 14px — loop/Alert/title (Bold) */
-  --loop-alert-body-size:  var(--font-size-200);   /* 14px — loop/Alert/message + action */
+  --loop-alert-title-size: var(--font-size-200);   /* 14px — title (Bold) */
+  --loop-alert-body-size:  var(--font-size-200);   /* 14px — message + action */
 
   /* ---- Shared text roles (same across all types — light alert on tinted bg) ---- */
   --loop-alert-text:   var(--color-text-on-light-default);             /* rgba(0,13,26,0.7) — title + message */
-  --loop-alert-action: var(--color-text-on-light-link-primary-enabled); /* #004370 — blue-70.
-    Normalized to primary for ALL types/layouts; Figma shows #0c0f12 only on the Information
-    multi-line variant — treated as a one-off, logged as FND-054 (consistency) for design. */
+  --loop-alert-action: var(--color-text-on-light-link-primary-enabled); /* #004370 — normalized to primary for all types */
 
-  /* Per-type background (low) + accent (border + icon). Figma names:
-   * bg = background/container/on-light/state/<type>/low; accent = outline/on-light/state/<type>/high */
+  /* Per-type background (low) + accent (border + icon) */
 
   /* ---- Type: error ---- */
-  --loop-alert-error-bg:     var(--color-bg-container-state-error-low);   /* #fdf2f2 — color-red-10 */
-  --loop-alert-error-accent: var(--color-bg-container-state-error-high);  /* #9d161d — color-red-70 */
+  --loop-alert-error-bg:     var(--color-bg-container-state-error-low);   /* #fdf2f2 */
+  --loop-alert-error-accent: var(--color-bg-container-state-error-high);  /* #9d161d */
 
   /* ---- Type: warning ---- */
-  --loop-alert-warning-bg:     var(--color-domain-state-warning-low);     /* #fef3d7 — color-yellow-03 */
-  --loop-alert-warning-accent: var(--color-domain-state-warning-medium);  /* #896001 — color-yellow-base */
+  --loop-alert-warning-bg:     var(--color-domain-state-warning-low);     /* #fef3d7 */
+  --loop-alert-warning-accent: var(--color-domain-state-warning-medium);  /* #896001 */
 
   /* ---- Type: information ---- */
-  --loop-alert-information-bg:     var(--color-domain-state-info-low);    /* #f6fcff — color-blue-05 */
-  --loop-alert-information-accent: var(--color-text-on-light-state-info); /* #00538a — color-blue-60 */
+  --loop-alert-information-bg:     var(--color-domain-state-info-low);    /* #f6fcff */
+  --loop-alert-information-accent: var(--color-text-on-light-state-info); /* #00538a */
 
   /* ---- Type: success ---- */
-  --loop-alert-success-bg:     var(--color-domain-state-positive-low);          /* #f6fef0 — color-green-03 */
-  --loop-alert-success-accent: var(--color-outline-on-light-state-success-high); /* #388004 — color-green-60 */
+  --loop-alert-success-bg:     var(--color-domain-state-positive-low);          /* #f6fef0 */
+  --loop-alert-success-accent: var(--color-outline-on-light-state-success-high); /* #388004 */
 }

@@ -1,7 +1,4 @@
-/* shadow-utilities.css — WBG / "The Loop" elevation utility classes.
- * One class per shadow step + a reset class. Attach via ExtendedClass (hard rule #7).
- * Values resolve through var(--shadow-*) (hard rule #3). No !important.
- * Rendered live in the Live Style Guide by <loop-shadow-reference>. */
+/* shadow-utilities.css — elevation utility classes (one per shadow step + reset) */
 
 .shadow-none    { box-shadow: none; }
 .shadow-lowest  { box-shadow: var(--shadow-lowest); }

@@ -1,27 +1,7 @@
-/* color-utilities.css — WBG / "The Loop" color utility classes (source for build:theme)
- * Single-purpose text + background helpers, applied to OutSystems UI elements via
- * ExtendedClass (CLAUDE.md hard rule #7 — never mutate OS UI internals). Every value
- * points at a SEMANTIC role token from semantic-colors.css — never a raw primitive and
- * never a hard-coded value (hard rule #3), so a design re-map flows through automatically.
- *
- * TWO kinds of class here:
- *   1. OVERRIDE of an existing OutSystems UI "useful" class (vendor 05-useful/_colors-*.scss):
- *      .text-error/-success/-warning/-info, .background-primary/-secondary,
- *      .background-success/-error/-info (+ -light). We reuse the SAME bare names so our
- *      brand role wins (no .loop- duplicate). These ARE worth overriding: OS UI resolves
- *      them through the generic --color-<name> aliases (e.g. --color-error = red-50), but
- *      The Loop's TEXT roles are tuned darker for legibility (text error = red-70), and its
- *      container roles differ from the brand fills. OS UI convention kept: base = saturated,
- *      `-light` = subtle tint.
- *   2. NEW .loop-* utilities for Loop roles OS UI has no equivalent for.
- *
- * Note: OS UI .background-warning(/-light) is intentionally NOT overridden — The Loop has
- * no bg-container-state-warning token; it keeps the branded --color-warning from
- * outsystems-ui-overrides.css. (Container-warning gap is design's to fill — finding-worthy.)
- *
- * LIGHT mode only — mirrors semantic-colors.css; dark roles are parked (see that file).
- * `!important` is deliberate: utilities are opt-in, single-declaration overrides that must
- * win over OS UI's own color rules when attached via ExtendedClass. */
+/* color-utilities.css — text + background color utility classes (semantic-token-backed).
+ * Overrides OS UI "useful" classes by bare name + adds new .loop-* roles; !important is
+ * deliberate so opt-in utilities win over OS UI. Light mode only.
+ * Note: .background-warning is NOT overridden — The Loop has no bg-container-warning token. */
 
 /* ===================== TEXT — override OS UI useful classes ===================== */
 .text-error      { color: var(--color-text-on-light-state-error) !important; }
@@ -37,7 +17,7 @@
 .loop-text-disabled  { color: var(--color-text-on-light-state-disabled) !important; }
 .loop-text-suggestion { color: var(--color-text-on-light-state-suggest) !important; }
 .loop-text-link      { color: var(--color-text-on-light-link-primary-enabled) !important; }
-/* Inverse — pair with saturated/dark backgrounds (background-primary, *-strong surfaces) */
+/* Inverse — pair with dark backgrounds */
 .loop-text-inverse   { color: var(--color-white) !important; }
 .loop-text-on-blue   { color: var(--color-text-on-blue) !important; }
 
@@ -58,6 +38,6 @@
 .loop-background-regular   { background-color: var(--color-bg-container-on-light-regular) !important; }
 .loop-background-low       { background-color: var(--color-bg-container-on-light-low) !important; }
 .loop-background-lowest    { background-color: var(--color-bg-container-on-light-lowest) !important; }
-/* Suggestion has no OS UI semantic — follows the same base=saturated / -light=tint convention */
+/* Suggestion — no OS UI semantic; base=saturated / -light=tint */
 .loop-background-suggestion       { background-color: var(--color-bg-container-state-suggestion-high) !important; }
 .loop-background-suggestion-light { background-color: var(--color-bg-container-state-suggestion-low) !important; }

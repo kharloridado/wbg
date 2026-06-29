@@ -1,105 +1,86 @@
-/* component-badge-status.css — WBG / "The Loop" Badge Status component tokens
- * Extracted from Figma: "Badge / Status" [node:18153-7159] (loop/badge-status/* vars).
- * Custom CSS-only block (no JS) — no native OutSystems UI equivalent (the native Badge
- * is a count bubble). Consumed by src/blocks/loop-badge-status.css; applied as plain
- * markup via BEM classes (like loop-tag). These tokens cascade normally (no Shadow DOM).
- *
- * Loaded AFTER the foundations (colors/semantic/typography/radius) so the var()
- * references resolve, and BEFORE outsystems-ui-overrides.css (stays last).
- *
- * The component has three TYPES (Figma "Status"): Light (colour dot + label),
- * Icon (semantic glyph + label) and Headline (dot + label in a bordered/filled pill);
- * seven STATES (success/informational/warning/error/suggestive/not-started/in-progress);
- * four SIZES (small/regular/large/xlarge). The label colour is the SAME neutral dark
- * across all states (only the dot/icon/border carries the state hue — per Figma).
- *
- * Off-scale / unpublished values flagged, NOT silently normalised (CLAUDE.md one-rule):
- *   - label font-weight = 500 (loop/badge-status/label/font-weight). The theme ships
- *     Open Sans 400/600/700 only (typography.css), so 500 renders as 400 (faux) — the
- *     Figma style name is "SemiBold" (600). Encoded as 500 verbatim → FND-036.
- *   - label letter-spacing 0.5px — off the foundation --letter-spacing-* scale (kept as
- *     a component literal, same precedent as loop-tag's 0.25px tracking).
- *   - Headline pill height: pinned per size to the measured Figma pill heights
- *     (xlarge 40 / large 32 / regular 24 / small 22) so the box height is deterministic
- *     in any host layout (ODC inflates an inherited line-height otherwise) → FND-037.
- *   - h-gap: xlarge publishes 6 (loop/badge-status/xlarge/h-gap); the generic
- *     loop/Status Badge/hGap = 4 is used for the smaller sizes. */
+/* component-badge-status.css — Badge / Status component tokens */
 :root {
   /* ---- Label typography (constant family/weight/tracking across sizes) ---- */
   --loop-badge-status-label-family:   var(--font-family-body);   /* Open Sans */
-  --loop-badge-status-label-weight:   500;                       /* loop/badge-status/label/font-weight — not in 400/600/700 scale, FND-036 */
-  --loop-badge-status-label-tracking: 0.5px;                     /* loop/badge-status label letterSpacing — off-scale literal */
-  --loop-badge-status-label-color:    var(--color-text-on-light-default);  /* #000d1ab2 — Text/On Light/Default (same for all states) */
+  --loop-badge-status-label-weight:   var(--font-weight-medium, 500);  /* Open Sans 500 (Medium) */
+  --loop-badge-status-label-tracking: 0.5px;
+  --loop-badge-status-label-color:    var(--color-text-on-light-default);  /* #000d1ab2 (same for all states) */
 
-  /* ---- Geometry: pill (Headline type) ---- */
-  --loop-badge-status-radius:        var(--radius-base);   /* 4px — Border Radius/Base */
-  --loop-badge-status-pad-left:      var(--space-xsmall);  /* 12px — loop/badge-status/h-left-padding */
-  --loop-badge-status-pad-right:     14px;                 /* loop/badge-status/h-right-padding — off-scale literal */
+  /* ---- Geometry: pill (Headline type) — radius constant; h-padding per-size below ---- */
+  --loop-badge-status-radius:        var(--radius-base);   /* 4px */
 
   /* ---- Size: XLarge (Figma canonical default) ---- */
   --loop-badge-status-xlarge-font:    var(--font-size-400); /* 18px */
-  --loop-badge-status-xlarge-leading: 20px;                /* loop/badge-status/label/line-height */
-  --loop-badge-status-xlarge-icon:    20px;                /* loop/badge-status/icon-size */
-  --loop-badge-status-xlarge-dot:     14px;                /* loop/badge-status/dot-size */
-  --loop-badge-status-xlarge-gap:     6px;                 /* loop/badge-status/xlarge/h-gap */
-  --loop-badge-status-xlarge-headline-h: 40px;             /* measured Figma pill height, FND-037 */
+  --loop-badge-status-xlarge-leading: 20px;
+  --loop-badge-status-xlarge-icon:    20px;
+  --loop-badge-status-xlarge-dot:     14px;
+  --loop-badge-status-xlarge-gap:     6px;
+  --loop-badge-status-xlarge-headline-h: 40px;             /* pinned pill height */
+  --loop-badge-status-xlarge-pad-left:  var(--space-xsmall); /* 12px */
+  --loop-badge-status-xlarge-pad-right: 14px;
 
   /* ---- Size: Large ---- */
   --loop-badge-status-large-font:    var(--font-size-300); /* 16px */
   --loop-badge-status-large-leading: 16px;
   --loop-badge-status-large-icon:    18px;
   --loop-badge-status-large-dot:     12px;
-  --loop-badge-status-large-gap:     4px;                  /* loop/Status Badge/hGap */
-  --loop-badge-status-large-headline-h: 32px;             /* measured Figma pill height, FND-037 */
+  --loop-badge-status-large-gap:     4px;
+  --loop-badge-status-large-headline-h: 32px;             /* pinned pill height */
+  --loop-badge-status-large-pad-left:  10px;
+  --loop-badge-status-large-pad-right: var(--space-xsmall); /* 12px */
 
   /* ---- Size: Regular (component default) ---- */
   --loop-badge-status-regular-font:    var(--font-size-200); /* 14px */
   --loop-badge-status-regular-leading: 14px;
   --loop-badge-status-regular-icon:    16px;
   --loop-badge-status-regular-dot:     10px;
-  --loop-badge-status-regular-gap:     4px;                  /* loop/Status Badge/hGap */
-  --loop-badge-status-regular-headline-h: 24px;             /* measured Figma pill height, FND-037 */
+  --loop-badge-status-regular-gap:     4px;
+  --loop-badge-status-regular-headline-h: 24px;             /* pinned pill height */
+  --loop-badge-status-regular-pad-left:  var(--space-xxsmall); /* 8px */
+  --loop-badge-status-regular-pad-right: 10px;
 
   /* ---- Size: Small ---- */
   --loop-badge-status-small-font:    var(--font-size-100); /* 12px */
   --loop-badge-status-small-leading: 14px;
   --loop-badge-status-small-icon:    14px;
   --loop-badge-status-small-dot:     8px;
-  --loop-badge-status-small-gap:     4px;                  /* loop/Status Badge/hGap */
-  --loop-badge-status-small-headline-h: 22px;             /* measured Figma pill height, FND-037 */
+  --loop-badge-status-small-gap:     4px;
+  --loop-badge-status-small-headline-h: 22px;             /* pinned pill height */
+  --loop-badge-status-small-pad-left:  6px;
+  --loop-badge-status-small-pad-right: var(--space-xxsmall); /* 8px */
 
   /* ---- State: Success (green) ---- */
-  --loop-badge-status-success-indicator: var(--color-outline-on-light-state-success-high); /* #388004 — green-60 */
-  --loop-badge-status-success-bg:        var(--color-domain-state-positive-low);           /* #f6fef0 — green-03 */
-  --loop-badge-status-success-border:    var(--color-outline-on-light-state-success-high); /* #388004 — green-60 */
+  --loop-badge-status-success-indicator: var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-badge-status-success-bg:        var(--color-domain-state-positive-low);           /* #f6fef0 */
+  --loop-badge-status-success-border:    var(--color-outline-on-light-state-success-high); /* #388004 */
 
   /* ---- State: Informational (blue) ---- */
-  --loop-badge-status-informational-indicator: var(--color-icon-on-light-state-informational); /* #004370 — blue-70 */
-  --loop-badge-status-informational-bg:        var(--color-domain-state-info-low);             /* #f6fcff — blue-05 */
-  --loop-badge-status-informational-border:    var(--color-outline-on-light-state-info-high);  /* #00538a — blue-60 */
+  --loop-badge-status-informational-indicator: var(--color-icon-on-light-state-informational); /* #004370 */
+  --loop-badge-status-informational-bg:        var(--color-domain-state-info-low);             /* #f6fcff */
+  --loop-badge-status-informational-border:    var(--color-outline-on-light-state-info-high);  /* #00538a */
 
   /* ---- State: Warning (yellow) ---- */
-  --loop-badge-status-warning-indicator: var(--color-icon-on-light-state-warning-regular); /* #e19d00 — yellow-50 */
-  --loop-badge-status-warning-bg:        var(--color-domain-state-warning-low);            /* #fef3d7 — yellow-03 */
-  --loop-badge-status-warning-border:    var(--color-outline-on-light-state-warning-high); /* #896001 — yellow-base */
+  --loop-badge-status-warning-indicator: var(--color-icon-on-light-state-warning-regular); /* #e19d00 */
+  --loop-badge-status-warning-bg:        var(--color-domain-state-warning-low);            /* #fef3d7 */
+  --loop-badge-status-warning-border:    var(--color-outline-on-light-state-warning-high); /* #896001 */
 
   /* ---- State: Error (red) ---- */
-  --loop-badge-status-error-indicator: var(--color-icon-on-light-state-error);       /* #9d161d — red-70 */
-  --loop-badge-status-error-bg:        var(--color-domain-state-negative-low);       /* #fdf2f2 — red-10 */
-  --loop-badge-status-error-border:    var(--color-outline-on-light-state-error-high);/* #9d161d — red-70 */
+  --loop-badge-status-error-indicator: var(--color-icon-on-light-state-error);       /* #9d161d */
+  --loop-badge-status-error-bg:        var(--color-domain-state-negative-low);       /* #fdf2f2 */
+  --loop-badge-status-error-border:    var(--color-outline-on-light-state-error-high);/* #9d161d */
 
   /* ---- State: Suggestive (purple) ---- */
-  --loop-badge-status-suggestive-indicator: var(--color-outline-on-light-state-suggest-high); /* #763ba9 — purple-60 */
-  --loop-badge-status-suggestive-bg:        var(--color-domain-state-suggestion-low);         /* #f1e1ff — purple-10 */
-  --loop-badge-status-suggestive-border:    var(--color-outline-on-light-state-suggest-high); /* #763ba9 — purple-60 */
+  --loop-badge-status-suggestive-indicator: var(--color-outline-on-light-state-suggest-high); /* #763ba9 */
+  --loop-badge-status-suggestive-bg:        var(--color-domain-state-suggestion-low);         /* #f1e1ff */
+  --loop-badge-status-suggestive-border:    var(--color-outline-on-light-state-suggest-high); /* #763ba9 */
 
   /* ---- State: Not Started (neutral) ---- */
-  --loop-badge-status-not-started-indicator: var(--color-icon-on-light-state-disabled);  /* #8a9db1 — neutral-40 */
-  --loop-badge-status-not-started-bg:        var(--color-bg-container-on-light-lowest);   /* #ffffff — white */
-  --loop-badge-status-not-started-border:    var(--color-domain-state-disable-medium);    /* #bdccdb — neutral-30 */
+  --loop-badge-status-not-started-indicator: var(--color-icon-on-light-state-disabled);  /* #8a9db1 */
+  --loop-badge-status-not-started-bg:        var(--color-bg-container-on-light-lowest);   /* #ffffff */
+  --loop-badge-status-not-started-border:    var(--color-domain-state-disable-medium);    /* #bdccdb */
 
   /* ---- State: In Progress (blue spinner on white pill) ---- */
-  --loop-badge-status-in-progress-indicator: var(--color-icon-on-light-state-informational); /* #004370 — blue-70 */
-  --loop-badge-status-in-progress-bg:        var(--color-bg-container-on-light-lowest);       /* #ffffff — white */
-  --loop-badge-status-in-progress-border:    var(--color-outline-on-light-state-disable-low); /* #d4dee8 — neutral-20 */
+  --loop-badge-status-in-progress-indicator: var(--color-icon-on-light-state-informational); /* #004370 */
+  --loop-badge-status-in-progress-bg:        var(--color-bg-container-on-light-lowest);       /* #ffffff */
+  --loop-badge-status-in-progress-border:    var(--color-outline-on-light-state-disable-low); /* #d4dee8 */
 }

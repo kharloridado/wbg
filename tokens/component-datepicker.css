@@ -1,66 +1,58 @@
-/* component-datepicker.css — WBG / "The Loop" DatePicker (calendar balloon) tokens
- * Restyle of the OutSystems UI DatePicker, whose ODC provider is **Flatpickr**
- * (vendor/outsystems-ui · Providers/OSUI/Datepicker/Flatpickr). The pop-up calendar
- * is appended to <body> with classes `.flatpickr-calendar.osui-datepicker-calendar`,
- * so these metrics drive the balloon, its header (month/year nav), the weekday row
- * and the day grid — consumed by src/blocks/loop-datepicker.css.
- *
- * No bespoke Figma "DatePicker" node was published; the balloon is built to The
- * Loop's already-shipped popup language so it reads as a sibling of the Select
- * pop-up list (loop-dropdown.css): white card, 8px radius, --shadow-low, subdued
- * outline, neutral-low row hover, brand-blue selection. Divergences inherited from
- * that language are tracked, not re-litigated (FND-032 list border, FND-019 family).
- * New, picker-specific divergences are flagged below.
- *
- * Loaded AFTER the foundations (colors/spacing/typography/radius/shadows) so the
- * var() references resolve, and BEFORE outsystems-ui-overrides.css (which stays last).
- *
- * Flagged (built faithfully, NOT silently normalised — CLAUDE.md the-one-rule):
- *   - the day cell uses --radius-pill (32px → stadium/circle marker) to match the
- *     Select pill family, where no picker-specific radius token is published → FND-044
- *   - "today" is marked with a brand-blue ring (--color-outline-on-light-link-enabled)
- *     as the only resting outline that clears 3:1 on white; the neutral outline family
- *     (used by OutSystems' own flatpickr theme) would fall under the FND-019 floor → FND-045 */
+/* component-datepicker.css — DatePicker calendar balloon tokens (restyle of the OutSystems UI Flatpickr provider) */
 :root {
-  /* ---- Balloon container (the calendar card) ---- */
-  --loop-datepicker-bg:            var(--color-bg-container-on-light-lowest); /* white */
-  --loop-datepicker-border:        var(--color-outline-on-light-subdued);    /* matches Select list, FND-032 family */
-  --loop-datepicker-radius:        var(--radius-medium);                     /* 8px — == --loop-select-list-radius */
-  --loop-datepicker-shadow:        var(--shadow-low);                        /* 0 2px 8px — == Select list */
-  --loop-datepicker-width:         320px;                                    /* card width (OSUI flatpickr parity) */
-  --loop-datepicker-pad-inline:    var(--space-xxsmall);                     /* 8px — inner side padding */
-  --loop-datepicker-pad-block:     var(--space-xxsmall);                     /* 8px — inner top/bottom padding */
+  /* ---- Balloon container ---- */
+  --loop-datepicker-bg:            var(--color-bg-container-on-light-lowest);
+  --loop-datepicker-border:        var(--color-outline-on-light-subdued);
+  --loop-datepicker-radius:        var(--radius-medium);
+  --loop-datepicker-shadow:        var(--shadow-low);
+  --loop-datepicker-width:         300px;
+  --loop-datepicker-pad-inline:    var(--space-xxsmall);
+  --loop-datepicker-pad-block:     var(--space-xxsmall);
 
   /* ---- Header: month dropdown + year stepper + prev/next nav ---- */
-  --loop-datepicker-header-color:  var(--color-text-on-light-headers);       /* month/year text */
-  --loop-datepicker-header-size:   var(--font-size-300);                     /* 16px */
-  --loop-datepicker-header-weight: var(--font-weight-semibold);              /* 600 */
-  --loop-datepicker-nav-size:      32px;                                     /* prev/next circular hit-area (≥24px SC 2.5.8) */
-  --loop-datepicker-nav-icon:      var(--color-icon-on-light-default);       /* chevron stroke (neutral-60) */
-  --loop-datepicker-nav-hover-bg:  var(--color-bg-container-on-light-low);   /* #f5f7f9 — neutral-low */
+  --loop-datepicker-header-color:  var(--color-text-on-light-headers);
+  --loop-datepicker-header-size:   var(--font-size-300);
+  --loop-datepicker-header-weight: var(--font-weight-semibold);
+  --loop-datepicker-nav-size:      32px;
+  --loop-datepicker-nav-icon:      var(--color-icon-on-light-default);
+  --loop-datepicker-nav-hover-bg:  var(--color-bg-container-on-light-low);
 
-  /* ---- Weekday header row (Mo Tu We …) ---- */
-  --loop-datepicker-weekday-color:  var(--color-text-on-light-subdued);      /* muted column heads */
-  --loop-datepicker-weekday-size:   var(--font-size-100);                    /* 12px */
-  --loop-datepicker-weekday-weight: var(--font-weight-semibold);             /* 600 */
+  /* ---- Weekday header row ---- */
+  --loop-datepicker-weekday-color:  var(--color-text-on-light-subdued);
+  --loop-datepicker-weekday-size:   var(--font-size-100);
+  --loop-datepicker-weekday-weight: var(--font-weight-semibold);
 
   /* ---- Day cell ---- */
-  --loop-datepicker-day-size:       40px;                                    /* row height / hit-area */
-  --loop-datepicker-day-radius:     var(--radius-pill);                      /* 32px → circular/stadium marker, FND-044 */
-  --loop-datepicker-day-size-text:  var(--font-size-200);                    /* 14px — == Select option text */
-  --loop-datepicker-day-color:      var(--color-text-on-light-default);      /* in-month days */
-  --loop-datepicker-day-muted:      var(--color-text-on-light-subdued);      /* prev/next-month days */
+  --loop-datepicker-day-size:       36px;
+  --loop-datepicker-day-radius:     var(--radius-pill);
+  --loop-datepicker-day-size-text:  var(--font-size-200);
+  --loop-datepicker-day-color:      var(--color-text-on-light-default);
+  --loop-datepicker-day-muted:      var(--color-text-on-light-subdued);
   --loop-datepicker-day-disabled:   var(--color-text-on-light-state-disabled);
-  --loop-datepicker-day-hover-bg:   var(--color-bg-container-on-light-low);  /* #f5f7f9 — == Select row hover */
+  --loop-datepicker-day-hover-bg:   var(--color-bg-container-on-light-low);
 
   /* ---- Today (resting marker) ---- */
-  --loop-datepicker-today-border:   var(--color-outline-on-light-link-enabled); /* blue-70 ring, FND-045 */
+  --loop-datepicker-today-border:   var(--color-outline-on-light-link-enabled);
 
   /* ---- Selected day + range ---- */
-  --loop-datepicker-selected-bg:    var(--color-bg-link-primary-enabled);    /* blue-70 — == primary button/selection */
-  --loop-datepicker-selected-text:  var(--color-white);                      /* on the blue fill */
-  --loop-datepicker-range-bg:       var(--color-bg-container-on-light-low);  /* #f5f7f9 — in-range fill between endpoints */
+  --loop-datepicker-selected-bg:    var(--color-bg-link-primary-enabled);
+  --loop-datepicker-selected-text:  var(--color-white);
+  --loop-datepicker-range-bg:       var(--color-bg-container-on-light-low);
 
-  /* ---- Keyboard focus (brand ring — FND-012, == Select/Text Field) ---- */
-  --loop-datepicker-focus-ring:     var(--color-outline-on-light-link-focused); /* blue-50 #0071bc */
+  /* ---- Keyboard focus (brand ring) ---- */
+  --loop-datepicker-focus-ring:     var(--color-outline-on-light-link-focused);
+
+  /* ---- Header month/year caret (opens the year grid) ---- */
+  --loop-datepicker-caret-color:    var(--color-icon-on-light-default);
+  --loop-datepicker-caret-size:     20px;
+
+  /* ---- Year grid view (custom plugin) ---- */
+  --loop-datepicker-year-cols:      4;
+  --loop-datepicker-year-cell-h:    36px;
+  --loop-datepicker-year-radius:    var(--radius-pill);
+  --loop-datepicker-year-color:     var(--color-text-on-light-default);
+  --loop-datepicker-year-hover-bg:  var(--color-bg-container-on-light-low);
+  --loop-datepicker-year-selected-border: var(--color-outline-on-light-link-enabled);
+  --loop-datepicker-year-view-max:  248px;
+  --loop-datepicker-year-gap:       var(--space-tiny);
 }

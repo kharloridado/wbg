@@ -1,11 +1,4 @@
-/* typography-roles.css
- * Composite type-role utility classes — one class per Figma named role.
- * Composes font-size + font-weight + line-height + letter-spacing from the
- * typography scale tokens. Apply via ExtendedClass in OutSystems.
- *
- * Source: Figma node 10995-7259 (Open Sans, FND-002 sign-off).
- * Off-scale letter-spacing values (-0.25px / 0.25px) are raw literals — no
- * matching scale token exists; built faithfully (same basis as FND-013/022). */
+/* typography-roles.css — composite type-role utility classes (one per named role) */
 
 /* ================================================================
    Heading roles — Open Sans Bold, line-height-heading (1.12)
@@ -78,7 +71,7 @@
   font-size:        var(--font-size-500);
   font-weight:      var(--font-weight-regular);
   line-height:      var(--line-height-base);
-  letter-spacing:   -0.25px; /* off-scale — no token; pending finding */
+  letter-spacing:   -0.25px; /* off-scale — no token */
 }
 
 .loop-body-base {
@@ -102,7 +95,7 @@
   font-size:        var(--font-size-100);
   font-weight:      var(--font-weight-regular);
   line-height:      var(--line-height-base);
-  letter-spacing:   0.25px; /* off-scale — no token; pending finding */
+  letter-spacing:   0.25px; /* off-scale — no token */
 }
 
 .loop-body-tiny-caps {

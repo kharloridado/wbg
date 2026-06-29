@@ -1,42 +1,13 @@
 /* outsystems-ui-feedback-message.css — restyle the native OutSystems UI Feedback
- * Message to "The Loop" Alert look
- * ----------------------------------------------------------------------------
- * Companion to outsystems-ui-alert.css. The native Feedback Message widget
- * (vendor 03-widgets/_feedback-message.scss: the .feedback-message toast, its
- * <i> icon, the .feedback-message-text label and the .feedback-message-error /
- * -info / -success / -warning type modifiers) ships as a SOLID color-fill toast
- * with light text. The Loop "Alerts" design (Figma "Alerts" 17868-4165) is
- * instead a LIGHT tinted box with a 4px colored LEFT accent border + a 1px
- * colored border on the other three sides, dark body text, and a color-matched
- * icon. This file makes the stock Feedback Message ADOPT that Alert look, so a
- * developer who triggers a native Feedback Message gets The Loop styling for
- * free — no parallel custom block needed (memory: restyle native OutSystems
- * widgets, don't build parallel systems).
- *
- * SINGLE SOURCE OF TRUTH: each type reuses the SAME semantic state tokens the
- * Figma Alert binds to — the *-low container background and the darker *-high
- * on-light outline as the accent — so the Feedback Message, the native Alert and
- * the design stay aligned from one place (semantic-colors.css).
- *
- * Type mapping (Feedback Message → Loop Alert / Figma):
- *   .feedback-message-error   → error   bg #fdf2f2  accent #9d161d
- *   .feedback-message-warning → warning bg #fef3d7  accent #896001
- *   .feedback-message-info    → info    bg #f6fcff  accent #00538a
- *   .feedback-message-success → success bg #f6fef0  accent #388004
- *
- * No `loop-` prefix: these override OutSystems UI classes directly, mirroring
- * outsystems-ui-alert.css / outsystems-ui-header.css. The type rules use a
- * double class (.feedback-message.feedback-message-*) on purpose — the vendor
- * paints the fill via `div.feedback-message-*` (element+class), so an equal-or-
- * higher specificity selector is needed to win. Loaded after the framework in
- * the theme build so equal-specificity rules also win by source order. */
+ * Message to The Loop "Alerts" look: light tinted box with a 4px colored left accent
+ * + 1px border, dark body text, color-matched icon. Each type reuses the semantic state
+ * tokens (semantic-colors.css). The double-class type selectors beat the vendor's
+ * element+class fill; loaded after the framework so equal-specificity rules win.
+ *   error bg #fdf2f2 accent #9d161d · warning bg #fef3d7 accent #896001
+ *   info  bg #f6fcff accent #00538a · success bg #f6fef0 accent #388004 */
 
-/* Box — from the solid toast fill to the Alert tinted-box geometry. The accent
- * color (set per type below via --loop-feedback-accent) paints all four borders;
- * the left border is thickened to 4px for the signature left accent. Positioning
- * and the slide-in animation stay as the vendor ships them — only the look
- * changes. align-items:center keeps the single-line toast vertically centered
- * (vendor top-aligns the icon). */
+/* Box — Alert tinted-box geometry; accent (per type below) paints the borders, left
+ * thickened to 4px. align-items:center keeps the single-line toast centered. */
 .feedback-message {
   align-items: center;
   border: 1px solid var(--loop-feedback-accent, currentColor);
@@ -46,9 +17,7 @@
   color: var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
 }
 
-/* Icon → the Alert's colored accent (was light-on-solid). Reset the vendor's
- * flex-start + 2px nudge so it centers against the single line, and pin to the
- * Alert's 16px glyph (vendor uses --font-size-h5). */
+/* Icon → the Alert's colored accent; centered against the single line, 16px glyph. */
 .feedback-message i {
   align-self: center;
   margin-top: 0;
@@ -72,8 +41,7 @@
   --loop-feedback-accent: var(--color-outline-on-light-state-error-high, #9d161d);
 }
 
-/* ---- Type: warning (bg #fef3d7 / accent #896001) ----
- * Also unsets the vendor's dark neutral text so the Alert body color applies. */
+/* ---- Type: warning (bg #fef3d7 / accent #896001) — also resets the vendor dark text ---- */
 .feedback-message.feedback-message-warning {
   background-color:       var(--color-domain-state-warning-low, #fef3d7);
   --loop-feedback-accent: var(--color-outline-on-light-state-warning-high, #896001);
@@ -92,8 +60,7 @@
   --loop-feedback-accent: var(--color-outline-on-light-state-success-high, #388004);
 }
 
-/* RTL — move the accent edge and the message gap to the right (native flips the
- * toast but not these Alert-specific properties). */
+/* RTL — move the accent edge and the message gap to the right. */
 .is-rtl .feedback-message {
   border-left-width: 1px;
   border-right-width: 4px;

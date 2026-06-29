@@ -1,8 +1,4 @@
-/* spacing.css — WBG / "The Loop" spacing scale (4pt base)
- * Extracted from Figma: Spacing System [node:10994-5086].
- * Figma uses descriptive names (tiny/small/regular/...) rather than the template's
- * xs/s/m/l/xl. The full scale below is faithful to Figma; see findings for the
- * naming-divergence note (off-scale: xtiny=2 breaks the strict 4pt step). */
+/* spacing.css — spacing scale (descriptive names) */
 :root {
   --space-none:    0px;
   --space-xtiny:   2px;   /* off the 4pt grid — flagged */
@@ -23,13 +19,13 @@
   --space-200: 16px;
   --space-500: 40px;
 
-  /* component spacing (off the strict 4pt grid — see findings register) */
-  --space-button-gap: 6px;   /* loop/button/gap — icon↔label gap */
+  /* component spacing */
+  --space-button-gap: 6px;   /* loop/button gap — icon↔label */
 
-  /* radio / checkbox spacing (loop/checkbox/* — shared by radio + checkbox) */
-  --space-checkbox-gap:           8px;   /* loop/checkbox/gap — input↔label (→ 4px at regular/small) */
-  --space-checkbox-group-row:    14px;   /* loop/checkbox/group/vpadding — off 4pt grid (FND-022) */
-  --space-checkbox-group-column: 20px;   /* loop/checkbox/group/hpadding — unnamed 4pt step */
+  /* radio / checkbox spacing (shared) */
+  --space-checkbox-gap:           8px;   /* loop/checkbox gap — input↔label */
+  --space-checkbox-group-row:    14px;   /* loop/checkbox group vpadding — off-grid */
+  --space-checkbox-group-column: 20px;   /* loop/checkbox group hpadding */
 
   /* layout */
   --grid-gutter: 24px;

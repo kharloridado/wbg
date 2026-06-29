@@ -1,80 +1,70 @@
-/* component-tag.css — WBG / "The Loop" Tag component tokens
- * Extracted from Figma: "Tag" [node:17313-5502] (loop/tag/* variables).
- * Custom CSS-only block (no JS) — richer than the native OutSystems UI `.tag`
- * (which has no icon/dismiss/selected). Applied via ExtendedClass + BEM markup.
- *
- * Consumed by src/blocks/loop-tag.css. These tokens cascade normally (no Shadow
- * DOM). Loaded AFTER the foundations (colors/spacing/typography/radius) so the
- * var() references resolve, and BEFORE outsystems-ui-overrides.css (stays last).
- *
- * Off-scale / unpublished values are flagged, NOT silently normalised
- * (CLAUDE.md the-one-rule):
- *   - border radius = 48px (loop/tag/border radius). No --radius-* token matches;
- *     foundation pill is --radius-pill 32px. 48 ≠ 32 → FND-028. Both fully round
- *     these heights, so visually identical, but the value drifts.
- *   - vPadding 6.5px (loop/Tag/vPadding) is off any spacing step → FND-029.
- *   - Size metrics: Figma publishes a single label size (16) + hpadding (12); the
- *     four heights map onto the foundation spacing scale (24/32/40/48). The per-
- *     size vertical padding is not cleanly tokenised → FND-029.
- *   - Selected state colours (on-dark text + per-colour fill) are inferred from
- *     the *-high roles, not a tag-specific selected token → FND-030. */
+/* component-tag.css — Tag component tokens (custom CSS-only block, applied via ExtendedClass + BEM) */
 :root {
   /* ---- Geometry ---- */
-  --loop-tag-radius:        48px;                 /* loop/tag/border radius — pill; ≠ --radius-pill (32px), FND-028 */
-  --loop-tag-padding-h:     var(--space-xsmall);  /* 12px — loop/tag/hpadding */
-  --loop-tag-padding-v:     var(--space-xxsmall); /* 8px  — loop/tag/vpadding */
-  --loop-tag-padding-v-sm:  6.5px;                /* loop/Tag/vPadding — off-scale, FND-029 */
-  --loop-tag-gap:           var(--space-tiny);    /* 4px  — loop/tag/hgap (slot ↔ label) */
-  --loop-tag-icon-size:     14px;                 /* loop/tag/icon/left-icon-size */
-  --loop-tag-dismiss-size:  14px;                 /* loop/tag/icon/cross-size */
+  --loop-tag-radius:        48px;                 /* pill */
+  --loop-tag-padding-h:     var(--space-xsmall);  /* 12px */
+  /* vPadding retired: height is pinned and the label is flex-centred, so no vertical padding. */
+  --loop-tag-gap:           var(--space-tiny);    /* 4px — slot ↔ label */
+  --loop-tag-icon-size:     14px;
+  --loop-tag-dismiss-size:  14px;
 
-  /* ---- Sizes (min-height; maps to the foundation spacing scale) ---- */
+  /* ---- Meta Tag — leading slot variants (avatar · initials · flag) ---- */
+  --loop-tag-meta-size:      24px;                 /* round avatar + initials badge */
+  --loop-tag-meta-lpad:      var(--space-xxsmall); /* 8px — tightened leading inset */
+  --loop-tag-flag-w:         25px;
+  --loop-tag-flag-h:         18px;
+  --loop-tag-flag-radius:    var(--radius-xs);     /* 2px */
+  --loop-tag-initials-bg:    var(--color-domain-state-info-high);  /* #004370 */
+  --loop-tag-initials-color: var(--color-white);   /* #ffffff */
+  --loop-tag-initials-size:  10px;
+  --loop-tag-initials-weight: var(--font-weight-bold); /* 700 */
+  --loop-tag-initials-tracking: 0.25px;
+
+  /* ---- Sizes (pinned fixed height) ---- */
   --loop-tag-h-small:   var(--space-regular);     /* 24px */
   --loop-tag-h-regular: var(--space-medium);      /* 32px — default */
   --loop-tag-h-large:   var(--space-large);       /* 40px */
   --loop-tag-h-xlarge:  var(--space-xlarge);      /* 48px */
 
   /* ---- Label typography ---- */
-  --loop-tag-label-size:      var(--font-size-300);        /* 16px — loop/tag/label/font size */
-  --loop-tag-label-leading:   16px;                        /* loop/tag/label/line height */
-  --loop-tag-label-tracking:  0.25px;                      /* loop/Tag/Label/Letter Space */
-  --loop-tag-label-weight:    var(--font-weight-regular);  /* 400 — loop/Tag/Label/Font Weight */
-  --loop-tag-label-weight-selected: var(--font-weight-bold); /* 700 — loop/Label/Font Weight Selected */
+  --loop-tag-label-size:      var(--font-size-300);        /* 16px */
+  --loop-tag-label-leading:   16px;
+  --loop-tag-label-tracking:  0.25px;
+  --loop-tag-label-weight:    var(--font-weight-regular);  /* 400 */
+  --loop-tag-label-weight-selected: var(--font-weight-bold); /* 700 */
 
   /* ---- Color: Blue (Information domain) ---- */
-  --loop-tag-blue-bg:           var(--color-domain-state-info-low);          /* #f6fcff — blue-05 */
-  --loop-tag-blue-border:       var(--color-domain-state-info-regular);      /* #169af3 — blue-40 */
-  --loop-tag-blue-text:         var(--color-text-on-light-link-primary-enabled); /* #004370 — blue-70 (Figma tag text/icon) */
-  --loop-tag-blue-selected-bg:  var(--color-domain-state-info-high);         /* #004370 — blue-70 */
+  --loop-tag-blue-bg:           var(--color-domain-state-info-low);          /* #f6fcff */
+  --loop-tag-blue-border:       var(--color-domain-state-info-regular);      /* #169af3 */
+  --loop-tag-blue-text:         var(--color-text-on-light-link-primary-enabled); /* #004370 */
+  --loop-tag-blue-selected-bg:  var(--color-domain-state-info-high);         /* #004370 */
 
   /* ---- Color: Purple (Suggestion domain) ---- */
-  --loop-tag-purple-bg:           var(--color-domain-state-suggestion-low);     /* #f1e1ff — purple-10 */
-  --loop-tag-purple-border:       var(--color-domain-state-suggestion-regular); /* #c17cfe — purple-40 */
-  --loop-tag-purple-text:         var(--color-text-on-light-state-suggest);     /* #763ba9 — purple-60 */
-  --loop-tag-purple-selected-bg:  var(--color-domain-state-suggestion-high);    /* #410179 — purple-80 */
+  --loop-tag-purple-bg:           var(--color-domain-state-suggestion-low);     /* #f1e1ff */
+  --loop-tag-purple-border:       var(--color-domain-state-suggestion-regular); /* #c17cfe */
+  --loop-tag-purple-text:         var(--color-text-on-light-state-suggest);     /* #763ba9 */
+  --loop-tag-purple-selected-bg:  var(--color-domain-state-suggestion-high);    /* #410179 */
 
   /* ---- Color: Green (Positive domain) ---- */
-  --loop-tag-green-bg:           var(--color-domain-state-positive-low);      /* #f6fef0 — green-03 */
-  --loop-tag-green-border:       var(--color-outline-on-light-state-success-high); /* #388004 — green-60 */
-  --loop-tag-green-text:         var(--color-text-on-light-state-success);    /* #388004 — green-60 */
-  --loop-tag-green-selected-bg:  var(--color-domain-state-positive-high);     /* #234f03 — green-70 */
+  --loop-tag-green-bg:           var(--color-domain-state-positive-low);      /* #f6fef0 */
+  --loop-tag-green-border:       var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-tag-green-text:         var(--color-text-on-light-state-success);    /* #388004 */
+  --loop-tag-green-selected-bg:  var(--color-domain-state-positive-high);     /* #234f03 */
 
   /* ---- Color: Yellow (Warning domain) ---- */
-  --loop-tag-yellow-bg:           var(--color-domain-state-warning-low);      /* #fef3d7 — yellow-03 */
-  --loop-tag-yellow-border:       var(--color-domain-state-warning-medium);   /* #896001 — yellow-base */
-  --loop-tag-yellow-text:         var(--color-domain-state-warning-medium);   /* #896001 — yellow-base */
-  --loop-tag-yellow-selected-bg:  var(--color-domain-state-warning-high);     /* #fef... yellow-90 (dark) */
+  --loop-tag-yellow-bg:           var(--color-domain-state-warning-low);      /* #fef3d7 */
+  --loop-tag-yellow-border:       var(--color-domain-state-warning-medium);   /* #896001 */
+  --loop-tag-yellow-text:         var(--color-domain-state-warning-medium);   /* #896001 */
+  --loop-tag-yellow-selected-bg:  var(--color-domain-state-warning-high);     /* yellow-90 (dark) */
 
-  /* ---- Selected-state text (on the dark high-bg). on-dark tokens are deferred
-   *      (semantic-colors-dark.css not imported), so white is used here. Exact
-   *      per-color selected values pending design confirmation → FND-030. ---- */
+  /* ---- Selected-state text (on the dark high-bg) — white pending design confirmation ---- */
   --loop-tag-selected-text: var(--color-white);  /* #ffffff */
 
   /* ---- Disabled ---- */
-  --loop-tag-disabled-bg:     var(--color-domain-state-disable-low);     /* #e7edf3 — neutral-15-ish */
-  --loop-tag-disabled-border: var(--color-domain-state-disable-regular); /* #d4dee8 — neutral-20 */
-  --loop-tag-disabled-text:   var(--color-text-on-light-state-disabled); /* #00294d6b — neutral-alpha-42 */
+  --loop-tag-disabled-bg:     var(--color-domain-state-disable-low);     /* #e7edf3 */
+  --loop-tag-disabled-border: var(--color-domain-state-disable-regular); /* #d4dee8 */
+  --loop-tag-disabled-text:   var(--color-text-on-light-state-disabled); /* #00294d6b */
 
-  /* ---- Focus ring (brand, consistent with loop-note / FND-012) ---- */
-  --loop-tag-focus: var(--color-domain-interactive-focused);  /* #0071bc — blue-50 */
+  /* ---- Focus ring (brand) ---- */
+  --loop-tag-focus: var(--color-domain-interactive-focused);  /* #0071bc */
 }

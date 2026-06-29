@@ -1,38 +1,17 @@
-/* component-search.css — WBG / "The Loop" Search component tokens
- * Extracted from Figma: "Search Field" [node:17191-8728] (the "-loop search" symbol set).
- *
- * The Search field box IS the Text Field box: same Figma vars (loop/field/vpadding 18,
- * hpadding 16, hGap 8, Input Fields radius 32, placeholder/label type) and the same 6
- * states + 4 sizes. Because the native OutSystems Search widget renders a
- * `.form-control[data-input]`, all of that is already delivered by component-field.css +
- * src/blocks/loop-text-field.css and is REUSED here, not re-declared. This file adds only
- * what is unique to Search: the leading magnifying-glass icon and the Filled-state clear (×).
- *
- * Loaded AFTER the foundation files (colors/spacing/typography/radius) and AFTER
- * component-field.css (whose --loop-field-* metrics are referenced below), and BEFORE
- * outsystems-ui-overrides.css (which must stay last).
- *
- * Off-scale / orphan values are flagged, NOT silently normalised (CLAUDE.md the-one-rule):
- *   - the Figma glass fill is "Icon/Default" #000000, which has no neutral primitive; the
- *     mock renders it muted, so it is built on --color-icon-on-light-default (neutral-60) → FND-049
- *   - the native Search widget ships no clear (×) affordance; the Filled-state × is delivered
- *     via the input's type=search cancel button (WebKit/Blink only)             → FND-050
- *   - the native Search widget exposes no size variants; the 4 sizes reuse the Text Field's
- *     .input-* classes on the inner input                                       → FND-051 */
+/* component-search.css — Search component tokens (leading magnifier + clear; reuses the Text Field box) */
 :root {
   /* ---- Leading search-glass icon (left, vertically centred in the field) ---- */
-  --loop-search-icon-size:   20px;                              /* loop/field/icon size */
+  --loop-search-icon-size:   20px;
   --loop-search-icon-inset:  var(--loop-field-padding-inline, 16px);  /* left offset = field hpadding (16px) */
-  /* text padding-left = hpadding + icon + hGap → glyph never overlaps the value/placeholder */
+  /* text padding-left = hpadding + icon + gap → glyph never overlaps the value */
   --loop-search-pad-left:    calc(var(--loop-field-padding-inline, 16px)
                                 + var(--loop-search-icon-size, 20px)
                                 + var(--loop-field-gap, 8px));  /* 16 + 20 + 8 = 44px */
-  --loop-search-icon-color:  var(--color-icon-on-light-default);      /* neutral-60 — Figma "Icon/Default" #000000 has no primitive, FND-049 */
-  /* self-contained magnifier (no external asset → renders identically in preview and ODC);
-     masked, so --loop-search-icon-color drives the fill. Matches the Dropdown-search glass. */
+  --loop-search-icon-color:  var(--color-icon-on-light-default);      /* neutral-60 — Figma icon has no primitive */
+  /* self-contained magnifier (masked, so --loop-search-icon-color drives the fill) */
   --loop-search-icon:        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='M13.5 13.5L17.5 17.5' stroke-linecap='round'/%3E%3C/svg%3E");
 
-  /* ---- Clear (×) — Filled state. Native Search has no clear button (FND-050) ---- */
+  /* ---- Clear (×) — Filled state ---- */
   --loop-search-clear-glyph: 16px;                              /* × glyph box */
   --loop-search-clear-color: var(--color-icon-on-light-default);      /* neutral-60 */
   --loop-search-clear-icon:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M4 4l8 8M12 4l-8 8'/%3E%3C/svg%3E");
