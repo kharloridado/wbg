@@ -183,21 +183,10 @@
   flex: 1 0 auto;
   padding: var(--space-regular) var(--space-xlarge) var(--space-xlarge);
 }
-/* Collapse truly-empty OPTIONAL placeholders so they leave no ghost gap
- * (OutSystems tags an unfilled placeholder `.placeholder-empty` at runtime).
- * Scope to DIRECT children of the slot wrappers only — a bare descendant
- * selector also matched the native Breadcrumbs widget's per-item separator
- * slot (also `.placeholder-empty`, holding the default chevron) and wiped the
- * separators, collapsing "Dashboard › List › Detail" into one run-on word. */
-.layout-side .content .loop-content__breadcrumbs:empty,
-.layout-side .content .loop-content__actions:empty,
-.layout-side .content .loop-content__breadcrumbs > .placeholder-empty,
-.layout-side .content .loop-content__actions > .placeholder-empty,
-.layout-side .content .loop-content__title > .placeholder-empty,
-.layout-side .content .loop-content__body > .placeholder-empty,
-.layout-side .content .loop-content__footer > .placeholder-empty {
-  display: none;
-}
+/* (An unfilled OutSystems placeholder renders as a zero-size element, so empty
+ * optional slots leave no ghost gap on their own — no collapse rule needed.
+ * Note: never select on `.placeholder-empty`; it is a runtime OutSystems UI
+ * utility, not a stable styling hook.) */
 
 /* ── Header bar: breadcrumb + actions on the top row, page title below. */
 .loop-content__header {
@@ -239,17 +228,20 @@
 .loop-content__breadcrumbs .is-current {
   color: var(--color-text-on-light-subdued);
 }
-/* Separator: the native per-item chevron slot rendered as a thin grey "|"
- * (Figma uses a vertical bar, not a chevron); none trails the last crumb. */
-.loop-content__breadcrumbs .breadcrumbs-item > .placeholder-empty .icon {
+/* Separator: the native per-item separator icon (the icon that is NOT a leading
+ * title icon) rendered as a thin grey "|" (Figma uses a vertical bar, not a
+ * chevron); the trailing separator on the last crumb is removed. Targeted
+ * structurally via `> :not(.title)` — never via the runtime `.placeholder-empty`
+ * utility. */
+.loop-content__breadcrumbs .breadcrumbs-item > :not(.title) .icon {
   color: var(--color-text-on-light-state-disabled);
 }
-.loop-content__breadcrumbs .breadcrumbs-item > .placeholder-empty .icon::before {
+.loop-content__breadcrumbs .breadcrumbs-item > :not(.title) .icon::before {
   content: "|";
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-regular);
 }
-.loop-content__breadcrumbs .breadcrumbs-item:last-child > .placeholder-empty {
+.loop-content__breadcrumbs .breadcrumbs-item:last-child > :not(.title) {
   display: none;
 }
 /* Leading home / custom crumb icon (a filled icon slot, not the separator) → dark. */
