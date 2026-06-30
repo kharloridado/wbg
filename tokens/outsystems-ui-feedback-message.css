@@ -1,0 +1,71 @@
+/* outsystems-ui-feedback-message.css — restyle the native OutSystems UI Feedback
+ * Message to The Loop "Alerts" look: light tinted box with a 4px colored left accent
+ * + 1px border, dark body text, color-matched icon. Each type reuses the semantic state
+ * tokens (semantic-colors.css). The double-class type selectors beat the vendor's
+ * element+class fill; loaded after the framework so equal-specificity rules win.
+ *   error bg #fdf2f2 accent #9d161d · warning bg #fef3d7 accent #896001
+ *   info  bg #f6fcff accent #00538a · success bg #f6fef0 accent #388004 */
+
+/* Box — Alert tinted-box geometry; accent (per type below) paints the borders, left
+ * thickened to 4px. align-items:center keeps the single-line toast centered. */
+.feedback-message {
+  align-items: center;
+  border: 1px solid var(--loop-feedback-accent, currentColor);
+  border-left-width: 4px;
+  border-radius: var(--radius-base, 4px);
+  padding: var(--space-xxsmall, 8px) var(--space-small, 16px);
+  color: var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* Icon → the Alert's colored accent; centered against the single line, 16px glyph. */
+.feedback-message i {
+  align-self: center;
+  margin-top: 0;
+  font-size: var(--font-size-300, 16px);
+  color: var(--loop-feedback-accent, currentColor);
+}
+
+/* Message → Alert body text: dark, 14px regular. Keeps the vendor's left gap. */
+.feedback-message-text {
+  padding-left: var(--space-small, 16px);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--font-size-200, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-base, 1.5);
+  color:       var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Type: error (bg #fdf2f2 / accent #9d161d) ---- */
+.feedback-message.feedback-message-error {
+  background-color:       var(--color-bg-container-state-error-low, #fdf2f2);
+  --loop-feedback-accent: var(--color-outline-on-light-state-error-high, #9d161d);
+}
+
+/* ---- Type: warning (bg #fef3d7 / accent #896001) — also resets the vendor dark text ---- */
+.feedback-message.feedback-message-warning {
+  background-color:       var(--color-domain-state-warning-low, #fef3d7);
+  --loop-feedback-accent: var(--color-outline-on-light-state-warning-high, #896001);
+  color:                  var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Type: info (bg #f6fcff / accent #00538a) ---- */
+.feedback-message.feedback-message-info {
+  background-color:       var(--color-bg-container-state-info-low, #f6fcff);
+  --loop-feedback-accent: var(--color-outline-on-light-state-info-high, #00538a);
+}
+
+/* ---- Type: success (bg #f6fef0 / accent #388004) ---- */
+.feedback-message.feedback-message-success {
+  background-color:       var(--color-bg-container-state-success-low, #f6fef0);
+  --loop-feedback-accent: var(--color-outline-on-light-state-success-high, #388004);
+}
+
+/* RTL — move the accent edge and the message gap to the right. */
+.is-rtl .feedback-message {
+  border-left-width: 1px;
+  border-right-width: 4px;
+}
+.is-rtl .feedback-message-text {
+  padding-left: 0;
+  padding-right: var(--space-small, 16px);
+}

@@ -1,0 +1,73 @@
+/* loop-tabs.css — Tabs: native OutSystems UI Tabs pattern restyle (underline tabs) */
+
+/* ---- Header row: space the tabs ---- */
+.osui-tabs--is-horizontal > .osui-tabs__header {
+  column-gap: var(--loop-tabs-gap, 24px);
+}
+
+/* ---- Tab button — The Loop label identity + per-state color ---- */
+.osui-tabs--is-horizontal .osui-tabs__header-item {
+  gap: var(--loop-tabs-h-padding, 12px);                 /* icon ↔ label */
+  padding-block: var(--loop-tabs-v-padding, 12px);       /* label ↔ active bar */
+  padding-inline: 0;                                     /* the header column-gap handles tab separation */
+
+  font-family: var(--loop-tabs-label-family, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-tabs-label-size, 20px);
+  line-height: var(--loop-tabs-label-leading, 20px);
+  letter-spacing: var(--loop-tabs-label-tracking, -0.13px);
+  font-weight: var(--loop-tabs-label-weight, 700);       /* bold in every state */
+
+  color: var(--loop-tabs-label-color, #004370);          /* inactive/enabled */
+  text-shadow: none;                                     /* native fakes bold via text-shadow on active; labels are already 700 */
+}
+
+/* Hover (non-active): darken + 2px underline affordance, drawn inset so it adds no height. */
+.osui-tabs--is-horizontal .osui-tabs__header-item:hover:not(.osui-tabs--is-active):not([disabled]) {
+  color: var(--loop-tabs-label-color-hover, #012740);
+  box-shadow: inset 0 calc(-1 * var(--loop-tabs-divider-size, 2px)) 0 0 var(--loop-tabs-indicator-color, #169af3);
+}
+
+/* Selected/active: darken to emphasis (the 4px bar is the indicator, below). */
+.osui-tabs--is-horizontal .osui-tabs__header-item.osui-tabs--is-active {
+  color: var(--loop-tabs-label-color-active, #012740);
+}
+
+/* Disabled: muted, no affordance. */
+.osui-tabs--is-horizontal .osui-tabs__header-item[disabled] {
+  color: var(--loop-tabs-label-color-disabled, #00294d6b);
+}
+
+/* ---- Active bar — 4px bright blue (native default is 2px) ---- */
+.osui-tabs--is-horizontal .osui-tabs__header__indicator {
+  height: var(--loop-tabs-indicator-size, 4px);
+  background-color: var(--loop-tabs-indicator-color, #169af3);
+}
+
+/* ---- Divider beneath the header (the native content border-top) ---- */
+.osui-tabs--is-horizontal .osui-tabs__content {
+  border-top: var(--loop-tabs-divider-size, 2px) solid var(--loop-tabs-divider-color, #00396b14);
+}
+
+/* ---- Focus ring — brand blue ---- */
+.osui-tabs__header-item:focus-visible {
+  outline: 2px solid var(--color-domain-interactive-focused, #0071bc);
+  outline-offset: -2px;   /* inset: the item fills its grid track edge-to-edge */
+  border-radius: 2px;
+}
+
+/* ---- Compact (tablet / mobile): smaller label, tighter gap & padding ---- */
+@media (max-width: 768px) {
+  .osui-tabs--is-horizontal > .osui-tabs__header {
+    column-gap: var(--loop-tabs-gap-compact, 20px);
+  }
+  .osui-tabs--is-horizontal .osui-tabs__header-item {
+    font-size: var(--loop-tabs-label-size-compact, 18px);
+    gap: var(--loop-tabs-h-padding-compact, 10px);
+    padding-block: var(--loop-tabs-v-padding-compact, 10px);
+  }
+}
+
+/* ---- Reduced motion: kill the sliding-bar animation ---- */
+@media (prefers-reduced-motion: reduce) {
+  .osui-tabs__header__indicator { transition: none; }
+}

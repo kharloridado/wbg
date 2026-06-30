@@ -1,0 +1,42 @@
+/* component-alert.css — Alert component tokens (vanilla JS Web Component <loop-alert>); light contextual alert */
+:root {
+  /* ---- Geometry ---- */
+  --loop-alert-corner-radius:    var(--radius-base);     /* 4px */
+  --loop-alert-accent-width:     4px;                    /* left accent border */
+  --loop-alert-hairline-width:   1px;                    /* top/right/bottom border */
+  --loop-alert-padding-h:        var(--space-small);     /* 16px — single-line inline padding */
+  --loop-alert-padding-h-multi:  var(--space-xsmall);    /* 12px — multi-line inline padding */
+  --loop-alert-padding-v-multi:  var(--space-xxsmall);   /* 8px  — multi-line block padding */
+  --loop-alert-gap:              var(--space-small);      /* 16px — single-line content gap */
+  --loop-alert-gap-multi:        var(--space-xxsmall);   /* 8px  — multi-line content gap */
+  --loop-alert-action-pt:        var(--space-xsmall);    /* 12px — multi-line action top-padding */
+  --loop-alert-icon-size:        16px;
+  --loop-alert-min-height:       40px;                   /* single-line height */
+  --loop-alert-min-width:        230px;                  /* min-width (both layouts) */
+
+  /* ---- Typography ---- */
+  --loop-alert-title-size: var(--font-size-200);   /* 14px — title (Bold) */
+  --loop-alert-body-size:  var(--font-size-200);   /* 14px — message + action */
+
+  /* ---- Shared text roles (same across all types — light alert on tinted bg) ---- */
+  --loop-alert-text:   var(--color-text-on-light-default);             /* rgba(0,13,26,0.7) — title + message */
+  --loop-alert-action: var(--color-text-on-light-link-primary-enabled); /* #004370 — normalized to primary for all types */
+
+  /* Per-type background (low) + accent (border + icon) */
+
+  /* ---- Type: error ---- */
+  --loop-alert-error-bg:     var(--color-bg-container-state-error-low);   /* #fdf2f2 */
+  --loop-alert-error-accent: var(--color-bg-container-state-error-high);  /* #9d161d */
+
+  /* ---- Type: warning ---- */
+  --loop-alert-warning-bg:     var(--color-domain-state-warning-low);     /* #fef3d7 */
+  --loop-alert-warning-accent: var(--color-domain-state-warning-medium);  /* #896001 */
+
+  /* ---- Type: information ---- */
+  --loop-alert-information-bg:     var(--color-domain-state-info-low);    /* #f6fcff */
+  --loop-alert-information-accent: var(--color-text-on-light-state-info); /* #00538a */
+
+  /* ---- Type: success ---- */
+  --loop-alert-success-bg:     var(--color-domain-state-positive-low);          /* #f6fef0 */
+  --loop-alert-success-accent: var(--color-outline-on-light-state-success-high); /* #388004 */
+}

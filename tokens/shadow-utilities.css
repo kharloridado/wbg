@@ -1,0 +1,8 @@
+/* shadow-utilities.css — elevation utility classes (one per shadow step + reset) */
+
+.shadow-none    { box-shadow: none; }
+.shadow-lowest  { box-shadow: var(--shadow-lowest); }
+.shadow-low     { box-shadow: var(--shadow-low); }
+.shadow-regular { box-shadow: var(--shadow-regular); }
+.shadow-medium  { box-shadow: var(--shadow-medium); }
+.shadow-high    { box-shadow: var(--shadow-high); }

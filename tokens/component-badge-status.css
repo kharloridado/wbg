@@ -1,0 +1,86 @@
+/* component-badge-status.css — Badge / Status component tokens */
+:root {
+  /* ---- Label typography (constant family/weight/tracking across sizes) ---- */
+  --loop-badge-status-label-family:   var(--font-family-body);   /* Open Sans */
+  --loop-badge-status-label-weight:   var(--font-weight-medium, 500);  /* Open Sans 500 (Medium) */
+  --loop-badge-status-label-tracking: 0.5px;
+  --loop-badge-status-label-color:    var(--color-text-on-light-default);  /* #000d1ab2 (same for all states) */
+
+  /* ---- Geometry: pill (Headline type) — radius constant; h-padding per-size below ---- */
+  --loop-badge-status-radius:        var(--radius-base);   /* 4px */
+
+  /* ---- Size: XLarge (Figma canonical default) ---- */
+  --loop-badge-status-xlarge-font:    var(--font-size-400); /* 18px */
+  --loop-badge-status-xlarge-leading: 20px;
+  --loop-badge-status-xlarge-icon:    20px;
+  --loop-badge-status-xlarge-dot:     14px;
+  --loop-badge-status-xlarge-gap:     6px;
+  --loop-badge-status-xlarge-headline-h: 40px;             /* pinned pill height */
+  --loop-badge-status-xlarge-pad-left:  var(--space-xsmall); /* 12px */
+  --loop-badge-status-xlarge-pad-right: 14px;
+
+  /* ---- Size: Large ---- */
+  --loop-badge-status-large-font:    var(--font-size-300); /* 16px */
+  --loop-badge-status-large-leading: 16px;
+  --loop-badge-status-large-icon:    18px;
+  --loop-badge-status-large-dot:     12px;
+  --loop-badge-status-large-gap:     4px;
+  --loop-badge-status-large-headline-h: 32px;             /* pinned pill height */
+  --loop-badge-status-large-pad-left:  10px;
+  --loop-badge-status-large-pad-right: var(--space-xsmall); /* 12px */
+
+  /* ---- Size: Regular (component default) ---- */
+  --loop-badge-status-regular-font:    var(--font-size-200); /* 14px */
+  --loop-badge-status-regular-leading: 14px;
+  --loop-badge-status-regular-icon:    16px;
+  --loop-badge-status-regular-dot:     10px;
+  --loop-badge-status-regular-gap:     4px;
+  --loop-badge-status-regular-headline-h: 24px;             /* pinned pill height */
+  --loop-badge-status-regular-pad-left:  var(--space-xxsmall); /* 8px */
+  --loop-badge-status-regular-pad-right: 10px;
+
+  /* ---- Size: Small ---- */
+  --loop-badge-status-small-font:    var(--font-size-100); /* 12px */
+  --loop-badge-status-small-leading: 14px;
+  --loop-badge-status-small-icon:    14px;
+  --loop-badge-status-small-dot:     8px;
+  --loop-badge-status-small-gap:     4px;
+  --loop-badge-status-small-headline-h: 22px;             /* pinned pill height */
+  --loop-badge-status-small-pad-left:  6px;
+  --loop-badge-status-small-pad-right: var(--space-xxsmall); /* 8px */
+
+  /* ---- State: Success (green) ---- */
+  --loop-badge-status-success-indicator: var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-badge-status-success-bg:        var(--color-domain-state-positive-low);           /* #f6fef0 */
+  --loop-badge-status-success-border:    var(--color-outline-on-light-state-success-high); /* #388004 */
+
+  /* ---- State: Informational (blue) ---- */
+  --loop-badge-status-informational-indicator: var(--color-icon-on-light-state-informational); /* #004370 */
+  --loop-badge-status-informational-bg:        var(--color-domain-state-info-low);             /* #f6fcff */
+  --loop-badge-status-informational-border:    var(--color-outline-on-light-state-info-high);  /* #00538a */
+
+  /* ---- State: Warning (yellow) ---- */
+  --loop-badge-status-warning-indicator: var(--color-icon-on-light-state-warning-regular); /* #e19d00 */
+  --loop-badge-status-warning-bg:        var(--color-domain-state-warning-low);            /* #fef3d7 */
+  --loop-badge-status-warning-border:    var(--color-outline-on-light-state-warning-high); /* #896001 */
+
+  /* ---- State: Error (red) ---- */
+  --loop-badge-status-error-indicator: var(--color-icon-on-light-state-error);       /* #9d161d */
+  --loop-badge-status-error-bg:        var(--color-domain-state-negative-low);       /* #fdf2f2 */
+  --loop-badge-status-error-border:    var(--color-outline-on-light-state-error-high);/* #9d161d */
+
+  /* ---- State: Suggestive (purple) ---- */
+  --loop-badge-status-suggestive-indicator: var(--color-outline-on-light-state-suggest-high); /* #763ba9 */
+  --loop-badge-status-suggestive-bg:        var(--color-domain-state-suggestion-low);         /* #f1e1ff */
+  --loop-badge-status-suggestive-border:    var(--color-outline-on-light-state-suggest-high); /* #763ba9 */
+
+  /* ---- State: Not Started (neutral) ---- */
+  --loop-badge-status-not-started-indicator: var(--color-icon-on-light-state-disabled);  /* #8a9db1 */
+  --loop-badge-status-not-started-bg:        var(--color-bg-container-on-light-lowest);   /* #ffffff */
+  --loop-badge-status-not-started-border:    var(--color-domain-state-disable-medium);    /* #bdccdb */
+
+  /* ---- State: In Progress (blue spinner on white pill) ---- */
+  --loop-badge-status-in-progress-indicator: var(--color-icon-on-light-state-informational); /* #004370 */
+  --loop-badge-status-in-progress-bg:        var(--color-bg-container-on-light-lowest);       /* #ffffff */
+  --loop-badge-status-in-progress-border:    var(--color-outline-on-light-state-disable-low); /* #d4dee8 */
+}

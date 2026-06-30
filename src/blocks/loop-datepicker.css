@@ -1,0 +1,326 @@
+/* loop-datepicker.css — DatePicker calendar balloon: Flatpickr provider (.flatpickr-calendar) restyle */
+
+/* =====================================================================
+   1) Balloon container
+   ===================================================================== */
+.flatpickr-calendar {
+  width: var(--loop-datepicker-width);
+  background-color: var(--loop-datepicker-bg);
+  border: 1px solid var(--loop-datepicker-border);
+  border-radius: var(--loop-datepicker-radius);
+  box-shadow: var(--loop-datepicker-shadow);
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+}
+
+/* small gap between the field and the open balloon */
+.flatpickr-calendar.arrowTop  { margin-top: var(--space-tiny, 4px); }
+.flatpickr-calendar.arrowBottom { margin-top: calc(-1 * var(--space-tiny, 4px)); }
+
+/* caret-less card — match the Select pop-up list (no pointer balloon) */
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after,
+.flatpickr-calendar.arrowBottom::before,
+.flatpickr-calendar.arrowBottom::after {
+  display: none;
+}
+
+/* =====================================================================
+   2) Header — Figma layout: "Month Year ⌄" left, prev/next grouped right.
+      Flatpickr default is prev(abs-left) / month(center) / next(abs-right);
+      we make .flatpickr-months a flex row and float the nav to the end.
+   ===================================================================== */
+.flatpickr-calendar .flatpickr-months {
+  display: flex;
+  align-items: center;
+  height: auto;
+  padding: var(--loop-datepicker-pad-block) var(--loop-datepicker-pad-inline) 0;
+}
+/* month/year label takes the left, growing to push the nav right */
+.flatpickr-calendar .flatpickr-month {
+  order: 1;
+  flex: 1 1 auto;
+  height: auto;
+  color: var(--loop-datepicker-header-color);
+}
+/* prev/next become a static, right-aligned pair (no longer absolute corners) */
+.flatpickr-calendar .flatpickr-prev-month { order: 2; }
+.flatpickr-calendar .flatpickr-next-month { order: 3; }
+
+.flatpickr-calendar .flatpickr-current-month {
+  position: static;
+  left: auto;
+  width: auto;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-tiny, 4px);
+  color: var(--loop-datepicker-header-color);
+  font-size: var(--loop-datepicker-header-size);
+  font-weight: var(--loop-datepicker-header-weight);
+}
+/* enforce Figma order "Month Year ⌄" — OSUI sets order:2 on the month select, which the
+   flex header would otherwise render year-first. Covers both monthSelectorType modes:
+   'static' (.cur-month text label, content-sized — matches Figma) and 'dropdown' (select). */
+.flatpickr-calendar .flatpickr-current-month .cur-month,
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months { order: 0; }
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper { order: 1; }
+.flatpickr-calendar .flatpickr-current-month .loop-dp-yeartoggle { order: 2; }
+
+.flatpickr-calendar .flatpickr-current-month .cur-month,
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-calendar .flatpickr-current-month input.cur-year {
+  margin: 0;
+  color: var(--loop-datepicker-header-color);
+  font-size: var(--loop-datepicker-header-size);
+  font-weight: var(--loop-datepicker-header-weight);
+  border-radius: var(--radius-base, 4px);
+}
+/* drop the month select's native arrow — the single year caret is the only affordance (Figma) */
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+  padding-inline: 0;
+}
+.flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+  background-color: var(--loop-datepicker-nav-hover-bg);
+  border-radius: var(--radius-base, 4px);
+}
+/* hide Flatpickr's numeric year spinner arrows — the caret opens the year grid instead,
+   and reclaim their width so the 4-digit year never clips */
+.flatpickr-calendar .numInputWrapper span.arrowUp,
+.flatpickr-calendar .numInputWrapper span.arrowDown { display: none; }
+.flatpickr-calendar .flatpickr-current-month .numInputWrapper { width: auto; }
+.flatpickr-calendar .flatpickr-current-month input.cur-year { width: 4.5ch; padding: 0; }
+
+/* month/year caret — opens the scrollable year grid (plugin-driven) */
+.flatpickr-calendar .loop-dp-yeartoggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-datepicker-caret-size);
+  height: var(--loop-datepicker-caret-size);
+  margin-inline-start: var(--space-tiny, 4px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--loop-datepicker-caret-color);
+  cursor: pointer;
+  border-radius: var(--radius-base, 4px);
+}
+.flatpickr-calendar .loop-dp-yeartoggle svg { width: 12px; height: 12px; fill: currentColor; }
+.flatpickr-calendar .loop-dp-yeartoggle:hover { background-color: var(--loop-datepicker-nav-hover-bg); }
+/* caret flips when the year grid is open */
+.flatpickr-calendar.loop-dp--yearview .loop-dp-yeartoggle svg { transform: rotate(180deg); }
+
+/* prev / next — circular neutral hover, brand-neutral chevrons, grouped right */
+.flatpickr-calendar .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-next-month {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-datepicker-nav-size);
+  height: var(--loop-datepicker-nav-size);
+  padding: 0;
+  border-radius: var(--radius-pill, 32px);
+}
+.flatpickr-calendar .flatpickr-prev-month:hover,
+.flatpickr-calendar .flatpickr-next-month:hover {
+  background-color: var(--loop-datepicker-nav-hover-bg);
+}
+/* Chevron: OSUI hides Flatpickr's <svg> and draws a FontAwesome glyph in ::before. We draw
+   our own border-chevron instead so it matches Figma and renders without the icon font
+   (selector carries .flatpickr-months to outrank OSUI's ::before rule). */
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month svg { display: none; }
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month::before,
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month::before {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 7px;
+  font-family: inherit;
+  border: solid var(--loop-datepicker-nav-icon);
+  border-width: 2px 2px 0 0;
+}
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month::before {
+  transform: rotate(-135deg);   /* points left ‹ */
+  margin-inline-start: 3px;
+}
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month::before {
+  transform: rotate(45deg);     /* points right › */
+  margin-inline-end: 3px;
+}
+
+/* =====================================================================
+   3) Weekday header row
+   ===================================================================== */
+.flatpickr-calendar .flatpickr-weekdays {
+  padding: var(--space-xxsmall, 8px) var(--loop-datepicker-pad-inline) 0;
+}
+/* align weekday heads over the day columns (same 36px tracks, space-between) */
+.flatpickr-calendar .flatpickr-weekdaycontainer { justify-content: space-between; }
+.flatpickr-calendar span.flatpickr-weekday {
+  flex: 0 0 var(--loop-datepicker-day-size);
+  max-width: var(--loop-datepicker-day-size);
+  color: var(--loop-datepicker-weekday-color);
+  font-size: var(--loop-datepicker-weekday-size);
+  font-weight: var(--loop-datepicker-weekday-weight);
+}
+
+/* =====================================================================
+   4) Day grid
+   ===================================================================== */
+.flatpickr-calendar .flatpickr-innerContainer {
+  padding: var(--space-tiny, 4px) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-block);
+}
+.flatpickr-calendar .flatpickr-rContainer,
+.flatpickr-calendar .flatpickr-days,
+.flatpickr-calendar .dayContainer {
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+}
+/* even 7-column distribution so each 36px marker reads as a circle */
+.flatpickr-calendar .dayContainer { justify-content: space-between; }
+
+.flatpickr-calendar .flatpickr-day {
+  flex: 0 0 var(--loop-datepicker-day-size);
+  width: var(--loop-datepicker-day-size);
+  max-width: var(--loop-datepicker-day-size);
+  height: var(--loop-datepicker-day-size);
+  line-height: calc(var(--loop-datepicker-day-size) - 2px);
+  margin: var(--space-tiny, 4px) 0 0;
+  border: 1px solid transparent;           /* reserve the 1px so "today"/selected never shift the grid */
+  border-radius: var(--loop-datepicker-day-radius);
+  color: var(--loop-datepicker-day-color);
+  font-size: var(--loop-datepicker-day-size-text);
+  font-weight: var(--font-weight-regular, 400);
+}
+
+/* out-of-month days */
+.flatpickr-calendar .flatpickr-day.prevMonthDay,
+.flatpickr-calendar .flatpickr-day.nextMonthDay {
+  color: var(--loop-datepicker-day-muted);
+}
+
+/* hover / keyboard-focus surface */
+.flatpickr-calendar .flatpickr-day:hover,
+.flatpickr-calendar .flatpickr-day.prevMonthDay:hover,
+.flatpickr-calendar .flatpickr-day.nextMonthDay:hover {
+  background-color: var(--loop-datepicker-day-hover-bg);
+  border-color: var(--loop-datepicker-day-hover-bg);
+  color: var(--loop-datepicker-day-color);
+}
+
+/* today — brand-blue ring */
+.flatpickr-calendar .flatpickr-day.today {
+  border-color: var(--loop-datepicker-today-border);
+}
+.flatpickr-calendar .flatpickr-day.today:hover,
+.flatpickr-calendar .flatpickr-day.today:focus {
+  background-color: var(--loop-datepicker-day-hover-bg);
+  border-color: var(--loop-datepicker-today-border);
+  color: var(--loop-datepicker-day-color);
+}
+
+/* selected — brand-blue fill, white glyph (beats today + hover + range) */
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover,
+.flatpickr-calendar .flatpickr-day.selected:focus,
+.flatpickr-calendar .flatpickr-day.selected.today,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.startRange:hover,
+.flatpickr-calendar .flatpickr-day.endRange,
+.flatpickr-calendar .flatpickr-day.endRange:hover {
+  background-color: var(--loop-datepicker-selected-bg);
+  border-color: var(--loop-datepicker-selected-bg);
+  color: var(--loop-datepicker-selected-text);
+}
+
+/* in-range fill between endpoints */
+.flatpickr-calendar .flatpickr-day.inRange,
+.flatpickr-calendar .flatpickr-day.inRange:hover {
+  background-color: var(--loop-datepicker-range-bg);
+  border-color: var(--loop-datepicker-range-bg);
+  color: var(--loop-datepicker-day-color);
+  box-shadow: -5px 0 0 var(--loop-datepicker-range-bg), 5px 0 0 var(--loop-datepicker-range-bg);
+}
+
+/* disabled days */
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled,
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+  color: var(--loop-datepicker-day-disabled);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* =====================================================================
+   5) Accessibility — brand keyboard ring, scoped to the OSUI calendar
+   ===================================================================== */
+.flatpickr-calendar .flatpickr-day:focus-visible {
+  outline: none;
+  border-color: var(--loop-datepicker-focus-ring);
+  box-shadow: 0 0 0 2px var(--loop-datepicker-focus-ring);
+}
+.flatpickr-calendar .flatpickr-prev-month:focus-visible,
+.flatpickr-calendar .flatpickr-next-month:focus-visible,
+.flatpickr-calendar .flatpickr-monthDropdown-months:focus-visible,
+.flatpickr-calendar .loop-dp-yeartoggle:focus-visible,
+.flatpickr-calendar .numInputWrapper input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--loop-datepicker-focus-ring);
+}
+
+/* =====================================================================
+   6) Year grid view ("Open Change Year") — injected by the custom plugin
+      (src/components/loop-datepicker-year-grid.js). When .loop-dp--yearview is
+      on the calendar, the day grid is hidden and the scrollable year grid shows.
+   ===================================================================== */
+.flatpickr-calendar .loop-dp-yeargrid { display: none; }
+
+.flatpickr-calendar.loop-dp--yearview .flatpickr-weekdays,
+.flatpickr-calendar.loop-dp--yearview .flatpickr-innerContainer { display: none; }
+
+.flatpickr-calendar.loop-dp--yearview .loop-dp-yeargrid {
+  display: grid;
+  grid-template-columns: repeat(var(--loop-datepicker-year-cols), 1fr);
+  gap: var(--loop-datepicker-year-gap);
+  max-height: var(--loop-datepicker-year-view-max);
+  overflow-y: auto;
+  padding: var(--space-tiny, 4px) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-block);
+}
+
+.flatpickr-calendar .loop-dp-yeargrid__year {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--loop-datepicker-year-cell-h);
+  border: 1px solid transparent;          /* reserve 1px so the selected ring never shifts the grid */
+  border-radius: var(--loop-datepicker-year-radius);
+  background: transparent;
+  color: var(--loop-datepicker-year-color);
+  font-size: var(--loop-datepicker-day-size-text);
+  font-weight: var(--font-weight-regular, 400);
+  cursor: pointer;
+}
+.flatpickr-calendar .loop-dp-yeargrid__year:hover {
+  background-color: var(--loop-datepicker-year-hover-bg);
+  border-color: var(--loop-datepicker-year-hover-bg);
+}
+.flatpickr-calendar .loop-dp-yeargrid__year--selected {
+  border-color: var(--loop-datepicker-year-selected-border);
+  font-weight: var(--font-weight-semibold, 600);
+}
+.flatpickr-calendar .loop-dp-yeargrid__year:focus-visible {
+  outline: none;
+  border-color: var(--loop-datepicker-focus-ring);
+  box-shadow: 0 0 0 2px var(--loop-datepicker-focus-ring);
+}
+
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .flatpickr-calendar,
+  .flatpickr-calendar .flatpickr-day { transition: none; animation: none; }
+}

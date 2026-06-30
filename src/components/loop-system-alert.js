@@ -2,8 +2,14 @@
  * <loop-system-alert> — Full-width system notification banner.
  *
  * Figma: "System Alerts" [node:17873-7603]. Custom Web Component — no native OS widget.
- * Renders a full-width alert banner with optional icon slot, title, body text, action
+ * Renders a full-width alert banner with a type icon, title, body text, action
  * link/button, and dismiss (×) button. Four semantic types; single-line and multi-line.
+ *
+ * Layout (per Figma):
+ *   single-line — icon + title + message + action are a horizontally CENTERED group;
+ *                 dismiss × pinned far right.
+ *   multi-line  — icon top-left; title / message / action stacked left-aligned in a column;
+ *                 dismiss × top-right.
  *
  * Attributes:
  *   type          "error" | "warning" | "informative" | "offline"  (default: "error")
@@ -20,15 +26,17 @@
  *   action  — fired when action clicked without action-href; detail: { type }
  *
  * Slots:
- *   icon — optional 16×16 icon element, e.g. <img slot="icon" src="…" alt="">
+ *   icon — overrides the built-in type icon, e.g. <img slot="icon" src="…" alt="">.
+ *          When empty, a default type-specific 16×16 icon is shown (error/warning/info/offline).
  *
  * Accessibility: role="alert" (live region); dismiss has aria-label; Escape key does
  * nothing (the banner is page-level, not a modal); focus ring uses currentColor per
  * CLAUDE.md (no silent color substitution).
  *
- * OutSystems: drop loop-system-alert.js into Resources. In a Block, add an HTML element:
- *   <loop-system-alert type="error" title="Title" message="Alert text" dismissible></loop-system-alert>
- * Pass dynamic values via the OutSystems JavaScript node that sets attributes after render.
+ * OutSystems: drop loop-system-alert.js into Resources. In a Block, add an HTML element and
+ * bind attributes declaratively from Block inputs — booleans are value-aware, so:
+ *   dismissible = If(Dismissible, "true", "false")   multiline = If(Multiline, "true", "false")
+ * ODC rewrites the attribute when the input changes; observedAttributes re-renders reactively.
  */
 class LoopSystemAlert extends HTMLElement {
   static get observedAttributes() {
@@ -85,6 +93,24 @@ class LoopSystemAlert extends HTMLElement {
     }
   }
 
+  // Built-in type icon (Figma renders one per type). 16×16, stroke/fill currentColor so it
+  // inherits the per-type icon color. Overridden by a slotted `slot="icon"` element.
+  _defaultIcon(type) {
+    const svg = (inner) =>
+      `<svg class="lsa__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">${inner}</svg>`;
+    switch (type) {
+      case 'warning':
+        return svg('<path d="M8 2.3 14.4 13.1H1.6L8 2.3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="8" y1="6.4" x2="8" y2="9.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.3" r="0.8" fill="currentColor"/>');
+      case 'informative':
+        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="5" r="0.85" fill="currentColor"/><line x1="8" y1="7.2" x2="8" y2="11.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>');
+      case 'offline':
+        return svg('<path d="M2.6 6.3C5.6 3.6 10.4 3.6 13.4 6.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M4.9 8.7C6.7 7.1 9.3 7.1 11.1 8.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="1" fill="currentColor"/>');
+      case 'error':
+      default:
+        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4.5" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.85" fill="currentColor"/>');
+    }
+  }
+
   _render() {
     const t            = this._type;
     const multiline    = this._multiline;
@@ -100,6 +126,10 @@ class LoopSystemAlert extends HTMLElement {
         ? `<a class="lsa__action" href="${actionHref}">${actionLabel}</a>`
         : `<button class="lsa__action" type="button">${actionLabel}</button>`
       : '';
+
+    const iconHtml = this._hideIcon
+      ? ''
+      : `<slot name="icon" class="lsa__icon-slot" part="icon">${this._defaultIcon(t)}</slot>`;
 
     const titleHtml   = title   ? `<span class="lsa__title">${title}</span>` : '';
     const messageHtml = message ? `<p class="lsa__message">${message}</p>`   : '';
@@ -122,9 +152,9 @@ class LoopSystemAlert extends HTMLElement {
           <div class="lsa__text" part="text">
             ${titleHtml}
             ${messageHtml}
-            ${multiline ? '' : actionHtml}
+            ${multiline ? actionHtml : ''}
           </div>
-          ${multiline && actionHtml ? actionHtml : ''}
+          ${multiline ? '' : actionHtml}
         </div>
         ${dismissHtml}
       </div>`;
@@ -141,33 +171,42 @@ class LoopSystemAlert extends HTMLElement {
   justify-content: space-between;
   gap: var(--loop-sysalert-gap, 8px);
   padding: var(--loop-sysalert-padding-v, 8px) var(--loop-sysalert-padding-h, 12px);
-  min-width: 280px;
+  min-width: var(--loop-sysalert-min-width, 280px);
 }
-.lsa--multiline { align-items: flex-start; }
+.lsa--multiline {
+  align-items: flex-start;
+  min-width: var(--loop-sysalert-min-width-multiline, 230px);
+}
 
 .lsa--error       { background-color: var(--loop-sysalert-error-bg, #9d161d); }
 .lsa--warning     { background-color: var(--loop-sysalert-warning-bg, #e19d00); }
 .lsa--informative { background-color: var(--loop-sysalert-informative-bg, #004370); }
 .lsa--offline     { background-color: var(--loop-sysalert-offline-bg, #8a9db1); }
 
+/* single-line: icon + text + action centered as a group; multi-line: left-aligned row */
 .lsa__content {
   flex: 1 0 0;
   min-width: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--loop-sysalert-gap, 8px);
 }
-.lsa--multiline .lsa__content { align-items: flex-start; }
+.lsa--multiline .lsa__content { align-items: flex-start; justify-content: flex-start; }
 
+/* slot is transparent to flex so its content (default svg or slotted icon) is the flex item */
+.lsa__icon-slot { display: contents; }
+.lsa__icon { flex-shrink: 0; display: block; width: var(--loop-sysalert-icon-size, 16px); height: var(--loop-sysalert-icon-size, 16px); }
 ::slotted([slot="icon"]) {
   flex-shrink: 0;
   width: var(--loop-sysalert-icon-size, 16px);
   height: var(--loop-sysalert-icon-size, 16px);
 }
+.lsa--multiline .lsa__icon,
 .lsa--multiline ::slotted([slot="icon"]) { margin-top: 2px; }
 
+/* single-line: title+message inline (shrink, so the group can center) */
 .lsa__text {
-  flex: 1 0 0;
   min-width: 0;
   display: flex;
   align-items: baseline;
@@ -175,6 +214,7 @@ class LoopSystemAlert extends HTMLElement {
   flex-wrap: wrap;
 }
 .lsa--multiline .lsa__text {
+  flex: 1 0 0;
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
@@ -196,18 +236,25 @@ class LoopSystemAlert extends HTMLElement {
   line-height: 1.25;
 }
 
-.lsa--error       .lsa__title, .lsa--error       .lsa__message {
-  color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75));
-}
-.lsa--offline     .lsa__title, .lsa--offline     .lsa__message {
-  color: var(--loop-sysalert-offline-text, rgba(255, 255, 255, 0.75));
-}
-.lsa--warning     .lsa__title, .lsa--warning     .lsa__message {
-  color: var(--loop-sysalert-warning-text, #473201);
-}
-.lsa--informative .lsa__title, .lsa--informative .lsa__message {
-  color: var(--loop-sysalert-informative-text, #f6fcff);
-}
+/* Per-element colors mirror Figma's distinct title / message / action / icon roles per type. */
+.lsa--error       .lsa__icon,
+.lsa--error       .lsa__dismiss { color: var(--loop-sysalert-error-icon, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__icon,
+.lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-icon, #473201); }
+.lsa--informative .lsa__icon,
+.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-icon, rgba(255, 255, 255, 0.75)); }
+.lsa--offline     .lsa__icon,
+.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-offline-icon, rgba(255, 255, 255, 0.75)); }
+
+.lsa--error       .lsa__title { color: var(--loop-sysalert-error-title, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__title { color: var(--loop-sysalert-warning-title, #473201); }
+.lsa--informative .lsa__title { color: var(--loop-sysalert-informative-title, rgba(255, 255, 255, 0.75)); }
+.lsa--offline     .lsa__title { color: var(--loop-sysalert-offline-title, rgba(255, 255, 255, 0.75)); }
+
+.lsa--error       .lsa__message { color: var(--loop-sysalert-error-message, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__message { color: var(--loop-sysalert-warning-message, #473201); }
+.lsa--informative .lsa__message { color: var(--loop-sysalert-informative-message, #f6fcff); }
+.lsa--offline     .lsa__message { color: var(--loop-sysalert-offline-message, rgba(255, 255, 255, 0.9)); }
 
 .lsa__action {
   font-family:     var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -224,10 +271,10 @@ class LoopSystemAlert extends HTMLElement {
 }
 .lsa--multiline .lsa__action { margin-top: var(--loop-sysalert-action-pt, 12px); }
 
-.lsa--error       .lsa__action { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
-.lsa--offline     .lsa__action { color: var(--loop-sysalert-offline-text, rgba(255, 255, 255, 0.75)); }
-.lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-text, #473201); }
-.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-text, #f6fcff); }
+.lsa--error       .lsa__action { color: var(--loop-sysalert-error-action, #f5f7f9); }
+.lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-action, #473201); }
+.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-action, rgba(255, 255, 255, 0.9)); }
+.lsa--offline     .lsa__action { color: var(--loop-sysalert-offline-action, rgba(255, 255, 255, 0.9)); }
 .lsa__action:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
 .lsa__dismiss {
@@ -243,11 +290,6 @@ class LoopSystemAlert extends HTMLElement {
   cursor:      pointer;
 }
 .lsa--multiline .lsa__dismiss { align-self: flex-start; margin-top: 2px; }
-
-.lsa--error       .lsa__dismiss { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
-.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-offline-text, rgba(255, 255, 255, 0.75)); }
-.lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-text, #473201); }
-.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-text, #f6fcff); }
 .lsa__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
 @media (prefers-reduced-motion: reduce) {

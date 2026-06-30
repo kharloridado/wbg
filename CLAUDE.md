@@ -37,6 +37,8 @@ Generated code (CSS, Web Component `.js`, Block instructions) is **not** the end
 
 **Rule: the handover ticket must CONTAIN the JS/CSS to copy into ODC — not just point at a repo path.** Every `handover/*.md` carries a `## Code to paste into ODC` section with the verbatim artifact(s) in a collapsed `<details>` block (source path in the `<summary>`). Tokens travel via `dist/theme.css` (its own paste) so they aren't duplicated there. Embed only what the developer hand-places: block CSS overrides and Web Component `.js`. The blocks are generated from source by `node build/embed-handover-code.mjs` (idempotent) — re-run it after editing a source file, and add new handovers to its `MAP`.
 
+**Rule: every handover also carries a `## Build in ODC with Mentor Studio` section** — a ready-to-paste prompt for **ODC Mentor Studio** that scaffolds the OutSystems side (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent — it does *not* author the CSS or the Web Component, so the prompt fences those off as already-pasted and aims Mentor only at the wiring. The same `embed-handover-code.mjs` generates it: archetype-aware by default (Web Component / native-widget restyle / Style-Guide reference), or fully filled when the `MAP` entry supplies a `mentor` spec (see `loop-toast.md` for the worked example). The reusable template lives at `handover/MENTOR-STUDIO-PROMPT.md`.
+
 ```bash
 gh issue create --title "[handover] <component> — add in OutSystems" \
   --body-file handover/<artifact>.md --label "handover,task" --type "Task" \

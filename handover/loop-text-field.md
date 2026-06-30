@@ -10,6 +10,22 @@ OutSystems **Input** widget; native form **validation** drives the Error state. 
 Label + helper-text arrangement is a thin BEM wrapper (`loop-field`) applied via Extended
 Class on the field Container.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Text Field page.
+
+**What it is.** The Loop input — native OutSystems Input restyled, with a `loop-field` label/helper wrapper.
+
+**When to use**
+- Collect single-line (or multi-line textarea) text or numbers — names, emails, search, amounts — with a label, optional helper text, and validation/error state.
+
+**When not to use** (reach for instead)
+- Choose from preset options → **Dropdown / Select**.
+- An on/off choice → **Switch** or **Checkbox**.
+
+**How to use**
+- Use the native **Input** widget; wrap the field Container with Extended Class `loop-field`. Native form validation drives the Error state. Sizes available via the size classes.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -24,56 +40,7 @@ Class on the field Container.
 <summary><code>loop-text-field.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Text Field  ("The Loop" — loop/text field)
-   Figma: -The Loop- Main Library · "Text Field" [node:19336-9606]
-
-   Approach: RESTYLE the native OutSystems UI Input widget
-     (.form-control[data-input] / [data-textarea]) — NOT a parallel class system.
-     Devs use the standard OutSystems Input widget; native form validation drives
-     the Error state via .not-valid. Warning, Disabled and Read-Only have no native
-     INPUT state in OutSystems UI, so they are added modifiers applied via Extended
-     Class (.is-warning / .is-read-only — the one-off additions, like .btn-ghost).
-     The Label + helper-text arrangement (Vertical default / Horizontal) is a thin
-     BEM wrapper, .loop-field, applied to the field Container.
-   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
-   Escalation Level: L1/L2 (native widget + token-driven theme override)
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_inputs-and-textareas.scss):
-     .form-control[data-input]   → white bg, 1px neutral-5 border, radius-soft, h40,
-                                    padding 0/16, font-size-s; :hover neutral-6;
-                                    :focus primary; [disabled] neutral; .not-valid → error
-     sizes: .input-small → h32 · .input-large → h48
-   The Loop overrides that baseline to: radius 8 (OutSystems/MUI target per the Figma
-     note at node:19336-17326 — "Modern" mode is 32px), Open Sans, 16/18 padding
-     (→ 56px tall xLarge default), placeholder neutral-alpha-57, a 2px Blue/50 focus
-     border, and tinted Error / Warning / Disabled fills.
-
-   Size mapping (OutSystems Input class → The Loop "Size"):
-     (none / base)   → xLarge  (56px, The Loop default)
-     .input-large    → Large   (48px)
-     .is-regular     → Regular (40px) — added modifier (OutSystems has no "medium")
-     .input-small    → Small   (32px)
-
-   Tokens consumed: --loop-field-* (component-field.css), --radius-medium, --space-*,
-     --font-family-base/-label, --color-bg-container-on-light-lowest,
-     --color-text-on-light-default, --color-neutral-alpha-57,
-     --color-outline-on-light-default, --color-outline-on-light-emphasis,
-     --color-outline-on-light-link-focused, --color-bg-container-state-error-low,
-     --color-outline-on-light-state-error-high, --color-text-on-state-error-emphasis,
-     --color-domain-state-warning-low, --color-outline-on-light-state-warning-high,
-     --color-text-on-state-warning-emphasis, --color-domain-state-disable-low,
-     --color-text-on-light-state-{disabled,error,warning,success},
-     --color-text-on-light-subdued.
-
-   Fidelity notes (built faithfully; raised, NOT silently changed):
-     - Resting border = --color-outline-on-light-default (#00396b3d) ≈ 1.45:1 on white,
-       below the 3:1 non-text-contrast minimum (WCAG 2.2 SC 1.4.11) — FND-019.
-     - vpadding 18px / label gap 6px fall off the 4pt grid — FND-018.
-     - Placeholder "subdued" = neutral-alpha-57 #00294d91 differs from the registered
-       semantic --color-text-on-light-subdued #000d1a91 — FND-020.
-     - Size system is documented two ways (3 sizes vs 4) with an ambiguous default — FND-021.
-   ============================================ */
+/* loop-text-field.css — Text Field: native Input/textarea restyle + .loop-field label wrapper */
 
 /* ---- Field box — The Loop identity (Default / Filled / Focused share this) ---- */
 .form-control[data-input],
@@ -82,10 +49,10 @@ Class on the field Container.
   padding: var(--loop-field-padding-block, 18px) var(--loop-field-padding-inline, 16px);
   gap: var(--loop-field-gap, 8px);
 
-  background-color: var(--color-bg-container-on-light-lowest);     /* white */
-  border: 1px solid var(--color-outline-on-light-default);        /* #00396b3d — FND-019 */
-  border-radius: var(--loop-field-radius, 8px);
-  color: var(--color-text-on-light-default);                      /* neutral-alpha-70 */
+  background-color: var(--color-bg-container-on-light-lowest);
+  border: 1px solid var(--color-outline-on-light-default);
+  border-radius: var(--loop-field-radius, 32px);
+  color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-field-text-size, 16px);
@@ -94,41 +61,47 @@ Class on the field Container.
   letter-spacing: var(--loop-field-text-tracking, 0.5px);
 }
 
-/* xLarge (default) — single-line input is 56px tall (16 text + 2×2 ph-pad + 2×18 vpad) */
-.form-control[data-input] {
-  min-height: 56px;
+/* Textarea keeps the Medium (8px) radius — equal specificity with the shared rule, so it must follow it (source order wins). */
+.form-control[data-textarea] {
+  border-radius: var(--radius-medium, 8px);
 }
 
-/* Placeholder = Text/On Light/Subdued #00294d91 (neutral-alpha-57) — FND-020 */
+/* Regular (default) — overrides the shared rule's 18px (xLarge) padding-block to make a 40px single-line input. */
+.form-control[data-input] {
+  height: 40px;                  /* pinned height; border-box keeps it deterministic */
+  padding-block: 10px;
+}
+
+/* Placeholder colour */
 .form-control[data-input]::placeholder,
 .form-control[data-textarea]::placeholder {
   color: var(--color-neutral-alpha-57);
   opacity: 1;                                                     /* Firefox dims placeholders by default */
 }
 
-/* Hover — subtle border darken (parity with native; no brand-color change) */
+/* Hover — subtle border darken */
 .form-control[data-input]:hover,
 .form-control[data-textarea]:hover {
-  border-color: var(--color-outline-on-light-emphasis);          /* neutral-alpha-42 */
+  border-color: var(--color-outline-on-light-emphasis);
 }
 
-/* Focused — 2px Blue/50 border (Figma "Focused"). Shrink padding 1px so the box does
-   not jump when the border grows from 1→2px. */
+/* Focused — drawn as a 1px border + 1px inset box-shadow (not a 2px border) so border-width
+   and padding stay constant, never nudging the text or clobbering the Search icon's padding-left. */
 .form-control[data-input]:focus,
 .form-control[data-input]:focus-visible,
 .form-control[data-textarea]:focus,
 .form-control[data-textarea]:focus-visible {
   outline: none;
-  border: 2px solid var(--color-outline-on-light-link-focused);  /* Blue/50 #0071bc */
-  padding: calc(var(--loop-field-padding-block, 18px) - 1px) calc(var(--loop-field-padding-inline, 16px) - 1px);
+  border-color: var(--color-outline-on-light-link-focused);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused);
 }
 
 /* ---- Error — native .not-valid (set by OutSystems form validation) ---- */
 .form-control[data-input].not-valid,
 .form-control[data-textarea].not-valid {
-  background-color: var(--color-bg-container-state-error-low);    /* Red/10 #fdf2f2 */
-  border-color: var(--color-outline-on-light-state-error-high);  /* Red/70 #9d161d */
-  color: var(--color-text-on-state-error-emphasis);              /* Red/80 #861319 */
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
 }
 .form-control[data-input].not-valid::placeholder,
 .form-control[data-textarea].not-valid::placeholder {
@@ -138,25 +111,23 @@ Class on the field Container.
 /* ---- Warning — added modifier .is-warning (no native input warning state) ---- */
 .form-control[data-input].is-warning,
 .form-control[data-textarea].is-warning {
-  background-color: var(--color-domain-state-warning-low);        /* Yellow/03 #fef3d7 */
-  border-color: var(--color-outline-on-light-state-warning-high); /* Yellow base #896001 */
-  color: var(--color-text-on-state-warning-emphasis);            /* Yellow/90 #473201 */
+  background-color: var(--color-domain-state-warning-low);
+  border-color: var(--color-outline-on-light-state-warning-high);
+  color: var(--color-text-on-state-warning-emphasis);
 }
 .form-control[data-input].is-warning::placeholder,
 .form-control[data-textarea].is-warning::placeholder {
   color: var(--color-text-on-state-warning-emphasis);
 }
 
-/* ---- Disabled — native [disabled] / aria-disabled ----
-   Figma's border (Outline/On Dark/State/Disable #ffffff7a) has no light primitive;
-   rendered borderless via the disable fill so the faint edge matches the mock — FND-018. */
+/* ---- Disabled — native [disabled] / aria-disabled; rendered borderless via the disable fill ---- */
 .form-control[data-input][disabled],
 .form-control[data-input][aria-disabled="true"],
 .form-control[data-textarea][disabled],
 .form-control[data-textarea][aria-disabled="true"] {
-  background-color: var(--color-domain-state-disable-low);        /* Neutral/15 #dae3eb */
+  background-color: var(--color-domain-state-disable-low);
   border-color: var(--color-domain-state-disable-low);
-  color: var(--color-text-on-light-state-disabled);              /* neutral-alpha-42 #00294d6b */
+  color: var(--color-text-on-light-state-disabled);
 }
 
 /* ---- Read-Only — added modifier .is-read-only (borderless plain text) ---- */
@@ -167,25 +138,26 @@ Class on the field Container.
   padding-inline: 0px;
 }
 
-/* ---- Sizes — native .input-large / .input-small + added .is-regular ---- */
-.form-control[data-input].input-large {                          /* Large — 48px */
-  min-height: 48px;
+/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular ---- */
+.form-control[data-input].input-xlarge {
+  height: 56px;
+  padding-block: var(--loop-field-padding-block, 18px);
+}
+.form-control[data-input].input-large {
+  height: 48px;
   padding-block: 14px;
 }
-.form-control[data-input].is-regular {                           /* Regular — 40px */
-  min-height: 40px;
+.form-control[data-input].input-regular {
+  height: 40px;
   padding-block: 10px;
 }
-.form-control[data-input].input-small {                          /* Small — 32px */
-  min-height: 32px;
+.form-control[data-input].input-small {
+  height: 32px;
   padding-block: 6px;
   font-size: var(--font-size-200, 14px);
   line-height: 14px;
 }
-/* keep focus padding compensation correct at each size */
-.form-control[data-input].input-large:focus  { padding-block: 13px; }
-.form-control[data-input].is-regular:focus    { padding-block: 9px; }
-.form-control[data-input].input-small:focus   { padding-block: 5px; }
+/* No per-size focus padding compensation: the focus ring is an inset box-shadow, so padding stays constant. */
 
 /* ============================================================
    Field wrapper — Label + Input + Helper layout (BEM, applied via Extended Class)
@@ -203,10 +175,7 @@ Class on the field Container.
   gap: var(--space-small, 16px);
 }
 
-/* The Loop styles the NATIVE OutSystems label element — the OutSystems Input/Label
-   widget emits <label data-label> — rather than a parallel .loop-field__label class
-   (same restyle-the-native-widget approach as the input box, checkbox and radio). The
-   plain `label` selector is the fallback when the widget renders without data-label. */
+/* Styles the native label ([data-label]); the plain `label` selector is the fallback when the widget renders without it. */
 .loop-field [data-label],
 .loop-field label {
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
@@ -216,9 +185,7 @@ Class on the field Container.
   letter-spacing: var(--loop-field-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
-/* Required marker — hooks OutSystems' native .mandatory class (set by the Label
-   widget's Mandatory property), not a custom --required modifier. Distinct from a
-   validation error (see FND-017 sibling note). */
+/* Required marker — hooks OutSystems' native .mandatory class, not a custom modifier. */
 .loop-field [data-label].mandatory::after,
 .loop-field label.mandatory::after {
   content: " *";
@@ -242,7 +209,17 @@ Class on the field Container.
 .loop-field__helper--success  { color: var(--color-text-on-light-state-success); }
 .loop-field__helper--disabled { color: var(--color-text-on-light-state-disabled); }
 
-/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) — native uses transition: all 180ms ---- */
+/* ---- Native validation message — restyle the platform's <span class="validation-message">
+   to match the helper--error treatment (typography + colour only; native positioning untouched). ---- */
+span.validation-message {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-helper-size, 12px);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-state-error);     /* Red/70, not the brighter Red/50 default */
+}
+
+/* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .form-control[data-input],
   .form-control[data-textarea] { transition: none; }
@@ -281,12 +258,40 @@ Class on the field Container.
   `--error` / `--warning` / `--success` / `--disabled`.
 
 ## What the override changes vs OutSystems UI baseline
-- Corner radius **8px** (`--radius-medium`) — the **OutSystems/MUI target** called out in the
-  Figma note (node 19336-17326). The "Modern" collection mode is 32px; OutSystems uses 8.
+- Corner radius **32px pill** (`--loop-field-radius` → `--radius-pill`) on single-line inputs —
+  the Figma "Modern" collection mode (node 19336-17326), shared with the Select so sibling
+  form controls match. The multi-line **textarea** keeps **8px** (`--radius-medium`).
 - Open Sans, padding **16/18** (→ **56px** tall xLarge default), field gap 8px.
 - Placeholder = `neutral-alpha-57` (#00294d91); **2px Blue/50** focus border (padding shrinks
   1px on focus so the box doesn't jump).
 - Tinted **Error** (red), **Warning** (yellow), **Disabled** (neutral) fills + borders.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for TextField to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-text-field.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-field-*` tokens).

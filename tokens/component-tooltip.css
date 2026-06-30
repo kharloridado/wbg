@@ -1,26 +1,16 @@
-/* component-tooltip.css — WBG / "The Loop" Tooltip component tokens
- * Figma: "Tooltip" [node:17874-7113] (balloon body, arrow, Dark/Light variants).
- * Consumed by the .osui-tooltip restyle in src/blocks/loop-tooltip.css.
- *
- * Note: --color-text-on-dark-emphasis lives in semantic-colors-dark.css (deferred to
- * the dark-mode phase). Dark bg/text use primitives directly (color-black /
- * color-gray-alpha-white-90) so they resolve from the current light build.
- *
- * FND-027 [design-token/low] — light-mode drop-shadow 0px 2px 2px rgba(0,0,0,0.1)
- * has no matching scale token (--shadow-low = 0 2px 8px differs in blur and color).
- * Implemented exact Figma value as --loop-tooltip-light-shadow. */
+/* component-tooltip.css — Tooltip component tokens (restyle of .osui-tooltip; Dark default + Light variant) */
 :root {
   /* ---- Dark variant (default) ---- */
   --loop-tooltip-dark-bg:   var(--color-black);
-  --loop-tooltip-dark-text: var(--color-gray-alpha-white-90);  /* rgba(255,255,255,0.9) = text/on-dark/emphasis */
+  --loop-tooltip-dark-text: var(--color-gray-alpha-white-90);  /* rgba(255,255,255,0.9) */
 
   /* ---- Light variant (ExtendedClass = "loop-tooltip--light") ---- */
   --loop-tooltip-light-bg:     var(--color-white);
   --loop-tooltip-light-text:   var(--color-text-on-light-default);  /* rgba(0,13,26,0.7) */
-  --loop-tooltip-light-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);     /* FND-027 — no matching shadow token */
+  --loop-tooltip-light-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);     /* no matching shadow token */
 
   /* ---- Shared balloon metrics ---- */
-  --loop-tooltip-radius:         var(--radius-xs);        /* 2px — Figma: border-radius/small */
+  --loop-tooltip-radius:         var(--radius-xs);        /* 2px */
   --loop-tooltip-padding-block:  var(--space-xtiny);      /* 2px */
   --loop-tooltip-padding-inline: var(--space-xxsmall);    /* 8px */
 
@@ -29,7 +19,7 @@
   --loop-tooltip-font-weight: var(--font-weight-regular); /* 400 */
   --loop-tooltip-line-height: var(--line-height-narrow);  /* 1.25 */
 
-  /* ---- Arrow geometry ---- */
-  --loop-tooltip-arrow-width:  8px;
-  --loop-tooltip-arrow-height: 4px;
+  /* ---- Arrow geometry (rotate(45deg)d square; side = height × √2, base = 2 × height) ---- */
+  --loop-tooltip-arrow-width:  8px;   /* informational; base = 2 × height */
+  --loop-tooltip-arrow-height: 4px;   /* drives --osui-tooltip-arrow-size */
 }

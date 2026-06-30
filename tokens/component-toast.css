@@ -1,0 +1,76 @@
+/* component-toast.css — Toast component tokens (vanilla JS Web Component <loop-toast>) */
+:root {
+  /* ---- Geometry ---- */
+  --loop-toast-padding-h:        var(--space-regular);   /* 24px */
+  --loop-toast-padding-v:        var(--space-small);     /* 16px */
+  --loop-toast-radius:           var(--radius-medium);   /* 8px */
+  --loop-toast-shadow:           var(--shadow-low);      /* 0 2px 8px — bottom-centre elevation */
+  --loop-toast-gap:              var(--space-xxsmall);   /* 8px  — content ↔ dismiss */
+  --loop-toast-content-gap:      var(--space-xsmall);    /* 12px — icon ↔ text */
+  --loop-toast-text-gap:         var(--space-tiny);      /* 4px  — title/message/button */
+  --loop-toast-icon-size:        24px;
+  --loop-toast-icon-pt:          var(--space-tiny);      /* 4px  — icon wrapper pt */
+  --loop-toast-dismiss-pad-l:    var(--space-small);     /* 16px — dismiss container pl */
+  --loop-toast-dismiss-pad-v:    var(--space-xxsmall);   /* 8px  — dismiss container py */
+  --loop-toast-min-width:        400px;                  /* min size, no title */
+  --loop-toast-min-width-titled: 450px;                  /* min size, w title */
+  --loop-toast-max-width:        550px;                  /* w-title fixed width */
+  --loop-toast-edge-block:       var(--space-regular);   /* 24px — gap from anchored top/bottom edge (overridden by stacking) */
+  --loop-toast-edge-gap:         var(--space-small);     /* 16px — side gutter / corner inset */
+  --loop-toast-z:                9000;                   /* above page chrome, below modal overlay */
+
+  /* ---- Responsive (tablet/mobile narrow the card + step down type/icon/padding) ---- */
+  --loop-toast-max-width-tablet:        450px;
+  --loop-toast-min-width-titled-tablet: 450px;
+  --loop-toast-min-width-mobile:        300px;
+  --loop-toast-min-width-titled-mobile: 316px;
+  --loop-toast-gap-mobile:           var(--space-tiny);        /* 4px  — content ↔ dismiss */
+  --loop-toast-content-gap-mobile:   var(--space-xxsmall);     /* 8px  — icon ↔ text */
+  --loop-toast-padding-h-mobile:     var(--space-small);       /* 16px */
+  --loop-toast-padding-v-mobile:     var(--space-xxsmall);     /* 8px */
+  --loop-toast-icon-size-mobile:     18px;
+  --loop-toast-body-size-mobile:     var(--font-size-100);     /* 12px */
+  --loop-toast-body-line-height-mobile: 18px;
+
+  /* ---- Typography ---- */
+  --loop-toast-title-size:        var(--font-size-500);   /* 20px */
+  --loop-toast-title-tracking:    -0.25px;                /* off-scale tracking, no primitive */
+  --loop-toast-body-size:         var(--font-size-200);   /* 14px */
+  --loop-toast-body-line-height:  21px;
+  --loop-toast-action-size:       var(--font-size-200);   /* 14px */
+
+  /* ---- Type: default (neutral dark) ---- */
+  --loop-toast-default-bg:      var(--color-neutral-80);          /* #252e37 */
+  --loop-toast-default-text:    var(--color-gray-alpha-white-90); /* #ffffffe5 */
+  --loop-toast-default-icon:    var(--color-white);               /* #ffffff */
+  --loop-toast-default-divider: var(--color-neutral-50);          /* #586e84 */
+
+  /* ---- Type: success ---- */
+  --loop-toast-success-bg:   var(--color-bg-container-state-success-high); /* #388004 */
+  --loop-toast-success-text: var(--color-gray-alpha-white-90);             /* #ffffffe5 */
+  --loop-toast-success-icon: var(--color-white);                          /* #ffffff */
+
+  /* ---- Type: warning (the only on-light type) ---- */
+  --loop-toast-warning-bg:      var(--color-domain-state-warning-regular);     /* #e19d00 */
+  --loop-toast-warning-text:    var(--color-text-on-light-state-warning);      /* #473201 */
+  --loop-toast-warning-title:   var(--color-text-on-light-state-warning);      /* #473201 — no primitive for Figma #612705, fall back to warning text */
+  --loop-toast-warning-icon:    var(--color-text-on-light-state-warning);      /* #473201 — = text */
+  --loop-toast-warning-divider: var(--color-outline-on-light-state-warning-high); /* #896001 */
+
+  /* ---- Type: error ---- */
+  --loop-toast-error-bg:   var(--color-bg-container-state-error-high); /* #9d161d */
+  --loop-toast-error-text: var(--color-gray-alpha-white-90);          /* #ffffffe5 */
+  --loop-toast-error-icon: var(--color-white);                        /* #ffffff */
+
+  /* ---- Type: information ---- */
+  --loop-toast-information-bg:   var(--color-bg-container-state-info-high); /* #004370 */
+  --loop-toast-information-text: var(--color-gray-alpha-white-90);         /* #ffffffe5 */
+  --loop-toast-information-icon: var(--color-white);                       /* #ffffff */
+
+  /* ---- Shared action + divider (on-dark types) ---- */
+  --loop-toast-action-on-dark:           var(--color-gray-alpha-white-90); /* #ffffffe5 */
+  --loop-toast-action-underline-on-dark: var(--color-gray-alpha-white-60); /* #ffffff99 — underline @ 60% */
+  --loop-toast-action-on-light:          var(--color-text-on-light-link-primary-enabled);   /* #004370 (warning) */
+  --loop-toast-action-underline-on-light:var(--color-text-on-light-link-underline-enabled); /* #0043708c (warning) */
+  --loop-toast-divider-on-dark:          var(--color-neutral-40);          /* #8a9db1 */
+}
