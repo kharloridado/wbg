@@ -87,7 +87,7 @@
 /* Base page type — brand family + body rhythm on the document root. */
 html, body {
   font-family: var(--font-family-base, "Open Sans");
-  font-size: var(--font-size-body-base, 16px);
+  font-size: var(--font-size-body-small, 14px);
   line-height: var(--line-height-base, 1.5);
 }
 
