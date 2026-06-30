@@ -72,7 +72,8 @@
   background: var(--_lbs-indicator);
 }
 
-/* ---- Indicator: icon / spinner (Icon type + in-progress) ---- */
+/* ---- Indicator: icon (Icon type + in-progress) ----
+ * The in-progress glyph is rendered STATIC (no rotation) per review on #88. */
 .loop-badge-status__icon {
   flex-shrink: 0;
   display: inline-flex;
@@ -81,12 +82,6 @@
   color:  var(--_lbs-indicator);   /* inline SVG paints with currentColor */
 }
 .loop-badge-status__icon svg { width: 100%; height: 100%; display: block; }
-
-.loop-badge-status__icon--spin svg { animation: loop-badge-status-spin 0.9s linear infinite; transform-origin: 50% 50%; }
-@keyframes loop-badge-status-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .loop-badge-status__icon--spin svg { animation: none; }
-}
 
 /* ---- Indicator colour per state (the label stays neutral) ---- */
 .loop-badge-status--success      { --_lbs-indicator: var(--loop-badge-status-success-indicator, #388004); }

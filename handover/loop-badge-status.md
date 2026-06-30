@@ -119,7 +119,8 @@ state hue (per Figma).
   background: var(--_lbs-indicator);
 }
 
-/* ---- Indicator: icon / spinner (Icon type + in-progress) ---- */
+/* ---- Indicator: icon (Icon type + in-progress) ----
+ * The in-progress glyph is rendered STATIC (no rotation) per review on #88. */
 .loop-badge-status__icon {
   flex-shrink: 0;
   display: inline-flex;
@@ -128,12 +129,6 @@ state hue (per Figma).
   color:  var(--_lbs-indicator);   /* inline SVG paints with currentColor */
 }
 .loop-badge-status__icon svg { width: 100%; height: 100%; display: block; }
-
-.loop-badge-status__icon--spin svg { animation: loop-badge-status-spin 0.9s linear infinite; transform-origin: 50% 50%; }
-@keyframes loop-badge-status-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .loop-badge-status__icon--spin svg { animation: none; }
-}
 
 /* ---- Indicator colour per state (the label stays neutral) ---- */
 .loop-badge-status--success      { --_lbs-indicator: var(--loop-badge-status-success-indicator, #388004); }
@@ -170,8 +165,7 @@ state hue (per Figma).
 | `loop-badge-status--{size}` | `small` \| `regular` \| `large` \| `xlarge` (optional; omit = regular) |
 | `loop-badge-status--headline` | Wraps the indicator + label in a bordered, tinted pill |
 | `loop-badge-status__dot` | Indicator element for **Light/Headline** — an empty span; CSS draws the coloured dot |
-| `loop-badge-status__icon` | Indicator element for **Icon** type — wraps an inline SVG (paints with `currentColor`) |
-| `loop-badge-status__icon--spin` | Add to `__icon` for the **in-progress** spinner animation (stops under reduced-motion) |
+| `loop-badge-status__icon` | Indicator element for **Icon** type and **in-progress** — wraps an inline SVG (paints with `currentColor`). Rendered static (no rotation). |
 | `loop-badge-status__label` | The status text |
 
 > **Size default:** Figma's canonical variant is `xlarge`; the block treats `regular` as the
@@ -200,9 +194,9 @@ state hue (per Figma).
   <span class="loop-badge-status__label">Needs review</span>
 </span>
 
-<!-- In-progress (spinner) -->
+<!-- In-progress (static icon — no rotation) -->
 <span class="loop-badge-status loop-badge-status--in-progress">
-  <span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true">
+  <span class="loop-badge-status__icon" aria-hidden="true">
     <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
   </span>
   <span class="loop-badge-status__label">Processing</span>
@@ -228,8 +222,8 @@ All glyphs use `fill="currentColor"` / `stroke="currentColor"`, so the state mod
 
 ## Accessibility (WCAG 2.2 AA)
 - The **visible label carries the status meaning** — colour is never the sole cue (WCAG 1.4.1). Always provide label text.
-- The indicator (dot / glyph / spinner) is decorative — mark it `aria-hidden="true"`.
-- The `in-progress` spinner stops under `prefers-reduced-motion`.
+- The indicator (dot / glyph) is decorative — mark it `aria-hidden="true"`.
+- The `in-progress` icon is **static** (no rotation), per review on #88 — no motion to suppress.
 - Label text colour is the neutral `Text/On Light/Default` on every (tinted/white) background — high contrast.
 - ⚠️ **Pending finding (FND-036):** the Figma label weight token is `500`, but the theme ships Open Sans `400/600/700` only, so `500` renders as `400` (faux). The Figma style name is "SemiBold" (600) — design to confirm whether to ship a 500 face or change the token to 600.
 
@@ -264,5 +258,5 @@ generating, list what you created by name and flag anything you could not finish
 - [ ] Rebuild `dist/theme.css` and paste into ODC Theme editor (includes the `loop-badge-status` block + `--loop-badge-status-*` tokens).
 - [ ] Apply `loop-badge-status` classes via ExtendedClass / HTML element; nest dot or icon + label.
 - [ ] For the Icon type, paste the matching glyph from the table above.
-- [ ] Test all 7 states × 3 types × 4 sizes; confirm the in-progress spinner animates (and stops under reduced motion).
+- [ ] Test all 7 states × 3 types × 4 sizes; confirm the in-progress icon renders **static** (no rotation).
 - [ ] 1-Click Publish → validate in a **real browser**.
