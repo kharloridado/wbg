@@ -161,3 +161,25 @@
   --shadow-l:  var(--shadow-medium);   /* → 0 8px 20px (Loop medium)  */
   --shadow-xl: var(--shadow-high);     /* → 0 5px 32px (Loop high)    */
 }
+
+/* ====== has-accessible-features — global focus-ring standardisation ======
+ * OutSystems UI enables `.has-accessible-features` on the page root when its
+ * Accessibility preference is on, adding visible focus rings to interactive
+ * elements. The ring colour was already remapped in the :root block above
+ * (--color-focus-outer → Blue/50 = #0071bc). These rules standardise ring
+ * SHAPE and SIZE across all interactive element types so The Loop 2 px
+ * brand-blue outline appears consistently, overriding OutSystems UI's
+ * per-element defaults (which vary by element type).
+ * Surface-specific overrides (e.g. the dark Layout Top header) live in their
+ * own files and win via specificity where needed. */
+.has-accessible-features a:focus,
+.has-accessible-features button:focus,
+.has-accessible-features [role="button"]:focus,
+.has-accessible-features input:focus,
+.has-accessible-features select:focus,
+.has-accessible-features textarea:focus,
+.has-accessible-features [tabindex]:focus {
+  outline: 2px solid var(--color-focus-outer);
+  outline-offset: 2px;
+  box-shadow: none;
+}
