@@ -55,8 +55,8 @@ semantic types, optional title, optional action, optional dismiss.
  * (cf. the native Feedback Message slide animation). Bottom anchors slide UP/DOWN; top
  * anchors slide DOWN/UP. Five semantic types; two layouts (with / without a title);
  * optional action (text/link) button; optional dismiss (×). Per the Figma responsive
- * variants, the card narrows and the type/icon/padding step down on tablet (≤1024px)
- * and phone (≤700px) — anchoring works on every device.
+ * variants, the card narrows and the type/icon/padding step down on tablet and phone;
+ * uses OutSystems' .tablet/.phone body classes via :host-context() — matches OutSystems UI breakpoints exactly.
  *
  * Triggered from OutSystems by a JS call in a Client Action — each toast is addressable
  * by id, so a "Run JavaScript" node fires the one it wants:
@@ -474,30 +474,30 @@ class LoopToast extends HTMLElement {
 .lt--warning     .lt__dismiss { color: var(--loop-toast-warning-icon, #473201); }
 .lt__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
-/* Responsive — Figma scales the card per breakpoint (OutSystems UI devices:
- * phone ≤700px, tablet ≤1024px). Position anchors above apply on every device. */
-@media (max-width: 1024px) {
-  .lt          { max-width: var(--loop-toast-max-width-tablet, 450px); }
-  .lt--titled  { min-width: var(--loop-toast-min-width-titled-tablet, 450px); }
+/* Responsive — OutSystems sets .tablet / .phone on the body (≤1024 px / ≤700 px).
+ * :host-context() reads those classes across the shadow boundary so these rules
+ * fire on the same breakpoints as the rest of the OS UI. */
+:host-context(.tablet) .lt,
+:host-context(.phone) .lt          { max-width: var(--loop-toast-max-width-tablet, 450px); }
+:host-context(.tablet) .lt--titled,
+:host-context(.phone) .lt--titled  { min-width: var(--loop-toast-min-width-titled-tablet, 450px); }
+
+:host-context(.phone) .lt {
+  min-width: min(var(--loop-toast-min-width-mobile, 300px), 100%);
+  gap: var(--loop-toast-gap-mobile, 4px);
+  padding: var(--loop-toast-padding-v-mobile, 8px) var(--loop-toast-padding-h-mobile, 16px);
 }
-@media (max-width: 700px) {
-  .lt {
-    min-width: min(var(--loop-toast-min-width-mobile, 300px), 100%);
-    gap: var(--loop-toast-gap-mobile, 4px);
-    padding: var(--loop-toast-padding-v-mobile, 8px) var(--loop-toast-padding-h-mobile, 16px);
-  }
-  .lt--titled  { min-width: min(var(--loop-toast-min-width-titled-mobile, 316px), 100%); }
-  .lt__content { gap: var(--loop-toast-content-gap-mobile, 8px); }
-  .lt__message {
-    font-size:   var(--loop-toast-body-size-mobile, 12px);
-    line-height: var(--loop-toast-body-line-height-mobile, 18px);
-  }
-  .lt__icon,
-  ::slotted([slot="icon"]),
-  .lt__dismiss {
-    width:  var(--loop-toast-icon-size-mobile, 18px);
-    height: var(--loop-toast-icon-size-mobile, 18px);
-  }
+:host-context(.phone) .lt--titled  { min-width: min(var(--loop-toast-min-width-titled-mobile, 316px), 100%); }
+:host-context(.phone) .lt__content { gap: var(--loop-toast-content-gap-mobile, 8px); }
+:host-context(.phone) .lt__message {
+  font-size:   var(--loop-toast-body-size-mobile, 12px);
+  line-height: var(--loop-toast-body-line-height-mobile, 18px);
+}
+:host-context(.phone) .lt__icon,
+:host-context(.phone) ::slotted([slot="icon"]),
+:host-context(.phone) .lt__dismiss {
+  width:  var(--loop-toast-icon-size-mobile, 18px);
+  height: var(--loop-toast-icon-size-mobile, 18px);
 }
 
 @media (prefers-reduced-motion: reduce) {

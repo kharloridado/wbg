@@ -111,6 +111,32 @@ floating white card (4px radius, drop shadow, 16px padding, 320px wide) with a p
   border-top:    var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
 }
 
+/* Panel to the RIGHT of the trigger → arrow on the left edge, points left toward trigger.
+   Apply via ExtendedClass on the popover trigger: loop-popover--left */
+[data-popover] > .popover-bottom.loop-popover--left::before {
+  bottom:        auto;
+  left:          auto;
+  right:         100%;
+  top:           var(--loop-popover-pointer-offset, 24px);
+  border-left:   0;
+  border-right:  var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
+  border-top:    calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+  border-bottom: calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+}
+
+/* Panel to the LEFT of the trigger → arrow on the right edge, points right toward trigger.
+   Apply via ExtendedClass on the popover trigger: loop-popover--right */
+[data-popover] > .popover-bottom.loop-popover--right::before {
+  bottom:        auto;
+  right:         auto;
+  left:          100%;
+  top:           var(--loop-popover-pointer-offset, 24px);
+  border-right:  0;
+  border-left:   var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
+  border-top:    calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+  border-bottom: calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+}
+
 /* ---- Dismiss (×) affordance, when the author places one in the title row ---- */
 [data-popover] > .popover-bottom .close,
 [data-popover] > .popover-bottom [data-dismiss] {

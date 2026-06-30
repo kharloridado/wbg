@@ -1,6 +1,7 @@
 /* index.css — build:theme entry; primitives first, then the layers that reference them. */
 @import "./colors.css";
 @import "./semantic-colors.css";
+@import "./semantic-colors-dark.css";   /* on-dark / inverted roles */
 @import "./color-utilities.css";
 @import "./color-utilities-primitives.css";
 @import "./spacing.css";

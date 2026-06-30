@@ -28,12 +28,19 @@ const tokensDir = join(root, "tokens");
 const blocksDir = join(root, "src", "blocks");
 const outFile = join(root, "dist", "theme.css");
 
+/* The release version stamped at the top of dist/theme.css comes from package.json
+ * — its single source of truth. Bumping a release = editing package.json "version"
+ * (see RELEASING.md), then rebuilding so the pasted ODC theme self-identifies and
+ * matches the CHANGELOG.md entry. */
+const version = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).version;
+
 /* Per-file section metadata. `group` clusters files in the Section Index (one
  * group = one top-level number); `name` is the sub-entry when a group has >1
  * file. Single-file groups show just the group name. */
 const META = {
   "colors.css":          { group: "Colors",        name: "Primitives" },
   "semantic-colors.css": { group: "Colors",        name: "Semantic (light)" },
+  "semantic-colors-dark.css": { group: "Colors",    name: "Semantic (dark / on-dark)" },
   "color-utilities.css": { group: "Colors",        name: "Utilities (roles)" },
   "color-utilities-primitives.css": { group: "Colors", name: "Utilities (primitives)" },
   "spacing.css":         { group: "Spacing",       name: "Scale" },
@@ -192,17 +199,43 @@ function firstRuleBrace(s) {
   return -1;
 }
 
+/* Index of the brace that CLOSES the `:root {` opened at `open` (the position of
+ * its `{`), found by brace-counting and skipping `/* … *\/` comments. Returns -1
+ * if unbalanced. Must NOT assume it's the file's last `}` — a file may carry
+ * trailing top-level rules after its :root (e.g. typography.css's `html, body` +
+ * `body.phone` responsive blocks). See the 2026-06-30 responsive-scope fix. */
+function matchingBrace(s, open) {
+  let depth = 0;
+  for (let i = open; i < s.length; i++) {
+    if (s[i] === "/" && s[i + 1] === "*") {
+      const end = s.indexOf("*/", i + 2);
+      if (end === -1) return -1;
+      i = end + 1;
+      continue;
+    }
+    if (s[i] === "{") depth++;
+    else if (s[i] === "}" && --depth === 0) return i;
+  }
+  return -1;
+}
+
 /* Split a file body into its leading `:root { … }` declaration block and anything
- * outside it. Each token file is a single :root spanning ~the whole file, so the
- * inner = between the first `{` after `:root` and the file's last `}`; the preamble
- * (the provenance/header comment) is kept and re-emitted inside the merged block.
+ * outside it. The inner = between the first `{` after `:root` and that block's OWN
+ * matching `}` (not the file's last `}`); the preamble (the provenance/header
+ * comment) is kept and re-emitted inside the merged block.
  * Files with no `:root` return inner:null and are emitted as standalone sections.
  *
  * `hoist`: real CSS that sits BEFORE the `:root` (e.g. typography.css's @font-face
  * rules). It must stay at TOP LEVEL — nesting an at-rule like @font-face inside the
  * consolidated :root is invalid CSS and silently breaks every token below it. When
  * the preamble contains a rule (a brace outside comments) we hoist the whole
- * pre-:root chunk out rather than folding it inside. See the 2026-06-25 font-face fix. */
+ * pre-:root chunk out rather than folding it inside. See the 2026-06-25 font-face fix.
+ *
+ * `trailing`: real CSS that sits AFTER the `:root` close (e.g. typography.css's
+ * `html, body` base rule + `body.tablet`/`body.phone` responsive overrides). Like
+ * `hoist`, it must stay TOP LEVEL — folding it into the consolidated :root nests the
+ * downstream component tokens inside `body.phone`, so they only apply on phones.
+ * See the 2026-06-30 responsive-scope fix. */
 function splitRoot(body) {
   // Match `:root {` as an actual SELECTOR (optional whitespace before the brace),
   // not the bare word ":root" — a class-only override file may mention ":root" in
@@ -210,15 +243,17 @@ function splitRoot(body) {
   // naive indexOf(":root") would mis-slice it into the consolidated :root block,
   // leaving it unclosed and breaking every token. See the 2026-06-22 alert restyle.
   const m = /:root\s*\{/.exec(body);
-  if (!m) return { preamble: "", hoist: "", inner: null };
+  if (!m) return { preamble: "", hoist: "", inner: null, trailing: "" };
   const open = m.index + m[0].length - 1; // position of the matched `{`
-  const close = body.lastIndexOf("}");
+  const matched = matchingBrace(body, open);
+  const close = matched === -1 ? body.lastIndexOf("}") : matched;
   const before = body.slice(0, m.index).trimEnd();
   const hasRule = firstRuleBrace(before) !== -1;
   return {
     preamble: hasRule ? "" : before,
     hoist: hasRule ? before : "",
     inner: body.slice(open + 1, close).replace(/^\n+/, "").trimEnd(),
+    trailing: body.slice(close + 1).trim(),
   };
 }
 
@@ -231,8 +266,9 @@ function build() {
   const head = [
     "/*!",
     'WBG · "The Loop" Design System — Theme',
+    `Version ${version} · built ${stamp}   (see CHANGELOG.md)`,
     "Generated from tokens/*.css — do not edit directly. Rebuild: npm run build:theme.",
-    `Paste the contents below into the ODC Theme editor.   (built ${stamp})`,
+    "Paste the contents below into the ODC Theme editor.",
     "*/",
     "",
     buildIndex(groups),
@@ -249,7 +285,7 @@ function build() {
     const { stripped, imports } = extractHoistedImports(raw);
     hoisted.push(...imports);
     const body = stripped.trimEnd();
-    const { preamble, hoist, inner } = splitRoot(body);
+    const { preamble, hoist, inner, trailing } = splitRoot(body);
     // Pre-:root rules (e.g. @font-face) carry their own explanatory comment; emit
     // them at top level so they are valid CSS, not buried inside the merged :root.
     if (hoist) preRootSections.push(`${banner(title)}\n\n${hoist}`);
@@ -261,6 +297,10 @@ function build() {
       parts.push(inner);
       rootSections.push(parts.join("\n\n"));
     }
+    // Post-:root rules (e.g. typography.css's `html, body` + `body.phone` responsive
+    // blocks) must also stay top level — folding them into the merged :root nests
+    // every later component token inside `body.phone`. Emit after the consolidated root.
+    if (trailing) tailSections.push(`${banner(title)}\n\n${trailing}`);
   }
   const rootBlock = `:root {\n${rootSections.join("\n\n\n")}\n}`;
 

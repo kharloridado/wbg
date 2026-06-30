@@ -24,9 +24,9 @@
       180deg,
       color-mix(in srgb, var(--color-blue-90) 0%, transparent) 31%,
       var(--color-blue-90) 67%);
-  --loop-card-multimedia-eyebrow:      var(--color-gray-alpha-white-75); /* #ffffffbf */
+  --loop-card-multimedia-eyebrow:      var(--color-text-on-dark-default);  /* = gray-alpha-white-75 #ffffffbf */
   --loop-card-multimedia-eyebrow-size: 13px;             /* no foundation step */
-  --loop-card-multimedia-title:        var(--color-gray-alpha-white-90); /* #ffffffe5 */
+  --loop-card-multimedia-title:        var(--color-text-on-dark-emphasis); /* = gray-alpha-white-90 #ffffffe5 */
   --loop-card-multimedia-title-tracking: -0.25px;        /* off-scale tracking */
   --loop-card-multimedia-icon-bg:      var(--color-gray-alpha-white-60); /* #ffffff99 */
   --loop-card-multimedia-icon-size:    64px;             /* play/microphone affordance */

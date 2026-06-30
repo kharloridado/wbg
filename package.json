@@ -1,6 +1,6 @@
 {
   "name": "outsystems-project-template",
-  "version": "1.0.0",
+  "version": "0.6.0",
   "description": "OutSystems frontend project scaffold — lightningcss theme pipeline + findings workflow",
   "private": true,
   "scripts": {

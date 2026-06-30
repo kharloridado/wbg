@@ -19,6 +19,7 @@
   border-right: var(--border-size-s) solid var(--color-outline-on-light-dimmed);
   box-shadow: var(--shadow-regular);
   padding-inline: var(--space-xsmall);
+  max-width: var(--side-menu-size);
 }
 /* Menu list takes the slack and scrolls; profile holds its height at the foot. */
 .layout-side .app-menu-links {
