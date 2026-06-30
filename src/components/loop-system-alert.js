@@ -269,7 +269,7 @@ class LoopSystemAlert extends HTMLElement {
   white-space:     nowrap;
   flex-shrink:     0;
 }
-.lsa--multiline .lsa__action { margin-top: var(--loop-sysalert-action-pt, 12px); }
+.lsa--multiline .lsa__action { height: var(--loop-sysalert-action-height, 42px); min-height: var(--loop-sysalert-action-height, 42px); margin-top: 0; display: flex; align-items: center; }
 
 .lsa--error       .lsa__action { color: var(--loop-sysalert-error-action, #f5f7f9); }
 .lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-action, #473201); }
