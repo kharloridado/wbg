@@ -11,6 +11,12 @@
   /* self-contained magnifier (masked, so --loop-search-icon-color drives the fill) */
   --loop-search-icon:        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='M13.5 13.5L17.5 17.5' stroke-linecap='round'/%3E%3C/svg%3E");
 
+  /* ---- Small size variant (input-small / 32px) ---- */
+  --loop-search-icon-size-small:   16px;
+  --loop-search-icon-inset-small:  12px;
+  --loop-search-pad-left-small:    36px;                        /* 12px inset + 16px icon + 8px gap */
+  --loop-search-clear-glyph-small: 14px;
+
   /* ---- Clear (×) — Filled state ---- */
   --loop-search-clear-glyph: 16px;                              /* × glyph box */
   --loop-search-clear-color: var(--color-icon-on-light-default);      /* neutral-60 */
