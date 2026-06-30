@@ -44,3 +44,25 @@
   -webkit-appearance: none;
           appearance: none;
 }
+
+/* ---- Size variants — mirrors Text Field .input-* classes ---- */
+/* xlarge / large / regular inherit the default 44px pad-left (20px glass at 16px inset).
+   Apply the size class via OutSystems ExtendedClass on the Search widget. */
+
+/* Small (32px field) — 16px glass icon at 12px inset; 36px pad-left to clear the glass. */
+.osui-search .form-control[data-input].input-small {
+  padding-left: var(--loop-search-pad-left-small, 36px);
+}
+
+/* Resize the glass pseudo-element when the input carries .input-small.
+   :has() selects the wrapper whose child is the small input. */
+.osui-search__input:has(.form-control[data-input].input-small)::after {
+  width:  var(--loop-search-icon-size-small, 16px);
+  height: var(--loop-search-icon-size-small, 16px);
+  left:   var(--loop-search-icon-inset-small, 12px);
+}
+
+.osui-search .form-control[data-input].input-small::-webkit-search-cancel-button {
+  width:  var(--loop-search-clear-glyph-small, 14px);
+  height: var(--loop-search-clear-glyph-small, 14px);
+}
