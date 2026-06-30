@@ -63,7 +63,7 @@
   /* lift body sizes (semantic) */
   --font-size-body-tiny:  12px;
   --font-size-body-small: 14px;
-  --font-size-body-base:  16px;
+  --font-size-body-base:  14px;  /* was 16px — designer direction 2026-06-30 */
   --font-size-label-large: 20px;
 
   /* ---- Line heights ---- */
@@ -87,7 +87,7 @@
 /* Base page type — brand family + body rhythm on the document root. */
 html, body {
   font-family: var(--font-family-base, "Open Sans");
-  font-size: var(--font-size-body-base, 16px);
+  font-size: var(--font-size-body-base, 14px);
   line-height: var(--line-height-base, 1.5);
 }
 
