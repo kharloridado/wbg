@@ -1,7 +1,7 @@
 /* component-field.css — text field / input component tokens */
 :root {
   /* ---- Field box (the input) ---- */
-  --loop-field-radius:          var(--radius-pill);            /* 32px pill — shared with the Select so sibling form controls share one radius */
+  --loop-field-radius:          var(--radius-medium);          /* 8px soft-rounded — default for all form controls (shared with the Select so siblings share one radius). Rounded (32px pill) variant: .loop-field--rounded or set this prop to var(--radius-pill) per instance. */
   --loop-field-padding-block:   18px;                          /* off-grid */
   --loop-field-padding-inline:  var(--space-small);            /* 16px */
   --loop-field-gap:             var(--space-xxsmall);          /* 8px — icon ↔ content */
@@ -29,7 +29,7 @@
      Reuses the Text Field state colours but has its own pill box (40px tall, 13px text).
      ========================================================================= */
   --loop-select-h:                40px;                        /* pinned height, shared by the field box + VirtualSelect wrapper */
-  --loop-select-radius:           var(--radius-pill);          /* 32px pill — shared with the Text Field */
+  --loop-select-radius:           var(--radius-medium);        /* 8px soft-rounded — default, shared with the Text Field. Rounded (32px pill) variant via .loop-field--rounded. */
   --loop-select-padding-block:    11px;                        /* off-grid */
   --loop-select-padding-inline:   var(--space-small);          /* 16px */
   --loop-select-gap:              var(--space-xxsmall);        /* 8px — content ↔ chevron */
