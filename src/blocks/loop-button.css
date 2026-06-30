@@ -1,4 +1,36 @@
-/* loop-button.css — Button: native .btn restyle (not a parallel class system) */
+/* ============================================
+   Component: Button  ("The Loop" — loop/button)
+   Figma: -The Loop- Main Library · "Button" [node:15597-766]
+   Approach: RESTYLE the native OutSystems UI Button widget (.btn / .btn-primary)
+             — NOT a parallel class system. Devs use the standard OutSystems Button
+             widget; this theme override makes it render as The Loop button.
+   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
+   Escalation Level: L1/L2 (native widget + token-driven theme override)
+
+   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_btn.scss):
+     .btn          → outlined: white bg, currentColor border, text 'primary', radius soft, h40, fw semi-bold
+     .btn-primary  → filled:   bg/border 'primary', text neutral-0
+     .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
+   The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
+   tracking -0.5, icon gap 6, padding 16/16, and the WB blue-70 primary fill.
+
+   Variant mapping (OutSystems Button "Style" → The Loop "Type"):
+     (none / base .btn)  → Secondary (outlined blue-70)
+     .btn-primary        → Primary  (filled blue-70)
+     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — the ONE added modifier,
+                            since OutSystems UI has no native ghost button style.
+
+   Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
+     --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
+     --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
+     --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
+     --color-bg-link-secondary-{hover,pressed,disabled},
+     --color-bg-link-tertiary-{hover,pressed,disabled},
+     --color-text-on-light-state-disabled.
+
+   Fidelity note: secondary/ghost HOVER fill (blue-40 / blue-20) under the blue-70 label
+     is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
+   ============================================ */
 
 /* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
 .btn {
@@ -7,6 +39,7 @@
   padding-block: 0;
   padding-inline: var(--space-medium, 32px);
   border-radius: var(--radius-pill, 32px);
+  border-width: 2px;
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
@@ -79,7 +112,12 @@
 .btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
 .btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
 
-/* ---- Focus indicator — design's own brand color ---- */
+/* ---- .btn.btn-radius-sm → 8px rounded corners (alternative to the pill default) ---- */
+.btn.btn-radius-sm {
+  border-radius: var(--radius-medium, 8px);
+}
+
+/* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
 .btn:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-enabled, var(--color-blue-70));
   outline-offset: 2px;
