@@ -13,6 +13,7 @@
  *   action-href   If present, renders action as <a href>; otherwise fires "action" event
  *   dismissible   Boolean — shows × button; fires "dismiss" event + hides host
  *   multiline     Boolean — stacks title, message and action vertically (icon top-aligned)
+ *   hide-icon     Boolean — hides the icon slot entirely
  *
  * Events (bubbles, composed):
  *   dismiss — fired when dismiss button clicked; detail: { type }
@@ -31,34 +32,57 @@
  */
 class LoopSystemAlert extends HTMLElement {
   static get observedAttributes() {
-    return ['type', 'title', 'message', 'action-label', 'action-href', 'dismissible', 'multiline'];
+    return ['type', 'title', 'message', 'action-label', 'action-href', 'dismissible', 'multiline', 'hide-icon'];
   }
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._onDismiss = this._onDismiss.bind(this);
-    this._onAction  = this._onAction.bind(this);
+    this._onClick = this._onClick.bind(this);
   }
 
-  connectedCallback()  { this._render(); }
-  attributeChangedCallback(n, o, v) { if (o !== v) this._render(); }
+  connectedCallback() {
+    this._render();
+    this.shadowRoot.addEventListener('click', this._onClick);
+  }
+
+  disconnectedCallback() {
+    this.shadowRoot.removeEventListener('click', this._onClick);
+  }
+
+  attributeChangedCallback(n, o, v) {
+    if (o === v) return;
+    if (this.isConnected) this._render();
+  }
+
+  /* OutSystems binds booleans as If(Flag,"true","false") so hasAttribute() alone is
+     insufficient — must treat "false" and "0" as falsy. */
+  _boolAttr(name) {
+    const v = this.getAttribute(name);
+    if (v === null) return false;
+    return v !== 'false' && v !== '0';
+  }
 
   get _type()        { return this.getAttribute('type') || 'error'; }
   get _title()       { return this.getAttribute('title') || ''; }
   get _message()     { return this.getAttribute('message') || ''; }
   get _actionLabel() { return this.getAttribute('action-label') || ''; }
   get _actionHref()  { return this.getAttribute('action-href') || ''; }
-  get _dismissible() { return this.hasAttribute('dismissible'); }
-  get _multiline()   { return this.hasAttribute('multiline'); }
+  get _dismissible() { return this._boolAttr('dismissible'); }
+  get _multiline()   { return this._boolAttr('multiline'); }
+  get _hideIcon()    { return this._boolAttr('hide-icon'); }
 
-  _onDismiss() {
-    this.dispatchEvent(new CustomEvent('dismiss', { bubbles: true, composed: true, detail: { type: this._type } }));
-    this.hidden = true;
-  }
-
-  _onAction() {
-    this.dispatchEvent(new CustomEvent('action', { bubbles: true, composed: true, detail: { type: this._type } }));
+  /* Single delegated listener on shadowRoot — survives innerHTML replacements in _render(). */
+  _onClick(e) {
+    if (e.target.closest('.lsa__dismiss')) {
+      this.dispatchEvent(new CustomEvent('dismiss', { bubbles: true, composed: true, detail: { type: this._type } }));
+      this.hidden = true;
+      return;
+    }
+    const actionBtn = e.target.closest('.lsa__action');
+    if (actionBtn && !this._actionHref) {
+      this.dispatchEvent(new CustomEvent('action', { bubbles: true, composed: true, detail: { type: this._type } }));
+    }
   }
 
   _render() {
@@ -69,6 +93,7 @@ class LoopSystemAlert extends HTMLElement {
     const actionLabel  = this._actionLabel;
     const actionHref   = this._actionHref;
     const dismissible  = this._dismissible;
+    const hideIcon     = this._hideIcon;
 
     const actionHtml = actionLabel
       ? actionHref
@@ -87,11 +112,13 @@ class LoopSystemAlert extends HTMLElement {
         </button>`
       : '';
 
+    const iconSlot = hideIcon ? '' : `<slot name="icon" class="lsa__icon-slot"></slot>`;
+
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
       <div class="lsa lsa--${t}${multiline ? ' lsa--multiline' : ''}" role="alert" part="alert">
         <div class="lsa__content" part="content">
-          <slot name="icon" class="lsa__icon-slot"></slot>
+          ${iconSlot}
           <div class="lsa__text" part="text">
             ${titleHtml}
             ${messageHtml}
@@ -101,13 +128,6 @@ class LoopSystemAlert extends HTMLElement {
         </div>
         ${dismissHtml}
       </div>`;
-
-    if (dismissible) {
-      this.shadowRoot.querySelector('.lsa__dismiss').addEventListener('click', this._onDismiss);
-    }
-    if (actionLabel && !actionHref) {
-      this.shadowRoot.querySelector('.lsa__action')?.addEventListener('click', this._onAction);
-    }
   }
 
   _css() {
