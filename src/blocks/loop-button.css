@@ -12,7 +12,7 @@
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
    The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/16, and the WB blue-70 primary fill.
+   tracking -0.5, icon gap 6, inline padding 16 (height pinned 40), and the WB blue-70 primary fill.
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
@@ -37,7 +37,7 @@
   gap: var(--space-button-gap, 6px);
   height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
   padding-block: 0;
-  padding-inline: var(--space-medium, 32px);
+  padding-inline: var(--space-small, 16px);
   border-radius: var(--radius-pill, 32px);
   border-width: 2px;
 
