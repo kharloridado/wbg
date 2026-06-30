@@ -12,7 +12,8 @@
  *   open               Boolean — visible; omit/remove to hide (the toggle target)
  *   heading            Title text (fallback when no slot="heading" is provided)
  *   size               "medium" (default, 960px) | "small" (456px)
- *   no-icon            Boolean — hide the leading information icon
+ *   no-icon            Boolean toggle — hide the leading information icon.
+ *                      Value-aware: no-icon="false" shows the icon (ODC If binding).
  *   no-close           Boolean — hide the ✕ close button (modal still closes via ESC / backdrop)
  *   no-backdrop-close  Boolean — clicking the overlay will NOT dismiss (ESC still works)
  *   static             Boolean — disable light-dismiss entirely (no ESC, no backdrop close)
@@ -74,11 +75,18 @@ class LoopModal extends HTMLElement {
     if (name === 'open') (newV !== null ? this._activate() : this._deactivate());
   }
 
+  /* ---- value-aware boolean attribute helper ---- */
+  /* Treats absent and "false" as falsy so ODC If(Flag,"true","false") bindings work. */
+  _boolAttr(name) {
+    const v = this.getAttribute(name);
+    return v !== null && v !== 'false';
+  }
+
   /* ---- attribute getters ---- */
   get _isOpen()         { return this.hasAttribute('open'); }
   get _heading()        { return this.getAttribute('heading') || ''; }
   get _size()           { return this.getAttribute('size') === 'small' ? 'small' : 'medium'; }
-  get _noIcon()         { return this.hasAttribute('no-icon'); }
+  get _noIcon()         { return this._boolAttr('no-icon'); }
   get _noClose()        { return this.hasAttribute('no-close'); }
   get _isStatic()       { return this.hasAttribute('static'); }
   get _noBackdropClose(){ return this.hasAttribute('no-backdrop-close') || this._isStatic; }
@@ -320,7 +328,7 @@ class LoopModal extends HTMLElement {
   padding: 0;
   border: 0;
   border-radius: 100px;
-  background: var(--loop-modal-close-bg, #169af3);
+  background: var(--loop-modal-close-bg, #004370);
   color: var(--loop-modal-close-icon, #ffffff);
   cursor: pointer;
 }
