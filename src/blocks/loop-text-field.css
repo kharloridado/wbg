@@ -138,6 +138,21 @@
   --loop-select-radius: var(--radius-pill);  /* 32px */
 }
 
+/* Field Wrapper size — one modifier on the wrapper scales the WHOLE field: the label row and
+   the input/placeholder text both step 16 / 14 / 13 / 12 across xLarge / Large / Regular /
+   Small (Figma 19336-9729), plus the pinned input height. It works by setting the same custom
+   props the label rule (--loop-field-label-*) and the field-box rule (--loop-field-text-*)
+   already read, so the label scales "including the label" without extra markup. The bare
+   .input-* size classes stay for standalone inputs (Search, plain Text Field). */
+.loop-field--xlarge  { --loop-field-label-size: 16px; --loop-field-label-tracking: 0px;    --loop-field-text-size: 16px; }
+.loop-field--large   { --loop-field-label-size: 14px; --loop-field-label-tracking: 0px;    --loop-field-text-size: 14px; }
+.loop-field--regular { --loop-field-label-size: 13px; --loop-field-label-tracking: 0.25px; --loop-field-text-size: 13px; }
+.loop-field--small   { --loop-field-label-size: 12px; --loop-field-label-tracking: 0.5px;  --loop-field-text-size: 12px; }
+.loop-field--xlarge  .form-control[data-input] { height: 56px; padding-block: var(--loop-field-padding-block, 18px); }
+.loop-field--large   .form-control[data-input] { height: 48px; padding-block: 14px; }
+.loop-field--regular .form-control[data-input] { height: 40px; padding-block: 11px; }
+.loop-field--small   .form-control[data-input] { height: 32px; padding-block: 8px; }
+
 /* Styles the native label ([data-label]); the plain `label` selector is the fallback when the widget renders without it. */
 .loop-field [data-label],
 .loop-field label {
@@ -154,6 +169,66 @@
   content: " *";
   color: var(--color-text-on-light-state-error);
   margin-left: var(--space-xtiny, 2px);
+}
+
+/* ============================================================
+   FieldLabel row — leading required asterisk + label + (optional) + word-count badge.
+   The Field Wrapper Block renders this row above (or, in horizontal layout, beside) the
+   input. It composes the existing label typography rule above; the row chrome (asterisk /
+   optional / count) is driven by the Block's IsRequired / IsOptional / ShowCharCount params.
+   Figma node 19336-10226 (FieldLabel 15695:5723).
+   ============================================================ */
+.loop-field__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-field-label-row-gap, 4px);
+}
+
+/* Inside the FieldLabel row the leading .loop-field__required carries the required marker,
+   so suppress the legacy trailing .mandatory::after — the native Label can still be Mandatory
+   (for the accessibility hook) without rendering a second asterisk. */
+.loop-field__label-row [data-label].mandatory::after,
+.loop-field__label-row label.mandatory::after {
+  content: none;
+}
+
+/* Leading required asterisk — Figma places it BEFORE the label (vs the legacy
+   .mandatory::after trailing " *"). Solid red, top-aligned to the cap height. */
+.loop-field__required {
+  align-self: flex-start;
+  color: var(--color-text-on-light-state-error);
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-label-size, 16px);
+  line-height: var(--loop-field-label-leading, 16px);
+}
+
+/* "(optional)" tag — sits after the label, subdued 12px regular */
+.loop-field__optional {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-optional-size, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-subdued);
+}
+
+/* Word-count badge — pinned to the right end of the row; "NN/max", live-updated by
+   loop-field-count.js (degrades to its static text when JS is off). */
+.loop-field__count {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--loop-field-count-padding, 2px 4px);
+  background-color: var(--loop-field-count-bg);
+  border-radius: var(--loop-field-count-radius, 2px);
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-count-size, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-subdued);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Helper text — 12px, icon + message; colour follows the field state */

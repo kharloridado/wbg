@@ -39,6 +39,44 @@ const MAP = {
   "loop-radio-button.md":    [["src/blocks/loop-radio-button.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-switch.md":          [["src/blocks/loop-switch.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-text-field.md":      [["src/blocks/loop-text-field.css", "css", "Theme CSS — paste below OutSystems UI"]],
+  "loop-field-wrapper.md": {
+    files: [
+      ["src/blocks/loop-text-field.css", "css", "Theme CSS — paste below OutSystems UI (shared with Text Field — paste once)"],
+      ["src/components/loop-field-count.js", "js", "Script resource (Theme/Library), Include = Always — only needed when ShowCharCount is used"],
+    ],
+    mentor: {
+      kind: "block",
+      block: "FieldWrapper",
+      helper: "window.LoopFieldCount",
+      placeholders: [
+        ["Label", "the FieldLabel text (a native Label widget bound to LabelText, or an Expression)"],
+        ["Input", "the native OutSystems Input / Text Area widget"],
+        ["Helper", "the helper text (leave empty to omit)"],
+      ],
+      inputs: [
+        ["Size", "FieldSize (Static Entity)", "FieldSize.Regular"],
+        ["Layout", "FieldLayout (Static Entity)", "FieldLayout.Vertical"],
+        ["State", "FieldState (Static Entity)", "FieldState.Default"],
+        ["LabelText", "Text", '""'],
+        ["IsRequired", "Boolean", "False"],
+        ["IsOptional", "Boolean", "False"],
+        ["ShowCharCount", "Boolean", "False"],
+        ["MaxLength", "Integer", "0"],
+        ["Rounded", "Boolean", "False"],
+      ],
+      staticEntities: [
+        { name: "FieldSize", attr: "Value", records: [
+          ["XLarge", "loop-field--xlarge"], ["Large", "loop-field--large"],
+          ["Regular", "loop-field--regular"], ["Small", "loop-field--small"]] },
+        { name: "FieldLayout", attr: "Value", records: [
+          ["Vertical", "loop-field"], ["Horizontal", "loop-field loop-field--horizontal"]] },
+        { name: "FieldState", attr: "Value", records: [
+          ["Default", "default"], ["Focused", "focused"], ["Error", "not-valid"],
+          ["Warning", "is-warning"], ["Disabled", "disabled"], ["ReadOnly", "is-read-only"]] },
+      ],
+      events: ["OnChange"],
+    },
+  },
   "loop-search.md":          [["src/blocks/loop-search.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-dropdown.md":        [["src/blocks/loop-dropdown.css", "css", "Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)"]],
   "loop-datepicker.md":      {
@@ -263,6 +301,82 @@ function wcFilled(m) {
   ].join("\n");
 }
 
+// Fully-filled prompt for a restyle-based Block with placeholders (e.g. the Field Wrapper):
+// the Block wraps NATIVE widgets dropped into placeholders, styled via Extended Class — there
+// is no single custom element to bind attributes on, so this differs from wcFilled.
+function blockFilled(m) {
+  const nameW = Math.max(...m.inputs.map(([n]) => n.length));
+  const typeW = Math.max(...m.inputs.map(([, t]) => t.length));
+  const inputs = m.inputs.map(([n, t, d]) => `     ${n.padEnd(nameW)} : ${t.padEnd(typeW)} : ${d}`).join("\n");
+  const phW = Math.max(...m.placeholders.map(([n]) => n.length));
+  const phs = m.placeholders.map(([n, d]) => `     ${n.padEnd(phW)} — ${d}`).join("\n");
+  const seLines = (m.staticEntities || []).map((e) => {
+    const recs = e.records.map(([r, v]) => `${r} = "${v}"`).join(", ");
+    return `   - ${e.name}: ${recs}`;
+  });
+
+  return [
+    `Goal: In ODC Studio, build an OutSystems Block "${m.block}" that lays out The Loop WBG`,
+    `Field Wrapper (FieldLabel row + Input + Helper) around NATIVE OutSystems widgets, styled`,
+    `purely by the already-pasted CSS + tokens via Extended Class.`,
+    ``,
+    `Context (already done manually — do NOT re-create or edit these):`,
+    `- dist/theme.css and loop-text-field.css are already pasted into the ODC Theme editor`,
+    `  (below OutSystems UI). The look is pure CSS + var(--token) — do NOT write or edit CSS.`,
+    `- loop-field-count.js is already imported as a Script resource (Include = Always); it`,
+    `  defines the global helper ${m.helper} and live-updates the character-count badge.`,
+    ``,
+    `Task — create these elements, referencing each by the exact name given:`,
+    ``,
+    `1. Create a Block named "${m.block}" with placeholders:`,
+    phs,
+    `   input parameters:`,
+    inputs,
+    `   and Block events: ${m.events.join(", ")}.`,
+    ``,
+    `   Static Entities — create these first. Give each a SINGLE Text attribute "Value" set as`,
+    `   the record Identifier (delete the default Id/Label/Order/Is_Active). Each value IS the`,
+    `   literal CSS class the markup expects, so inputs bind straight to it (no .Value suffix):`,
+    ...seLines,
+    ``,
+    `2. Build the Block markup as nested Containers (set Extended Class via the Value expression`,
+    `   — ODC requires an expression on every Extended Class):`,
+    `   a. Root Container — ExtendedClass =`,
+    `        Layout + " " + Size + If(Rounded, " loop-field--rounded", "")`,
+    `      (the FieldLayout value carries "loop-field"; Size adds "loop-field--<size>", which`,
+    `      scales the label row AND the input/placeholder text together). When ShowCharCount,`,
+    `      also add the attribute data-loop-field-count = "" so the count script wires this field.`,
+    `   b. Label-row Container (ExtendedClass = "loop-field__label-row") holding, in order:`,
+    `        - If(IsRequired): an Expression <span class="loop-field__required" aria-hidden="true">*</span>`,
+    `        - the Label placeholder (drop a Label widget bound to LabelText; set its Mandatory`,
+    `          property = IsRequired for the native accessibility hook).`,
+    `        - If(IsOptional): an Expression <span class="loop-field__optional">(optional)</span>`,
+    `        - If(ShowCharCount): an Expression`,
+    `            <span class="loop-field__count">0/<MaxLength></span>`,
+    `   c. The Input placeholder — the consumer drops a native Input / Text Area here. Its`,
+    `      ExtendedClass = State only (the wrapper Size already sets the height + text size;`,
+    `      State adds is-warning / is-read-only where applicable, Error is native .not-valid).`,
+    `      Bind the Input's Max Length = MaxLength.`,
+    `   d. The Helper placeholder, wrapped in <span class="loop-field__helper"> (add the state`,
+    `      modifier --error / --warning / --success / --disabled to match State).`,
+    ``,
+    `3. State mapping note — Error is driven by native form Validation (.not-valid), Focused is`,
+    `   native :focus, Disabled is the Input widget's Enabled = False. Only Warning (is-warning)`,
+    `   and Read-Only (is-read-only) are added classes. Wire OnChange from the Input.`,
+    ``,
+    `4. The count badge updates itself: ${m.helper} auto-wires on render via a MutationObserver.`,
+    `   If a field is added after first paint, call ${m.helper}.refresh() in the screen's`,
+    `   On Render via a "Run JavaScript" node — no id needed.`,
+    ``,
+    `Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values (styling`,
+    `comes from var(--token) in the Theme). After generating, list every element you created by`,
+    `name and flag any step you could not finish so I can do it manually.`,
+    ``,
+    `Start with step 1 (the Block "${m.block}" interface + Static Entities) and show it to me`,
+    `before building the markup.`,
+  ].join("\n");
+}
+
 // Generic Web Component prompt (no `mentor` spec): point Mentor at this handover's API tables.
 function wcGeneric(block, tag, jsFile, dest) {
   return [
@@ -347,6 +461,7 @@ function refGeneric(block, tag, jsFile) {
 function mentorPrompt(md, entry) {
   const m = entry.mentor;
   if (m && m.kind === "web-component") return wcFilled(m);
+  if (m && m.kind === "block") return blockFilled(m);
 
   const arts = entry.files;
   const jsArt = arts.find((a) => a[1] === "js");

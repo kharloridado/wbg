@@ -65,6 +65,13 @@
 <link rel="stylesheet" href="../src/blocks/loop-tabs.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
 
+<!-- 3b) Font Awesome 6 Free — the FULL icon set, self-hosted. In ODC this is the
+        dist/fontawesome.css paste with @font-face → /TheLoopTheme/*.woff2 (ODC Resources).
+        Those paths 404 locally, so the preview loads the build's local-path copy
+        (preview/vendor/fontawesome/, url → ./webfonts/) — regenerate with
+        `npm run build:fontawesome`. Same cascade position: a plain icon font, no theming. -->
+<link rel="stylesheet" href="vendor/fontawesome/fontawesome.css">
+
 <!-- 4) Preview page chrome. NOT part of the design system, but still authored to
         The Loop brand: tokens only (no ad-hoc hex / raw px), brand elevation,
         radius, type scale + tracking — and classes only (no inline style attrs in
@@ -349,6 +356,7 @@
     <nav class="app-menu-links">
       <a href="#sec-layout" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Layout</span><span class="indicator" aria-hidden="true">›</span></a>
       <a href="#sec-typography"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6V4h12v2M10 4v12M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Typography</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-icons"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3l2 4.5 5 .5-3.7 3.3 1.1 4.7L10 13.5 5.6 16l1.1-4.7L3 8l5-.5L10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Icons</span><span class="indicator" aria-hidden="true">›</span></a>
       <a href="#sec-buttons"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="14" height="8" rx="4" stroke="currentColor" stroke-width="1.5"/></svg><span>Buttons</span><span class="indicator" aria-hidden="true">›</span></a>
       <a href="#sec-forms"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 8h8M6 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Form Controls</span><span class="indicator" aria-hidden="true">›</span></a>
       <a href="#sec-feedback"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3a5 5 0 0 1 5 5v3l1.5 2.5h-13L5 11V8a5 5 0 0 1 5-5zM8 16a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Feedback</span><span class="indicator" aria-hidden="true">›</span></a>
@@ -657,6 +665,73 @@
         <h1 class="loop-heading-h1-large">Transforming Lives</h1>
       </div>
     </div>
+  </section>
+
+  <!-- ============ ICONS ============ -->
+  <section id="sec-icons">
+    <h2>Icons — full <code>Font Awesome 6 Free</code> set, self-hosted</h2>
+    <p class="pv-figma">dist/fontawesome.css · handover/loop-fontawesome.md · ~2,000 icons (solid · regular · brands) · use <code>&lt;i class="fa-solid fa-user"&gt;&lt;/i&gt;</code></p>
+
+    <div class="pv-row">
+      <span class="pv-label">Solid</span>
+      <i class="fa-solid fa-house fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-magnifying-glass fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-user fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-gear fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-bell fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-trash fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-calendar-days fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-circle-check fa-2x" aria-hidden="true"></i>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Regular</span>
+      <i class="fa-regular fa-heart fa-2x" aria-hidden="true"></i>
+      <i class="fa-regular fa-star fa-2x" aria-hidden="true"></i>
+      <i class="fa-regular fa-bookmark fa-2x" aria-hidden="true"></i>
+      <i class="fa-regular fa-comment fa-2x" aria-hidden="true"></i>
+      <i class="fa-regular fa-file fa-2x" aria-hidden="true"></i>
+      <i class="fa-regular fa-circle-question fa-2x" aria-hidden="true"></i>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Brands</span>
+      <i class="fa-brands fa-github fa-2x" aria-hidden="true"></i>
+      <i class="fa-brands fa-linkedin fa-2x" aria-hidden="true"></i>
+      <i class="fa-brands fa-x-twitter fa-2x" aria-hidden="true"></i>
+      <i class="fa-brands fa-youtube fa-2x" aria-hidden="true"></i>
+      <i class="fa-brands fa-microsoft fa-2x" aria-hidden="true"></i>
+      <i class="fa-brands fa-figma fa-2x" aria-hidden="true"></i>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Color (token utilities)</span>
+      <i class="fa-solid fa-circle-info fa-2x text-blue-60" aria-hidden="true"></i>
+      <i class="fa-solid fa-circle-check fa-2x text-green-60" aria-hidden="true"></i>
+      <i class="fa-solid fa-triangle-exclamation fa-2x text-yellow-60" aria-hidden="true"></i>
+      <i class="fa-solid fa-circle-xmark fa-2x text-red-70" aria-hidden="true"></i>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Animations</span>
+      <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-circle-notch fa-spin fa-2x" aria-hidden="true"></i>
+      <i class="fa-solid fa-heart fa-beat fa-2x" aria-hidden="true"></i>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">In context</span>
+      <button class="btn btn-primary"><i class="fa-solid fa-plus" aria-hidden="true"></i>&nbsp;New item</button>
+      <button class="btn"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>&nbsp;Open</button>
+      <span class="loop-tag"><i class="fa-solid fa-tag" aria-hidden="true"></i>&nbsp;Label</span>
+    </div>
+
+    <p class="pv-note">Self-hosted (no CDN): the 3 woff2 ship in ODC Resources and the
+      <code>@font-face</code> <code>src</code> points at <code>/TheLoopTheme/</code>, which ODC
+      rewrites at compile time — exactly like the brand Open Sans faces. Legacy
+      <code>'FontAwesome'</code> / v4 / v5 <code>@font-face</code> names are dropped so this never
+      clobbers the native OutSystems UI Icon widget. Decorative icons here are
+      <code>aria-hidden</code>; an icon that carries meaning needs an accessible label.</p>
   </section>
 
   <!-- ============ BUTTON ============ -->
@@ -1016,6 +1091,78 @@
       <div class="loop-field pv-field--full">
         <label data-label for="tf-ta">Multiline</label>
         <textarea class="form-control" data-textarea id="tf-ta" placeholder="Type here…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIELD WRAPPER ============ -->
+  <section>
+    <h2>Field Wrapper — <code>.loop-field</code> Block (FieldLabel row + Input + Helper)</h2>
+    <p class="pv-figma">handover/loop-field-wrapper.md · Figma node 19336-9606 / 19336-10226</p>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">FieldLabel row</span>
+      <div class="loop-field loop-field--regular" data-loop-field-count>
+        <div class="loop-field__label-row">
+          <span class="loop-field__required" aria-hidden="true">*</span>
+          <label data-label class="mandatory" for="fw-req">Text Field Label</label>
+          <span class="loop-field__count">0/100</span>
+        </div>
+        <input class="form-control" data-input id="fw-req" type="text" maxlength="100" placeholder="Required + character count">
+        <span class="loop-field__helper">Helper text</span>
+      </div>
+      <div class="loop-field loop-field--regular">
+        <div class="loop-field__label-row">
+          <label data-label for="fw-opt">Text Field Label</label>
+          <span class="loop-field__optional">(optional)</span>
+        </div>
+        <input class="form-control" data-input id="fw-opt" type="text" placeholder="Optional field">
+        <span class="loop-field__helper">Helper text</span>
+      </div>
+      <span class="pv-note">Required → leading <code>.loop-field__required</code> asterisk (Figma places it before the label; legacy <code>.mandatory::after</code> trails it — FND-061). Optional → <code>.loop-field__optional</code> tag. Count badge → <code>.loop-field__count</code> + <code>loop-field-count.js</code>.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Live character count</span>
+      <div class="loop-field loop-field--regular" data-loop-field-count>
+        <div class="loop-field__label-row">
+          <label data-label for="fw-count">Type to count</label>
+          <span class="loop-field__count">0/40</span>
+        </div>
+        <input class="form-control" data-input id="fw-count" type="text" maxlength="40" placeholder="Max 40 characters">
+      </div>
+      <span class="pv-note">The badge live-updates on input and respects <code>maxlength</code>; it degrades to its static text when JS is off.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes — one <code>.loop-field--*</code> scales label + input together</span>
+      <div class="loop-field loop-field--xlarge pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-xl">xLarge (56px · label 16)</label></div>
+        <input class="form-control" data-input id="fw-xl" type="text" placeholder="xLarge">
+      </div>
+      <div class="loop-field loop-field--large pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-lg">Large (48px · label 14)</label></div>
+        <input class="form-control" data-input id="fw-lg" type="text" placeholder="Large">
+      </div>
+      <div class="loop-field loop-field--regular pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-rg">Regular (40px · label 13 · default)</label></div>
+        <input class="form-control" data-input id="fw-rg" type="text" placeholder="Regular">
+      </div>
+      <div class="loop-field loop-field--small pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-sm">Small (32px · label 12)</label></div>
+        <input class="form-control" data-input id="fw-sm" type="text" placeholder="Small">
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Layout</span>
+      <div class="loop-field loop-field--regular pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-vert">Vertical (default)</label></div>
+        <input class="form-control" data-input id="fw-vert" type="text" placeholder="Label above input">
+      </div>
+      <div class="loop-field loop-field--regular loop-field--horizontal pv-field">
+        <div class="loop-field__label-row"><label data-label for="fw-horiz">Horizontal</label></div>
+        <input class="form-control" data-input id="fw-horiz" type="text" placeholder="Label beside input">
       </div>
     </div>
   </section>
@@ -2161,6 +2308,7 @@
 <script src="../src/components/loop-modal.js"></script>
 <script src="../src/components/loop-toast.js"></script>
 <script src="../src/components/loop-file-uploader.js"></script>
+<script src="../src/components/loop-field-count.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
 <script src="../src/components/loop-shadow-reference.js"></script>
 <script src="../src/components/loop-border-reference.js"></script>

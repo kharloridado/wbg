@@ -24,6 +24,14 @@
   --loop-field-helper-size:     var(--font-size-100);          /* 12px */
   --loop-field-helper-gap:      var(--space-tiny);             /* 4px — icon ↔ helper text */
 
+  /* ---- Field label row (FieldLabel: required * + label + (optional) + word count) ---- */
+  --loop-field-label-row-gap:   var(--space-tiny);             /* 4px — between asterisk / label / optional / count */
+  --loop-field-optional-size:   var(--font-size-100);          /* 12px — "(optional)" tag */
+  --loop-field-count-size:      var(--font-size-100);          /* 12px — "NN/max" badge text */
+  --loop-field-count-bg:        var(--color-bg-container-on-light-regular);  /* #e7edf3 (neutral-10) */
+  --loop-field-count-radius:    var(--radius-xs);              /* 2px */
+  --loop-field-count-padding:   var(--space-xtiny) var(--space-tiny);        /* 2px 4px */
+
   /* =========================================================================
      Select / Dropdown — restyle of the native Dropdown + VirtualSelect provider.
      Reuses the Text Field state colours but has its own pill box (40px tall, 13px text).

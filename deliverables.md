@@ -66,6 +66,7 @@ verify/finish · **To build** = net-new.
 | Date Range Picker | **To build** | (Flatpickr range mode) |
 | Time Picker | **To build** | (Flatpickr time / OSUI Time Picker) |
 | File Uploader | Built | `src/components/loop-file-uploader.js` |
+| Field Wrapper (Text Field) | Needs Review | `handover/loop-field-wrapper.md` · `src/blocks/loop-text-field.css` · `src/components/loop-field-count.js` |
 | Numeric Field | **To build** | (text-field variant) |
 | Radio Button | Built | `src/blocks/loop-radio-button.css` |
 | Search | Built | `src/blocks/loop-search.css` |
