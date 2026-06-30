@@ -29,8 +29,8 @@
 
   /* ---- Close button (circular, top-right) ---- */
   --loop-modal-close-size:    40px;                    /* outer circle / hit area */
-  --loop-modal-close-bg:      var(--color-blue-40);    /* #169af3 */
-  --loop-modal-close-icon:    var(--color-white);      /* white ✕ glyph */
+  --loop-modal-close-bg:      var(--color-blue-40);    /* #169af3 — reverted from blue-70 */
+  --loop-modal-close-icon:    var(--color-icon-on-light-primary);  /* #004370 — primary blue-70 ✕ fill */
   --loop-modal-close-glyph:   16px;                    /* ✕ icon-font size inside the 40px circle */
   --loop-modal-close-focus:   var(--color-domain-interactive-focused); /* #0071bc — focus ring */
 
