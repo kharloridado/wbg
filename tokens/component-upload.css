@@ -65,7 +65,7 @@
   --loop-upload-btn-color:    var(--color-outline-on-light-link-enabled, #004370); /* blue-70 outline + label */
 
   /* ---- Input variant (single-line field — reuses Field tokens) ---- */
-  --loop-upload-input-radius:   var(--loop-field-radius, 32px);
+  --loop-upload-input-radius:   var(--loop-field-radius, 8px);   /* follows the Field default (8px soft-rounded) */
   --loop-upload-input-pad-v:    var(--loop-field-padding-block, 18px);
   --loop-upload-input-pad-h:    var(--loop-field-padding-inline, 16px);
   --loop-upload-input-gap:      var(--loop-field-gap, 8px);

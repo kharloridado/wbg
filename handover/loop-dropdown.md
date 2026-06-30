@@ -208,7 +208,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   font-size: var(--font-size-300, 16px);
 }
 .osui-dropdown-tags .vscomp-ele-wrapper.multiple {
-  border-radius: var(--loop-select-radius, 32px) !important;
+  border-radius: var(--loop-select-radius, 8px) !important;
 }
 
 /* toggle button (content row) */

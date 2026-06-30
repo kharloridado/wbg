@@ -965,6 +965,18 @@
       </div>
     </div>
 
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Radius</span>
+      <div class="loop-field pv-field">
+        <label data-label for="tf-soft">Soft rounded (8px — default)</label>
+        <input class="form-control input-regular" data-input id="tf-soft" type="text" placeholder="Soft rounded">
+      </div>
+      <div class="loop-field loop-field--rounded pv-field">
+        <label data-label for="tf-round">Rounded (32px — <code>.loop-field--rounded</code>)</label>
+        <input class="form-control input-regular" data-input id="tf-round" type="text" placeholder="Rounded">
+      </div>
+    </div>
+
     <div class="pv-row pv-row--stack pv-row--narrow">
       <span class="pv-label pv-label--block">States</span>
       <div class="loop-field">
@@ -1130,6 +1142,22 @@
         <label data-label for="dd-dis">Disabled</label>
         <div class="dropdown-container dropdown" id="dd-dis">
           <div class="dropdown-display dropdown-disabled" tabindex="-1"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Radius</span>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-soft">Soft rounded (8px — default)</label>
+        <div class="dropdown-container dropdown" id="dd-soft">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--rounded pv-field">
+        <label data-label for="dd-round">Rounded (32px — <code>.loop-field--rounded</code>)</label>
+        <div class="dropdown-container dropdown" id="dd-round">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
         </div>
       </div>
     </div>
@@ -2047,7 +2075,7 @@
         </div>
       </div>
     </div>
-    <span class="pv-note">Full-bleed image + bottom blue-90 scrim + on-dark eyebrow/title/media button. FND-034: on-dark text/scrim reference gray-alpha-white primitives (semantic On-Dark layer deferred). Hero image is a token-painted stand-in in this offline preview.</span>
+    <span class="pv-note">Full-bleed image + bottom blue-90 scrim + on-dark eyebrow/title/media button. The on-dark eyebrow/title now reference the semantic On-Dark layer (<code>--color-text-on-dark-*</code>, shipped in the theme); the blue-90 scrim still uses the brand primitive. Hero image is a token-painted stand-in in this offline preview.</span>
 
     <!-- 4) Sectioned card -->
     <p class="pv-label pv-label--full">Sectioned <code>.card-sectioned</code></p>

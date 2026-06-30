@@ -9,7 +9,7 @@
 
   background-color: var(--color-bg-container-on-light-lowest);
   border: 1px solid var(--color-outline-on-light-default);
-  border-radius: var(--loop-field-radius, 32px);
+  border-radius: var(--loop-field-radius, 8px);
   color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -19,10 +19,7 @@
   letter-spacing: var(--loop-field-text-tracking, 0.5px);
 }
 
-/* Textarea keeps the Medium (8px) radius — equal specificity with the shared rule, so it must follow it (source order wins). */
-.form-control[data-textarea] {
-  border-radius: var(--radius-medium, 8px);
-}
+/* Textarea inherits the shared --loop-field-radius (8px soft-rounded default); no override needed. */
 
 /* Regular (default) — overrides the shared rule's 18px (xLarge) padding-block to make a 40px single-line input. */
 .form-control[data-input] {
@@ -131,6 +128,14 @@
   flex-direction: row;
   align-items: center;
   gap: var(--space-small, 16px);
+}
+
+/* Rounded (pill) variant — opt-in per instance. Overrides the 8px soft-rounded default with the
+   32px pill for the Text Input, Text Area, and Dropdown/Select inside this wrapper. The custom
+   props cascade to the field box, native dropdown-display, and VirtualSelect wrapper alike. */
+.loop-field--rounded {
+  --loop-field-radius: var(--radius-pill);   /* 32px */
+  --loop-select-radius: var(--radius-pill);  /* 32px */
 }
 
 /* Styles the native label ([data-label]); the plain `label` selector is the fallback when the widget renders without it. */
