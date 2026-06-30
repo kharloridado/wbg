@@ -1,0 +1,65 @@
+/* outsystems-ui-alert.css — restyle the native OutSystems UI Alert to The Loop "Notes" look.
+ * Light tinted box, 1px colored border, dark body text, color-matched accent. The three
+ * shared types reuse the --loop-note-* tokens (component-note.css); error borrows the red
+ * negative state. Loaded after the brand overrides so equal-specificity rules win.
+ *   .alert-info → information (blue) · .alert-success → success (green)
+ *   .alert-warning → important (yellow) · .alert-error → red negative state */
+
+/* Box — tinted Notes geometry, top-aligned. Background + border-color set per type below. */
+.alert {
+  align-items: flex-start;
+  border: 1px solid;
+  border-radius: var(--loop-note-corner-radius, 4px);
+  padding: var(--loop-note-padding-v, 12px) var(--loop-note-padding-h, 16px);
+  color: var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* Icon → the Note's colored accent; tighter gap + smaller glyph. */
+.alert .alert-icon {
+  margin-right: var(--space-xxsmall, 8px);
+  font-size: 20px;
+  color: var(--loop-alert-accent, currentColor);
+}
+
+/* Message → Note body text. */
+.alert .alert-message {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-note-body-size, 14px);
+  line-height: var(--loop-note-body-leading, 1.25);
+  font-weight: var(--font-weight-regular, 400);
+  color:       var(--color-text-on-light-default, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Type: info → Note "information" (blue) ---- */
+.alert-info {
+  background-color:    var(--loop-note-information-bg, #f6fcff);
+  border-color:        var(--loop-note-information-border, #169af3);
+  --loop-alert-accent: var(--loop-note-information-label, #00538a);
+}
+
+/* ---- Type: success → Note "success" (green) ---- */
+.alert-success {
+  background-color:    var(--loop-note-success-bg, #f6fef0);
+  border-color:        var(--loop-note-success-border, #388004);
+  --loop-alert-accent: var(--loop-note-success-label, #388004);
+}
+
+/* ---- Type: warning → Note "important" (yellow) ---- */
+.alert-warning {
+  background-color:    var(--loop-note-important-bg, #fef3d7);
+  border-color:        var(--loop-note-important-border, #896001);
+  --loop-alert-accent: var(--loop-note-important-label, #896001);
+}
+
+/* ---- Type: error → Loop red "negative" state (no Note equivalent) ---- */
+.alert-error {
+  background-color:    var(--color-domain-state-negative-low, #fdf2f2);
+  border-color:        var(--color-domain-state-negative-regular, #da1e28);
+  --loop-alert-accent: var(--color-text-on-light-state-error, #9d161d);
+}
+
+/* RTL — mirror the tightened icon gap. */
+.is-rtl .alert .alert-icon {
+  margin-left: var(--space-xxsmall, 8px);
+  margin-right: 0;
+}

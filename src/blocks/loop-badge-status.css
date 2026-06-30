@@ -1,0 +1,113 @@
+/* loop-badge-status.css — Badge / Status: indicator + label, CSS-only markup component */
+/* The label colour is the same neutral dark for every state; only the dot/icon/pill border carries the state hue. */
+
+.loop-badge-status {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;      /* keep natural height if a host flex/grid container stretches its items */
+  vertical-align: middle;
+  gap: var(--_lbs-gap);
+  box-sizing: border-box;
+  max-width: 100%;
+  /* per-size locals (defaults = Regular) */
+  --_lbs-font: var(--loop-badge-status-regular-font, 14px);
+  --_lbs-lead: var(--loop-badge-status-regular-leading, 14px);
+  --_lbs-icon: var(--loop-badge-status-regular-icon, 16px);
+  --_lbs-dot:  var(--loop-badge-status-regular-dot, 10px);
+  --_lbs-gap:  var(--loop-badge-status-regular-gap, 4px);
+  --_lbs-h:    var(--loop-badge-status-regular-headline-h, 24px);  /* headline pill height */
+  --_lbs-pl:   var(--loop-badge-status-regular-pad-left, 8px);     /* headline left padding */
+  --_lbs-pr:   var(--loop-badge-status-regular-pad-right, 10px);   /* headline right padding */
+  /* indicator hue — overridden per state below */
+  --_lbs-indicator: currentColor;
+  font-family:    var(--loop-badge-status-label-family, "Open Sans", system-ui, sans-serif);
+  font-size:      var(--_lbs-font);
+  line-height:    var(--_lbs-lead);
+  font-weight:    var(--loop-badge-status-label-weight, 500);
+  letter-spacing: var(--loop-badge-status-label-tracking, 0.5px);
+  color:          var(--loop-badge-status-label-color, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Sizes ---- */
+.loop-badge-status--small {
+  --_lbs-font: var(--loop-badge-status-small-font, 12px);   --_lbs-lead: var(--loop-badge-status-small-leading, 14px);
+  --_lbs-icon: var(--loop-badge-status-small-icon, 14px);   --_lbs-dot:  var(--loop-badge-status-small-dot, 8px);
+  --_lbs-gap:  var(--loop-badge-status-small-gap, 4px);     --_lbs-h:    var(--loop-badge-status-small-headline-h, 22px);
+  --_lbs-pl:   var(--loop-badge-status-small-pad-left, 6px); --_lbs-pr:  var(--loop-badge-status-small-pad-right, 8px);
+}
+.loop-badge-status--regular {
+  --_lbs-font: var(--loop-badge-status-regular-font, 14px); --_lbs-lead: var(--loop-badge-status-regular-leading, 14px);
+  --_lbs-icon: var(--loop-badge-status-regular-icon, 16px); --_lbs-dot:  var(--loop-badge-status-regular-dot, 10px);
+  --_lbs-gap:  var(--loop-badge-status-regular-gap, 4px);   --_lbs-h:    var(--loop-badge-status-regular-headline-h, 24px);
+  --_lbs-pl:   var(--loop-badge-status-regular-pad-left, 8px); --_lbs-pr: var(--loop-badge-status-regular-pad-right, 10px);
+}
+.loop-badge-status--large {
+  --_lbs-font: var(--loop-badge-status-large-font, 16px);   --_lbs-lead: var(--loop-badge-status-large-leading, 16px);
+  --_lbs-icon: var(--loop-badge-status-large-icon, 18px);   --_lbs-dot:  var(--loop-badge-status-large-dot, 12px);
+  --_lbs-gap:  var(--loop-badge-status-large-gap, 4px);     --_lbs-h:    var(--loop-badge-status-large-headline-h, 32px);
+  --_lbs-pl:   var(--loop-badge-status-large-pad-left, 10px); --_lbs-pr: var(--loop-badge-status-large-pad-right, 12px);
+}
+.loop-badge-status--xlarge {
+  --_lbs-font: var(--loop-badge-status-xlarge-font, 18px);  --_lbs-lead: var(--loop-badge-status-xlarge-leading, 20px);
+  --_lbs-icon: var(--loop-badge-status-xlarge-icon, 20px);  --_lbs-dot:  var(--loop-badge-status-xlarge-dot, 14px);
+  --_lbs-gap:  var(--loop-badge-status-xlarge-gap, 6px);    --_lbs-h:    var(--loop-badge-status-xlarge-headline-h, 40px);
+  --_lbs-pl:   var(--loop-badge-status-xlarge-pad-left, 12px); --_lbs-pr: var(--loop-badge-status-xlarge-pad-right, 14px);
+}
+
+/* ---- Label ---- */
+.loop-badge-status__label {
+  min-width: 0;
+  line-height: var(--_lbs-lead);   /* pin it — don't inherit a host (ODC) line-height */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Indicator: dot (Light / Headline types) ---- */
+.loop-badge-status__dot {
+  flex-shrink: 0;
+  width:  var(--_lbs-dot);
+  height: var(--_lbs-dot);
+  border-radius: 50%;
+  background: var(--_lbs-indicator);
+}
+
+/* ---- Indicator: icon / spinner (Icon type + in-progress) ---- */
+.loop-badge-status__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  width:  var(--_lbs-icon);
+  height: var(--_lbs-icon);
+  color:  var(--_lbs-indicator);   /* inline SVG paints with currentColor */
+}
+.loop-badge-status__icon svg { width: 100%; height: 100%; display: block; }
+
+.loop-badge-status__icon--spin svg { animation: loop-badge-status-spin 0.9s linear infinite; transform-origin: 50% 50%; }
+@keyframes loop-badge-status-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .loop-badge-status__icon--spin svg { animation: none; }
+}
+
+/* ---- Indicator colour per state (the label stays neutral) ---- */
+.loop-badge-status--success      { --_lbs-indicator: var(--loop-badge-status-success-indicator, #388004); }
+.loop-badge-status--informational { --_lbs-indicator: var(--loop-badge-status-informational-indicator, #004370); }
+.loop-badge-status--warning      { --_lbs-indicator: var(--loop-badge-status-warning-indicator, #e19d00); }
+.loop-badge-status--error        { --_lbs-indicator: var(--loop-badge-status-error-indicator, #9d161d); }
+.loop-badge-status--suggestive   { --_lbs-indicator: var(--loop-badge-status-suggestive-indicator, #763ba9); }
+.loop-badge-status--not-started  { --_lbs-indicator: var(--loop-badge-status-not-started-indicator, #8a9db1); }
+.loop-badge-status--in-progress  { --_lbs-indicator: var(--loop-badge-status-in-progress-indicator, #004370); }
+
+/* ---- Headline: dot/icon + label inside a bordered, tinted pill ----
+ * 1px outline is an inset box-shadow (zero layout) and the height is pinned per size, so the pill height never shifts. */
+.loop-badge-status--headline {
+  height: var(--_lbs-h);
+  padding: 0 var(--_lbs-pr) 0 var(--_lbs-pl);
+  border-radius: var(--loop-badge-status-radius, 4px);
+}
+.loop-badge-status--headline.loop-badge-status--success      { background: var(--loop-badge-status-success-bg, #f6fef0);      box-shadow: inset 0 0 0 1px var(--loop-badge-status-success-border, #388004); }
+.loop-badge-status--headline.loop-badge-status--informational { background: var(--loop-badge-status-informational-bg, #f6fcff); box-shadow: inset 0 0 0 1px var(--loop-badge-status-informational-border, #00538a); }
+.loop-badge-status--headline.loop-badge-status--warning      { background: var(--loop-badge-status-warning-bg, #fef3d7);      box-shadow: inset 0 0 0 1px var(--loop-badge-status-warning-border, #896001); }
+.loop-badge-status--headline.loop-badge-status--error        { background: var(--loop-badge-status-error-bg, #fdf2f2);        box-shadow: inset 0 0 0 1px var(--loop-badge-status-error-border, #9d161d); }
+.loop-badge-status--headline.loop-badge-status--suggestive   { background: var(--loop-badge-status-suggestive-bg, #f1e1ff);   box-shadow: inset 0 0 0 1px var(--loop-badge-status-suggestive-border, #763ba9); }
+.loop-badge-status--headline.loop-badge-status--not-started  { background: var(--loop-badge-status-not-started-bg, #fff);     box-shadow: inset 0 0 0 1px var(--loop-badge-status-not-started-border, #bdccdb); }
+.loop-badge-status--headline.loop-badge-status--in-progress  { background: var(--loop-badge-status-in-progress-bg, #fff);     box-shadow: inset 0 0 0 1px var(--loop-badge-status-in-progress-border, #d4dee8); }

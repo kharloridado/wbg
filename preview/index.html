@@ -5,143 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Loop — Component Preview</title>
 
+<!-- Open Sans — PREVIEW ONLY. In ODC the theme self-hosts Open Sans from Resources
+     (typography.css @font-face → /TheLoopTheme/*.woff2); those paths 404 locally, so the
+     same family is loaded from Google Fonts here purely so the local preview renders in the
+     brand font instead of the serif fallback. Not part of the design system / theme paste. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap">
+
 <!--
-  LOAD ORDER mirrors ODC: native OutSystems UI baseline → brand theme tokens →
-  handover overrides (which are pasted into Theme CSS, below OutSystems UI).
-  Equal-specificity .btn rules resolve by source order, so the overrides MUST come
-  after the baseline to win.
+  LOAD ORDER mirrors ODC exactly:
+    1) Real OutSystems UI (ODC) framework base — the vendored submodule compiled by
+       `npm run build:osui`. This is the SAME framework CSS ODC ships, so the preview
+       validates fidelity against the real base, not a hand-written approximation.
+    2) Brand theme tokens (dist/theme.css) — retints OutSystems UI's CSS variables.
+    3) Provider stylesheets (virtual-select, flatpickr) — runtime-injected in ODC.
+    4) The handover override CSS (src/blocks/loop-*.css) — pasted into Theme CSS, BELOW
+       OutSystems UI, so it loads LAST and wins equal-specificity rules by source order.
+       Where a real OutSystems UI rule has HIGHER specificity and an override does NOT
+       win, that is a genuine fidelity finding to surface — which is exactly why the
+       preview is now based on the real framework instead of a stub.
 -->
 
-<!-- 1) Minimal native OutSystems UI baseline.
-        The override files only RESTYLE OutSystems UI's native .btn / .button-group;
-        they assume the framework base (display, border-width, box-sizing, cursor,
-        transition) already exists. ODC provides it — locally we stub just enough.
-        This is framework scaffold, NOT design. -->
-<style>
-  :root { color-scheme: light; }
-  *, *::before, *::after { box-sizing: border-box; }
-
-  /* --- native .btn baseline (mirrors OutSystems UI _btn.scss essentials) --- */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    border: 1px solid currentColor;
-    border-radius: 4px;
-    background: transparent;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .btn[disabled], .btn[aria-disabled="true"] { cursor: not-allowed; }
-
-  /* --- native .button-group baseline (mirrors _button-group.scss essentials) --- */
-  .button-group { display: inline-flex; }
-  .button-group-item {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    background: transparent;
-    cursor: pointer;
-    transition: background-color .12s ease, border-color .12s ease, color .12s ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .button-group-item[disabled] { cursor: not-allowed; }
-
-  /* --- native [data-checkbox] baseline (mirrors OS UI _checkbox.scss essentials) ---
-       The Loop override builds its own ::before box on top of this stripped input. */
-  [data-checkbox] {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-  }
-  [data-checkbox]::before { display: block; }
-  [data-checkbox]::after  { position: absolute; display: block; }
-
-  /* --- native .radio-button baseline (mirrors OS UI _radio-button.scss essentials) ---
-       The Loop override rebuilds the ring+dot via ::before/::after. */
-  .radio-button {
-    appearance: none;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 0;
-    background: transparent;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .radio-button:before, .radio-button:after { position: absolute; display: block; }
-  [data-radio-button] {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  /* --- native [data-switch] baseline (mirrors OS UI _switch.scss essentials) ---
-       OutSystems UI strips the native checkbox and draws the track (:before) +
-       thumb (:after). The Loop override is self-contained and restates these, but
-       the stub keeps the preview honest about the native foundation. */
-  [data-switch] {
-    appearance: none;
-    position: relative;
-    cursor: pointer;
-  }
-  [data-switch]:before,
-  [data-switch]:after { content: ""; position: absolute; display: block; }
-
-  /* --- native .form-control[data-input] baseline (mirrors OS UI _inputs.scss) ---
-       Height, reset, and transition so The Loop tokens land on an honest foundation. */
-  .form-control[data-input],
-  .form-control[data-textarea] {
-    display: block;
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-    font-size: 14px;
-    line-height: 1.4;
-    transition: border-color 180ms ease, background-color 180ms ease;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .form-control[data-textarea] { resize: vertical; min-height: 80px; }
-
-  /* --- native Dropdown pattern baseline (mirrors OS UI _dropdown.scss) --- */
-  .dropdown-container { position: relative; }
-  .dropdown-container > .dropdown-display {
-    display: flex; align-items: center; width: 100%; height: 40px;
-    padding: 0 12px; background: #fff; border: 1px solid #ccc; border-radius: 4px;
-    cursor: pointer; transition: border-color 180ms ease, background-color 180ms ease;
-  }
-  .dropdown-display-content { width: 100%; overflow: hidden; }
-  .dropdown-display-content > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dropdown-list { background: #fff; border: 1px solid #ccc; }
-  .dropdown-popup-row { display: flex; align-items: center; height: 40px; padding: 0 12px; cursor: pointer; }
-  .dropdown-popup-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  /* preview-only: let the open list flow statically instead of JS-positioned absolute */
-  .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: 4px; }
-
-  /* --- native VirtualSelect baseline (mirrors provider DOM: .vscomp-*) --- */
-  .vscomp-ele-wrapper { display: flex; align-items: center; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
-  .vscomp-toggle-button { display: flex; align-items: center; width: 100%; }
-  .vscomp-value { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; }
-  .vscomp-arrow { width: 8px; height: 8px; flex-shrink: 0; border-right: 1.5px solid #888; border-bottom: 1.5px solid #888; transform: rotate(45deg); }
-  .vscomp-value-tag { display: inline-flex; align-items: center; }
-  .vscomp-value-tag-clear-button { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-  .vscomp-value-tag-clear-button .vscomp-clear-icon,
-  .vscomp-clear-icon { display: block; width: 10px; height: 10px; -webkit-mask: var(--pv-x) center/contain no-repeat; mask: var(--pv-x) center/contain no-repeat; }
-  :root { --pv-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' stroke='black' stroke-width='2'/%3E%3C/svg%3E"); }
-</style>
+<!-- 1) Real OutSystems UI (ODC) framework base. Regenerate with `npm run build:osui`
+        after updating the vendor/outsystems-ui submodule. Replaces the former
+        hand-written "native baseline" stub so the preview is honest about the real
+        cascade (resets, :root tokens, .btn, inputs, .header, .dropdown, .alert, …). -->
+<link rel="stylesheet" href="vendor/outsystems-ui/outsystems-ui.css">
 
 <!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
 <link rel="stylesheet" href="../dist/theme.css">
+
+<!-- 2b) The VirtualSelect provider's own stylesheet — the SAME library OutSystems'
+        Dropdown Search / Dropdown Tags ship (vendored from virtual-select v1.1.0).
+        Loaded BEFORE the loop-* block CSS so The Loop overrides win the cascade,
+        mirroring how the ODC Theme CSS sits below the runtime-injected provider CSS. -->
+<link rel="stylesheet" href="vendor/virtual-select/virtual-select.min.css">
+
+<!-- 2c) The Flatpickr provider's own stylesheet — the SAME library OutSystems'
+        DatePicker ships in ODC (vendored from flatpickr v4.6.13). Loaded BEFORE the
+        loop-* block CSS so The Loop overrides win the cascade, mirroring how the ODC
+        Theme CSS sits below the runtime-injected provider CSS. -->
+<link rel="stylesheet" href="vendor/flatpickr/flatpickr.min.css">
 
 <!-- 3) The actual handover override CSS (pasted into Theme CSS, below OutSystems UI). -->
 <link rel="stylesheet" href="../src/blocks/loop-headings.css">
@@ -151,15 +56,23 @@
 <link rel="stylesheet" href="../src/blocks/loop-checkbox.css">
 <link rel="stylesheet" href="../src/blocks/loop-radio-button.css">
 <link rel="stylesheet" href="../src/blocks/loop-text-field.css">
+<link rel="stylesheet" href="../src/blocks/loop-search.css">
 <link rel="stylesheet" href="../src/blocks/loop-dropdown.css">
+<link rel="stylesheet" href="../src/blocks/loop-datepicker.css">
 <link rel="stylesheet" href="../src/blocks/loop-switch.css">
+<link rel="stylesheet" href="../src/blocks/loop-tooltip.css">
+<link rel="stylesheet" href="../src/blocks/loop-popover.css">
+<link rel="stylesheet" href="../src/blocks/loop-tabs.css">
+<link rel="stylesheet" href="../src/blocks/loop-card.css">
 
 <!-- 4) Preview page chrome. NOT part of the design system, but still authored to
         The Loop brand: tokens only (no ad-hoc hex / raw px), brand elevation,
         radius, type scale + tracking — and classes only (no inline style attrs in
-        the body). The single hardcoded exceptions are the native OutSystems UI
-        baseline above and ui-monospace for code samples (no brand mono token). -->
+        the body). The only non-token exception is ui-monospace for code samples
+        (no brand mono token). The framework base is the real OutSystems UI CSS above. -->
 <style>
+  :root { color-scheme: light; }
+
   html, body {
     margin: 0;
     padding: 0;
@@ -167,16 +80,43 @@
     font-size: var(--font-size-body-base);
     color: var(--color-text-on-light-default);
     background: var(--color-bg-page-default);
+    /* The real OSUI base sets html{overflow:hidden} + html,body{height:100%} because an
+       OutSystems app scrolls inside a .screen-container. This flat preview has no such
+       wrapper, so restore normal document scrolling — otherwise the page can't scroll. */
+    overflow: visible;
+    height: auto;
   }
 
-  /* --- page header --- */
-  .pv-header {
-    padding: var(--space-regular) var(--space-medium);
-    background: var(--color-bg-link-primary-enabled);
-    color: var(--color-white);
+  /* --- app content header (breadcrumb + title + utility links) — light surface,
+     mirrors the Figma "Form page" content header, NOT a dark promo bar. --- */
+  .pv-apphead {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-regular);
+    padding: var(--space-regular) var(--space-medium) var(--space-small);
+    background: linear-gradient(180deg, var(--color-blue-05), var(--color-bg-page-default));
+    border-bottom: var(--border-size-s) solid var(--color-divider-on-light-default);
   }
-  .pv-header h1 { margin: 0 0 var(--space-tiny); font-size: var(--font-size-600); font-weight: var(--font-weight-bold); }
-  .pv-header p  { margin: 0; opacity: .85; font-size: var(--font-size-body-small); }
+  .pv-apphead-main { min-width: 0; }
+  .pv-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall); font-size: var(--font-size-body-small); margin-bottom: var(--space-tiny); }
+  .pv-crumb a { color: var(--color-text-on-light-link-primary-enabled); text-decoration: none; }
+  .pv-crumb a:hover { color: var(--color-text-on-light-link-hover); text-decoration: underline; }
+  .pv-crumb [aria-current="page"], .pv-crumb-sep { color: var(--color-text-on-light-subdued); }
+  .pv-apphead h1 { margin: 0; color: var(--color-text-on-light-emphasis); }
+  .pv-apphead-note { margin: var(--space-tiny) 0 0; font-size: var(--font-size-100); color: var(--color-text-on-light-subdued); max-width: 78ch; }
+  .pv-apphead-utils { display: flex; align-items: center; gap: var(--space-small); flex: 0 0 auto; }
+  .pv-util { color: var(--color-text-on-light-link-primary-enabled); text-decoration: none; font-size: var(--font-size-body-small); font-weight: var(--font-weight-semibold); }
+  .pv-util:hover { color: var(--color-text-on-light-link-hover); text-decoration: underline; }
+
+  /* --- app footer (dark WBG bar), pinned to the foot of the content column --- */
+  .pv-appfoot {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xxsmall) var(--space-small);
+    padding: var(--space-small) var(--space-medium);
+    margin-top: var(--space-regular);
+    background: var(--color-secondary); color: var(--color-white);
+    font-size: var(--font-size-body-small);
+  }
+  .pv-appfoot-brand { font-weight: var(--font-weight-bold); letter-spacing: var(--letter-spacing-caps); }
+  .pv-appfoot-orgs { opacity: .85; }
+  .pv-appfoot-copy { margin-left: auto; opacity: .75; }
 
   /* --- layout --- */
   main { max-width: 980px; margin: 0 auto; padding: var(--space-medium); }
@@ -307,37 +247,248 @@
   .pv-tt-balloon--below { margin-top: var(--space-tiny); }
   .pv-tt-balloon--above { margin-bottom: var(--space-tiny); }
   .pv-tt-balloon--side  { margin-left: var(--space-tiny); display: flex; flex-direction: row; align-items: center; }
+  /* Arrow is a rotate(45deg)d square (loop-tooltip.css); --up/--down keep that base
+     rotation, --side must re-compose it alongside its translate. */
   .pv-tt-arrow--up   { left: var(--space-regular); top: calc(var(--space-tiny) * -1); }
   .pv-tt-arrow--down { left: var(--space-regular); bottom: calc(var(--space-tiny) * -1); }
-  .pv-tt-arrow--side { left: calc(var(--space-tiny) * -1); top: 50%; transform: translateY(-50%); }
+  .pv-tt-arrow--side { left: calc(var(--space-tiny) * -1); top: 50%; transform: translateY(-50%) rotate(45deg); }
 
   /* --- popover demo scaffold --- */
   .pv-pop-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-xxsmall); }
   .pv-pop-row { display: flex; flex-direction: row; align-items: center; gap: var(--space-xxsmall); }
   .pv-pop-grid { align-items: flex-start; gap: var(--space-medium); flex-wrap: wrap; }
+  /* preview-only: native popover panel is JS-positioned absolute in production; here
+     let it flow statically (keep position:relative so the pointer pseudo still anchors). */
+  .pv-pop-static [data-popover] { position: relative; }
+  .pv-pop-static [data-popover] > .popover-bottom { position: relative; display: block; margin: var(--space-xsmall) 0; transform: none; }
+  .pv-pop-static [data-popover] > .popover-top { display: inline-flex; align-items: center; gap: var(--space-tiny); cursor: pointer; }
+
+  /* preview-only: let the open native Dropdown list flow statically instead of JS-positioned absolute */
+  .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: var(--space-tiny); }
+
+  /* preview-only: let the open submenu panel flow statically instead of JS-positioned absolute */
+  .pv-submenu-static .osui-submenu__items { position: static; margin-top: var(--space-tiny); }
+
+  /* file-uploader demo: lay the dropzone state variants out in a responsive grid */
+  .pv-up-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-regular); width: 100%; }
+
+  /* preview-only: the Tabs active bar is a JS-positioned/sized span in production. Here we
+     hide it and draw the active underline on the active item with the SAME inset-box-shadow
+     technique the restyle uses for hover — so the static preview shows the 4px bar without JS. */
+  .pv-tabs-static .osui-tabs__header__indicator { display: none; }
+  .pv-tabs-static .osui-tabs__header-item.osui-tabs--is-active {
+    box-shadow: inset 0 calc(-1 * var(--loop-tabs-indicator-size)) 0 0 var(--loop-tabs-indicator-color);
+  }
+  /* native header is a JS-sized grid (repeat(var(--tabs-header-items),…)); with no widget
+     JS here that var is unset and tabs stack — force a flex row + natural item widths so the
+     static preview shows the real horizontal layout. */
+  .pv-tabs-static .osui-tabs__header { display: flex; flex-wrap: wrap; }
+  .pv-tabs-static .osui-tabs__header-item { width: auto; }
+
+  /* --- card demo scaffold --- */
+  .pv-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--space-regular);
+    align-items: start;
+    padding: var(--space-small) 0;
+  }
+  .pv-card-grid--media { grid-template-columns: repeat(auto-fill, minmax(280px, 360px)); }
+  /* the .card-background expects an <img>; in this offline preview a token-painted
+     div stands in for the hero image so the scrim + on-dark content read correctly. */
+  .pv-card-hero { height: 320px; }
+  .pv-card-img { background: linear-gradient(135deg, var(--color-blue-70), var(--color-blue-90)); }
+  /* the card-sectioned needs a header row + media affordance; small inline helpers */
+  .pv-card-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-small); }
+  .pv-card-pad { padding: var(--space-regular); }
+
+  /* --- Layout Side demo scaffold ---
+     Production .app-menu-content is position:fixed (the OSUI runtime offsets .main).
+     With no widget JS here, neutralise the fixed pin so the sidebar renders inline:
+     a fixed-height frame with the panel static at --side-menu-size and .main beside it. */
+  .pv-side { display: flex; height: 560px; overflow: hidden; border-radius: var(--radius-medium); border: var(--border-size-s) solid var(--color-outline-on-light-dimmed); }
+  .pv-side .app-menu-content { position: static; height: auto; flex: 0 0 var(--side-menu-size); width: var(--side-menu-size); display: flex; flex-direction: column; }
+  .pv-side .main { margin-left: 0; flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: auto; background: var(--color-bg-page-default); }
+  /* logo row + profile row: align with the menu pills */
+  .pv-side .header-logo { display: flex; align-items: center; gap: var(--space-xxsmall); min-height: var(--space-xlarge); }
+  .pv-side .app-menu-links { list-style: none; margin: 0; padding: var(--space-xxsmall) 0; }
+  .pv-side .app-login-info { display: flex; align-items: center; gap: var(--space-xxsmall); border-top: var(--border-size-s) solid var(--color-divider-on-light-default); }
+  .pv-side .user-info { display: flex; flex-direction: column; }
+  .pv-avatar { width: 32px; height: 32px; border-radius: var(--radius-pill); background: linear-gradient(135deg, var(--color-blue-50), var(--color-blue-90)); flex: 0 0 auto; }
+  .pv-menu-icon { width: 20px; height: 20px; flex: 0 0 auto; }
+  .pv-side .indicator { margin-left: auto; opacity: .7; }
+  /* screen-content placeholder filler inside .main (the header bar + footer use the
+     real loop-content__* chrome classes from tokens/outsystems-ui-side.css). */
+  .pv-side-placeholder { margin: var(--space-medium); border: var(--border-size-m) dashed var(--color-outline-on-light-dimmed); border-radius: var(--radius-medium); display: flex; align-items: center; justify-content: center; color: var(--color-text-on-light-subdued); background: var(--color-white); min-height: 120px; }
+
+  /* --- full-page Layout Side app shell — the WHOLE preview runs inside Layout Side ---
+     The sidebar is the real native .app-menu-content (position:fixed via .layout-side); the
+     content column is offset by --side-menu-size. No widget JS needed: this IS the desktop
+     resting state of a Layout Side page. */
+  html { scroll-behavior: smooth; }
+  .pv-app .app-menu-content { display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+  .pv-app-main { margin-left: var(--side-menu-size); min-width: 0; }
+  .pv-app-nav .header-logo { display: flex; align-items: center; gap: var(--space-xxsmall); min-height: var(--space-xlarge); margin-bottom: var(--space-xxsmall); }
+  .pv-app-nav .app-login-info { display: flex; align-items: center; gap: var(--space-xxsmall); margin-top: var(--space-xxsmall); border-top: var(--border-size-s) solid var(--color-divider-on-light-default); }
+  .pv-app-nav .user-info { display: flex; flex-direction: column; }
+  /* keep section tops clear of the primary header when jumped-to via the sidebar */
+  .pv-app [id^="sec-"] { scroll-margin-top: var(--space-small); }
 </style>
 </head>
 <body>
 
-<header class="pv-header">
-  <h1>The Loop — Local Component Preview</h1>
-  <p>Real theme tokens (dist/theme.css) + the actual handover CSS/JS, on the native OutSystems UI baseline. Validate fidelity before importing into ODC.</p>
+<!-- The whole preview runs inside a real OutSystems Layout Side shell: a persistent
+     branded sidebar (native .app-menu-content, restyled by tokens/outsystems-ui-side.css)
+     with the component sections rendered in the content placeholder. -->
+<div class="layout layout-side pv-app">
+  <aside class="app-menu-content pv-app-nav">
+    <div class="header-logo">
+      <span class="pv-avatar" aria-hidden="true"></span>
+      <span class="app-logo application-name">The Loop</span>
+    </div>
+    <nav class="app-menu-links">
+      <a href="#sec-layout" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Layout</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-typography"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6V4h12v2M10 4v12M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Typography</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-buttons"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="14" height="8" rx="4" stroke="currentColor" stroke-width="1.5"/></svg><span>Buttons</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-forms"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 8h8M6 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Form Controls</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-feedback"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3a5 5 0 0 1 5 5v3l1.5 2.5h-13L5 11V8a5 5 0 0 1 5-5zM8 16a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Feedback</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-data"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg><span>Data Display</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-reference"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h8a2 2 0 0 1 2 2v12l-6-3-6 3V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>References</span><span class="indicator" aria-hidden="true">›</span></a>
+    </nav>
+    <div class="app-login-info">
+      <span class="pv-avatar" aria-hidden="true"></span>
+      <span class="user-info">
+        <span class="user-info__name">Design System</span>
+        <span class="user-info__role">Local Preview</span>
+      </span>
+    </div>
+  </aside>
+
+  <div class="main pv-app-main">
+   <div class="content">
+
+<header class="pv-apphead">
+  <div class="pv-apphead-main">
+    <nav class="pv-crumb" aria-label="Breadcrumb">
+      <a href="#sec-layout">Home</a>
+      <span class="pv-crumb-sep" aria-hidden="true">›</span>
+      <a href="#sec-reference">Design System</a>
+      <span class="pv-crumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Component Library</span>
+    </nav>
+    <h1 class="loop-heading-h2-small">Component Library</h1>
+    <p class="pv-apphead-note">Real OutSystems UI (ODC) framework CSS as the base, then real theme tokens (dist/theme.css) + the actual handover CSS/JS on top — the same cascade as ODC. The whole page runs inside the branded <strong>Layout Side</strong> shell.</p>
+  </div>
+  <div class="pv-apphead-utils">
+    <a class="pv-util" href="#sec-reference">FAQ</a>
+    <a class="pv-util" href="#sec-layout">EN&nbsp;US</a>
+  </div>
 </header>
 
 <main>
 
-  <!-- ============ TYPOGRAPHY ============ -->
+  <!-- ============ LAYOUT TOP — HEADER / MENU ============ -->
+  <section id="sec-layout">
+    <h2>Layout Top — restyle native <code>.header</code> + <code>.app-menu-links</code></h2>
+    <p class="pv-figma">tokens/outsystems-ui-overrides.css (<code>--header-color</code>) + tokens/outsystems-ui-header.css · primary header, white text/links, white active underline</p>
+
+    <div class="layout layout-top">
+      <header class="header header-top">
+        <div class="header-content">
+          <h1 class="application-name">World Bank Group</h1>
+          <nav class="header-navigation">
+            <div class="app-menu-links pv-submenu-static">
+              <a href="#0" class="active">Overview</a>
+              <a href="#0">Projects</a>
+              <a href="#0">Regions</a>
+              <div class="osui-submenu active osui-submenu--is-open">
+                <div class="osui-submenu__header">
+                  <span class="osui-submenu__header__item"><a href="#0">Reports</a></span>
+                </div>
+                <div class="osui-submenu__items">
+                  <a href="#0" class="active">Annual Report</a>
+                  <a href="#0">Regional Briefs</a>
+                  <a href="#0">Data &amp; Statistics</a>
+                </div>
+              </div>
+              <a href="#0">About</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </div>
+    <span class="pv-note">Header bar (incl. the app name + the active <code>.osui-submenu</code> tab) renders white with a white bottom border; the floating submenu panel stays a white popup with dark links. Tab through: the Blue/50 focus ring is low-contrast here — FND-012 (flag-don't-fix).</span>
+  </section>
+
+  <!-- ============ LAYOUT SIDE — SIDEBAR / MENU ============ -->
   <section>
+    <h2>Layout Side — restyle native <code>.app-menu-content</code> + <code>.app-menu-links</code></h2>
+    <p class="pv-figma">tokens/outsystems-ui-overrides.css (<code>--side-menu-size</code>) + tokens/outsystems-ui-side.css · Figma node 30132-139314 "Form page" · light sidebar / dark text, 320px panel, 32px menu pills</p>
+
+    <div class="layout layout-side pv-side">
+      <aside class="app-menu-content">
+        <div class="header-logo">
+          <span class="pv-avatar" aria-hidden="true"></span>
+          <span class="app-logo application-name">Nav Label</span>
+        </div>
+        <nav class="app-menu-links">
+          <a href="#0" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Dashboard</span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 5h11M6 10h11M6 15h11M3 5h.01M3 10h.01M3 15h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>List</span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Detail</span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v9H8l-4 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>AI Chat</span><span class="indicator" aria-hidden="true">›</span></a>
+        </nav>
+        <div class="app-login-info">
+          <span class="pv-avatar" aria-hidden="true"></span>
+          <span class="user-info">
+            <span class="user-info__name">John Smith</span>
+            <span class="user-info__role">Senior Director</span>
+          </span>
+        </div>
+      </aside>
+      <div class="main">
+        <div class="content">
+          <div class="loop-content__header">
+            <div class="loop-content__header-top">
+              <nav class="loop-content__breadcrumbs" aria-label="Breadcrumb">
+                <svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                <span class="loop-content__breadcrumbs-sep">|</span><a href="#0">Dashboard</a>
+                <span class="loop-content__breadcrumbs-sep">|</span><span class="is-current" aria-current="page">Requests Overview</span>
+              </nav>
+              <div class="loop-content__actions">
+                <button type="button" class="btn btn-ghost">FAQ</button>
+                <button type="button" class="btn btn-ghost">EN US</button>
+              </div>
+            </div>
+            <h1 class="loop-content__title">Process</h1>
+          </div>
+          <div class="loop-content__body pv-side-placeholder">Page content placeholder — screens drop their widgets here</div>
+          <footer class="loop-content__footer">
+            <div class="loop-content__footer-institutions">
+              <span class="loop-content__footer-brand">WORLD BANK GROUP</span>
+              <span class="loop-content__footer-divider"></span>
+              <span>IBRD</span><span>IDA</span><span>IFC</span><span>MIGA</span><span>ICSID</span>
+            </div>
+            <span class="loop-content__footer-copyright">© 2026 The World Bank Group, All Rights Reserved</span>
+          </footer>
+        </div>
+      </div>
+    </div>
+    <span class="pv-note">Light sidebar / dark text: white panel, <code>neutral-9</code> menu items as 32px pills, brand-emphasis logo + profile. The content chrome uses the real <code>loop-content__*</code> classes — a header bar (<code>__breadcrumbs</code> / <code>__title</code> / <code>__actions</code>) over the <code>__body</code> Content Placeholder, with the dark WBG <code>__footer</code> pinned to the foot. Hover/selected pill states are <strong>provisional</strong> — the design frame ships only the resting state (FND-057). Footer surface <code>#1a1a1a</code> has no primitive token (FND-058).</span>
+  </section>
+
+  <!-- ============ TYPOGRAPHY ============ -->
+  <section id="sec-typography">
     <h2>Typography</h2>
     <p class="pv-figma">tokens/typography-roles.css · Figma node 10995-7259 · Open Sans (FND-002 signed off) · apply via ExtendedClass</p>
 
+    <p class="pv-type-group-note">Heading styles — Open Sans Bold · line-height 1.12. Grouped by level (Figma <code>Heading/H{n}/{variant}</code>); each level carries the size variants Figma defines for different content densities. H1 Base / H2 Large share 48px; H2 Small / H3 Base share 32px — same visual size, different semantic level.</p>
+
     <div class="pv-type-group">
-      <p class="pv-type-group-title">Heading styles</p>
-      <p class="pv-type-group-note">Open Sans Bold · line-height 1.12. H1 Base / H2 Large share 48px; H2 Small / H3 Base share 32px — same visual size, different semantic level.</p>
+      <p class="pv-type-group-title">H1</p>
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H1 · Large</span>
+          <span class="pv-type-name">Large</span>
           <code class="pv-chip">.loop-heading-h1-large</code>
           <span class="pv-type-spec">60px · Bold · lh 1.12 · tracking −3px</span>
         </div>
@@ -346,7 +497,7 @@
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H1 · Base</span>
+          <span class="pv-type-name">Base</span>
           <code class="pv-chip">.loop-heading-h1-base</code>
           <span class="pv-type-spec">48px · Bold · lh 1.12</span>
         </div>
@@ -355,7 +506,7 @@
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H1 · Small</span>
+          <span class="pv-type-name">Small</span>
           <code class="pv-chip">.loop-heading-h1-small</code>
           <span class="pv-type-spec">36px · Bold · lh 1.12</span>
         </div>
@@ -364,16 +515,20 @@
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H1 · Tiny</span>
+          <span class="pv-type-name">Tiny</span>
           <code class="pv-chip">.loop-heading-h1-tiny</code>
           <span class="pv-type-spec">28px · Bold · lh 1.12</span>
         </div>
         <p class="pv-type-sample loop-heading-h1-tiny">Project Overview</p>
       </div>
+    </div>
+
+    <div class="pv-type-group">
+      <p class="pv-type-group-title">H2</p>
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H2 · Large</span>
+          <span class="pv-type-name">Large</span>
           <code class="pv-chip">.loop-heading-h2-large</code>
           <span class="pv-type-spec">48px · Bold · lh 1.12</span>
         </div>
@@ -382,16 +537,20 @@
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H2 · Small</span>
+          <span class="pv-type-name">Small</span>
           <code class="pv-chip">.loop-heading-h2-small</code>
           <span class="pv-type-spec">32px · Bold · lh 1.12</span>
         </div>
         <p class="pv-type-sample loop-heading-h2-small">Regional Analysis</p>
       </div>
+    </div>
+
+    <div class="pv-type-group">
+      <p class="pv-type-group-title">H3</p>
 
       <div class="pv-type-row">
         <div class="pv-type-meta">
-          <span class="pv-type-name">H3 · Base</span>
+          <span class="pv-type-name">Base</span>
           <code class="pv-chip">.loop-heading-h3-base</code>
           <span class="pv-type-spec">32px · Bold · lh 1.12</span>
         </div>
@@ -501,24 +660,24 @@
   </section>
 
   <!-- ============ BUTTON ============ -->
-  <section>
+  <section id="sec-buttons">
     <h2>Button — restyle native <code>.btn</code></h2>
     <p class="pv-figma">handover/loop-button.md · Figma node 15597-766</p>
 
     <div class="pv-row">
       <span class="pv-label">Secondary</span>
       <button class="btn">Button</button>
+      <button class="btn btn-xlarge">xLarge</button>
       <button class="btn btn-large">Large</button>
-      <button class="btn is-regular">Regular</button>
       <button class="btn btn-small">Small</button>
       <button class="btn" disabled>Disabled</button>
     </div>
 
     <div class="pv-row">
       <span class="pv-label">Primary</span>
-      <button class="btn btn-primary">Button</button>
+      <button class="btn btn-primary" id="pv-sample-button">Button</button>
+      <button class="btn btn-primary btn-xlarge">xLarge</button>
       <button class="btn btn-primary btn-large">Large</button>
-      <button class="btn btn-primary is-regular">Regular</button>
       <button class="btn btn-primary btn-small">Small</button>
       <button class="btn btn-primary" disabled>Disabled</button>
     </div>
@@ -526,8 +685,8 @@
     <div class="pv-row">
       <span class="pv-label">Ghost / Tertiary</span>
       <button class="btn btn-ghost">Button</button>
+      <button class="btn btn-ghost btn-xlarge">xLarge</button>
       <button class="btn btn-ghost btn-large">Large</button>
-      <button class="btn btn-ghost is-regular">Regular</button>
       <button class="btn btn-ghost btn-small">Small</button>
       <button class="btn btn-ghost" disabled>Disabled</button>
       <span class="pv-note">Ghost = <code>Extended Class = "btn-ghost"</code> (the one added modifier).</span>
@@ -627,7 +786,7 @@
 
 
   <!-- ============ CHECKBOX ============ -->
-  <section>
+  <section id="sec-forms">
     <h2>Checkbox — restyle native <code>[data-checkbox]</code></h2>
     <p class="pv-figma">handover/loop-checkbox.md · Figma node 19336-17679</p>
 
@@ -644,8 +803,8 @@
 
     <div class="pv-row">
       <span class="pv-label">Indeterminate</span>
-      <input type="checkbox" data-checkbox id="cb-indet" aria-label="Indeterminate">
-      <span class="pv-note">Indeterminate set via JS below.</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox--indeterminate" aria-label="Indeterminate">
+      <span class="pv-note">Indeterminate (Multi) set via the <code>.loop-checkbox--indeterminate</code> class.</span>
     </div>
 
     <div class="pv-row">
@@ -659,6 +818,41 @@
       <input type="checkbox" data-checkbox class="loop-checkbox--error" aria-invalid="true" aria-label="Error unchecked">
       <input type="checkbox" data-checkbox class="loop-checkbox--error" checked aria-invalid="true" aria-label="Error checked">
       <span class="pv-note">FND-016: unchecked border #00396b3d ≈ 1.45:1 vs white (below 3:1 WCAG 2.2 SC 1.4.11) — built as designed.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes (box)</span>
+      <input type="checkbox" data-checkbox class="loop-checkbox-xlarge" checked aria-label="XLarge 28">
+      <input type="checkbox" data-checkbox class="loop-checkbox-large" checked aria-label="Large 24">
+      <input type="checkbox" data-checkbox checked aria-label="Regular 20 (default)">
+      <input type="checkbox" data-checkbox class="loop-checkbox-small" checked aria-label="Small 16">
+      <span class="pv-note">XLarge 28 · Large 24 · Regular 20 (default) · Small 16 — glyph scales with the box.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Field + label</span>
+      <span class="loop-checkbox-field loop-checkbox-xlarge">
+        <input type="checkbox" data-checkbox id="cbf-xl" checked>
+        <label class="loop-checkbox-field__label" for="cbf-xl">XLarge label</label>
+      </span>
+      <span class="loop-checkbox-field">
+        <input type="checkbox" data-checkbox id="cbf-rg" checked>
+        <label class="loop-checkbox-field__label" for="cbf-rg">Regular label</label>
+      </span>
+      <span class="loop-checkbox-field loop-checkbox-small">
+        <input type="checkbox" data-checkbox id="cbf-sm" checked>
+        <label class="loop-checkbox-field__label" for="cbf-sm">Small label</label>
+      </span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Group</span>
+      <span class="loop-checkbox-group">
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-1" checked><label class="loop-checkbox-field__label" for="cbg-1">Option one</label></span>
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-2"><label class="loop-checkbox-field__label" for="cbg-2">Option two</label></span>
+        <span class="loop-checkbox-field"><input type="checkbox" data-checkbox id="cbg-3"><label class="loop-checkbox-field__label" for="cbg-3">Option three</label></span>
+      </span>
+      <span class="pv-note">.loop-checkbox-group stacks fields; row gap scales per size (Regular = 10px).</span>
     </div>
   </section>
 
@@ -689,7 +883,7 @@
       <span class="pv-label">Sizes</span>
       <div class="pv-inline-set">
         <div data-radio-button>
-          <input type="radio" class="radio-button" name="rgsz" id="rsz-xl" aria-label="XLarge">
+          <input type="radio" class="radio-button loop-radio-xlarge" name="rgsz" id="rsz-xl" aria-label="XLarge">
           <label for="rsz-xl" class="pv-radio-label">XLarge (28px)</label>
         </div>
         <div data-radio-button>
@@ -755,7 +949,7 @@
       <span class="pv-label pv-label--full">Sizes</span>
       <div class="loop-field pv-field">
         <label data-label for="tf-xl">xLarge (56px)</label>
-        <input class="form-control" data-input id="tf-xl" type="text" placeholder="xLarge">
+        <input class="form-control input-xlarge" data-input id="tf-xl" type="text" placeholder="xLarge">
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-l">Large (48px)</label>
@@ -763,7 +957,7 @@
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-r">Regular (40px)</label>
-        <input class="form-control is-regular" data-input id="tf-r" type="text" placeholder="Regular">
+        <input class="form-control input-regular" data-input id="tf-r" type="text" placeholder="Regular">
       </div>
       <div class="loop-field pv-field">
         <label data-label for="tf-s">Small (32px)</label>
@@ -781,6 +975,12 @@
         <label data-label for="tf-err">Error</label>
         <input class="form-control not-valid" data-input id="tf-err" type="text" value="Bad input">
         <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="tf-err-native">Error (native validation message)</label>
+        <input class="form-control not-valid" data-input id="tf-err-native" type="text" value="Bad input" aria-describedby="tf-err-native-msg">
+        <span class="validation-message" id="tf-err-native-msg">This field is required.</span>
+        <span class="pv-note">Native OutSystems <code>span.validation-message</code> — now restyled to match the Error helper above (was brighter Red/50, no tracking).</span>
       </div>
       <div class="loop-field">
         <label data-label for="tf-warn">Warning</label>
@@ -805,6 +1005,91 @@
         <label data-label for="tf-ta">Multiline</label>
         <textarea class="form-control" data-textarea id="tf-ta" placeholder="Type here…"></textarea>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ SEARCH ============ -->
+  <section>
+    <h2>Search — restyle native <code>.osui-search</code> (inherits the Text Field box)</h2>
+    <p class="pv-figma">handover/loop-search.md · Figma node 17191-8728</p>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Label order</span>
+      <div class="loop-field pv-field">
+        <label data-label for="se-vert">Search Label</label>
+        <div class="osui-search">
+          <div class="osui-search__input">
+            <input class="form-control" data-input id="se-vert" type="search" placeholder="Enter your search">
+          </div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--horizontal pv-field">
+        <label data-label for="se-horiz">Search</label>
+        <div class="osui-search">
+          <div class="osui-search__input">
+            <input class="form-control" data-input id="se-horiz" type="search" placeholder="Enter your search">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes</span>
+      <div class="loop-field pv-field">
+        <label data-label for="se-xl">xLarge (56px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-xlarge" data-input id="se-xl" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-lg">Large (48px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-large" data-input id="se-lg" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-rg">Regular (40px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-regular" data-input id="se-rg" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+      <div class="loop-field pv-field">
+        <label data-label for="se-sm">Small (32px)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control input-small" data-input id="se-sm" type="search" placeholder="Enter your search">
+        </div></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">States</span>
+      <div class="loop-field">
+        <label data-label for="se-filled">Filled (clear × — Chrome/Edge)</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="se-filled" type="search" value="annual report">
+        </div></div>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-err">Error</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control not-valid" data-input id="se-err" type="search" value="bad query">
+        </div></div>
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-warn">Warning</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control is-warning" data-input id="se-warn" type="search" value="caution query">
+        </div></div>
+        <span class="loop-field__helper loop-field__helper--warning">Warning message here</span>
+      </div>
+      <div class="loop-field">
+        <label data-label for="se-dis">Disabled</label>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="se-dis" type="search" placeholder="Enter your search" disabled>
+        </div></div>
+      </div>
+      <span class="pv-note">Focused = click into a field (2px Blue/50 inset ring, no height jump). FND-050: the clear × uses the <code>type=search</code> cancel button (WebKit/Blink only). All box/state visuals inherited from the Text Field override.</span>
     </div>
   </section>
 
@@ -868,29 +1153,51 @@
     </div>
 
     <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-label pv-label--block">Multi-select — tag chips (<code>.osui-dropdown-tags</code>)</span>
+      <span class="pv-label pv-label--block">Dropdown Search — searchable single (<code>.osui-dropdown-search</code> · live provider)</span>
+      <div class="loop-field loop-field--select">
+        <label data-label for="dd-search">Select Date</label>
+        <!-- Real VirtualSelect target — the provider builds the .vscomp-* DOM here at runtime. -->
+        <div class="osui-dropdown-search" id="dd-search"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Multi-select / Dropdown Tags — tag chips + “+N” overflow (<code>.osui-dropdown-tags</code> · live provider)</span>
       <div class="loop-field">
         <label data-label for="dd-tags">Select Options</label>
-        <div class="osui-dropdown-tags" id="dd-tags">
-          <div class="vscomp-ele-wrapper vscomp-wrapper multiple show-value-as-tags has-value" role="combobox" aria-expanded="false" aria-label="Select one or more options" tabindex="0">
-            <div class="vscomp-toggle-button">
-              <div class="vscomp-value">
-                <span class="vscomp-value-tag">
-                  <span class="vscomp-value-tag-content">Bridget Hernandez</span>
-                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Bridget Hernandez, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
-                </span>
-                <span class="vscomp-value-tag">
-                  <span class="vscomp-value-tag-content">Camila Stevenson</span>
-                  <span class="vscomp-value-tag-clear-button" role="button" aria-label="Camila Stevenson, Remove option" tabindex="0"><i class="vscomp-clear-icon"></i></span>
-                </span>
-              </div>
-              <div class="vscomp-arrow"></div>
-            </div>
-          </div>
-        </div>
+        <!-- Real VirtualSelect target — multiple + showValueAsTags + noOfDisplayValues:3 → the Figma “+3” overflow. -->
+        <div class="osui-dropdown-tags" id="dd-tags"></div>
       </div>
-      <span class="pv-note">FND-031: Select uses --radius-pill (32px) while the Text Field uses --radius-medium (8px); Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed.</span>
+      <span class="pv-note">Live: type to search, pick/clear tags, “+N” collapses overflow. The single Select states above stay the server-side <code>.dropdown</code> pattern.</span>
+      <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius now shared: Text Field + Select both use --radius-pill 32px.)</span>
     </div>
+  </section>
+
+  <!-- ============ DATEPICKER (calendar balloon) ============ -->
+  <section>
+    <h2>DatePicker — restyle the Flatpickr calendar balloon (<code>.flatpickr-calendar</code>)</h2>
+    <p class="pv-figma">handover/loop-datepicker.md · ODC provider = Flatpickr v4.6.13 · Figma node 17897:9088 (calendar 300×304, day 36×36)</p>
+
+    <div class="pv-row pv-row--stack pv-row--narrow">
+      <span class="pv-label pv-label--block">Live field — click to open the balloon (<code>data-input</code> → real Flatpickr)</span>
+      <div class="loop-field pv-field">
+        <label data-label for="dp-field">Select Date</label>
+        <input class="form-control input-regular" data-input id="dp-field" type="text" placeholder="Pick a date">
+      </div>
+      <span class="pv-note">The balloon is body-appended and styled by loop-datepicker.css. Click the <strong>⌄ caret</strong> beside the month/year to open the scrollable year grid (custom plugin). The two calendars below are the same widget pinned open (<code>inline</code>) so the styling stays visible.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <div class="loop-field pv-field">
+        <span class="pv-label pv-label--full">Single date — open</span>
+        <div id="dp-inline"></div>
+      </div>
+      <div class="loop-field pv-field">
+        <span class="pv-label pv-label--full">Range — open</span>
+        <div id="dp-range"></div>
+      </div>
+    </div>
+    <span class="pv-note">Header matches Figma: "Month Year ⌄" left, prev/next grouped right. Day marker = 36px circle (--radius-pill), today = blue-70 ring, selected = blue-70 fill — all design-confirmed (FND-044 / FND-045 resolved). The year grid ("Open Change Year") is added by a custom Flatpickr plugin since the v4 provider ships only a numeric year stepper.</span>
   </section>
 
   <!-- ============ TOGGLE / SWITCH ============ -->
@@ -933,7 +1240,7 @@
     <div class="pv-row">
       <span class="pv-label">Sizes</span>
       <div class="pv-inline-set">
-        <input type="checkbox" data-switch checked aria-label="xLarge (56×32)">
+        <input type="checkbox" data-switch class="loop-toggle-xlarge" checked aria-label="xLarge (56×32)">
         <input type="checkbox" data-switch class="loop-toggle-large" checked aria-label="Large (48×26)">
         <input type="checkbox" data-switch class="loop-toggle-regular" checked aria-label="Regular (40×20)">
         <input type="checkbox" data-switch class="loop-toggle-small" checked aria-label="Small (32×16)">
@@ -956,10 +1263,10 @@
   </section>
 
   <!-- ============ TOOLTIP ============ -->
-  <section>
+  <section id="sec-feedback">
     <h2>Tooltip</h2>
     <p class="pv-figma">tokens/component-tooltip.css · src/blocks/loop-tooltip.css · Figma node 17874-7113</p>
-    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. Arrow triangles use clip-path; position managed by OutSystems JS at runtime.</p>
+    <p class="pv-note">OutSystems Tooltip pattern restyle. Default = Dark; add <code>loop-tooltip--light</code> via ExtendedClass for Light variant. The arrow is the native rotate(45°) square (sized via <code>--osui-tooltip-arrow-size</code>) tucked behind the balloon; position managed by OutSystems JS at runtime.</p>
 
     <div class="pv-tt-grid">
 
@@ -968,7 +1275,7 @@
         <span class="pv-caption">Dark · Bottom (default)</span>
         <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-bottom">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-dark-bottom" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-dark-bottom" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
           </div>
@@ -980,7 +1287,7 @@
         <span class="pv-caption">Dark · Top</span>
         <div class="osui-tooltip osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--top">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-dark-top">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon top osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--above" id="tt-dark-top" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon top-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--above" id="tt-dark-top" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--down"></div>
           </div>
@@ -992,7 +1299,7 @@
         <span class="pv-caption">Light · Bottom</span>
         <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-bottom">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-light-bottom" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon bottom-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--below" id="tt-light-bottom" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--up"></div>
           </div>
@@ -1004,7 +1311,7 @@
         <span class="pv-caption">Light · Left (right-side balloon)</span>
         <div class="osui-tooltip loop-tooltip--light osui-tooltip--is-hover osui-tooltip--is-open pv-tt-anchor pv-tt-anchor--row">
           <div class="osui-tooltip__content pv-tt-trigger" role="button" tabindex="0" aria-describedby="tt-light-left">Hover me</div>
-          <div class="osui-tooltip__balloon-wrapper osui-balloon left osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--side" id="tt-light-left" role="tooltip" aria-hidden="false">
+          <div class="osui-tooltip__balloon-wrapper osui-balloon right-start osui-balloon--is-open osui-tooltip__balloon-wrapper--is-open pv-tt-balloon pv-tt-balloon--side" id="tt-light-left" role="tooltip" aria-hidden="false">
             <div class="osui-tooltip__balloon-arrow pv-tt-arrow--side"></div>
             <div class="osui-tooltip__balloon-wrapper__balloon">Tooltip text</div>
           </div>
@@ -1041,6 +1348,118 @@
     </div>
   </section>
 
+  <!-- ============ ALERT (native, restyled to Notes) ============ -->
+  <section>
+    <h2>Alert — native OutSystems UI <code>.alert</code>, restyled to the Notes look</h2>
+    <p class="pv-figma">tokens/outsystems-ui-alert.css · reuses the <code>--loop-note-*</code> tokens (Figma "Notes" 26642-61530) so the stock <code>.alert</code> widget matches the custom <code>.loop-note</code> block above</p>
+
+    <div class="pv-row pv-row--stack pv-row--measure">
+      <div class="alert alert-info">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></div>
+        <div class="alert-message">This record will be reviewed by the compliance team within 3 business days of submission.</div>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></div>
+        <div class="alert-message">Your changes have been saved and submitted for approval.</div>
+      </div>
+
+      <div class="alert alert-warning">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></div>
+        <div class="alert-message">This record requires approval before it can be submitted to the World Bank procurement portal.</div>
+      </div>
+
+      <div class="alert alert-error">
+        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></div>
+        <div class="alert-message">Submission failed — the procurement portal is unavailable. Try again or contact support.</div>
+      </div>
+    </div>
+    <p class="pv-note pv-note--spaced">Native <code>.alert</code> maps onto the Loop Notes palette: <code>info</code>→information (blue), <code>success</code>→success (green), <code>warning</code>→important (yellow). <code>error</code> has no Note type, so it borrows the Loop red negative-state role.</p>
+  </section>
+
+  <!-- ============ FEEDBACK MESSAGE (native, restyled to Alerts) ============ -->
+  <section>
+    <h2>Feedback Message — native OutSystems UI <code>.feedback-message</code>, restyled to the Alerts look</h2>
+    <p class="pv-figma">tokens/outsystems-ui-feedback-message.css · Figma "Alerts" 17868-4165 · light tinted box with a 4px left accent border, dark body text, color-matched icon — the stock Feedback Message adopts The Loop Alert styling</p>
+
+    <div class="pv-row pv-row--stack pv-row--measure">
+      <div class="feedback-message feedback-message-info">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></i>
+        <span class="feedback-message-text">This record will be reviewed by the compliance team within 3 business days.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-success">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></i>
+        <span class="feedback-message-text">Your changes have been saved and submitted for approval.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-warning">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></i>
+        <span class="feedback-message-text">This record requires approval before it can be submitted.</span>
+      </div>
+
+      <div class="feedback-message feedback-message-error">
+        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></i>
+        <span class="feedback-message-text">Submission failed — the procurement portal is unavailable. Try again.</span>
+      </div>
+    </div>
+    <p class="pv-note pv-note--spaced">The native solid-fill toast is retinted to the Figma Alert per type: <code>error</code> #fdf2f2/#9d161d, <code>warning</code> #fef3d7/#896001, <code>info</code> #f6fcff/#00538a, <code>success</code> #f6fef0/#388004 — backgrounds and accents both pulled from <code>semantic-colors.css</code>.</p>
+  </section>
+
+  <!-- ============ FILE UPLOADER ============ -->
+  <section>
+    <h2>File Uploader — custom Web Component <code>&lt;loop-file-uploader&gt;</code></h2>
+    <p class="pv-figma">tokens/component-upload.css · src/components/loop-file-uploader.js · Figma node 18306-3832 · 3 variants (dropzone / input / button) × 5 states · drag-and-drop + per-file progress</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Drag &amp; drop — states</span>
+      <div class="pv-up-grid">
+        <loop-file-uploader label="Upload label" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+        <loop-file-uploader label="Upload label" state="success" status-text="File uploaded successfully" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+        <loop-file-uploader label="Upload label" state="warning" status-text="browse computer files to upload" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+        <loop-file-uploader label="Upload label" state="error" status-text="Error uploading file. Try again." hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+        <loop-file-uploader label="Upload label" state="disabled" disabled="true" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+      </div>
+      <span class="pv-note">The dropzone is a real keyboard-operable trigger wrapping a working <code>&lt;input type="file"&gt;</code>; drag a file onto it or activate it to pick. The idle border is the info-blue dashed affordance (#00538a); states recolour border/fill/accent. Live status line announces politely (assertive on error).</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Input variant</span>
+      <loop-file-uploader variant="input" label="Upload label" placeholder="Placeholder text" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Button variant</span>
+      <loop-file-uploader variant="button" label="Upload file" button-label="Upload Files" multiple="true" hint="Formats supported: JPG, PDF (Max 10 MB)"></loop-file-uploader>
+      <span class="pv-note">Pick files to see the per-file progress rows (8px bar, pill radius; fill turns green when complete). Each row has a remove × with an aria-label.</span>
+    </div>
+  </section>
+
+  <!-- ============ TABS ============ -->
+  <section id="sec-data">
+    <h2>Tabs — restyle native OutSystems UI <code>.osui-tabs</code></h2>
+    <p class="pv-figma">tokens/component-tabs.css · src/blocks/loop-tabs.css · Figma node 18686-5559 · underline tabs · bold labels, 2px divider, 4px blue active bar</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Default</span>
+      <div class="osui-tabs osui-tabs--is-horizontal osui-tabs--has-auto-height pv-tabs-static">
+        <div class="osui-tabs__header">
+          <div class="osui-tabs__header-item osui-tabs--is-active">News</div>
+          <div class="osui-tabs__header-item">Stories</div>
+          <div class="osui-tabs__header-item">Blogs</div>
+          <div class="osui-tabs__header-item" disabled>Archive</div>
+          <span class="osui-tabs__header__indicator"></span>
+        </div>
+        <div class="osui-tabs__content">
+          <div class="osui-tabs__content-item osui-tabs--is-active">
+            <p class="loop-body-medium">Latest news across all six operational regions.</p>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">States: <strong>News</strong> selected (emphasis label + 4px blue bar), Stories/Blogs enabled (blue-70), Archive disabled (muted). Hover a tab to see the 2px underline affordance. In ODC the bar is the native JS-driven indicator; this static preview draws it with the same inset box-shadow.</span>
+    </div>
+  </section>
+
   <!-- ============ TAG ============ -->
   <section>
     <h2>Tag — custom CSS block <code>.loop-tag</code></h2>
@@ -1072,6 +1491,26 @@
     </div>
 
     <div class="pv-row">
+      <span class="pv-label">Meta Tag — leading slots</span>
+      <span class="loop-tag loop-tag--blue loop-tag--meta loop-tag--dismissible">
+        <span class="loop-tag__avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#cbd6e2"/><circle cx="12" cy="9" r="4" fill="#7d93a8"/><path d="M4 22c1.5-4 5-6 8-6s6.5 2 8 6" fill="#7d93a8"/></svg></span>
+        <span class="loop-tag__label">Avatar</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove">×</button>
+      </span>
+      <span class="loop-tag loop-tag--blue loop-tag--meta loop-tag--dismissible">
+        <span class="loop-tag__initials" aria-hidden="true">GA</span>
+        <span class="loop-tag__label">Initials</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove">×</button>
+      </span>
+      <span class="loop-tag loop-tag--blue loop-tag--meta loop-tag--dismissible">
+        <span class="loop-tag__flag" aria-hidden="true"><svg viewBox="0 0 25 18"><rect width="25" height="18" fill="#006aa7"/><path d="M0 7h8V0h4v7h13v4H12v7H8v-7H0z" fill="#fecc00"/></svg></span>
+        <span class="loop-tag__label">Flag</span>
+        <button type="button" class="loop-tag__dismiss" aria-label="Remove">×</button>
+      </span>
+      <span class="pv-note">Add <code>loop-tag--meta</code> + a leading <code>loop-tag__avatar</code> / <code>__initials</code> / <code>__flag</code> (24px round; flag 25×18). The leading inset tightens to 8px so the slot nestles. Figma node 17313-5506.</span>
+    </div>
+
+    <div class="pv-row">
       <span class="pv-label">Dismissible</span>
       <span class="loop-tag loop-tag--blue loop-tag--dismissible">
         <span class="loop-tag__label">Filter: Active</span>
@@ -1100,6 +1539,131 @@
         <span class="loop-tag__label">Disabled</span>
         <button type="button" class="loop-tag__dismiss" aria-label="Remove" disabled>×</button>
       </span>
+    </div>
+  </section>
+
+  <!-- ============ BADGE / LABEL ============ -->
+  <section>
+    <h2>Badge / Label — custom CSS block <code>.loop-badge</code> (+ native <code>.tag</code>)</h2>
+    <p class="pv-figma">tokens/component-badge-label.css · src/blocks/loop-badge.css · Figma node 22966-4806 · rectangle, radius 4</p>
+
+    <div class="pv-row">
+      <span class="pv-label">Light (default)</span>
+      <span class="loop-badge loop-badge--neutral">Neutral</span>
+      <span class="loop-badge loop-badge--indigo">Indigo</span>
+      <span class="loop-badge loop-badge--teal">Teal</span>
+      <span class="loop-badge loop-badge--purple">Purple</span>
+      <span class="loop-badge loop-badge--red">Red</span>
+      <span class="loop-badge loop-badge--magenta">Magenta</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Heavy</span>
+      <span class="loop-badge loop-badge--neutral loop-badge--heavy">Neutral</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy">Indigo</span>
+      <span class="loop-badge loop-badge--teal loop-badge--heavy">Teal</span>
+      <span class="loop-badge loop-badge--purple loop-badge--heavy">Purple</span>
+      <span class="loop-badge loop-badge--red loop-badge--heavy">Red</span>
+      <span class="loop-badge loop-badge--magenta loop-badge--heavy">Magenta</span>
+      <span class="pv-note">All 12 pairs verified ≥ 4.5:1 contrast. FND-040: weight 500 ("SemiBold") resolves to the shipped 400 face.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes — Light</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--xlarge">xLarge</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--large">Large</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--regular">Regular</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--small">Small</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Sizes — Heavy</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy loop-badge--xlarge">xLarge</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy loop-badge--large">Large</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy loop-badge--regular">Regular</span>
+      <span class="loop-badge loop-badge--indigo loop-badge--heavy loop-badge--small">Small</span>
+      <span class="pv-note">Four sizes from Figma's "Component Sizes" collection (node 22966-4808): xLarge 16/20 · Large 14/17 · Regular 13/17 · Small 11/14. Regular (no class) is the default. Off-scale values (Regular/Small 13/11px, 0.25px tracking, Regular's 8/6 padding) → FND-056.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Native Tag</span>
+      <span class="tag">Neutral</span>
+      <span class="tag background-blue">Indigo</span>
+      <span class="tag background-green">Teal</span>
+      <span class="tag background-red">Red</span>
+      <span class="tag tag-heavy background-blue">Heavy</span>
+      <span class="pv-note">The stock OutSystems UI Tag widget (<code>.tag</code>) now renders as a Badge/Label (default Regular). Colour via the Tag's "Color" (Blue→indigo, Green→teal — FND-039); add <code>tag-heavy</code> for the Heavy fill.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Native Tag — sizes</span>
+      <span class="tag tag-xlarge background-blue">xLarge</span>
+      <span class="tag tag-large background-blue">Large</span>
+      <span class="tag tag-regular background-blue">Regular</span>
+      <span class="tag tag-small background-blue">Small</span>
+      <span class="pv-note">Add <code>tag-xlarge</code> / <code>tag-large</code> / <code>tag-small</code> via ExtendedClass; Regular is the default.</span>
+    </div>
+  </section>
+
+  <!-- ============ BADGE STATUS ============ -->
+  <section>
+    <h2>Badge Status — custom CSS block <code>.loop-badge-status</code></h2>
+    <p class="pv-figma">tokens/component-badge-status.css · src/blocks/loop-badge-status.css · Figma node 18153-7159</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">States × types — Light (dot) · Icon (glyph) · Headline (pill), xlarge</span>
+
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.6 8.4l2.2 2.2 4.6-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="loop-badge-status__label">Success</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="4.7" r="1" fill="#fff"/><rect x="7.1" y="6.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/></svg></span><span class="loop-badge-status__label">Informative</span></span>
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M7.13 1.7a1 1 0 0 1 1.74 0l6.0 10.9a1 1 0 0 1-.87 1.5H1.99a1 1 0 0 1-.87-1.5z" fill="currentColor"/><rect x="7.1" y="5.4" width="1.8" height="4.6" rx="0.9" fill="#fff"/><circle cx="8" cy="11.7" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Warning</span></span>
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Error</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Suggestive</span></span>
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="loop-badge-status__label">Not Started</span></span>
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__icon loop-badge-status__icon--spin" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Sizes — Light dot (success) and Headline pill (error)</span>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--small"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Small</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--regular"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Regular</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--large"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Large</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">xLarge</span></span>
+      </div>
+      <div class="pv-row">
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--small"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Small</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--regular"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Regular</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--large"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Large</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">xLarge</span></span>
+      </div>
     </div>
   </section>
 
@@ -1157,12 +1721,74 @@
         multiline>
       </loop-system-alert>
     </div>
-    <p class="pv-note pv-note--spaced">⚠ Pending finding: rgba(255,255,255,0.75) text on the offline background (#8a9db1) may fail WCAG AA contrast — filed for design review.</p>
+    <p class="pv-note pv-note--spaced">⚠ Pending finding (FND-042): white text on the offline background (#8a9db1) fails WCAG AA contrast — white-75 ≈ 2.23:1, white-90 ≈ 2.6:1 — built as designed, filed for design review.</p>
     <p class="pv-log" id="sysalert-log">last event: —</p>
   </section>
 
-  <!-- ============ COLOR REFERENCE (Live Style Guide) ============ -->
+  <!-- ============ ALERT ============ -->
   <section>
+    <h2>Alert — custom Web Component <code>&lt;loop-alert&gt;</code></h2>
+    <p class="pv-figma">handover/loop-alert.md · Figma node 17868-4165</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Single-line (icon · title · message · action · dismiss)</span>
+
+      <loop-alert type="error"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="warning"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="information"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+
+      <loop-alert type="success"
+        title="Title"
+        message="Sample Message"
+        action-label="Action"
+        dismissible>
+      </loop-alert>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Multi-line (stacked)</span>
+
+      <loop-alert type="error"
+        title="Title"
+        message="Message with more than 2 lines of information."
+        action-label="Action"
+        action-href="#"
+        dismissible
+        multiline>
+      </loop-alert>
+
+      <loop-alert type="information"
+        title="Title"
+        message="Message with more than 2 lines of information."
+        action-label="Action"
+        dismissible
+        multiline>
+      </loop-alert>
+    </div>
+
+    <p class="pv-note pv-note--spaced">ℹ Finding (FND-054): Figma uses a near-black secondary link (#0c0f12) for the Action on the Information multi-line variant only; normalized to primary #004370 across all types/layouts, filed for design review.</p>
+    <p class="pv-log" id="alert-log">last event: —</p>
+  </section>
+
+  <!-- ============ COLOR REFERENCE (Live Style Guide) ============ -->
+  <section id="sec-reference">
     <h2>Color Reference — custom Web Component <code>&lt;loop-color-reference&gt;</code></h2>
     <p class="pv-figma">src/components/loop-color-reference.js · auto-renders the Live Style Guide from the live theme tokens</p>
     <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every primitive ramp with its hex, <code>.background-*</code> / <code>.text-*</code> utility classes and CSS variable. Click any class/variable to copy.</p>
@@ -1180,63 +1806,338 @@
     </loop-color-reference>
   </section>
 
+  <!-- ============ SHADOW REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Shadow Reference — custom Web Component <code>&lt;loop-shadow-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-shadow-reference.js · auto-renders the elevation scale from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every elevation token with a live specimen, its value and a click-to-copy CSS variable.</p>
+
+    <loop-shadow-reference
+      intro="Elevation scale, generated live from the WBG / The Loop theme.">
+    </loop-shadow-reference>
+  </section>
+
+  <!-- ============ BORDER REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Border Reference — custom Web Component <code>&lt;loop-border-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-border-reference.js · auto-renders border size (stroke width) + radius from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element documents both border foundations — the <code>--border-size-*</code> stroke-width scale and the <code>--radius-*</code> corner scale. Use <code>filter</code> to show a single scale per page.</p>
+
+    <loop-border-reference
+      intro="Border size and radius, generated live from the WBG / The Loop theme.">
+    </loop-border-reference>
+  </section>
+
+  <!-- ============ SPACING REFERENCE (Live Style Guide) ============ -->
+  <section>
+    <h2>Spacing Reference — custom Web Component <code>&lt;loop-spacing-reference&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-spacing-reference.js · auto-renders the spacing scale + directional margin/padding utilities from the live theme tokens</p>
+    <p class="pv-note pv-note--spaced">Fast import: one JS file + one element renders every spacing token with a live bar, its value, the minted <code>.margin-*</code> / <code>.padding-*</code> classes and a click-to-copy CSS variable, plus a directional-variant legend.</p>
+
+    <loop-spacing-reference
+      intro="Spacing scale + directional utilities, generated live from the WBG / The Loop theme.">
+    </loop-spacing-reference>
+  </section>
+
   <!-- ============ POPOVER ============ -->
   <section>
-    <h2>Popover — custom Web Component <code>&lt;loop-popover&gt;</code></h2>
-    <p class="pv-figma">handover/loop-popover.md · Figma node 26345-2762</p>
-    <p class="pv-note pv-note--spaced">Pointers shown open inline (position relative to trigger is set in production by the containing layout). Toggle <code>open</code> to show/hide.</p>
+    <h2>Popover — restyle native OutSystems UI <code>[data-popover]</code> widget</h2>
+    <p class="pv-figma">tokens/component-popover.css · src/blocks/loop-popover.css · Figma node 26345-2762</p>
+    <p class="pv-note pv-note--spaced">The native <code>.popover-bottom</code> panel restyled into The Loop card; the pointer is a CSS pseudo-element keyed to the alignment class. Panels shown statically (production positions them by the trigger).</p>
 
-    <div class="pv-row pv-pop-grid">
+    <div class="pv-row pv-pop-grid pv-pop-static">
 
+      <!-- The goal use case: info trigger → Notifications card, align-center -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;top&quot; + title + dismiss</span>
-        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-top').toggleAttribute('open')">Toggle</button>
-        <loop-popover id="pop-top" pointer="top" title="About this field" has-dismiss open>
-          <p>Describes the project priority level used for reporting. Values range from 1 (low) to 5 (critical).</p>
-        </loop-popover>
+        <span class="pv-caption">align-center (pointer up, centred)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom align-center">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Notifications</div>
+            <div data-container><span style="font-weight: bold;">Fannie Woods</span> has received your request. You’ll be notified soon.<br>September 28, 12:09PM<br></div>
+          </div>
+        </div>
       </div>
 
+      <!-- Default placement (below trigger): pointer up, 24px from leading edge -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;bottom&quot; (default)</span>
-        <loop-popover id="pop-bottom" pointer="bottom" open>
-          <p>This is a simple popover with no title and a bottom pointer.</p>
-        </loop-popover>
-        <button class="btn btn-primary btn-small" onclick="document.getElementById('pop-bottom').toggleAttribute('open')">Toggle</button>
+        <span class="pv-caption">default (pointer up-left)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+        </div>
       </div>
 
-      <div class="pv-pop-row">
-        <span class="pv-caption">pointer=&quot;left&quot;</span>
-        <loop-popover id="pop-left" pointer="left" title="Left pointer" has-dismiss open>
-          <p>Popover appears to the right of the trigger with the pointer on the left edge.</p>
-        </loop-popover>
-      </div>
-
-      <div class="pv-pop-row">
-        <loop-popover id="pop-right" pointer="right" title="Right pointer" has-dismiss open>
-          <p>Popover appears to the left of the trigger with the pointer on the right edge.</p>
-        </loop-popover>
-        <span class="pv-caption">pointer=&quot;right&quot;</span>
-      </div>
-
+      <!-- With the optional Figma title divider -->
       <div class="pv-pop-col">
-        <span class="pv-caption">pointer=&quot;none&quot;</span>
-        <loop-popover id="pop-none" pointer="none" title="No pointer" has-dismiss open>
-          <p>A floating panel with no pointer triangle. Use for tooltips or menus that don't need directional context.</p>
-        </loop-popover>
+        <span class="pv-caption">loop-popover--divided (title rule)</span>
+        <div data-popover class="popover popover-expanded">
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-desc fa-1x" aria-hidden="true" data-icon></i></div>
+          <div data-container class="popover-bottom loop-popover--divided">
+            <div data-container class="heading6">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flipped above trigger: pointer down -->
+      <div class="pv-pop-col">
+        <span class="pv-caption">align-bottom (pointer down)</span>
+        <div data-popover class="popover popover-expanded">
+          <div data-container class="popover-bottom align-bottom align-center">
+            <div data-container class="heading6" style="margin-bottom: 16px;">Title</div>
+            <div data-container>Lorem ipsum dolor sit amet, consec elit, adipis elit, cum quaerat accusamus eos.</div>
+          </div>
+          <div class="popover-top" tabindex="0">Show Popover<i class="icon ThemeGrid_MarginGutter fa fa-sort-asc fa-1x" aria-hidden="true" data-icon></i></div>
+        </div>
       </div>
 
     </div>
-    <p class="pv-log" id="popover-log">last event: —</p>
+  </section>
+
+  <!-- ============ MODAL ============ -->
+  <section>
+    <h2>Modal — custom Web Component <code>&lt;loop-modal&gt;</code></h2>
+    <p class="pv-figma">tokens/component-modal.css · Figma node 22049-35100</p>
+    <p class="pv-note pv-note--spaced">Toggle <code>open</code> to show/hide (or call <code>.show()</code>/<code>.hide()</code>/<code>.toggle()</code>). Centres over a blue-90 @ 90% overlay; ESC and backdrop-click dismiss; focus is trapped and returns to the trigger. Empty slots show placeholders.</p>
+
+    <div class="pv-row">
+      <button class="btn btn-primary" onclick="document.getElementById('demo-modal').show()">Open modal (Medium)</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').show()">Open modal (Small)</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-ph').show()">Open placeholder-only</button>
+    </div>
+
+    <!-- Medium (default), fully composed: heading attr + slotted content + real footer buttons -->
+    <loop-modal id="demo-modal" heading="Energy is creating jobs">
+      <p>Faithful to the Figma sticker: a 24px bold heading with a leading information icon, the
+         circular blue close button, 40px side padding, and a button footer with a tertiary action
+         pinned left while the secondary + primary actions group to the right.</p>
+      <button slot="footer" class="btn" onclick="document.getElementById('demo-modal').hide()">Tertiary</button>
+      <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-secondary" onclick="document.getElementById('demo-modal').hide()">Secondary</button>
+        <button class="btn btn-primary" onclick="document.getElementById('demo-modal').hide()">Primary</button>
+      </div>
+    </loop-modal>
+
+    <!-- Small variant -->
+    <loop-modal id="demo-modal-sm" size="small" heading="Confirm deletion">
+      <p>The Small (456px) variant. This action can't be undone.</p>
+      <div slot="footer" style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-secondary" onclick="document.getElementById('demo-modal-sm').hide()">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('demo-modal-sm').hide()">Delete</button>
+      </div>
+    </loop-modal>
+
+    <!-- Placeholder-only: every slot empty → shows the dev scaffold -->
+    <loop-modal id="demo-modal-ph"></loop-modal>
+
+    <p class="pv-log" id="modal-log">last event: —</p>
+  </section>
+
+  <!-- ============ TOAST ============ -->
+  <section>
+    <h2>Toast — custom Web Component <code>&lt;loop-toast&gt;</code></h2>
+    <p class="pv-figma">tokens/component-toast.css · handover/loop-toast.md · Figma node 17874-6524</p>
+    <p class="pv-note pv-note--spaced">Anchors to any of 6 screen positions (bottom-centre by default), auto-dismisses after 5s (timer pauses on hover/focus), × and action dismiss early. Each toast is addressed by id and shown via <code>window.LoopToast.show('&lt;id&gt;')</code> — exactly how an OutSystems Client Action triggers it. Fire several at one anchor to watch them stack; resize the window below 1024/700px to see the Figma tablet/mobile sizing.</p>
+
+    <div class="pv-row">
+      <span class="pv-label pv-label--block">Position</span>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'top-left' })">Top-left</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'top' })">Top</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'top-right' })">Top-right</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'bottom-left' })">Bottom-left</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'bottom' })">Bottom</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-pos', { position: 'bottom-right' })">Bottom-right</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label pv-label--block">Without title</span>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-default')">Default</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-success')">Success</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-warning')">Warning</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-error')">Error</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-information')">Information</button>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label pv-label--block">With title</span>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-success-titled')">Success</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-error-titled')">Error</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-information-titled')">Information</button>
+      <button class="btn btn-secondary" onclick="window.LoopToast.show('t-no-button', { duration: 0 })">No button · sticky</button>
+    </div>
+
+    <!-- Placed toasts (fixed-position; hidden until shown), addressed by id -->
+    <loop-toast id="t-default"     type="default"     message="User preferences failed. Site loaded with default preferences!" button-label="Button"></loop-toast>
+    <loop-toast id="t-success"     type="success"     message="Your changes were saved successfully." button-label="Undo"></loop-toast>
+    <loop-toast id="t-warning"     type="warning"     message="Your session will expire in 5 minutes." button-label="Stay signed in"></loop-toast>
+    <loop-toast id="t-error"       type="error"       message="User preferences failed. Site loaded with default preferences!" button-label="Retry"></loop-toast>
+    <loop-toast id="t-information" type="information" message="A new version of the application is available." button-label="Reload"></loop-toast>
+
+    <loop-toast id="t-success-titled"     type="success"     title="All done!"               message="Your changes were saved successfully." button-label="Undo"></loop-toast>
+    <loop-toast id="t-error-titled"       type="error"       title="Oh, no. There is a problem!" message="User preferences failed. Site loaded with default preferences!" button-label="Retry"></loop-toast>
+    <loop-toast id="t-information-titled" type="information" title="Heads up"                 message="A new version of the application is available." button-label="Reload"></loop-toast>
+    <loop-toast id="t-no-button"          type="default"     message="Saved. This one has no button and won't auto-dismiss."></loop-toast>
+
+    <!-- One reusable toast re-anchored by the Position row above -->
+    <loop-toast id="t-pos"                type="information" title="Repositioned" message="This toast re-anchors to the chosen screen position." button-label="Got it"></loop-toast>
+
+    <p class="pv-log" id="toast-log">last event: —</p>
+  </section>
+
+  <!-- ============ CARD ============ -->
+  <section>
+    <h2>Card — restyle native OutSystems UI Card family (<code>.card</code> / <code>.card-background</code> / <code>.card-sectioned</code>)</h2>
+    <p class="pv-figma">handover/loop-card.md · Figma node 20315-6122 · base 19547-47101 · multimedia 20315-7404 · white · 8px radius · flat (FND-033) · 24px padding</p>
+
+    <!-- 1) Base card: padding / no-padding / elevated -->
+    <p class="pv-label pv-label--full">Base card <code>.card</code></p>
+    <div class="pv-card-grid">
+      <div class="card">
+        <h3 class="loop-heading-h3-base">With padding</h3>
+        <p class="loop-body-base">Default Loop card — white fill, 8px radius, flat (no shadow), 24px padding, 24px content gap.</p>
+        <button class="btn btn-primary btn-small">View report</button>
+      </div>
+
+      <div class="card is-flush">
+        <div class="loop-card__placeholder">Image / media (No Padding · <code>is-flush</code>)</div>
+        <div class="pv-card-meta pv-card-pad">
+          <h3 class="loop-heading-h3-base">No padding</h3>
+          <span class="loop-tag loop-tag--blue loop-tag--regular">Flush</span>
+        </div>
+      </div>
+
+      <div class="card card--elevated">
+        <h3 class="loop-heading-h3-base">Elevated</h3>
+        <p class="loop-body-base">Opt-in <code>card--elevated</code> restores a subtle <code>--shadow-low</code>. The Loop default stays flat.</p>
+      </div>
+    </div>
+    <span class="pv-note">FND-033: The Loop card shadow tokens are all zeroed → built flat, vs OutSystems UI's default shadowed card. <code>card--elevated</code> is the opt-in elevation.</span>
+
+    <!-- 2) Content placeholder (dev affordance) -->
+    <p class="pv-label pv-label--full">Placeholder <code>.loop-card__placeholder</code></p>
+    <div class="pv-card-grid">
+      <div class="card">
+        <div class="loop-card__placeholder">Content placeholder</div>
+      </div>
+    </div>
+
+    <!-- 3) Multimedia hero -->
+    <p class="pv-label pv-label--full">Multimedia hero <code>.card-background</code></p>
+    <div class="pv-card-grid pv-card-grid--media">
+      <div class="card-background pv-card-hero">
+        <div class="card-background-image pv-card-img"></div>
+        <div class="card-background-content">
+          <p class="loop-card__eyebrow">Climate</p>
+          <h3 class="loop-card__title">Financing a resilient future across six regions</h3>
+        </div>
+      </div>
+
+      <div class="card-background pv-card-hero">
+        <div class="card-background-image pv-card-img"></div>
+        <div class="card-background-content">
+          <button class="loop-card__media-button" aria-label="Play video">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
+          <p class="loop-card__eyebrow">Podcast</p>
+          <h3 class="loop-card__title">Voices from the field</h3>
+        </div>
+      </div>
+    </div>
+    <span class="pv-note">Full-bleed image + bottom blue-90 scrim + on-dark eyebrow/title/media button. FND-034: on-dark text/scrim reference gray-alpha-white primitives (semantic On-Dark layer deferred). Hero image is a token-painted stand-in in this offline preview.</span>
+
+    <!-- 4) Sectioned card -->
+    <p class="pv-label pv-label--full">Sectioned <code>.card-sectioned</code></p>
+    <div class="pv-card-grid">
+      <div class="card-sectioned">
+        <div class="card-sectioned-item">
+          <div class="pv-card-meta">
+            <h3 class="loop-heading-h3-base">Portfolio summary</h3>
+            <span class="loop-tag loop-tag--green loop-tag--regular">Active</span>
+          </div>
+        </div>
+        <div class="card-sectioned-item">
+          <p class="loop-body-base">Sections are separated by a Loop divider, 24px padding each, flat 8px container.</p>
+        </div>
+        <div class="card-sectioned-item">
+          <button class="btn btn-text">View details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5) List cards -->
+    <p class="pv-label pv-label--full">List cards <code>.list .card</code> / <code>.card-item</code></p>
+    <div class="list pv-row--narrow">
+      <div class="card card-item">
+        <div class="pv-card-meta">
+          <h3 class="loop-heading-h3-base">Annual Report 2025</h3>
+          <span class="loop-tag loop-tag--regular">PDF</span>
+        </div>
+        <p class="loop-body-small">List cards inherit the base treatment with 24px list rhythm between items.</p>
+      </div>
+      <div class="card card-item">
+        <div class="pv-card-meta">
+          <h3 class="loop-heading-h3-base">Regional Briefs</h3>
+          <span class="loop-tag loop-tag--regular">PDF</span>
+        </div>
+        <p class="loop-body-small">Second list item — note the inter-card spacing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLASS INSPECTOR (Live Style Guide tool) ============ -->
+  <section>
+    <h2>Class Inspector — custom Web Component <code>&lt;loop-class-inspector&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-class-inspector.js · reads the classes LIVE off a target element so a developer can copy the recipe</p>
+    <p class="pv-note pv-note--spaced">Point it at any widget (by id / selector) or wrap the sample inside it. It lists every class on the element as click-to-copy chips plus a one-click <strong>Copy all</strong>, so the look &amp; feel can be rebuilt in ODC via <code>ExtendedClass</code>.</p>
+
+    <!-- 1) target by id — points at the Primary button above (#pv-sample-button) -->
+    <div class="pv-row">
+      <span class="pv-label">target="#id"</span>
+      <loop-class-inspector
+        target="#pv-sample-button"
+        label="Primary button"
+        heading="Recipe for the primary button">
+      </loop-class-inspector>
+    </div>
+
+    <!-- 2) deep mode — wrap a compound sample, list descendant classes too -->
+    <div class="pv-row">
+      <span class="pv-label">wrapped + deep</span>
+      <loop-class-inspector deep heading="Recipe for this tag" label="Success tag">
+        <span class="loop-tag loop-tag--green loop-tag--regular">Approved</span>
+      </loop-class-inspector>
+    </div>
   </section>
 
 </main>
+
+<footer class="pv-appfoot">
+  <span class="pv-appfoot-brand">WORLD BANK GROUP</span>
+  <span class="pv-appfoot-orgs">IBRD · IDA · IFC · MIGA · ICSID</span>
+  <span class="pv-appfoot-copy">© 2026 The World Bank Group, All Rights Reserved</span>
+</footer>
+
+   </div><!-- /.content -->
+  </div><!-- /.main (pv-app-main) -->
+</div><!-- /.layout.layout-side (pv-app) -->
 
 <!-- 3) The real custom component, loaded exactly as it ships to ODC. -->
 <script src="../src/components/loop-typography-reference.js"></script>
 <script src="../src/components/loop-button-dropdown.js"></script>
 <script src="../src/components/loop-system-alert.js"></script>
-<script src="../src/components/loop-popover.js"></script>
+<script src="../src/components/loop-alert.js"></script>
+<script src="../src/components/loop-modal.js"></script>
+<script src="../src/components/loop-toast.js"></script>
+<script src="../src/components/loop-file-uploader.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
+<script src="../src/components/loop-shadow-reference.js"></script>
+<script src="../src/components/loop-border-reference.js"></script>
+<script src="../src/components/loop-spacing-reference.js"></script>
+<script src="../src/components/loop-class-inspector.js"></script>
 <script>
   // Preview-only: surface the component's select/toggle events so you can verify wiring.
   const log = document.getElementById('lbd-log');
@@ -1245,10 +2146,6 @@
     el.addEventListener('toggle', e => { if (e.detail.open) log.textContent = `toggle → open`; });
   });
 
-  // Set the indeterminate checkbox state (can't be done in HTML alone).
-  const cbIndet = document.getElementById('cb-indet');
-  if (cbIndet) cbIndet.indeterminate = true;
-
   // Surface System Alert events.
   const saLog = document.getElementById('sysalert-log');
   document.querySelectorAll('loop-system-alert').forEach(el => {
@@ -1256,11 +2153,95 @@
     el.addEventListener('action',  e => { saLog.textContent = `action  → type: ${e.detail.type}`; });
   });
 
-  // Surface Popover close events.
-  const pvLog = document.getElementById('popover-log');
-  document.querySelectorAll('loop-popover').forEach(el => {
-    el.addEventListener('close', () => { pvLog.textContent = `close ← #${el.id}`; });
+  // Surface Alert events.
+  const alLog = document.getElementById('alert-log');
+  document.querySelectorAll('loop-alert').forEach(el => {
+    el.addEventListener('dismiss', e => { alLog.textContent = `dismiss → type: ${e.detail.type}`; });
+    el.addEventListener('action',  e => { alLog.textContent = `action  → type: ${e.detail.type}`; });
   });
+
+  // Surface Modal open/close events.
+  const mdLog = document.getElementById('modal-log');
+  document.querySelectorAll('loop-modal').forEach(el => {
+    el.addEventListener('open',  () => { mdLog.textContent = `open  ← #${el.id}`; });
+    el.addEventListener('close', e => { mdLog.textContent = `close ← #${el.id} (reason: ${e.detail.reason})`; });
+  });
+
+  // Surface Toast events.
+  const tLog = document.getElementById('toast-log');
+  document.querySelectorAll('loop-toast').forEach(el => {
+    ['show', 'hide', 'action', 'dismiss'].forEach(evt =>
+      el.addEventListener(evt, e => { tLog.textContent = `${evt} ← #${e.detail.id} (type: ${e.detail.type})`; }));
+  });
+</script>
+
+<!-- 4) The real VirtualSelect provider (vendored). OutSystems' Dropdown Search /
+        Dropdown Tags blocks drive this same library; here we init it directly so the
+        preview is the live widget, styled to The Loop spec by loop-dropdown.css. -->
+<script src="vendor/virtual-select/virtual-select.min.js"></script>
+<script>
+  // Dropdown Search — single, searchable. Mirrors the Figma "Select" open state.
+  VirtualSelect.init({
+    ele: '#dd-search',
+    placeholder: 'Select project date',
+    search: true,
+    hideClearButton: false,
+    options: [
+      { label: 'Select Item A', value: 'a' },
+      { label: 'Select Item B', value: 'b' },
+      { label: 'Select Item C', value: 'c' },
+      { label: 'Select Item D', value: 'd' },
+      { label: 'Select Item E', value: 'e' },
+      { label: 'Select Item F', value: 'f' },
+      { label: 'Select Item G', value: 'g' },
+      { label: 'Select Item K', value: 'k' },
+    ],
+  });
+
+  // Multi-select / Dropdown Tags — multiple, tags, "+N" overflow. Mirrors Figma "Multi Select".
+  VirtualSelect.init({
+    ele: '#dd-tags',
+    placeholder: 'Select Options',
+    multiple: true,
+    showValueAsTags: true,
+    search: true,
+    disableSelectAll: true,          // no "Select all" row — Figma list is plain options
+    noOfDisplayValues: 3,            // 3 chips then "+N" — the Figma "+3" overflow badge
+    selectedValue: ['in-progress', 'done', 'closed', 'in-review', 'blocked', 'cancelled'],
+    options: [
+      { label: 'In Progress', value: 'in-progress' },
+      { label: 'Done',        value: 'done' },
+      { label: 'Closed',      value: 'closed' },
+      { label: 'In Review',   value: 'in-review' },
+      { label: 'Blocked',     value: 'blocked' },
+      { label: 'Cancelled',   value: 'cancelled' },
+      { label: 'Deferred',    value: 'deferred' },
+    ],
+  });
+</script>
+
+<!-- 5) The real Flatpickr provider (vendored). OutSystems' DatePicker drives this same
+        library in ODC; here we init it directly so the preview is the live calendar
+        balloon, styled to The Loop spec by loop-datepicker.css. -->
+<script src="vendor/flatpickr/flatpickr.min.js"></script>
+<!-- The Loop custom year-grid plugin (adds the "Open Change Year" view Flatpickr v4 lacks). -->
+<script src="../src/components/loop-datepicker-year-grid.js"></script>
+<script>
+  const dpToday = new Date();
+  const dpAddDays = (n) => { const d = new Date(dpToday); d.setDate(d.getDate() + n); return d; };
+
+  // monthSelectorType:'static' → month is a content-sized text label (Figma "October 2024"),
+  // not a widest-option <select>; month navigation is via the prev/next chevrons + year caret.
+  const dpBase = { monthSelectorType: 'static', plugins: [loopDatePickerYearGrid()] };
+
+  // Live click-to-open field — the balloon is appended to <body>. Date format = Figma "3 March 2026".
+  flatpickr('#dp-field', { ...dpBase, dateFormat: 'j F Y', defaultDate: dpToday });
+
+  // Single date, pinned open so the styled balloon stays visible in the preview.
+  flatpickr('#dp-inline', { ...dpBase, inline: true, defaultDate: dpAddDays(2) });
+
+  // Range, pinned open — shows startRange / inRange / endRange styling.
+  flatpickr('#dp-range', { ...dpBase, inline: true, mode: 'range', defaultDate: [dpAddDays(-3), dpAddDays(3)] });
 </script>
 </body>
 </html>

@@ -1,11 +1,4 @@
-/* typography-roles.css
- * Composite type-role utility classes — one class per Figma named role.
- * Composes font-size + font-weight + line-height + letter-spacing from the
- * typography scale tokens. Apply via ExtendedClass in OutSystems.
- *
- * Source: Figma node 10995-7259 (Open Sans, FND-002 sign-off).
- * Off-scale letter-spacing values (-0.25px / 0.25px) are raw literals — no
- * matching scale token exists; built faithfully (same basis as FND-013/022). */
+/* typography-roles.css — composite type-role utility classes (one per named role) */
 
 /* ================================================================
    Heading roles — Open Sans Bold, line-height-heading (1.12)
@@ -78,7 +71,7 @@
   font-size:        var(--font-size-500);
   font-weight:      var(--font-weight-regular);
   line-height:      var(--line-height-base);
-  letter-spacing:   -0.25px; /* off-scale — no token; pending finding */
+  letter-spacing:   -0.25px; /* off-scale — no token */
 }
 
 .loop-body-base {
@@ -102,7 +95,7 @@
   font-size:        var(--font-size-100);
   font-weight:      var(--font-weight-regular);
   line-height:      var(--line-height-base);
-  letter-spacing:   0.25px; /* off-scale — no token; pending finding */
+  letter-spacing:   0.25px; /* off-scale — no token */
 }
 
 .loop-body-tiny-caps {
@@ -112,4 +105,42 @@
   line-height:      var(--line-height-narrow);
   letter-spacing:   var(--letter-spacing-caps);
   text-transform:   uppercase;
+}
+
+/* ================================================================
+   Label roles — Open Sans Bold, tracking -1.5px (Figma Heading/Label/*).
+   "Use this style for labels in cards, tables, columns, etc." Sizes are
+   responsive via the shared scale steps (see typography.css breakpoints).
+   ================================================================ */
+
+.loop-label-medium {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1100);  /* 48px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-solid);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-base {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-1000);  /* 40px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-small {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-900);   /* 36px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
+}
+
+.loop-label-tiny {
+  font-family: var(--font-family-label, 'Open Sans', system-ui, sans-serif);
+  font-size:        var(--font-size-700);   /* 28px */
+  font-weight:      var(--font-weight-bold);
+  line-height:      var(--line-height-label);
+  letter-spacing:   var(--letter-spacing-label);
 }

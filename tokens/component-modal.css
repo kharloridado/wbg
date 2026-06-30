@@ -1,0 +1,41 @@
+/* component-modal.css — Modal component tokens (vanilla JS Web Component <loop-modal>) */
+:root {
+  /* ---- Dialog box ---- */
+  --loop-modal-bg:            var(--color-bg-container-on-light-lowest); /* #ffffff */
+  --loop-modal-radius:        var(--radius-large);     /* 16px */
+  --loop-modal-side-padding:  var(--space-large);      /* 40px */
+  --loop-modal-width-medium:  960px;                   /* Medium (default) desktop */
+  --loop-modal-width-small:   456px;                   /* Small desktop variant */
+  --loop-modal-shadow:        none;                    /* flat (no shadow token) */
+  --loop-modal-gutter:        var(--space-small);      /* 16px — min gap from dialog to viewport edge */
+  --loop-modal-z:             1000;                    /* overlay stacking context */
+
+  /* ---- Overlay / backdrop (blue-90 @ 90% via color-mix) ---- */
+  --loop-modal-overlay:       color-mix(in srgb, var(--color-blue-90) 90%, transparent);
+
+  /* ---- Header (info icon + title + close) ---- */
+  --loop-modal-header-pt:     var(--space-regular);    /* 24px */
+  --loop-modal-header-pb:     var(--space-small);      /* 16px */
+  --loop-modal-title-gap:     var(--space-xxsmall);    /* 8px  — icon ↔ title */
+  --loop-modal-icon-size:     24px;                    /* information icon */
+  --loop-modal-icon-pt:       var(--space-xtiny);      /* 2px  — optical baseline nudge */
+  --loop-modal-icon-color:    var(--color-icon-on-light-primary);  /* #004370 */
+
+  /* ---- Title typography ---- */
+  --loop-modal-title-size:    var(--font-size-600);    /* 24px */
+  --loop-modal-title-weight:  var(--font-weight-bold); /* 700 */
+  --loop-modal-title-color:   var(--color-text-on-light-emphasis); /* #012740 */
+  --loop-modal-title-leading: normal;                  /* single-line heading */
+
+  /* ---- Close button (circular, top-right) ---- */
+  --loop-modal-close-size:    40px;                    /* outer circle / hit area */
+  --loop-modal-close-bg:      var(--color-blue-40);    /* #169af3 */
+  --loop-modal-close-icon:    var(--color-white);      /* white ✕ glyph */
+  --loop-modal-close-glyph:   16px;                    /* ✕ icon-font size inside the 40px circle */
+  --loop-modal-close-focus:   var(--color-domain-interactive-focused); /* #0071bc — focus ring */
+
+  /* ---- Content + footer ---- */
+  --loop-modal-content-pb:    var(--space-large);      /* 40px — gap below content */
+  --loop-modal-footer-pb:     var(--space-large);      /* 40px — footer bottom padding */
+  --loop-modal-footer-gap:    var(--space-xxsmall);    /* 8px  — gap between footer buttons */
+}

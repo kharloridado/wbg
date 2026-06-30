@@ -1,0 +1,95 @@
+/* outsystems-ui-header.css — Layout Top branded header overrides (class-level).
+ * White text/links + active underline on the dark primary header; scoped under
+ * .header so a Layout Side sidebar is unaffected. */
+
+/* Generic header text → white. */
+.header {
+  color: var(--color-white);
+}
+
+/* App name / headings in the header → white (beats the bare h1–h3 element rule). */
+.header .application-name,
+.header h1,
+.header h2,
+.header h3 {
+  color: var(--color-white);
+}
+
+/* Hamburger lines + mobile back affordance, visible on the primary header. */
+.header .menu-icon-line {
+  background-color: var(--color-white);
+}
+
+.header .menu-back {
+  color: var(--color-white);
+}
+
+/* Menu links: white in every state on the blue header. */
+.header .app-menu-links a,
+.header .app-menu-links a:hover,
+.header .app-menu-links a.active {
+  color: var(--color-white);
+}
+
+/* Active item underline → white (Layout Top only; framework uses primary). */
+.layout:not(.layout-side) .header .app-menu-links a.active {
+  border-bottom-color: var(--color-white);
+}
+
+/* ── Submenu (osui-submenu) on the header bar: the header-bar part goes white;
+ * the floating panel (.osui-submenu__items) is reset to dark colors further down. */
+
+/* Header-bar text → white. */
+.header .osui-submenu__header__item,
+.header .osui-submenu__header__item a,
+.header .osui-submenu__header__item a:hover,
+.header .osui-submenu:hover .osui-submenu__header__item {
+  color: var(--color-white);
+}
+
+/* Active / open submenu: header text white. */
+.header .osui-submenu.active .osui-submenu__header__item,
+.header .osui-submenu.active .osui-submenu__header__item a,
+.header .osui-submenu.active--is-open .osui-submenu__header__item,
+.header .osui-submenu.active .osui-submenu__header:hover .osui-submenu__header__item {
+  color: var(--color-white);
+}
+
+/* Header-bar bottom border → white on active and hover. */
+.header .osui-submenu.active .osui-submenu__header,
+.header .osui-submenu__header:hover {
+  border-bottom-color: var(--color-white);
+}
+
+/* Expand/collapse arrow → white (neutral-0 maps to white in the overrides). */
+.header .osui-submenu__header__icon:after {
+  color: var(--color-neutral-0);
+}
+
+/* Floating panel (.osui-submenu__items) is a white popup — keep its links dark/legible. */
+.header .osui-submenu__items a {
+  color: var(--color-neutral-8);
+}
+
+.header .osui-submenu__items a.active {
+  color: var(--color-primary);
+}
+
+/* ── Focus indicator — replace the framework glow with The Loop's 2px outline ring.
+ * The bare :focus-visible selectors cover runtimes without .has-accessible-features. */
+.header .app-menu-links a:focus-visible,
+.header .osui-submenu__header__item a:focus-visible,
+.has-accessible-features .header .app-menu-links a:focus,
+.has-accessible-features .header .osui-submenu__header__item a:focus {
+  outline: 2px solid var(--color-outline-on-dark-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Floating submenu panel sits on a white popup → on-light focus ring. */
+.header .osui-submenu__items a:focus-visible,
+.has-accessible-features .header .osui-submenu__items a:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  box-shadow: none;
+}

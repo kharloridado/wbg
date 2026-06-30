@@ -1,0 +1,30 @@
+/* component-tabs.css — Tabs (Tab Menu) tokens — restyle of the native OutSystems UI Tabs (underline style) */
+:root {
+  /* ---- Geometry ---- */
+  --loop-tabs-gap:            var(--space-regular);  /* 24px — gap between tabs (desktop) */
+  --loop-tabs-gap-compact:    20px;                  /* tablet/mobile gap between tabs */
+  --loop-tabs-v-padding:      var(--space-xsmall);   /* 12px — label ↔ active bar */
+  --loop-tabs-v-padding-compact: 10px;               /* tablet/mobile */
+  --loop-tabs-h-padding:      var(--space-xsmall);   /* 12px — icon ↔ label gap */
+  --loop-tabs-h-padding-compact: 10px;               /* tablet/mobile */
+  --loop-tabs-indicator-size: 4px;                   /* active bar thickness */
+  --loop-tabs-divider-size:   var(--border-size-m);  /* 2px — header bottom divider */
+
+  /* ---- Color ---- */
+  --loop-tabs-divider-color:   var(--color-divider-on-light-subdued);       /* #00396b14 */
+  --loop-tabs-indicator-color: var(--color-bg-link-primary-hover);          /* #169af3 */
+
+  /* ---- Label typography ---- */
+  --loop-tabs-label-size:         var(--font-size-500);    /* 20px (desktop) */
+  --loop-tabs-label-size-compact: var(--font-size-400);    /* 18px — tablet/mobile */
+  --loop-tabs-label-leading:      20px;
+  --loop-tabs-label-weight:       var(--font-weight-bold); /* 700 */
+  --loop-tabs-label-tracking:     -0.13px;                 /* off-scale */
+  --loop-tabs-label-family:       var(--font-family-label);/* Open Sans */
+
+  /* ---- Label color (by state) ---- */
+  --loop-tabs-label-color:          var(--color-text-on-light-link-primary-enabled); /* #004370 (inactive) */
+  --loop-tabs-label-color-active:   var(--color-text-on-light-emphasis);             /* #012740 (active) */
+  --loop-tabs-label-color-hover:    var(--color-text-on-light-emphasis);             /* darken to emphasis on hover */
+  --loop-tabs-label-color-disabled: var(--color-text-on-light-state-disabled);
+}
