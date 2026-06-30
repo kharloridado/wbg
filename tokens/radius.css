@@ -1,11 +1,8 @@
-/* radius.css — WBG / "The Loop" border-radius scale
- * Extracted from Figma: type page [node:10995-7259], effects page [node:19737-9489].
- * NOTE / DRIFT: the lift token `lift/border radius/radius-4` resolves to 16px (name says 4),
- * while `lift/border radius/base` = 4px. Naming is inconsistent across the library — FINDING. */
+/* radius.css — border-radius scale */
 :root {
-  --radius-xs:     2px;    /* lift/border radius/raduis-05 (sic) — joined inner corners (button group) */
-  --radius-base:   4px;    /* lift/border radius/base */
-  --radius-medium: 8px;    /* Border Radius/Medium */
-  --radius-large:  16px;   /* Border Radius/Large (== lift radius-4, mislabeled) */
-  --radius-pill:   32px;   /* "Buttons" / loop/button/border radius — fully-rounded pill */
+  --radius-xs:     2px;    /* joined inner corners (button group) */
+  --radius-base:   4px;
+  --radius-medium: 8px;
+  --radius-large:  16px;   /* == lift radius-4 (mislabeled) */
+  --radius-pill:   32px;   /* fully-rounded pill */
 }

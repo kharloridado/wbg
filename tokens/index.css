@@ -1,23 +1,48 @@
-/* index.css — entry for build:theme. Bundles to a single flat dist/theme.css.
- * Order: primitives first, then the semantic role layer that references them. */
+/* index.css — build:theme entry; primitives first, then the layers that reference them. */
 @import "./colors.css";
 @import "./semantic-colors.css";
 @import "./color-utilities.css";
 @import "./color-utilities-primitives.css";
 @import "./spacing.css";
+@import "./spacing-utilities.css";
 @import "./typography.css";
 @import "./typography-utilities.css";
 @import "./typography-roles.css";
 @import "./radius.css";
+@import "./radius-utilities.css";
+@import "./border.css";
 @import "./shadows.css";
+@import "./shadow-utilities.css";
 /* Component token layers — reference the foundations above. */
+@import "./component-button.css";
 @import "./component-field.css";
+@import "./component-search.css";
+@import "./component-datepicker.css";
 @import "./component-toggle.css";
 @import "./component-note.css";
 @import "./component-popover.css";
 @import "./component-system-alert.css";
+@import "./component-alert.css";
 @import "./component-tooltip.css";
 @import "./component-tag.css";
+@import "./component-card.css";
+@import "./component-badge-status.css";
+@import "./component-badge-label.css";
+@import "./component-modal.css";
+@import "./component-tabs.css";
+@import "./component-toast.css";
+@import "./component-upload.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";
+/* Layout Top header/menu class overrides — depend on the brand tokens above. */
+@import "./outsystems-ui-header.css";
+/* Layout Side sidebar class overrides (light sidebar / dark text) — depend on the
+ * brand tokens above AND --side-menu-size from outsystems-ui-overrides.css. */
+@import "./outsystems-ui-side.css";
+/* Native Alert restyled to The Loop "Notes" look — depends on the brand tokens
+ * above AND the --loop-note-* tokens from component-note.css. */
+@import "./outsystems-ui-alert.css";
+/* Native Feedback Message restyled to The Loop "Alerts" look — depends on the
+ * brand tokens above AND the semantic state tokens in semantic-colors.css. */
+@import "./outsystems-ui-feedback-message.css";

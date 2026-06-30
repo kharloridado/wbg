@@ -1,0 +1,671 @@
+# Handover — File Uploader (custom Web Component `<loop-file-uploader>`)
+
+The Loop **File Uploader**, ready to add into OutSystems.
+Figma: `-The Loop- Main Library` · "File Uploader" [node 18306-3832].
+
+**Approach:** This is a **custom vanilla-JS Web Component** (L5), not a native restyle. The
+native OutSystems Upload widget (`[data-upload]`) is a single bordered label and **cannot**
+express the drag-and-drop dropzone, per-file progress, or the success/warning/error
+feedback this design requires — so we ship a self-contained `<loop-file-uploader>` that
+wraps a real `<input type="file">`. No Lit/Stencil/React (CLAUDE.md hard rule 6).
+
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the File Uploader page.
+
+**What it is.** A file uploader in three layouts — a **drag-and-drop dropzone** (default), a
+single-line **input**, or a **button** — each with five states (enabled · disabled ·
+success · warning · error) and a per-file **progress** list.
+
+**When to use**
+- Let users attach one or more files — documents, images — with clear drag-drop affordance
+  and upload feedback.
+
+**When not to use** (reach for instead)
+- A plain short text entry → **Text Field**.
+- A single action with no file → **Button**.
+
+**How to use**
+- Drop the **FileUploader** Block, set `Variant` / `Size` / `State`, and bind `Label`,
+  `Hint`, and (per variant) `Placeholder` / `ButtonLabel`.
+- The element wraps a working file input — selection and drag-drop work client-side. Handle
+  `OnChange` to receive the picked files, upload them in your logic, and call
+  `setProgress(name, pct)` from a **Run JavaScript** node to drive each row's bar. Set
+  `State` + `StatusText` to show the success/warning/error line.
+
+## Files
+| File | OutSystems destination |
+|---|---|
+| `src/components/loop-file-uploader.js` | Script resource (Theme/Library), Include = Always |
+| `tokens/component-upload.css` → `dist/theme.css` | Theme CSS (adds `--loop-upload-*` metrics) |
+
+## Code to paste into ODC
+
+> Copy the code below straight into ODC. The canonical source is the repo path in the summary — these blocks are generated from it (`node build/embed-handover-code.mjs`), so re-run after editing the source to keep the ticket in sync.
+
+<details>
+<summary><code>loop-file-uploader.js</code> → Script resource (Theme/Library), Include = Always</summary>
+
+```js
+/**
+ * <loop-file-uploader> — The Loop file uploader: drag-and-drop dropzone (default),
+ * single-line input, or button — with a real <input type="file">, a per-file progress
+ * list, and the five Figma states (enabled · disabled · success · warning · error).
+ *
+ * Figma: "File Uploader" [node:18306-3832] — dropzone [18306-3131], input [18306-3494],
+ * button [23432-1891], progress rows [23069-31054]. Custom Web Component (L5): the native
+ * OutSystems Upload widget ([data-upload]) is a single bordered label and cannot express
+ * the dropzone, per-file progress, or state feedback. All design values come from the
+ * --loop-upload-* tokens in tokens/component-upload.css (inherited custom props pierce the
+ * Shadow DOM), so nothing is hard-coded here beyond fallbacks.
+ *
+ * Usage in OutSystems — drop the Block, bind the attributes, and wire the events to Client
+ * Actions. The element wraps a working file input, so selection/drag-drop work client-side;
+ * report real upload progress back with setProgress() from a "Run JavaScript" node.
+ *
+ * Attributes:
+ *   variant       "dropzone" (default) | "input" | "button"
+ *   size          "xlarge" (default) | "large" | "regular" | "small"  — aligns the label
+ *                 size with sibling form controls (per Figma, only the label scales)
+ *   state         "enabled" (default) | "disabled" | "success" | "warning" | "error"
+ *                 Drives the border/fill/accent + the status line colour.
+ *   label         The field label above the control ("Upload label").
+ *   placeholder   Input variant only — placeholder text ("Placeholder text").
+ *   button-label  Button variant only — label ("Upload Files").
+ *   hint          Helper line below ("Formats supported: JPG, PDF (Max 10 MB)").
+ *   status-text   The state message ("File uploaded successfully" / "Error uploading file. Try again").
+ *                 Shown in the state accent colour; announced politely (assertive for error).
+ *   accept        Passed to the file input (e.g. ".jpg,.pdf").
+ *   multiple      Boolean — allow multiple files. Value-aware (absent → off; "true"/"" → on).
+ *   disabled      Boolean — disables the control (forces the disabled visual). Value-aware.
+ *
+ * Public methods (callable from OutSystems / JS):
+ *   open()                     open the OS file dialog (same as clicking the control)
+ *   addFiles(fileListOrArray)  add files to the list programmatically
+ *   setProgress(nameOrIndex, pct)  set a row's progress 0–100 (≥100 marks it uploaded)
+ *   removeFile(nameOrIndex)    remove a row
+ *   clear()                    drop all rows + reset the input
+ *
+ * Events (bubble, composed) — detail carries { id }:
+ *   change  — files added/removed; detail.files = [{ name, size }]
+ *   remove  — a row removed;       detail.name, detail.size
+ *   browse  — the browse/button trigger was activated (before the dialog opens)
+ *
+ * Slots:
+ *   icon — overrides the built-in file-arrow-up dropzone glyph.
+ *
+ * Accessibility: the control is a real <button>-semantics trigger wrapping a hidden input
+ * (keyboard-operable, Enter/Space open the dialog); the label is associated via aria-label
+ * and the hint via aria-describedby; the status line is a live region (role="status", or
+ * "alert" for error). Focus ring uses the brand blue-50 (FND-012). prefers-reduced-motion
+ * removes the drag-over transition. No brand colour is altered for contrast — conflicts are
+ * raised as findings, not fixed here (CLAUDE.md the-one-rule).
+ */
+class LoopFileUploader extends HTMLElement {
+  static get observedAttributes() {
+    return ['variant', 'size', 'state', 'label', 'placeholder', 'button-label', 'hint', 'status-text', 'accept', 'multiple', 'disabled'];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this._files = [];                 // [{ name, size, pct }]
+    this._onTrigger   = this._onTrigger.bind(this);
+    this._onInput     = this._onInput.bind(this);
+    this._onKey       = this._onKey.bind(this);
+    this._onDragOver  = this._onDragOver.bind(this);
+    this._onDragLeave = this._onDragLeave.bind(this);
+    this._onDrop      = this._onDrop.bind(this);
+  }
+
+  connectedCallback() { this._render(); }
+
+  disconnectedCallback() { this._teardownListeners(); }
+
+  attributeChangedCallback(n, o, v) {
+    if (o === v || !this.isConnected) return;
+    this._render();
+  }
+
+  /* ---- attribute getters ---- */
+  get _variant()     { const v = (this.getAttribute('variant') || '').toLowerCase(); return LoopFileUploader.VARIANTS.includes(v) ? v : 'dropzone'; }
+  get _size()        { const s = (this.getAttribute('size') || '').toLowerCase(); return LoopFileUploader.SIZES.includes(s) ? s : 'xlarge'; }
+  get _state()       { const s = (this.getAttribute('state') || '').toLowerCase(); return LoopFileUploader.STATES.includes(s) ? s : 'enabled'; }
+  get _label()       { return this.getAttribute('label') || ''; }
+  get _placeholder() { return this.getAttribute('placeholder') || 'Select a file'; }
+  get _buttonLabel() { return this.getAttribute('button-label') || 'Upload Files'; }
+  get _hint()        { return this.getAttribute('hint') || ''; }
+  get _statusText()  { return this.getAttribute('status-text') || ''; }
+  get _accept()      { return this.getAttribute('accept') || ''; }
+  get _multiple()    { return this._boolAttr('multiple', false); }
+  get _disabled()    { return this._boolAttr('disabled', false) || this._state === 'disabled'; }
+
+  /* Value-aware boolean: ODC binds attrs with a forced value (If(Flag,"true","false")),
+   * so presence-based hasAttribute() would read a bound "false" as true. See
+   * web-component-boolean-attrs-odc. */
+  _boolAttr(name, dflt) {
+    const v = this.getAttribute(name);
+    if (v === null) return dflt;
+    return v !== 'false' && v !== '0';
+  }
+
+  /* ---- public API ---- */
+  open() {
+    if (this._disabled) return;
+    this._emit('browse');
+    this._input?.click();
+  }
+  addFiles(list) {
+    const arr = Array.from(list || []);
+    if (!arr.length) return;
+    const next = arr.map((f) => ({ name: f.name, size: f.size, pct: 100 }));
+    this._files = this._multiple ? this._files.concat(next) : next.slice(-1);
+    this._renderFiles();
+    this._emitChange();
+  }
+  setProgress(ref, pct) {
+    const row = this._findFile(ref);
+    if (!row) return;
+    row.pct = Math.max(0, Math.min(100, Number(pct) || 0));
+    this._renderFiles();
+  }
+  removeFile(ref) {
+    const i = this._files.indexOf(this._findFile(ref));
+    if (i === -1) return;
+    const [gone] = this._files.splice(i, 1);
+    this._renderFiles();
+    this.dispatchEvent(new CustomEvent('remove', { bubbles: true, composed: true, detail: { id: this.id || null, name: gone.name, size: gone.size } }));
+    this._emitChange();
+  }
+  clear() {
+    this._files = [];
+    if (this._input) this._input.value = '';
+    this._renderFiles();
+    this._emitChange();
+  }
+
+  _findFile(ref) {
+    if (typeof ref === 'number') return this._files[ref];
+    return this._files.find((f) => f.name === ref) || null;
+  }
+  _emit(name) { this.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true, detail: { id: this.id || null } })); }
+  _emitChange() {
+    this.dispatchEvent(new CustomEvent('change', { bubbles: true, composed: true, detail: { id: this.id || null, files: this._files.map((f) => ({ name: f.name, size: f.size })) } }));
+  }
+
+  /* ---- event handlers ---- */
+  _onTrigger(e) { e.preventDefault(); this.open(); }
+  _onKey(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.open(); } }
+  _onInput(e) { this.addFiles(e.target.files); }
+  _onDragOver(e) {
+    if (this._disabled) return;
+    e.preventDefault();
+    this._zone?.classList.add('fu__zone--dragover');
+  }
+  _onDragLeave(e) {
+    if (e.target === this._zone) this._zone?.classList.remove('fu__zone--dragover');
+  }
+  _onDrop(e) {
+    if (this._disabled) return;
+    e.preventDefault();
+    this._zone?.classList.remove('fu__zone--dragover');
+    if (e.dataTransfer?.files?.length) this.addFiles(e.dataTransfer.files);
+  }
+
+  _teardownListeners() {
+    this._trigger?.removeEventListener('click', this._onTrigger);
+    this._trigger?.removeEventListener('keydown', this._onKey);
+    this._input?.removeEventListener('change', this._onInput);
+    if (this._zone) {
+      this._zone.removeEventListener('dragover', this._onDragOver);
+      this._zone.removeEventListener('dragleave', this._onDragLeave);
+      this._zone.removeEventListener('drop', this._onDrop);
+    }
+  }
+
+  /* ---- file-arrow-up glyph (Figma dropzone icon, 32×32, currentColor) ---- */
+  _uploadGlyph() {
+    return `<svg class="fu__glyph" viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M12 17v-5M9.5 13.5 12 11l2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  _arrowGlyph() {
+    return `<svg class="fu__btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+      <path d="M12 19V6M7 11l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  _infoGlyph() {
+    return `<svg viewBox="0 0 12 12" width="12" height="12" fill="none" aria-hidden="true">
+      <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1"/>
+      <circle cx="6" cy="3.8" r="0.7" fill="currentColor"/>
+      <line x1="6" y1="5.4" x2="6" y2="8.6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  _render() {
+    const variant = this._variant;
+    const state   = this._state;
+    const label   = this._label;
+    const hint    = this._hint;
+    const status  = this._statusText;
+    const disabled = this._disabled;
+    const uid = this._uid || (this._uid = 'fu-' + Math.abs(this._hash(this.id || label || variant)) + '-' + this._files.length);
+    const hintId = `${uid}-hint`;
+
+    const labelHtml = label
+      ? `<span class="fu__label" id="${uid}-label">${this._esc(label)}</span>` : '';
+    const hintHtml = hint
+      ? `<span class="fu__hint" id="${hintId}">${this._infoGlyph()}<span>${this._esc(hint)}</span></span>` : '';
+    const statusHtml = status
+      ? `<span class="fu__status" role="${state === 'error' ? 'alert' : 'status'}" aria-live="${state === 'error' ? 'assertive' : 'polite'}">${this._esc(status)}</span>` : '';
+
+    const describedBy = [hint ? hintId : '', status ? '' : ''].filter(Boolean).join(' ');
+    const ariaLabel = label || (variant === 'button' ? this._buttonLabel : 'Upload files');
+
+    let control;
+    if (variant === 'button') {
+      control = `<button class="fu__btn" type="button" part="trigger"
+                   aria-label="${this._esc(ariaLabel)}" ${describedBy ? `aria-describedby="${describedBy}"` : ''} ${disabled ? 'disabled' : ''}>
+                   ${this._arrowGlyph()}<span>${this._esc(this._buttonLabel)}</span>
+                 </button>`;
+    } else if (variant === 'input') {
+      control = `<button class="fu__input" type="button" part="trigger"
+                   aria-label="${this._esc(ariaLabel)}" ${describedBy ? `aria-describedby="${describedBy}"` : ''} ${disabled ? 'disabled' : ''}>
+                   <span class="fu__input-text">${this._esc(this._placeholder)}</span>
+                   <span class="fu__input-icon">${this._arrowGlyph()}</span>
+                 </button>`;
+    } else {
+      control = `<button class="fu__zone" type="button" part="trigger"
+                   aria-label="${this._esc(ariaLabel)}" ${describedBy ? `aria-describedby="${describedBy}"` : ''} ${disabled ? 'disabled' : ''}>
+                   <span class="fu__glyph-slot"><slot name="icon">${this._uploadGlyph()}</slot></span>
+                   <span class="fu__prompt">Drag and drop files here or <span class="fu__browse">browse</span> computer files to upload.</span>
+                 </button>`;
+    }
+
+    this.shadowRoot.innerHTML = `
+      <style>${this._css()}</style>
+      <div class="fu fu--${variant} fu--${state} fu--size-${this._size}${disabled ? ' fu--disabled' : ''}" part="uploader">
+        ${labelHtml}
+        ${control}
+        <input class="fu__input-file" type="file" ${this._accept ? `accept="${this._esc(this._accept)}"` : ''} ${this._multiple ? 'multiple' : ''} ${disabled ? 'disabled' : ''} tabindex="-1" aria-hidden="true">
+        ${statusHtml}
+        ${hintHtml}
+        <ul class="fu__files" part="files"></ul>
+      </div>`;
+
+    this._teardownListeners();
+    this._trigger = this.shadowRoot.querySelector('[part="trigger"]');
+    this._input   = this.shadowRoot.querySelector('.fu__input-file');
+    this._zone    = this.shadowRoot.querySelector('.fu__zone');
+    this._list    = this.shadowRoot.querySelector('.fu__files');
+
+    if (!disabled) {
+      this._trigger?.addEventListener('click', this._onTrigger);
+      this._input?.addEventListener('change', this._onInput);
+      if (this._zone) {
+        this._zone.addEventListener('dragover', this._onDragOver);
+        this._zone.addEventListener('dragleave', this._onDragLeave);
+        this._zone.addEventListener('drop', this._onDrop);
+      }
+    }
+    this._renderFiles();
+  }
+
+  _renderFiles() {
+    if (!this._list) return;
+    this._list.innerHTML = this._files.map((f, i) => {
+      const done = f.pct >= 100;
+      return `<li class="fu__file${done ? ' fu__file--done' : ''}">
+        <div class="fu__file-row">
+          <span class="fu__file-name" title="${this._esc(f.name)}">${this._esc(f.name)}</span>
+          <span class="fu__file-pct">${done ? '' : f.pct + '%'}</span>
+          <button class="fu__file-remove" type="button" data-i="${i}" aria-label="Remove ${this._esc(f.name)}">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="fu__progress" role="progressbar" aria-valuenow="${f.pct}" aria-valuemin="0" aria-valuemax="100">
+          <div class="fu__progress-fill" style="inline-size:${f.pct}%"></div>
+        </div>
+      </li>`;
+    }).join('');
+    this._list.querySelectorAll('.fu__file-remove').forEach((b) =>
+      b.addEventListener('click', () => this.removeFile(Number(b.dataset.i))));
+  }
+
+  /* small helpers */
+  _esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  _hash(s) { let h = 0; for (let i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return h; }
+
+  _css() {
+    return `
+:host { display: block; }
+*, *::before, *::after { box-sizing: border-box; }
+
+/* the real file input is driven via the trigger button's .click(); keep it out of the
+   layout but reachable (display:none still allows programmatic .click()). */
+.fu__input-file { display: none; }
+
+.fu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--loop-upload-label-gap, 6px);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+}
+
+/* ---- Label ---- */
+.fu__label {
+  font-size:   var(--loop-upload-label-size, 16px);
+  font-weight: var(--loop-upload-label-weight, 600);
+  line-height: var(--loop-upload-label-leading, 16px);
+  color:       var(--loop-upload-label-color, #000d1ab2);
+}
+.fu--size-regular .fu__label { font-size: 14px; }
+.fu--size-small   .fu__label { font-size: 13px; }
+
+/* ===================== Dropzone (default) ===================== */
+.fu__zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--loop-upload-dropzone-gap, 16px);
+  width: 100%;
+  min-block-size: var(--loop-upload-dropzone-min-h, 179px);
+  margin: 0;
+  padding: var(--loop-upload-dropzone-pad, 24px);
+  background: var(--loop-upload-enabled-bg, #f5f7f9);
+  border: var(--loop-upload-border-width, 1px) dashed var(--loop-upload-enabled-border, #00538a);
+  border-radius: var(--loop-upload-dropzone-radius, 4px);
+  color: var(--loop-upload-enabled-icon, #004370);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.fu__glyph-slot { display: inline-flex; }
+.fu__glyph { width: var(--loop-upload-dropzone-icon-size, 32px); height: var(--loop-upload-dropzone-icon-size, 32px); }
+::slotted([slot="icon"]) { width: var(--loop-upload-dropzone-icon-size, 32px); height: var(--loop-upload-dropzone-icon-size, 32px); }
+
+.fu__prompt {
+  max-width: 230px;
+  font-size:   var(--loop-upload-prompt-size, 14px);
+  line-height: var(--loop-upload-prompt-leading, 1.5);
+  color:       var(--loop-upload-prompt-color, #000d1ab2);
+}
+.fu__browse { color: var(--loop-upload-link-color, #004370); text-decoration: underline; }
+
+.fu__zone.fu__zone--dragover { background: color-mix(in srgb, var(--loop-upload-enabled-border, #00538a) 8%, var(--loop-upload-enabled-bg, #f5f7f9)); }
+
+/* ===================== Input (single line) ===================== */
+.fu__input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--loop-upload-input-gap, 8px);
+  width: 100%;
+  margin: 0;
+  padding: var(--loop-upload-input-pad-v, 18px) var(--loop-upload-input-pad-h, 16px);
+  background: var(--color-bg-container-on-light-lowest, #fff);
+  border: var(--loop-upload-border-width, 1px) solid var(--color-outline-on-light-default, #00396b3d);
+  border-radius: var(--loop-upload-input-radius, 32px);
+  color: var(--loop-upload-input-placeholder, #00294d91);
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+.fu__input-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fu__input-icon { display: inline-flex; flex-shrink: 0; color: var(--color-icon-on-light-default, #4b5e71); }
+.fu__input-icon svg { width: var(--loop-upload-input-icon, 20px); height: var(--loop-upload-input-icon, 20px); }
+
+/* ===================== Button ===================== */
+.fu__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--loop-upload-btn-gap, 6px);
+  align-self: flex-start;
+  margin: 0;
+  padding: var(--loop-upload-btn-pad-v, 16px) var(--loop-upload-btn-pad-h, 32px);
+  background: var(--color-bg-link-secondary-enabled, #ffffff00);
+  border: var(--loop-upload-border-width, 1px) solid var(--loop-upload-btn-color, #004370);
+  border-radius: var(--loop-upload-btn-radius, 32px);
+  color: var(--loop-upload-btn-color, #004370);
+  font-size:      var(--loop-upload-btn-label-size, 16px);
+  font-weight:    var(--loop-upload-btn-label-weight, 700);
+  line-height:    var(--loop-upload-btn-label-leading, 24px);
+  letter-spacing: var(--loop-upload-btn-label-tracking, -0.5px);
+  cursor: pointer;
+}
+.fu__btn-icon { width: var(--loop-upload-btn-icon, 18px); height: var(--loop-upload-btn-icon, 18px); }
+
+/* ===================== Per-state colour ===================== */
+.fu--disabled .fu__zone,
+.fu--disabled .fu__input,
+.fu--disabled .fu__btn { cursor: not-allowed; }
+
+.fu--disabled .fu__zone {
+  background: var(--loop-upload-disabled-bg, #dae3eb);
+  border-color: var(--loop-upload-disabled-border, #d4dee8);
+  color: var(--loop-upload-disabled-icon, #8a9db1);
+}
+.fu--disabled .fu__prompt { color: var(--loop-upload-disabled-text, #00294d6b); }
+.fu--disabled .fu__input,
+.fu--disabled .fu__btn { border-color: var(--loop-upload-disabled-border, #d4dee8); color: var(--loop-upload-disabled-text, #00294d6b); }
+.fu--disabled .fu__btn-icon,
+.fu--disabled .fu__input-icon { color: var(--loop-upload-disabled-icon, #8a9db1); }
+
+.fu--success .fu__zone { background: var(--loop-upload-success-bg, #f6fef0); border-color: var(--loop-upload-success-border, #388004); color: var(--loop-upload-success-accent, #388004); }
+.fu--warning .fu__zone { background: var(--loop-upload-warning-bg, #fef3d7); border-color: var(--loop-upload-warning-border, #896001); color: var(--loop-upload-warning-accent, #473201); }
+.fu--error   .fu__zone { background: var(--loop-upload-error-bg, #fdf2f2);   border-color: var(--loop-upload-error-border, #9d161d);   color: var(--loop-upload-error-accent, #9d161d); }
+
+.fu--success .fu__input, .fu--success .fu__btn { border-color: var(--loop-upload-success-border, #388004); }
+.fu--warning .fu__input, .fu--warning .fu__btn { border-color: var(--loop-upload-warning-border, #896001); }
+.fu--error   .fu__input, .fu--error   .fu__btn { border-color: var(--loop-upload-error-border, #9d161d); }
+
+/* ---- Status line (per-state accent) ---- */
+.fu__status { font-size: var(--loop-upload-helper-size, 12px); letter-spacing: var(--loop-upload-helper-tracking, .5px); }
+.fu--success .fu__status { color: var(--loop-upload-success-accent, #388004); }
+.fu--warning .fu__status { color: var(--loop-upload-warning-accent, #473201); }
+.fu--error   .fu__status { color: var(--loop-upload-error-accent, #9d161d); }
+.fu--enabled .fu__status, .fu--disabled .fu__status { color: var(--loop-upload-helper-color, #00294d91); }
+
+/* ---- Helper text ---- */
+.fu__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--loop-upload-helper-gap, 4px);
+  font-size: var(--loop-upload-helper-size, 12px);
+  letter-spacing: var(--loop-upload-helper-tracking, .5px);
+  color: var(--loop-upload-helper-color, #00294d91);
+}
+
+/* ---- File list + per-file progress ---- */
+.fu__files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--loop-upload-helper-gap, 4px); }
+.fu__file { display: flex; flex-direction: column; gap: var(--space-tiny, 4px); }
+.fu__file-row { display: flex; align-items: center; gap: var(--loop-upload-input-gap, 8px); }
+.fu__file-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--loop-upload-helper-size, 12px); color: var(--loop-upload-label-color, #000d1ab2); }
+.fu__file-pct { flex-shrink: 0; font-size: var(--loop-upload-helper-size, 12px); color: var(--loop-upload-helper-color, #00294d91); }
+.fu__file-remove { flex-shrink: 0; display: inline-flex; padding: 0; background: none; border: 0; color: var(--color-icon-on-light-default, #4b5e71); cursor: pointer; }
+
+.fu__progress { block-size: var(--loop-upload-progress-h, 8px); background: var(--loop-upload-progress-track, #e7edf3); border-radius: var(--loop-upload-progress-radius, 32px); overflow: hidden; }
+.fu__progress-fill { block-size: 100%; background: var(--loop-upload-progress-fill, #004370); border-radius: inherit; transition: inline-size .2s ease; }
+.fu__file--done .fu__progress-fill { background: var(--loop-upload-success-accent, #388004); }
+
+/* ---- Focus ring (brand blue-50, FND-012) ---- */
+.fu__zone:focus-visible,
+.fu__input:focus-visible,
+.fu__btn:focus-visible,
+.fu__file-remove:focus-visible {
+  outline: 2px solid var(--loop-upload-focus, #0071bc);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fu__zone, .fu__progress-fill { transition: none; }
+}`;
+  }
+}
+
+LoopFileUploader.VARIANTS = ['dropzone', 'input', 'button'];
+LoopFileUploader.SIZES = ['xlarge', 'large', 'regular', 'small'];
+LoopFileUploader.STATES = ['enabled', 'disabled', 'success', 'warning', 'error'];
+
+if (!customElements.get('loop-file-uploader')) {
+  customElements.define('loop-file-uploader', LoopFileUploader);
+}
+```
+
+</details>
+
+## API
+
+**Attributes**
+| Attribute | Values | Notes |
+|---|---|---|
+| `variant` | `dropzone` (default) · `input` · `button` | layout |
+| `size` | `xlarge` (default) · `large` · `regular` · `small` | aligns the label size with sibling form controls |
+| `state` | `enabled` (default) · `disabled` · `success` · `warning` · `error` | border / fill / accent + status colour |
+| `label` | text | the "Upload label" above the control |
+| `placeholder` | text | input variant placeholder |
+| `button-label` | text | button variant label (default "Upload Files") |
+| `hint` | text | helper line ("Formats supported: …") |
+| `status-text` | text | the state message; live-announced (assertive on error) |
+| `accept` | text | passed to the file input (e.g. `.jpg,.pdf`) |
+| `multiple` | boolean (value-aware) | allow multiple files |
+| `disabled` | boolean (value-aware) | disables the control |
+
+**Methods** — `open()` · `addFiles(list)` · `setProgress(nameOrIndex, pct)` · `removeFile(nameOrIndex)` · `clear()`
+
+**Events** (bubble, composed; `detail.id` = element id) — `change` (`detail.files`) · `remove` (`detail.name`) · `browse`
+
+**Slots** — `icon` overrides the dropzone glyph.
+
+## What the component builds
+
+- **Dropzone (default):** `#f5f7f9` fill, **1px dashed** info-blue `#00538a` border (4px radius),
+  32px file-arrow glyph, "Drag and drop files here or **browse** computer files to upload."
+  (browse = blue-70 link), helper line. Drag-over tints the fill.
+- **Input:** pill field (32px) with placeholder + attach icon.
+- **Button:** secondary outline pill (blue-70), upload icon + label.
+- **States:** success `#f6fef0`/`#388004` · warning `#fef3d7`/`#473201` · error `#fdf2f2`/`#9d161d`
+  · disabled `#dae3eb`/muted — border, fill, glyph, and status line all recolour per state.
+- **Progress rows:** filename + percentage + remove ×, with an 8px pill-radius bar (fill turns
+  green at 100%).
+
+**Accessibility (free, no design change required):**
+- Real keyboard-operable trigger (Enter/Space open the dialog) wrapping a hidden input
+- `aria-label` from the label, hint via `aria-describedby`, status as a live region
+- Focus ring 2px brand blue-50 `#0071bc` (FND-012); `prefers-reduced-motion` drops transitions
+- Each progress bar is a `role="progressbar"` with `aria-valuenow`
+
+## Example markup (rendered)
+
+```html
+<loop-file-uploader
+  variant="dropzone"
+  label="Upload label"
+  hint="Formats supported: JPG, PDF (Max 10 MB)"
+  accept=".jpg,.pdf"
+  multiple="true">
+</loop-file-uploader>
+```
+
+```js
+// drive real progress from your upload logic
+document.querySelector('loop-file-uploader')
+  .addEventListener('change', (e) => { /* upload e.detail.files, then: */ });
+el.setProgress('report.pdf', 60);   // update a row
+```
+
+## Steps in OutSystems
+
+1. Add `loop-file-uploader.js` as a **Script** resource (Include = Always) and paste the
+   updated `dist/theme.css` into the Theme editor.
+2. Create a Block **FileUploader** that renders `<loop-file-uploader>` with the attributes
+   above bound to input parameters (booleans via `If(Flag,"true","false")` — the component is
+   value-aware).
+3. Handle `OnChange` to receive files; upload them in your server logic.
+4. Report progress with a **Run JavaScript** node calling `setProgress(name, pct)`; set
+   `State` + `StatusText` for the success/error line.
+5. Publish to a real browser and verify drag-drop, the file rows, states, and keyboard use.
+
+## Findings
+
+| ID | Severity | Issue |
+|---|---|---|
+| — | low | Dropzone label gap `6px` is off the (unconfirmed) 4pt grid — shared with the Text Field (FND-018). Carried verbatim as a component token; not normalised. No other deviations: state colours, the dashed info-blue idle border, and the disabled outline (`#bdccdb` = `--color-neutral-30`) all map to exact primitives. |
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported custom
+Web Component <loop-file-uploader> for the WBG "The Loop" design system.
+
+Context (already done manually — do NOT re-create or edit these):
+- dist/theme.css (brand + component tokens) is already pasted into the ODC Theme editor.
+- loop-file-uploader.js is already imported as a Script resource (Theme/Library), Include = Always. It
+  defines the custom element <loop-file-uploader>.
+- Do NOT write CSS, author or modify JavaScript, or edit the Theme. Your job is only the
+  Block, its inputs/events, the attribute bindings, the event wiring
+  the component needs.
+
+Task — create these elements, referencing each by the exact name given:
+
+1. Create a Block named "FileUploader" with input parameters:
+     Variant     : UploaderVariant (Static Entity) : UploaderVariant.Dropzone
+     Size        : UploaderSize (Static Entity)    : UploaderSize.XLarge
+     State       : UploaderState (Static Entity)   : UploaderState.Enabled
+     Label       : Text                            : "Upload label"
+     Placeholder : Text                            : "Select a file"   // input variant
+     ButtonLabel : Text                            : "Upload Files"    // button variant
+     Hint        : Text                            : "Formats supported: JPG, PDF (Max 10 MB)"
+     StatusText  : Text                            : ""
+     Accept      : Text                            : ".jpg,.pdf"
+     Multiple    : Boolean                         : False
+     Disabled    : Boolean                         : False
+   and Block events: OnChange, OnRemove, OnBrowse.
+   Static Entities — create these first. Give each a SINGLE Text attribute "Value"
+   set as the record Identifier, and delete the default Id/Label/Order/Is_Active attributes.
+   Each record's value IS the literal the Web Component expects, so the input binds straight
+   to the attribute (no .Value suffix). Model the matching inputs as the entity, NOT free Text:
+   - UploaderVariant: Dropzone = "dropzone", Input = "input", Button = "button"
+   - UploaderSize: XLarge = "xlarge", Large = "large", Regular = "regular", Small = "small"
+   - UploaderState: Enabled = "enabled", Disabled = "disabled", Success = "success", Warning = "warning", Error = "error"
+   Do NOT add a string Id input or set the element's id — OutSystems generates ids at
+   runtime (see step 4 for addressing).
+
+2. Place an HTML element <loop-file-uploader> in the Block. Set one attribute per input via a Value
+   expression (ODC requires an expression on every attribute):
+     variant      = Variant
+     size         = Size
+     state        = State
+     label        = Label
+     placeholder  = Placeholder
+     button-label = ButtonLabel
+     hint         = Hint
+     status-text  = StatusText
+     accept       = Accept
+     multiple     = If(Multiple, "true", "false")
+     disabled     = If(Disabled, "true", "false")
+   Static-Entity inputs bind directly (e.g. type = Type) — the Value attribute is the
+   record Identifier. Use If(flag,"true","false") for every Boolean (values, not presence).
+
+3. Wire CustomEvents to Block events: the "change" CustomEvent triggers OnChange, and the "remove" CustomEvent triggers OnRemove, and the "browse" CustomEvent triggers OnBrowse. Implement with a "Run JavaScript" that
+   addEventListener's each event on the <loop-file-uploader> element and raises the Block event.
+
+4. This component exposes no global helper — drive it entirely through the Block inputs
+   and events above; there is no id to pass.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values (styling
+comes from var(--token) in the Theme). After generating, list every element you created by
+name and flag any step you could not finish so I can do it manually.
+
+Start with step 1 (the Block "FileUploader" interface) and show it to me before wiring.
+```

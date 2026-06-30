@@ -1,0 +1,162 @@
+/* loop-badge.css — Badge / Label: .loop-badge block + native .tag restyle (CSS only) */
+/* Outline is an inset box-shadow, not a border, so it adds no height at any size. */
+
+.loop-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  /* Size routes through internal --_lbl-* vars that default to the Regular tokens; the size modifiers below flip them. */
+  padding: var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-r, var(--loop-badge-label-pad-r, 6px)) var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-l, var(--loop-badge-label-pad-l, 8px));
+  border-radius: var(--loop-badge-label-radius, 4px);
+  box-shadow: inset 0 0 0 var(--loop-badge-label-border, 1px) var(--_loop-badge-outline, transparent);
+  font-family: var(--loop-badge-label-font, "Open Sans", system-ui, sans-serif);
+  font-size: var(--_lbl-font, var(--loop-badge-label-size, 13px));
+  line-height: var(--_lbl-leading, var(--loop-badge-label-leading, 17px));
+  letter-spacing: var(--_lbl-tracking, var(--loop-badge-label-tracking, 0.25px));
+  font-weight: var(--loop-badge-label-weight, 500);
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* ---- Size modifiers (xLarge/Large/Regular/Small; Regular is the bare default) ---- */
+.loop-badge--xlarge {
+  --_lbl-font:    var(--loop-badge-label-xlarge-size, 16px);
+  --_lbl-leading: var(--loop-badge-label-xlarge-leading, 20px);
+  --_lbl-tracking: var(--loop-badge-label-xlarge-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-xlarge-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-xlarge-pad-l, 10px);
+  --_lbl-pad-r:   var(--loop-badge-label-xlarge-pad-r, 10px);
+}
+.loop-badge--large {
+  --_lbl-font:    var(--loop-badge-label-large-size, 14px);
+  --_lbl-leading: var(--loop-badge-label-large-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-large-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-large-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-large-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-large-pad-r, 8px);
+}
+.loop-badge--regular {
+  --_lbl-font:    var(--loop-badge-label-regular-size, 13px);
+  --_lbl-leading: var(--loop-badge-label-regular-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-regular-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-regular-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-regular-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-regular-pad-r, 6px);
+}
+.loop-badge--small {
+  --_lbl-font:    var(--loop-badge-label-small-size, 11px);
+  --_lbl-leading: var(--loop-badge-label-small-leading, 14px);
+  --_lbl-tracking: var(--loop-badge-label-small-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-small-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-small-pad-l, 4px);
+  --_lbl-pad-r:   var(--loop-badge-label-small-pad-r, 4px);
+}
+
+/* ---- Light type (default): pale fill + coloured outline + coloured text ----
+ * Neutral text is the on-light default, not the heavy hue. */
+.loop-badge,
+.loop-badge--neutral {
+  background-color: var(--loop-badge-label-neutral-light, #e7edf3);
+  color:            var(--loop-badge-label-neutral-text, #000d1ab2);
+  --_loop-badge-outline: var(--loop-badge-label-neutral-heavy, #4b5e71);
+}
+.loop-badge--indigo  { background-color: var(--loop-badge-label-indigo-light, #d8d9fc);  color: var(--loop-badge-label-indigo-heavy, #3c40f0);  --_loop-badge-outline: var(--loop-badge-label-indigo-heavy, #3c40f0); }
+.loop-badge--teal    { background-color: var(--loop-badge-label-teal-light, #cfe9ef);    color: var(--loop-badge-label-teal-heavy, #026e89);    --_loop-badge-outline: var(--loop-badge-label-teal-heavy, #026e89); }
+.loop-badge--purple  { background-color: var(--loop-badge-label-purple-light, #e4dafb);  color: var(--loop-badge-label-purple-heavy, #6427ef);  --_loop-badge-outline: var(--loop-badge-label-purple-heavy, #6427ef); }
+.loop-badge--red     { background-color: var(--loop-badge-label-red-light, #f4dee4);     color: var(--loop-badge-label-red-heavy, #b4234d);     --_loop-badge-outline: var(--loop-badge-label-red-heavy, #b4234d); }
+.loop-badge--magenta { background-color: var(--loop-badge-label-magenta-light, #f2d6f6); color: var(--loop-badge-label-magenta-heavy, #a028ad); --_loop-badge-outline: var(--loop-badge-label-magenta-heavy, #a028ad); }
+
+/* ---- Heavy type: solid fill + white text (outline == fill, so it's invisible) ---- */
+.loop-badge--heavy { color: var(--loop-badge-label-text-on-heavy, #ffffffe5); }
+.loop-badge--heavy,
+.loop-badge--heavy.loop-badge--neutral { background-color: var(--loop-badge-label-neutral-heavy, #4b5e71); --_loop-badge-outline: var(--loop-badge-label-neutral-heavy, #4b5e71); }
+.loop-badge--heavy.loop-badge--indigo  { background-color: var(--loop-badge-label-indigo-heavy, #3c40f0);  --_loop-badge-outline: var(--loop-badge-label-indigo-heavy, #3c40f0); }
+.loop-badge--heavy.loop-badge--teal    { background-color: var(--loop-badge-label-teal-heavy, #026e89);    --_loop-badge-outline: var(--loop-badge-label-teal-heavy, #026e89); }
+.loop-badge--heavy.loop-badge--purple  { background-color: var(--loop-badge-label-purple-heavy, #6427ef);  --_loop-badge-outline: var(--loop-badge-label-purple-heavy, #6427ef); }
+.loop-badge--heavy.loop-badge--red     { background-color: var(--loop-badge-label-red-heavy, #b4234d);     --_loop-badge-outline: var(--loop-badge-label-red-heavy, #b4234d); }
+.loop-badge--heavy.loop-badge--magenta { background-color: var(--loop-badge-label-magenta-heavy, #a028ad); --_loop-badge-outline: var(--loop-badge-label-magenta-heavy, #a028ad); }
+
+/* ============================================================================
+ * Native OutSystems UI Tag (.tag) → Badge / Label look
+ * ----------------------------------------------------------------------------
+ * Reset the framework Tag's fixed height:32px/line-height:1 (height:auto +
+ * min-height:0 + the Badge line-height) so the box is the Badge height, not a slab.
+ * ============================================================================ */
+.tag {
+  box-sizing: border-box;
+  min-width: 0;             /* drop native 32px min-width */
+  height: auto;
+  min-height: 0;            /* clear any inherited fixed height */
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  padding: var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-r, var(--loop-badge-label-pad-r, 6px)) var(--_lbl-pad-v, var(--loop-badge-label-pad-v, 2px)) var(--_lbl-pad-l, var(--loop-badge-label-pad-l, 8px));
+  border-radius: var(--loop-badge-label-radius, 4px);
+  box-shadow: inset 0 0 0 var(--loop-badge-label-border, 1px) var(--_loop-badge-outline, transparent);
+  font-family: var(--loop-badge-label-font, "Open Sans", system-ui, sans-serif);
+  font-size: var(--_lbl-font, var(--loop-badge-label-size, 13px));
+  line-height: var(--_lbl-leading, var(--loop-badge-label-leading, 17px));
+  letter-spacing: var(--_lbl-tracking, var(--loop-badge-label-tracking, 0.25px));
+  font-weight: var(--loop-badge-label-weight, 500);
+  text-transform: capitalize;
+
+  /* Default (no colour class) = neutral Light */
+  background-color: var(--loop-badge-label-neutral-light, #e7edf3);
+  color:            var(--loop-badge-label-neutral-text, #000d1ab2);
+  --_loop-badge-outline: var(--loop-badge-label-neutral-heavy, #4b5e71);
+}
+
+/* ---- Size modifiers (.tag-xlarge / -large / -small; Regular is the default) ---- */
+.tag.tag-xlarge {
+  --_lbl-font:    var(--loop-badge-label-xlarge-size, 16px);
+  --_lbl-leading: var(--loop-badge-label-xlarge-leading, 20px);
+  --_lbl-tracking: var(--loop-badge-label-xlarge-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-xlarge-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-xlarge-pad-l, 10px);
+  --_lbl-pad-r:   var(--loop-badge-label-xlarge-pad-r, 10px);
+}
+.tag.tag-large {
+  --_lbl-font:    var(--loop-badge-label-large-size, 14px);
+  --_lbl-leading: var(--loop-badge-label-large-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-large-tracking, 0);
+  --_lbl-pad-v:   var(--loop-badge-label-large-pad-v, 4px);
+  --_lbl-pad-l:   var(--loop-badge-label-large-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-large-pad-r, 8px);
+}
+.tag.tag-regular {
+  --_lbl-font:    var(--loop-badge-label-regular-size, 13px);
+  --_lbl-leading: var(--loop-badge-label-regular-leading, 17px);
+  --_lbl-tracking: var(--loop-badge-label-regular-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-regular-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-regular-pad-l, 8px);
+  --_lbl-pad-r:   var(--loop-badge-label-regular-pad-r, 6px);
+}
+.tag.tag-small {
+  --_lbl-font:    var(--loop-badge-label-small-size, 11px);
+  --_lbl-leading: var(--loop-badge-label-small-leading, 14px);
+  --_lbl-tracking: var(--loop-badge-label-small-tracking, 0.25px);
+  --_lbl-pad-v:   var(--loop-badge-label-small-pad-v, 2px);
+  --_lbl-pad-l:   var(--loop-badge-label-small-pad-l, 4px);
+  --_lbl-pad-r:   var(--loop-badge-label-small-pad-r, 4px);
+}
+
+/* ---- Colour classes (native Tag "Color") → The Loop badge palette (Light) ---- */
+.tag.background-blue             { background-color: var(--loop-badge-label-indigo-light, #d8d9fc);  color: var(--loop-badge-label-indigo-heavy, #3c40f0);  --_loop-badge-outline: var(--loop-badge-label-indigo-heavy, #3c40f0); }
+.tag.background-green            { background-color: var(--loop-badge-label-teal-light, #cfe9ef);    color: var(--loop-badge-label-teal-heavy, #026e89);    --_loop-badge-outline: var(--loop-badge-label-teal-heavy, #026e89); }
+.tag.background-violet,
+.tag.background-grape,
+.tag.background-purple           { background-color: var(--loop-badge-label-purple-light, #e4dafb);  color: var(--loop-badge-label-purple-heavy, #6427ef);  --_loop-badge-outline: var(--loop-badge-label-purple-heavy, #6427ef); }
+.tag.background-red              { background-color: var(--loop-badge-label-red-light, #f4dee4);     color: var(--loop-badge-label-red-heavy, #b4234d);     --_loop-badge-outline: var(--loop-badge-label-red-heavy, #b4234d); }
+.tag.background-magenta          { background-color: var(--loop-badge-label-magenta-light, #f2d6f6); color: var(--loop-badge-label-magenta-heavy, #a028ad); --_loop-badge-outline: var(--loop-badge-label-magenta-heavy, #a028ad); }
+
+/* ---- Heavy type (add .tag-heavy via ExtendedClass): solid fill + white text ---- */
+.tag.tag-heavy                   { color: var(--loop-badge-label-text-on-heavy, #ffffffe5); background-color: var(--loop-badge-label-neutral-heavy, #4b5e71); --_loop-badge-outline: var(--loop-badge-label-neutral-heavy, #4b5e71); }
+.tag.tag-heavy.background-blue   { background-color: var(--loop-badge-label-indigo-heavy, #3c40f0);  --_loop-badge-outline: var(--loop-badge-label-indigo-heavy, #3c40f0); }
+.tag.tag-heavy.background-green  { background-color: var(--loop-badge-label-teal-heavy, #026e89);    --_loop-badge-outline: var(--loop-badge-label-teal-heavy, #026e89); }
+.tag.tag-heavy.background-violet,
+.tag.tag-heavy.background-grape,
+.tag.tag-heavy.background-purple { background-color: var(--loop-badge-label-purple-heavy, #6427ef);  --_loop-badge-outline: var(--loop-badge-label-purple-heavy, #6427ef); }
+.tag.tag-heavy.background-red    { background-color: var(--loop-badge-label-red-heavy, #b4234d);     --_loop-badge-outline: var(--loop-badge-label-red-heavy, #b4234d); }
+.tag.tag-heavy.background-magenta{ background-color: var(--loop-badge-label-magenta-heavy, #a028ad); --_loop-badge-outline: var(--loop-badge-label-magenta-heavy, #a028ad); }

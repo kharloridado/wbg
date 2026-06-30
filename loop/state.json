@@ -293,6 +293,24 @@
       "handover": [
         66
       ]
+    },
+    {
+      "id": "cmp-card",
+      "tier": "composites",
+      "level": "L1/L2",
+      "node": "20315-6122",
+      "node_base": "19547-47101",
+      "node_multimedia": "20315-7404",
+      "artifact": "src/blocks/loop-card.css",
+      "tokens": "tokens/component-card.css",
+      "approach": "restyle native OutSystems UI Card family (.card / .card-background / .card-sectioned + list cards)",
+      "status": "built",
+      "handover_doc": "handover/loop-card.md",
+      "findings": [
+        "FND-033",
+        "FND-034"
+      ],
+      "note": "Restyle only (user decision 2026-06-20): no custom component. Built one variant at a time. Loop card = flat container shell (white, 8px, shadow zeroed, 24px padding) + multimedia hero. Featured-item & chart are bespoke compositions, deferred to a later custom-block pass. OS UI not vendored — inner card-background/card-sectioned classes to confirm on published DOM."
     }
   ],
   "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",
@@ -444,6 +462,22 @@
       "node": "18787-4817",
       "status": "register-only",
       "summary": "Dropdown popup-list border #dae1e8 (foreign lift token, no WBG primitive) substituted to --color-outline-on-light-subdued"
+    },
+    {
+      "id": "FND-033",
+      "type": "design-token",
+      "sev": "low",
+      "node": "20315-6122",
+      "status": "register-only",
+      "summary": "Loop card defines -loop shadows/cards but x/y/blur/spread are all 0 -> no elevation, vs OutSystems UI default card shadow. Built flat; confirm intent."
+    },
+    {
+      "id": "FND-034",
+      "type": "consistency",
+      "sev": "low",
+      "node": "20315-7404",
+      "status": "register-only",
+      "summary": "Multimedia card on-dark text/scrim reference gray-alpha-white / blue-90 primitives directly because the semantic On-Dark role layer is deferred (semantic-colors-dark.css). Revisit in dark-mode phase."
     }
   ],
   "handover_epics": [],

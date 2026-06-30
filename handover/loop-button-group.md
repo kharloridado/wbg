@@ -10,6 +10,24 @@ group). Same widget, same classes — one file covers both (#27 and #28).
 (`.button-group` / `.button-group-item` / `.button-group-selected-item`). Devs use the
 standard OutSystems ButtonGroup widget; no custom class system.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button Group page.
+
+**What it is.** A segmented control — native ButtonGroup restyled. The **Button Switch** is just the 2-option case.
+
+**When to use**
+- Pick **one** option from a small set (2–5) where all options should stay visible at once — view toggles, segmented filters, an A/B switch.
+
+**When not to use** (reach for instead)
+- Many options → **Dropdown / Select**.
+- A single on/off setting → **Switch**.
+- Independent multi-select → **Checkbox** or **Tag**.
+- Firing actions rather than selecting → individual **Buttons**.
+
+**How to use**
+- Use the native **ButtonGroup** widget; the selected item carries `.button-group-selected-item` (driven by OutSystems logic). Button Switch = a 2-item group.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -24,49 +42,20 @@ standard OutSystems ButtonGroup widget; no custom class system.
 <summary><code>loop-button-group.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Button Group  ("The Loop" — loop/button/group)
-   Also covers: Button Switch (loop/button/switch) — per design review, the
-     Button Switch IS a Button Group (a 2-option segmented group). Same widget,
-     same classes; a switch is just a group with two items.
-   Figma: "Button Group" [node:15597-2978] · "Button Switch" [node:15597-4070]
+/* loop-button-group.css — Button Group / Button Switch: native .button-group restyle */
 
-   Approach: RESTYLE the native OutSystems UI Button Group widget
-     (.button-group / .button-group-item / .button-group-selected-item) — NOT a
-     parallel class system. Devs use the standard OutSystems ButtonGroup widget.
-   Location: Theme CSS (paste below OutSystems UI so it wins).
-   Escalation Level: L1/L2 (native widget + token-driven theme override)
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_button-group.scss):
-     .button-group-item               → outlined: white bg, 1px border 'primary', text 'primary', radius 0, h40
-     :first-child                     → radius soft 0 0 soft (left rounded)
-     :not(:first-child)               → border-left: none (collapse shared border)
-     :last-child                      → radius 0 soft soft 0 (right rounded)
-     .button-group-selected-item      → bg 'primary', text neutral-0 (filled)
-     [disabled]                       → neutral
-
-   The Loop overrides: pill OUTER corners (32px), square joined INNER corners (0),
-     Open Sans 700 / tracking -0.5, and WB blue-70 outline/text + blue-70 selected fill.
-
-   Tokens: --radius-pill, --space-medium, --font-family-label,
-     --font-weight-bold, --font-size-300, --letter-spacing-button,
-     --color-outline-on-light-link-enabled, --color-text-on-light-link-primary-enabled,
-     --color-bg-link-primary-enabled, --color-white, --color-text-on-light-state-disabled,
-     --color-bg-link-secondary-disabled.
-
-   Fidelity note: selected-item fill is blue-70 (#004370) on white text — passes AA.
-     Non-selected outlined items reuse the secondary button treatment.
-   ============================================ */
-
-/* ---- Item — The Loop identity + outlined (non-selected) look ---- */
+/* ---- Item — outlined (non-selected) look; Regular height (40px) ---- */
 .button-group-item {
-  min-height: 56px;
-  height: auto;
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  display: inline-flex;                   /* deterministic vertical centring in the pinned box */
+  align-items: center;
+  justify-content: center;
+  height: var(--loop-btn-h-regular, 40px); /* pinned fixed height so the border never grows the box */
+  padding-block: 0;
+  padding-inline: var(--space-medium, 32px);
 
-  background-color: var(--color-bg-link-secondary-enabled);     /* transparent */
-  border: 1px solid var(--color-outline-on-light-link-enabled); /* blue-70 */
-  color: var(--color-text-on-light-link-primary-enabled);       /* blue-70 */
+  background-color: var(--color-bg-link-secondary-enabled);
+  border: 1px solid var(--color-outline-on-light-link-enabled);
+  color: var(--color-text-on-light-link-primary-enabled);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
@@ -74,8 +63,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
   line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* middle items: all corners are joined (inner) — square, no radius */
-  border-radius: 0;
+  /* middle items: all corners joined (inner) — 2px */
+  border-radius: var(--radius-xs, 2px);
 }
 
 /* collapse the shared border (keep native behaviour explicit) */
@@ -83,12 +72,12 @@ standard OutSystems ButtonGroup widget; no custom class system.
   border-left: 0px;
 }
 
-/* end caps: outer corners pill (32px), inner corners square (0) */
+/* end caps: outer corners pill, inner corners 2px */
 .button-group-item:first-child {
-  border-radius: var(--radius-pill, 32px) 0 0 var(--radius-pill, 32px);
+  border-radius: var(--radius-pill, 32px) var(--radius-xs, 2px) var(--radius-xs, 2px) var(--radius-pill, 32px);
 }
 .button-group-item:last-child {
-  border-radius: 0 var(--radius-pill, 32px) var(--radius-pill, 32px) 0;
+  border-radius: var(--radius-xs, 2px) var(--radius-pill, 32px) var(--radius-pill, 32px) var(--radius-xs, 2px);
 }
 /* single item (first === last): fully pill */
 .button-group-item:first-child:last-child {
@@ -98,7 +87,7 @@ standard OutSystems ButtonGroup widget; no custom class system.
 /* ---- Selected — filled blue-70 (like Primary) ---- */
 .button-group-selected-item,
 .button-group-item.button-group-selected-item {
-  background-color: var(--color-bg-link-primary-enabled);   /* blue-70 */
+  background-color: var(--color-bg-link-primary-enabled);
   border-color: var(--color-bg-link-primary-enabled);
   color: var(--color-white, #ffffff);
 }
@@ -106,8 +95,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
 /* ---- Disabled ---- */
 .button-group-item[disabled],
 .button-group-item[aria-disabled="true"] {
-  background-color: var(--color-bg-link-secondary-disabled);   /* white */
-  border-color: var(--color-text-on-light-state-disabled);     /* neutral-alpha-42 */
+  background-color: var(--color-bg-link-secondary-disabled);
+  border-color: var(--color-text-on-light-state-disabled);
   color: var(--color-text-on-light-state-disabled);
 }
 .button-group-item[disabled].button-group-selected-item {
@@ -132,6 +121,33 @@ standard OutSystems ButtonGroup widget; no custom class system.
 - Open Sans **700**, tracking **-0.5px**, padding 16/32.
 - Shared border collapse (native behaviour) kept explicit; focus ring raised above neighbours.
 
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for ButtonGroup to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-button-group.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
+
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` (carries `--radius-xs`).
 - [ ] Paste `loop-button-group.css` into Theme CSS, below OutSystems UI.
@@ -141,3 +157,8 @@ standard OutSystems ButtonGroup widget; no custom class system.
 
 ## Open findings linked to this work
 - Shares **FND-013** (off-scale button gap/tracking) via the reused button label tokens.
+- **FND-043** (consistency/fidelity, medium) — the Button Group default item height is **Regular
+  (40px)**, reconciled from the Figma default instance's **xLarge (56px)** to align the button
+  family (parallel to Button, Text Field FND-021, Checkbox FND-038). Built as Regular/40 per
+  stakeholder direction; reconciliation disclosed here and in the Button handover. See
+  `findings/findings-register.md` (FND-043).
