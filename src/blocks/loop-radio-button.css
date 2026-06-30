@@ -54,9 +54,10 @@
 /* Disabled — light fill, faint border, muted dot (no hover/focus reaction) */
 .radio-button:disabled:before,
 .has-accessible-features .radio-button:disabled:before,
-.radio-button:disabled:hover:before {
-  background-color: var(--color-neutral-15);
-  border: 2px solid var(--color-outline-on-light-state-disable-low);
+.radio-button:disabled:hover:before,
+.has-accessible-features .radio-button:disabled:hover:before {
+  background-color: var(--color-neutral-15);                       /* #dae3eb fill */
+  border: 2px solid var(--color-outline-on-light-state-disable-low); /* #d4dee8 border */
 }
 .radio-button:disabled:after,
 .has-accessible-features .radio-button:disabled:after {
@@ -127,7 +128,7 @@
   align-items: center;
 }
 [data-radio-group] [data-radio-button]:not(:first-of-type) {
-  margin-top: var(--space-checkbox-group-row, 14px);
+  margin-top: var(--space-xxsmall, 8px);   /* loop/checkbox/group/vpadding — reduced per review */
 }
 .radio-group.is-horizontal [data-radio-button]:not(:first-of-type) {
   margin-top: 0px;
