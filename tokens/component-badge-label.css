@@ -1,0 +1,67 @@
+/* component-badge-label.css — Badge / Label component tokens */
+:root {
+  /* ---- Label typography (family/weight constant; size/leading/tracking per SIZE) ---- */
+  --loop-badge-label-font:     var(--font-family-body);  /* Open Sans */
+  --loop-badge-label-weight:   var(--font-weight-medium, 500);  /* Open Sans 500 (Medium) */
+
+  /* ---- Shared geometry ---- */
+  --loop-badge-label-radius: var(--radius-base);  /* 4px */
+  --loop-badge-label-border: 1px;                 /* Light shows the colour; Heavy = fill */
+
+  /* ---- Sizes (xLarge / Large / Regular / Small; Regular = default) ---- */
+  --loop-badge-label-xlarge-size:    var(--font-size-300);  /* 16px */
+  --loop-badge-label-xlarge-leading: 20px;
+  --loop-badge-label-xlarge-pad-v:   var(--space-tiny);     /* 4px */
+  --loop-badge-label-xlarge-pad-l:   10px;
+  --loop-badge-label-xlarge-pad-r:   10px;
+  --loop-badge-label-xlarge-tracking: 0;
+
+  --loop-badge-label-large-size:    var(--font-size-200);   /* 14px */
+  --loop-badge-label-large-leading: 17px;
+  --loop-badge-label-large-pad-v:   var(--space-tiny);      /* 4px */
+  --loop-badge-label-large-pad-l:   var(--space-xxsmall);   /* 8px */
+  --loop-badge-label-large-pad-r:   var(--space-xxsmall);   /* 8px */
+  --loop-badge-label-large-tracking: 0;
+
+  --loop-badge-label-regular-size:    13px;
+  --loop-badge-label-regular-leading: 17px;
+  --loop-badge-label-regular-pad-v:   var(--space-xtiny);   /* 2px */
+  --loop-badge-label-regular-pad-l:   var(--space-xxsmall); /* 8px */
+  --loop-badge-label-regular-pad-r:   6px;                  /* asymmetric */
+  --loop-badge-label-regular-tracking: 0.25px;
+
+  --loop-badge-label-small-size:    11px;
+  --loop-badge-label-small-leading: 14px;
+  --loop-badge-label-small-pad-v:   var(--space-xtiny);     /* 2px */
+  --loop-badge-label-small-pad-l:   var(--space-tiny);      /* 4px */
+  --loop-badge-label-small-pad-r:   var(--space-tiny);      /* 4px */
+  --loop-badge-label-small-tracking: 0.25px;
+
+  /* ---- Default size alias = Regular (bare .loop-badge / .tag) ---- */
+  --loop-badge-label-size:     var(--loop-badge-label-regular-size);
+  --loop-badge-label-leading:  var(--loop-badge-label-regular-leading);
+  --loop-badge-label-pad-v:    var(--loop-badge-label-regular-pad-v);
+  --loop-badge-label-pad-l:    var(--loop-badge-label-regular-pad-l);
+  --loop-badge-label-pad-r:    var(--loop-badge-label-regular-pad-r);
+  --loop-badge-label-tracking: var(--loop-badge-label-regular-tracking);
+
+  /* ---- Text on solid (Heavy) + neutral-light text ---- */
+  --loop-badge-label-text-on-heavy: var(--color-gray-alpha-white-90);   /* #ffffffe5 */
+  --loop-badge-label-neutral-text:  var(--color-text-on-light-default); /* #000d1ab2 */
+
+  /* ---- Colour: neutral ---- */
+  --loop-badge-label-neutral-light: var(--color-neutral-10);  /* #e7edf3 */
+  --loop-badge-label-neutral-heavy: var(--color-neutral-60);  /* #4b5e71 */
+
+  /* ---- Colour: indigo / teal / purple / red / magenta (Light text = heavy hue) ---- */
+  --loop-badge-label-indigo-light:  #d8d9fc;
+  --loop-badge-label-indigo-heavy:  #3c40f0;
+  --loop-badge-label-teal-light:    #cfe9ef;
+  --loop-badge-label-teal-heavy:    #026e89;
+  --loop-badge-label-purple-light:  #e4dafb;
+  --loop-badge-label-purple-heavy:  #6427ef;
+  --loop-badge-label-red-light:     #f4dee4;
+  --loop-badge-label-red-heavy:     #b4234d;
+  --loop-badge-label-magenta-light: #f2d6f6;
+  --loop-badge-label-magenta-heavy: #a028ad;
+}

@@ -7,6 +7,24 @@ Figma: "Button Text" [node 15597-4652].
 modifier (OutSystems UI has no native text/link button style). Apply via the Button
 widget's **Extended Class = `btn-text`**.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button Text page.
+
+**What it is.** A link-style text button — native `.btn` with the `btn-text` modifier.
+
+**When to use**
+- Low-emphasis inline actions that read like a link — "Learn more", "Edit", "Cancel".
+- Inside dense layouts: table rows, card footers, toolbars, form rows.
+
+**When not to use** (reach for instead)
+- The main call-to-action → **Button** (Primary).
+- Real navigation between pages → a standard **Link**.
+- A menu of actions → **Button Dropdown**.
+
+**How to use**
+- Use the native **Button** widget, Extended Class = `btn-text`.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -21,61 +39,49 @@ widget's **Extended Class = `btn-text`**.
 <summary><code>loop-button-text.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Button Text  ("The Loop" — loop/button/text)
-   Figma: "Button Text" [node:15597-4652]
-
-   A link-style text button: no fill, no border, blue-70 label. Distinct from the
-   Button's GHOST variant (which keeps button padding + a light hover fill); Button
-   Text is inline/link-like and gets a dedicated high-contrast ORANGE keyboard-focus
-   ring (Keyboard Focus/On Light #b6490c) instead of the blue ring used elsewhere.
-
-   Approach: RESTYLE the native OutSystems UI Button (.btn) with a `btn-text` modifier
-     — OutSystems UI has no native text/link button style, so this is the one added
-     modifier (apply via the Button widget's Extended Class = "btn-text").
-   Location: Theme CSS (paste below OutSystems UI so it wins).
-   Escalation Level: L2 (native widget + token-driven modifier)
-
-   Tokens: --space-button-gap, --space-xxsmall, --font-family-label, --font-weight-bold,
-     --font-size-300, --letter-spacing-button, --line-height-base,
-     --color-text-on-light-link-primary-enabled, --color-blue-90,
-     --color-bg-link-primary-disabled (Text/On Light/Link/Disabled #8a9db1),
-     --color-focus-keyboard-on-light.
-   ============================================ */
+/* loop-button-text.css — Button Text: native .btn + .btn-text modifier (link-style text button) */
 
 .btn-text {
-  min-height: 44px;                                    /* WCAG 2.2 SC 2.5.8 target size (implementation-level) */
+  min-height: 44px;                                    /* WCAG 2.5.8 target floor (a min, not a fixed height) */
   height: auto;
   gap: var(--space-button-gap, 6px);
-  padding: var(--space-xxsmall, 8px);                  /* minimal click padding around the label */
+  padding: 6px var(--space-xxsmall, 8px);              /* vpad trimmed so the 1.9 line-height label stays within the 44px floor */
 
   background-color: transparent;
   border: 0px;
-  color: var(--color-text-on-light-link-primary-enabled);   /* blue-70 #004370 */
+  color: var(--color-text-on-light-link-primary-enabled);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
   font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);
+  line-height: var(--line-height-button-text, 1.9);
   letter-spacing: var(--letter-spacing-button, -0.5px);
-  text-decoration: none;
+
+  /* permanent link underline — 2px, blue-70 @ 55% at rest */
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-text-on-light-link-underline-enabled);
 }
 
-/* Hover/pressed — underline + darken (standard link affordance) */
-.btn-text:hover           { filter: none; text-decoration: underline; }
+/* Hover — keep the blue-70 label; brighten the underline to blue-40 */
+.btn-text:hover {
+  filter: none;
+  color: var(--color-text-on-light-link-primary-enabled);
+  text-decoration-color: var(--color-text-on-light-link-underline-hover);
+}
 .desktop .btn-text:hover  { filter: none; }
-.btn-text:active          { color: var(--color-blue-90); }   /* Blue/90 #012740 (Link Pressed) */
+.btn-text:active          { color: var(--color-blue-90); }
 
-/* Disabled — Text/On Light/Link/Disabled #8a9db1 (neutral-40) */
+/* Disabled — muted label; underline neutral-15 */
 .btn-text[disabled],
 .btn-text[aria-disabled="true"] {
   background-color: transparent;
-  color: var(--color-bg-link-primary-disabled);              /* #8a9db1 */
-  text-decoration: none;
+  color: var(--color-bg-link-primary-disabled);
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-text-on-light-link-underline-disabled);
 }
 
-/* Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — The Loop's dedicated high-contrast
-   ORANGE keyboard-focus ring (not the blue used on filled/outlined buttons). */
+/* Focus — The Loop's dedicated high-contrast orange keyboard ring (not the blue used elsewhere) */
 .btn-text:focus-visible {
   outline: 2px solid var(--color-focus-keyboard-on-light, #b6490c);
   outline-offset: 2px;
@@ -89,10 +95,38 @@ widget's **Extended Class = `btn-text`**.
 </details>
 
 ## What it does
-- No fill, no border; **blue-70** label, Open Sans **700**, tracking **-0.5px**.
-- Hover = underline; pressed = Blue/90; disabled = `#8a9db1`.
+- No fill, no border; **blue-70** label, Open Sans **700**, tracking **-0.5px**, leading **1.9**.
+- **Underlined in every state** (true link affordance, 2px) — the underline color shifts: rest = blue-70 @55% (`#0043708c`), hover = Blue/40 (`#169af3`), disabled = Neutral/15 (`#dae3eb`). The label color stays blue-70 on hover; pressed = Blue/90.
+- Disabled label = `#8a9db1`.
 - **Dedicated high-contrast ORANGE keyboard-focus ring** (`#b6490c`) — distinct from the blue ring on filled/outlined buttons (faithful to Figma `Keyboard Focus/On Light`).
 - Distinct from the Button's **ghost** variant (which keeps button padding + a light hover fill).
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for ButtonText to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-button-text.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` (carries the focus token).
@@ -102,3 +136,4 @@ widget's **Extended Class = `btn-text`**.
 
 ## Open findings linked to this work
 - **FND-015** (design-token, low) — `Keyboard Focus/On Light #b6490c` / `On Dark #f5926c` have no orange primitive. Built faithfully as a literal. Register-only.
+- **FND-033** (design-token, low) — the at-rest underline is a raw `rgba(0,67,112,0.55)` (blue-70 @55%) with no Figma variable / WBG primitive. Built faithfully as `--color-text-on-light-link-underline-enabled: #0043708c`. Register-only.

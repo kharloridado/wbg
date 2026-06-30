@@ -1,16 +1,9 @@
-/* colors.css — WBG / "The Loop" brand color tokens (source for build:theme)
- * Extracted from Figma: The Loop — Main Library (file aHtnwyPhI8WRbiGHZ8E5Gb)
- *   primitives + semantic showcase [node:11122-2143], type/role page [node:10995-7259],
- *   shadows/effects page [node:19737-9489].
- * These ARE the brand palette — build to these values exactly. A failing WCAG 2.2 AA
- * pairing is a FINDING (findings/), never a reason to edit a value here.
- * Canonical system = `lift` + the primitive ramps. Foreign/legacy tokens
- * (_ITSES / _GDS / Headings Desktop / DS L2.0) are intentionally NOT imported — see findings. */
+/* colors.css — brand color primitive tokens */
 :root {
   /* ---- Brand & generic ---- */
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-wb-brand-dark-blue: #002244;          /* $lift-core-color-wb-brand-dark-blue */
+  --color-wb-brand-dark-blue: #002244;
 
   /* ---- Primitive ramp · Blue (WB primary hue) ---- */
   --color-blue-05:  #f6fcff;
@@ -77,13 +70,13 @@
   --color-red-90: #550c10;
 
   /* ---- Primitive ramp · Green ---- */
-  --color-green-03: #f6fef0;   /* $lift-core-color-semantic-green-03 */
+  --color-green-03: #f6fef0;
   --color-green-30: #b8ec93;
   --color-green-on-dark-07:   #56c606;
   --color-green-on-dark-base: #459e05;
   --color-green-60: #388004;
   --color-green-70: #234f03;
-  --color-green-base: #1e4602; /* $lift-core-color-semantic-green-base */
+  --color-green-base: #1e4602;
   --color-green-07: #163102;
 
   /* ---- Primitive ramp · Yellow ---- */
@@ -163,7 +156,5 @@
   --color-accent-magenta-80: #79014d;
   --color-accent-magenta-90: #47012d;
 
-  /* Semantic role tokens (Domain / Text / Icon / Background / Outline / Divider) and the
-   * legacy --color-primary/secondary/... aliases live in semantic-colors.css, which
-   * references these primitives. */
+  /* Semantic role tokens + legacy aliases live in semantic-colors.css. */
 }

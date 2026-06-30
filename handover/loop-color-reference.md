@@ -12,6 +12,22 @@ Two deliverables that work together:
 
 Figma reference: Live Style Guide "Color values, variables and classes" view.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Color page.
+
+**What it is.** Primitive color utility classes plus `<loop-color-reference>`, which auto-renders the full color reference in the Live Style Guide.
+
+**When to use**
+- Documenting the color system on a Live Style Guide page.
+- Applying a primitive color directly with `.background-<name>` / `.text-<name>`.
+
+**When not to use** (reach for instead)
+- For component theming, prefer **semantic role tokens** over raw primitive utilities so colors stay re-themeable.
+
+**How to use**
+- Drop `<loop-color-reference>` on a Style Guide page — it reads each token's value live from the theme, no rows built by hand.
+
 ## Why this approach
 Building ~129 color rows × (swatch + 4 cells) by hand in ODC is hours of fragile work.
 Instead: paste the theme (classes ship automatically) + drop one JS file + place one
@@ -387,6 +403,26 @@ Group keys: `brand`, `blue`, `neutral`, `neutral-alpha`, `gray-alpha`, `red`, `g
 - Swatches are decorative (`aria-hidden`); the hex + name carry the meaning.
 - Copy buttons have `aria-label`s; focus ring uses
   `--color-domain-interactive-focused`; `prefers-reduced-motion` honored.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, place the Style-Guide reference element <loop-color-reference> on the Style Guide
+screen for the WBG "The Loop" design system.
+
+Context (already done): loop-color-reference.js is added under Resources and loads on the Style-Guide
+screen; dist/theme.css is in the Theme. It is a self-contained display component.
+
+Task: add the <loop-color-reference> element to the Style Guide screen where this specimen belongs.
+There are no inputs or events to wire. Do NOT write CSS or JavaScript.
+
+Constraints: never edit the OutSystems UI module; add no styles. Report what you placed.
+```
 
 ## Checklist
 - [ ] `npm run build:theme` and paste `dist/theme.css` into the ODC Theme editor.

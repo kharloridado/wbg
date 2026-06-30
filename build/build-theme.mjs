@@ -37,19 +37,32 @@ const META = {
   "color-utilities.css": { group: "Colors",        name: "Utilities (roles)" },
   "color-utilities-primitives.css": { group: "Colors", name: "Utilities (primitives)" },
   "spacing.css":         { group: "Spacing",       name: "Scale" },
+  "spacing-utilities.css": { group: "Spacing",     name: "Utilities (directional margin/padding)" },
   "typography.css":      { group: "Typography",    name: "Type" },
   "typography-utilities.css": { group: "Typography", name: "Utilities" },
   "typography-roles.css":     { group: "Typography", name: "Roles" },
-  "radius.css":          { group: "Radius",        name: "Border Radius" },
+  "radius.css":          { group: "Border",        name: "Radius" },
+  "radius-utilities.css": { group: "Border",       name: "Radius utilities" },
+  "border.css":          { group: "Border",        name: "Size (stroke width)" },
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
+  "shadow-utilities.css": { group: "Shadows",      name: "Utilities" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
+  "outsystems-ui-header.css":    { group: "OutSystems UI", name: "Layout Top — Header / Menu" },
+  "outsystems-ui-side.css":      { group: "OutSystems UI", name: "Layout Side — Sidebar / Menu" },
+  "outsystems-ui-alert.css":     { group: "OutSystems UI", name: "Alert (→ Notes look)" },
+  "outsystems-ui-feedback-message.css": { group: "OutSystems UI", name: "Feedback Message (→ Alerts look)" },
+  "component-button.css":       { group: "Components",       name: "Button (heights)" },
   "component-field.css":        { group: "Components",       name: "Text Field" },
+  "component-search.css":       { group: "Components",       name: "Search" },
+  "component-datepicker.css":   { group: "Components",       name: "DatePicker" },
   "component-toggle.css":       { group: "Components",       name: "Toggle" },
   "component-note.css":         { group: "Components",       name: "Notes" },
   "component-popover.css":      { group: "Components",       name: "Popover" },
   "component-system-alert.css": { group: "Components",       name: "System Alert" },
+  "component-alert.css":        { group: "Components",       name: "Alert" },
   "component-tooltip.css":      { group: "Components",       name: "Tooltip" },
   "component-tag.css":          { group: "Components",       name: "Tag" },
+  "component-tabs.css":         { group: "Components",       name: "Tabs" },
   /* Widget override sections (src/blocks/) */
   "loop-headings.css":      { group: "Widget Overrides", name: "Headings (h1–h3)" },
   "loop-button.css":        { group: "Widget Overrides", name: "Button" },
@@ -58,12 +71,25 @@ const META = {
   "loop-checkbox.css":      { group: "Widget Overrides", name: "Checkbox" },
   "loop-radio-button.css":  { group: "Widget Overrides", name: "Radio Button" },
   "loop-text-field.css":    { group: "Widget Overrides", name: "Text Field" },
+  "loop-search.css":        { group: "Widget Overrides", name: "Search" },
   "loop-dropdown.css":      { group: "Widget Overrides", name: "Dropdown / Select" },
+  "loop-datepicker.css":    { group: "Widget Overrides", name: "DatePicker" },
   "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
+  "loop-popover.css":       { group: "Widget Overrides", name: "Popover" },
+  "loop-tabs.css":          { group: "Widget Overrides", name: "Tabs" },
   /* Custom component BEM blocks (src/blocks/) */
   "loop-note.css":          { group: "Custom Components", name: "Notes" },
   "loop-tag.css":           { group: "Custom Components", name: "Tag" },
+  "loop-badge.css":         { group: "Custom Components", name: "Badge / Label (+ native Tag)" },
+  "loop-badge-status.css":  { group: "Custom Components", name: "Badge Status" },
+  "loop-card.css":          { group: "Widget Overrides", name: "Card" },
+  "component-card.css":     { group: "Components",       name: "Card" },
+  "component-modal.css":    { group: "Components",       name: "Modal" },
+  "component-badge-status.css": { group: "Components",   name: "Badge Status" },
+  "component-badge-label.css":  { group: "Components",   name: "Badge / Label" },
+  "component-toast.css":        { group: "Components",   name: "Toast" },
+  "component-upload.css":       { group: "Components",   name: "File Uploader" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)
@@ -151,18 +177,47 @@ function buildIndex({ order, map }) {
   return lines.join("\n");
 }
 
+/* Index of the first `{` that is NOT inside a `/* … *\/` comment, or -1. Used to
+ * tell a real rule (e.g. an @font-face block) from prose in a file's preamble. */
+function firstRuleBrace(s) {
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "/" && s[i + 1] === "*") {
+      const end = s.indexOf("*/", i + 2);
+      if (end === -1) break;
+      i = end + 1; // skip the comment (loop's i++ lands past the `/`)
+      continue;
+    }
+    if (s[i] === "{") return i;
+  }
+  return -1;
+}
+
 /* Split a file body into its leading `:root { … }` declaration block and anything
  * outside it. Each token file is a single :root spanning ~the whole file, so the
  * inner = between the first `{` after `:root` and the file's last `}`; the preamble
  * (the provenance/header comment) is kept and re-emitted inside the merged block.
- * Files with no `:root` return inner:null and are emitted as standalone sections. */
+ * Files with no `:root` return inner:null and are emitted as standalone sections.
+ *
+ * `hoist`: real CSS that sits BEFORE the `:root` (e.g. typography.css's @font-face
+ * rules). It must stay at TOP LEVEL — nesting an at-rule like @font-face inside the
+ * consolidated :root is invalid CSS and silently breaks every token below it. When
+ * the preamble contains a rule (a brace outside comments) we hoist the whole
+ * pre-:root chunk out rather than folding it inside. See the 2026-06-25 font-face fix. */
 function splitRoot(body) {
-  const i = body.indexOf(":root");
-  if (i === -1) return { preamble: "", inner: null };
-  const open = body.indexOf("{", i);
+  // Match `:root {` as an actual SELECTOR (optional whitespace before the brace),
+  // not the bare word ":root" — a class-only override file may mention ":root" in
+  // its prose comments (e.g. "which only retints the :root --color-* vars"), and a
+  // naive indexOf(":root") would mis-slice it into the consolidated :root block,
+  // leaving it unclosed and breaking every token. See the 2026-06-22 alert restyle.
+  const m = /:root\s*\{/.exec(body);
+  if (!m) return { preamble: "", hoist: "", inner: null };
+  const open = m.index + m[0].length - 1; // position of the matched `{`
   const close = body.lastIndexOf("}");
+  const before = body.slice(0, m.index).trimEnd();
+  const hasRule = firstRuleBrace(before) !== -1;
   return {
-    preamble: body.slice(0, i).trimEnd(),
+    preamble: hasRule ? "" : before,
+    hoist: hasRule ? before : "",
     inner: body.slice(open + 1, close).replace(/^\n+/, "").trimEnd(),
   };
 }
@@ -183,6 +238,7 @@ function build() {
     buildIndex(groups),
   ].join("\n");
 
+  const preRootSections = []; // top-level rules that must precede :root (e.g. @font-face)
   const rootSections = []; // declarations lifted into the single consolidated :root
   const tailSections = []; // files with no :root (e.g. utility classes, block overrides)
   const hoisted = [];      // external @import url() lines, lifted to the top
@@ -193,7 +249,10 @@ function build() {
     const { stripped, imports } = extractHoistedImports(raw);
     hoisted.push(...imports);
     const body = stripped.trimEnd();
-    const { preamble, inner } = splitRoot(body);
+    const { preamble, hoist, inner } = splitRoot(body);
+    // Pre-:root rules (e.g. @font-face) carry their own explanatory comment; emit
+    // them at top level so they are valid CSS, not buried inside the merged :root.
+    if (hoist) preRootSections.push(`${banner(title)}\n\n${hoist}`);
     if (inner === null) {
       tailSections.push(`${banner(title)}\n\n${body}`);
     } else {
@@ -210,9 +269,9 @@ function build() {
   const docHead = importBlock ? `${importBlock}\n\n\n${head}` : head;
 
   mkdirSync(dirname(outFile), { recursive: true });
-  writeFileSync(outFile, [docHead, rootBlock, ...tailSections].join("\n\n\n") + "\n");
+  writeFileSync(outFile, [docHead, ...preRootSections, rootBlock, ...tailSections].join("\n\n\n") + "\n");
   console.log(
-    `build:theme → dist/theme.css (${hoisted.length ? "1 @import, " : ""}1 :root, ${rootSections.length} token sections, ${tailSections.length} class sections)`
+    `build:theme → dist/theme.css (${hoisted.length ? "1 @import, " : ""}${preRootSections.length ? `${preRootSections.length} pre-root, ` : ""}1 :root, ${rootSections.length} token sections, ${tailSections.length} class sections)`
   );
 }
 

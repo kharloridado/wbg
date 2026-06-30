@@ -1,0 +1,7 @@
+/* border.css — border-size (stroke width) scale, matches the OutSystems UI names */
+:root {
+  --border-size-none: 0;     /* no stroke */
+  --border-size-s:    1px;   /* hairline — default control border */
+  --border-size-m:    2px;   /* emphasis stroke — selected / focused control edge */
+  --border-size-l:    3px;   /* heaviest — high-contrast focus outline */
+}
