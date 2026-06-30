@@ -9,9 +9,32 @@ as a pure-CSS BEM block (no JS) — colors/sizes/states via modifier classes; di
 toggle/selection wired in OutSystems logic. Applied via `ExtendedClass` on a Container.
 
 **Scope (this build):** 4 colors · 4 sizes · leading icon slot · dismissible · states
-default/hover/focus/disabled/selected.
-**Out of scope (follow-up):** avatar · initials · flag slots · on-dark theme ·
-toggle/interactive selection wiring · numbers/counter.
+default/hover/focus/disabled/selected · **Meta Tag** leading slots (avatar / initials / flag).
+
+**Meta Tag** (Figma "has Avatar / has Initials / has Flag" [node 17313-5506]): add
+`loop-tag--meta` plus a leading slot element as the tag's first child — `loop-tag__avatar`
+(24px round image), `loop-tag__initials` (24px round badge, blue-70 fill + white 10px bold
+initials), or `loop-tag__flag` (25×18 image). The leading inset tightens to 8px so the slot
+nestles against the pill edge.
+**Out of scope (follow-up):** on-dark theme · toggle/interactive selection wiring ·
+numbers/counter.
+
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Tag page.
+
+**What it is.** A pill label (`.loop-tag`) for categories, filters, and selections — optionally with an icon, dismiss, or selected state.
+
+**When to use**
+- Compact metadata labels, active filter chips, or selectable / dismissible tokens.
+
+**When not to use** (reach for instead)
+- A status with a dot/icon → **Badge / Status**.
+- A non-interactive rectangular category label → **Badge / Label**.
+- A clickable action → **Button**.
+
+**How to use**
+- Extended Class `loop-tag loop-tag--<color> loop-tag--<size>` on a Container. Add `--dismissible` (with the dismiss button), `--selected`, `--disabled`, or `--interactive` as needed.
 
 ## Files
 | File | OutSystems destination |
@@ -27,32 +50,16 @@ toggle/interactive selection wiring · numbers/counter.
 <summary><code>loop-tag.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* loop-tag.css — WBG / "The Loop" Tag block (CSS only, no JS).
- * Figma: "Tag" [node:17313-5502]. Custom component — richer than the native
- * OutSystems UI `.tag` (icon slot, dismiss button, selected/disabled states).
- *
- * OutSystems usage: add "loop-tag loop-tag--<color> loop-tag--<size>" to a
- * Container via ExtendedClass. Colors: blue (default) | purple | green | yellow.
- * Sizes: small | regular (default) | large | xlarge.
- *
- * Example OutSystems HTML (rendered):
- *   <span class="loop-tag loop-tag--blue loop-tag--regular loop-tag--dismissible">
- *     <i class="loop-tag__icon" aria-hidden="true"><!-- icon glyph --></i>
- *     <span class="loop-tag__label">Label</span>
- *     <button type="button" class="loop-tag__dismiss" aria-label="Remove">×</button>
- *   </span>
- *
- * Scope (this build): colors · sizes · icon slot · dismissible · states
- * default/hover/focus/disabled/selected. Out of scope (follow-up): avatar,
- * initials, flag slots, on-dark theme, toggle/interactive selection wiring. */
+/* loop-tag.css — Tag: The Loop pill tag block (CSS only); native .tag is the Badge/Label, see loop-badge.css */
 
 .loop-tag {
   display: inline-flex;
   align-items: center;
   gap: var(--loop-tag-gap, 4px);
   box-sizing: border-box;
-  min-height: var(--loop-tag-h-regular, 32px);
-  padding: var(--loop-tag-padding-v, 8px) var(--loop-tag-padding-h, 12px);
+  height: var(--loop-tag-h-regular, 32px);             /* pinned height so the 1px border never grows the box */
+  padding-block: 0;
+  padding-inline: var(--loop-tag-padding-h, 12px);
   border: 1px solid;
   border-radius: var(--loop-tag-radius, 48px);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -92,17 +99,17 @@ toggle/interactive selection wiring · numbers/counter.
   color:            var(--loop-tag-yellow-text, #896001);
 }
 
-/* ---- Sizes (min-height; label size held constant per Figma) ---- */
-.loop-tag--small   { min-height: var(--loop-tag-h-small, 24px);   padding-top: var(--loop-tag-padding-v-sm, 6.5px); padding-bottom: var(--loop-tag-padding-v-sm, 6.5px); }
-.loop-tag--regular { min-height: var(--loop-tag-h-regular, 32px); }
-.loop-tag--large   { min-height: var(--loop-tag-h-large, 40px); }
-.loop-tag--xlarge  { min-height: var(--loop-tag-h-xlarge, 48px); }
+/* ---- Sizes (label size held constant) ---- */
+.loop-tag--small   { height: var(--loop-tag-h-small, 24px); }
+.loop-tag--regular { height: var(--loop-tag-h-regular, 32px); }
+.loop-tag--large   { height: var(--loop-tag-h-large, 40px); }
+.loop-tag--xlarge  { height: var(--loop-tag-h-xlarge, 48px); }
 
 /* ---- Label ---- */
 .loop-tag__label {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;   /* Figma: label truncates past 200px (tooltip on hover) */
+  max-width: 200px;   /* truncate past 200px */
 }
 
 /* ---- Leading icon slot ---- */
@@ -120,6 +127,48 @@ toggle/interactive selection wiring · numbers/counter.
   width: 100%;
   height: 100%;
 }
+
+/* ---- Meta Tag — leading slot variants (avatar / initials / flag); add "loop-tag--meta", slot is the first child ---- */
+.loop-tag--meta { padding-inline-start: var(--loop-tag-meta-lpad, 8px); }
+
+/* Round avatar (image) */
+.loop-tag__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  width:  var(--loop-tag-meta-size, 24px);
+  height: var(--loop-tag-meta-size, 24px);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.loop-tag__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Round initials badge */
+.loop-tag__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width:  var(--loop-tag-meta-size, 24px);
+  height: var(--loop-tag-meta-size, 24px);
+  border-radius: 50%;
+  background-color: var(--loop-tag-initials-bg, #004370);
+  color: var(--loop-tag-initials-color, #fff);
+  font-size:      var(--loop-tag-initials-size, 10px);
+  line-height:    var(--loop-tag-initials-size, 10px);
+  font-weight:    var(--loop-tag-initials-weight, 700);
+  letter-spacing: var(--loop-tag-initials-tracking, 0.25px);
+}
+
+/* Flag (rectangular image, slightly rounded) */
+.loop-tag__flag {
+  display: inline-flex;
+  flex-shrink: 0;
+  width:  var(--loop-tag-flag-w, 25px);
+  height: var(--loop-tag-flag-h, 18px);
+  border-radius: var(--loop-tag-flag-radius, 2px);
+  overflow: hidden;
+}
+.loop-tag__flag img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ---- Dismiss button ---- */
 .loop-tag__dismiss {
@@ -181,6 +230,8 @@ toggle/interactive selection wiring · numbers/counter.
 @media (prefers-reduced-motion: reduce) {
   .loop-tag--interactive { transition: none; }
 }
+
+/* The native .tag widget is restyled as the Badge/Label in loop-badge.css, not here; reach this pill via .loop-tag. */
 ```
 
 </details>
@@ -217,12 +268,11 @@ Example rendered markup:
 | Token | Default | Description |
 |---|---|---|
 | `--loop-tag-radius` | `48px` | Pill radius (FND-028: ≠ `--radius-pill` 32px) |
-| `--loop-tag-padding-h` | `12px` | Horizontal padding |
-| `--loop-tag-padding-v` | `8px` | Vertical padding (small uses `6.5px`, FND-029) |
+| `--loop-tag-padding-h` | `12px` | Horizontal padding (no vertical padding — height is pinned, label flex-centred; FND-029 resolved) |
 | `--loop-tag-gap` | `4px` | Gap between slot and label |
 | `--loop-tag-icon-size` / `--loop-tag-dismiss-size` | `14px` | Leading icon / dismiss glyph |
 | `--loop-tag-label-size` | `16px` | Label text size (constant across sizes) |
-| `--loop-tag-h-{small,regular,large,xlarge}` | `24/32/40/48px` | Min-height per size |
+| `--loop-tag-h-{small,regular,large,xlarge}` | `24/32/40/48px` | Fixed height per size (pinned) |
 
 ## Colors
 | Color | Background | Border | Text | Selected bg |
@@ -246,6 +296,33 @@ Selected text = white (FND-030 — on-dark text token deferred). Disabled = `#e7
 ## Related findings (register-only, awaiting design)
 FND-028 (radius 48 vs pill 32) · FND-029 (size/vpadding metrics not fully tokenised) ·
 FND-030 (selected-state colors inferred). See `findings/findings-register.md`.
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Tag to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-tag.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild `dist/theme.css` (`npm run build:theme`) and paste into the ODC Theme editor.

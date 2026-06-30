@@ -8,6 +8,28 @@ OutSystems UI Button widget** (`.btn` / `.btn-primary`) to The Loop design — s
 the project uses in `outsystems-ui-overrides.css`. Developers keep using the standard
 OutSystems **Button** widget; the theme makes it look like The Loop.
 
+## When to use / How to use
+
+> **Live Style Guide doc** — short usage spec for the Button page.
+
+**What it is.** The Loop action control — a native OutSystems Button restyled to the pill, Open Sans 700, blue-70 identity.
+
+**When to use**
+- Any clickable action that submits, navigates, or triggers something.
+- **Primary** (filled blue-70) — the single most important action on a view.
+- **Secondary** (outlined) — alternative actions next to a Primary.
+- **Ghost / Tertiary** (text, no border) — low-emphasis actions in dense layouts.
+
+**When not to use** (reach for instead)
+- Link-style inline action → **Button Text**.
+- One trigger that opens several actions → **Button Dropdown**.
+- Pick one of a few always-visible options → **Button Group**.
+
+**How to use**
+- Use the native **Button** widget. Style = Primary → filled; Style = None → Secondary (outlined).
+- Ghost: Extended Class = `btn-ghost`. Sizes: default `.btn` is Regular (40); `btn-xlarge` (56), `btn-large` (48), `btn-small` (32), `btn-regular` (40, explicit alias of the default).
+- Icon-only buttons must keep an accessible name (`aria-label`).
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -22,100 +44,74 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 <summary><code>loop-button.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* ============================================
-   Component: Button  ("The Loop" — loop/button)
-   Figma: -The Loop- Main Library · "Button" [node:15597-766]
-   Approach: RESTYLE the native OutSystems UI Button widget (.btn / .btn-primary)
-             — NOT a parallel class system. Devs use the standard OutSystems Button
-             widget; this theme override makes it render as The Loop button.
-   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
-   Escalation Level: L1/L2 (native widget + token-driven theme override)
-
-   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_btn.scss):
-     .btn          → outlined: white bg, currentColor border, text 'primary', radius soft, h40, fw semi-bold
-     .btn-primary  → filled:   bg/border 'primary', text neutral-0
-     .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
-   The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/32, and the WB blue-70 primary fill.
-
-   Variant mapping (OutSystems Button "Style" → The Loop "Type"):
-     (none / base .btn)  → Secondary (outlined blue-70)
-     .btn-primary        → Primary  (filled blue-70)
-     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — the ONE added modifier,
-                            since OutSystems UI has no native ghost button style.
-
-   Tokens consumed: --radius-pill, --space-small, --space-medium, --space-button-gap,
-     --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
-     --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
-     --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
-     --color-bg-link-secondary-{hover,pressed,disabled},
-     --color-bg-link-tertiary-{hover,pressed,disabled},
-     --color-text-on-light-state-disabled.
-
-   Fidelity note: secondary/ghost HOVER fill (blue-40 / blue-20) under the blue-70 label
-     is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
-   ============================================ */
+/* loop-button.css — Button: native .btn restyle (not a parallel class system) */
 
 /* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
 .btn {
   gap: var(--space-button-gap, 6px);
-  height: auto;                                        /* let padding drive height (→ 56px) */
-  min-height: 56px;                                    /* Figma default size */
-  padding: var(--space-small, 16px) var(--space-medium, 32px);
+  height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
+  padding-block: 0;
+  padding-inline: var(--space-medium, 32px);
   border-radius: var(--radius-pill, 32px);
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
   font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);           /* 24px @16px */
+  line-height: var(--line-height-base, 1.5);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
-  /* Secondary / outlined (base, no variant class) — blue-70, transparent fill */
+  /* Secondary / outlined (base, no variant class) */
   background-color: transparent;
-  border-color: var(--color-outline-on-light-link-enabled);   /* blue-70 */
-  color: var(--color-text-on-light-link-primary-enabled);     /* blue-70 */
+  border-color: var(--color-outline-on-light-link-enabled);
+  color: var(--color-text-on-light-link-primary-enabled);
 }
 
-/* Use The Loop's EXACT hover/pressed hues instead of OutSystems' brightness filter */
+/* Use The Loop's exact hover/pressed hues instead of OutSystems' brightness filter */
 .btn:hover,
 .desktop .btn:hover,
 .btn:hover:active {
   filter: none;
 }
-.btn:hover           { background-color: var(--color-bg-link-secondary-hover); }   /* blue-40 — FND-014 */
-.btn:active          { background-color: var(--color-bg-link-secondary-pressed); } /* blue-30 */
+.btn:hover {
+  background-color: var(--color-bg-link-secondary-hover);
+  border-color:     var(--color-bg-link-secondary-hover);
+  color:            var(--color-text-on-light-emphasis);
+}
+.btn:active {
+  background-color: var(--color-bg-link-secondary-pressed);
+  border-color:     var(--color-text-on-light-link-primary-enabled);
+  color:            var(--color-text-on-light-link-primary-enabled);
+}
 .btn[disabled],
 .btn[aria-disabled="true"] {
-  background-color: var(--color-bg-link-secondary-disabled);  /* white */
-  border-color: var(--color-text-on-light-state-disabled);    /* neutral-alpha-42 */
+  background-color: var(--color-bg-link-secondary-disabled);
+  border-color: var(--color-text-on-light-state-disabled);
   color: var(--color-text-on-light-state-disabled);
 }
 
-/* ---- .btn-primary → The Loop Primary (filled blue-70) ---- */
+/* ---- .btn-primary → Primary (filled) ---- */
 .btn-primary {
-  background-color: var(--color-bg-link-primary-enabled);     /* blue-70 #004370 */
+  background-color: var(--color-bg-link-primary-enabled);
   border-color: var(--color-bg-link-primary-enabled);
   color: var(--color-white, #ffffff);
 }
-.btn-primary:hover  { background-color: var(--color-bg-link-primary-hover);  border-color: var(--color-bg-link-primary-hover);  }  /* blue-40 */
-.btn-primary:active { background-color: var(--color-bg-link-primary-pressed); border-color: var(--color-bg-link-primary-pressed); } /* blue-90 */
+.btn-primary:hover  { background-color: var(--color-bg-link-primary-hover);  border-color: var(--color-bg-link-primary-hover);  color: var(--color-text-on-light-emphasis); }
+.btn-primary:active { background-color: var(--color-bg-link-primary-pressed); border-color: var(--color-bg-link-primary-pressed); color: var(--color-white, #ffffff); }
 .btn-primary[disabled],
 .btn-primary[aria-disabled="true"] {
-  background-color: var(--color-bg-link-primary-disabled);    /* neutral-40 */
+  background-color: var(--color-bg-link-primary-disabled);
   border-color: var(--color-bg-link-primary-disabled);
   color: var(--color-white, #ffffff);
 }
 
-/* ---- .btn.btn-ghost → The Loop Ghost / Tertiary (text-fill, no border) ----
-   The single added modifier (OutSystems UI has no native ghost button). Apply via
-   the Button widget's Extended Class = "btn-ghost". */
+/* ---- .btn.btn-ghost → Ghost / Tertiary (text-fill, no border) ---- */
 .btn-ghost {
   background-color: transparent;
   border-color: transparent;
-  color: var(--color-text-on-light-link-primary-enabled);     /* blue-70 */
+  color: var(--color-text-on-light-link-primary-enabled);
 }
-.btn-ghost:hover  { background-color: var(--color-bg-link-tertiary-hover); }    /* blue-20 */
-.btn-ghost:active { background-color: var(--color-bg-link-tertiary-pressed); }  /* blue-30 */
+.btn-ghost:hover  { background-color: var(--color-bg-link-tertiary-hover); }
+.btn-ghost:active { background-color: var(--color-bg-link-tertiary-pressed); }
 .btn-ghost[disabled],
 .btn-ghost[aria-disabled="true"] {
   background-color: transparent;
@@ -123,19 +119,13 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
   color: var(--color-text-on-light-state-disabled);
 }
 
-/* ---- Sizes — keep native .btn-small / .btn-large, restyle to The Loop heights ----
-   Size mapping (OutSystems Button class → The Loop "Size"):
-     (none / base)  → xLarge  (56px, The Loop default)
-     .btn-large     → Large   (48px)
-     .btn.is-regular → Regular (40px) — added modifier; OutSystems has no native h40
-                       Button size (its baseline .btn is 40px, but The Loop's base is
-                       the 56px xLarge). Apply via Extended Class = "is-regular",
-                       mirroring the Text Field's .is-regular Regular size. */
-.btn-large { min-height: 48px; padding-block: 12px; font-size: var(--font-size-300, 16px); }
-.btn.is-regular { min-height: 40px; padding-block: 8px; font-size: var(--font-size-300, 16px); }
-.btn-small { min-height: 32px; padding-block: 4px;  font-size: var(--font-size-200, 14px); }
+/* ---- Sizes — native .btn-small/.btn-large + added .btn-xlarge/.btn-regular ---- */
+.btn-xlarge  { height: var(--loop-btn-h-xlarge, 56px);  font-size: var(--font-size-300, 16px); }
+.btn-large   { height: var(--loop-btn-h-large, 48px);   font-size: var(--font-size-300, 16px); }
+.btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
+.btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
 
-/* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
+/* ---- Focus indicator — design's own brand color ---- */
 .btn:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-enabled, var(--color-blue-70));
   outline-offset: 2px;
@@ -159,21 +149,48 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 ## Size mapping (Figma "Size" → OutSystems Button class)
 | The Loop | OutSystems | How |
 |---|---|---|
-| **xLarge** (56px, default) | base `.btn` | native, no extra class |
+| **Regular** (40px, **default**) | base `.btn` | native, no extra class — Loop default per **FND-043** (reconciled from Figma xLarge/56) |
+| **xLarge** (56px) | `.btn` + `btn-xlarge` | Extended Class = `btn-xlarge` (added modifier; OutSystems UI has no native h56 Button size) |
 | **Large** (48px) | `.btn-large` | native size class |
-| **Regular** (40px) | `.btn` + `is-regular` | Extended Class = `is-regular` (added modifier; OutSystems has no native h40 Button size — mirrors the Text Field's `is-regular`) |
 | **Small** (32px) | `.btn-small` | native size class |
 
 ## What the override changes vs OutSystems UI baseline
-- Pill radius **32px**, Open Sans **700**, label tracking **-0.5px**, icon gap **6px**, padding **16/32** (→ 56px tall default).
+- Pill radius **32px**, Open Sans **700**, label tracking **-0.5px**, icon gap **6px**. Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px with 16px block padding.
 - **Primary fill = blue-70 (#004370)** — overridden directly because `.btn-primary` otherwise resolves through `--color-primary` (blue-50), which other components share.
 - Explicit Loop hover/pressed hues (replaces OutSystems' `filter: brightness()` darkening).
-- Sizes: native `.btn-large` → 48px, `.btn-small` → 32px, added `is-regular` → 40px (Regular).
+- Sizes: default `.btn` → 40px (Regular), native `.btn-large` → 48px, `.btn-small` → 32px, added `.btn-xlarge` → 56px (xLarge), `.btn-regular` → 40px (explicit alias of the default).
+
+## Build in ODC with Mentor Studio
+
+> Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
+> (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent —
+> it does **not** author the CSS or the Web Component, so do the paste/import steps in the
+> checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
+
+```
+Goal: In ODC Studio, apply the WBG "The Loop" styling for Button to the native
+OutSystems UI widget(s) it restyles.
+
+Context (already done): loop-button.css and dist/theme.css are already pasted into the ODC
+Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
+you to style, and you must not write or edit CSS.
+
+Task — this component RESTYLES a native OutSystems widget, so the work is using the right
+widget, not generating styles. Referencing elements by name:
+1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
+   "Variant mapping" section), not a custom element.
+2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
+   "<documented-modifier>") — never mutate OutSystems UI internals.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
+generating, list what you created by name and flag anything you could not finish.
+```
 
 ## Checklist
 - [ ] Rebuild + paste latest `dist/theme.css` into ODC Theme editor (carries the new tokens).
 - [ ] Paste `loop-button.css` into Theme CSS, below OutSystems UI.
-- [ ] Use the native **Button** widget; pick Style = Primary/None. For ghost set Extended Class = `btn-ghost`; for Regular (40px) set Extended Class = `is-regular`.
+- [ ] Use the native **Button** widget; pick Style = Primary/None. For ghost set Extended Class = `btn-ghost`; the default `.btn` is already Regular (40px) — set Extended Class = `btn-xlarge` only when you need the 56px xLarge.
 - [ ] Icon-only buttons: keep an accessible name (`aria-label`).
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).
 

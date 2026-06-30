@@ -1,23 +1,8 @@
-/* loop-headings.css — override OutSystems UI native heading element typography
- * Maps the Figma heading roles (node 10995-7259) to semantic HTML elements.
- *
- * Default mapping:
- *   h1 → H1 · Base  (48px Bold lh 1.12)  — standard page title
- *   h2 → H2 · Small (32px Bold lh 1.12)  — section heading
- *   h3 → H3 · Base  (32px Bold lh 1.12)  — subsection (same size as h2, different semantic level)
- *
- * NOTE: h2 and h3 share 32px — by Figma spec. They are differentiated by semantic
- * level and position in layout, not by visual size.
- *
- * NOTE: h4–h6 have no Loop spec — left at OutSystems UI defaults.
- *
- * For non-default role sizes (e.g. H1 Large on a hero banner), apply the
- * corresponding .loop-heading-* class via ExtendedClass — class specificity
- * (0,1,0) beats these element rules (0,0,1) so it always wins. */
+/* loop-headings.css — override native h1–h3 typography to the Loop heading roles (h4–h6 left at OS UI defaults) */
 
 h1 {
   font-family:    var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
-  font-size:      var(--font-size-1100);        /* 48px — H1 · Base */
+  font-size:      var(--font-size-1100);
   font-weight:    var(--font-weight-bold);
   line-height:    var(--line-height-heading);
   letter-spacing: normal;
@@ -27,7 +12,7 @@ h1 {
 
 h2 {
   font-family:    var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
-  font-size:      var(--font-size-800);         /* 32px — H2 · Small */
+  font-size:      var(--font-size-800);
   font-weight:    var(--font-weight-bold);
   line-height:    var(--line-height-heading);
   letter-spacing: normal;
@@ -35,9 +20,10 @@ h2 {
   color:          var(--color-text-on-light-headers);
 }
 
+/* h3 shares h2's 32px by spec — differentiated by semantic level, not size */
 h3 {
   font-family:    var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
-  font-size:      var(--font-size-800);         /* 32px — H3 · Base */
+  font-size:      var(--font-size-800);
   font-weight:    var(--font-weight-bold);
   line-height:    var(--line-height-heading);
   letter-spacing: normal;

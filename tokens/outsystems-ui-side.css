@@ -1,0 +1,313 @@
+/* outsystems-ui-side.css — Layout Side branded sidebar (class-level).
+ * Light sidebar / dark text per the "Form page" design (Figma node 30132:139314):
+ * a white menu panel, neutral-9 menu items rendered as 32px pills, a brand-emphasis
+ * logo label and a profile block at the foot. Restyles the native OutSystems UI
+ * Layout Side classes (.app-menu-content / .app-menu-links / .header-logo /
+ * .app-login-info) — no parallel custom system, no JS. Everything is scoped under
+ * .layout-side so the Layout Top header (outsystems-ui-header.css) is unaffected.
+ * The panel width token --side-menu-size lives in outsystems-ui-overrides.css. */
+
+/* ── Panel: white surface (native neutral-0) + a dimmed right edge and the brand
+ * regular drop shadow; 12px inline padding (Figma "spacing R layout").
+ * Fixed-height FLEX COLUMN so the three regions (logo / scrollable menu /
+ * profile) share the panel and the profile stays pinned at the foot — natively
+ * the panel is `display:block`, so a tall menu list pushed the profile (User
+ * Info) below the fixed panel and out of view. */
+.layout-side .app-menu-content {
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-size-s) solid var(--color-outline-on-light-dimmed);
+  box-shadow: var(--shadow-regular);
+  padding-inline: var(--space-xsmall);
+}
+/* Menu list takes the slack and scrolls; profile holds its height at the foot. */
+.layout-side .app-menu-links {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.layout-side .app-login-info {
+  flex: 0 0 auto;
+}
+/* Hairline dividers (Figma #00396b29): under the logo row and above the profile. */
+.layout-side .header-logo {
+  border-bottom: var(--border-size-s) solid var(--color-divider-on-light-default);
+}
+.layout-side .app-login-info {
+  border-top: var(--border-size-s) solid var(--color-divider-on-light-default);
+}
+
+/* ── Logo row: brand-emphasis label, Open Sans Bold 18 / blue-90 (#012740);
+ * laid out as a row (logo + label, then a trailing collapse toggle pushed to
+ * the right edge by the label growing to fill). */
+.layout-side .header-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+}
+.layout-side .header-logo .application-name { flex: 1 1 auto; }
+.layout-side .header-logo,
+.layout-side .app-logo {
+  color: var(--color-text-on-light-emphasis);
+}
+.layout-side .header-logo .application-name,
+.layout-side .app-logo {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-narrow);
+}
+
+/* ── Menu items: 32px pills, Open Sans SemiBold 16/24, neutral-9 (#252e37) text +
+ * icon (currentColor). Replaces the native left-border active indicator. */
+.layout-side .app-menu-links {
+  gap: var(--space-tiny);
+}
+.layout-side .app-menu-links a {
+  align-items: center;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--color-neutral-9);
+  display: flex;
+  gap: var(--space-xxsmall);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-base);
+  min-height: var(--space-xlarge);
+  padding: var(--space-xxsmall) var(--space-small);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Trailing indicator (chevron) pinned to the right; leading icon keeps its size. */
+.layout-side .app-menu-links a > .indicator,
+.layout-side .app-menu-links a > .menu-item-indicator {
+  margin-left: auto;
+}
+
+/* Hover / selected states — PROVISIONAL (the design frame ships only the resting
+ * state; see finding FND-057). Neutral pill on hover; brand-tint pill + primary
+ * text + icon when active/selected. No invented brand colours — both fills are
+ * existing Loop role tokens. */
+.layout-side .app-menu-links a:hover {
+  background-color: var(--color-neutral-2);
+  color: var(--color-neutral-9);
+  text-decoration: none;
+}
+.layout-side .app-menu-links a.active,
+.layout-side .app-menu-links a.active:hover {
+  background-color: var(--color-primary-selected);
+  border-left: 0;
+  color: var(--color-primary);
+}
+
+/* ── Profile block at the foot: avatar on the LEFT, name (Bold 16) stacked over
+ * role (Regular 12) to its right, on-light text. Natively `.app-login-info` is
+ * block (avatar above text) and `.user-info` is a row (name beside role) — both
+ * wrong for this design, so set the avatar↔text row and the name/role column. */
+.layout-side .app-login-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  color: var(--color-text-on-light-default);
+}
+.layout-side .app-login-info .user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.layout-side .app-login-info .user-info__name {
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+}
+.layout-side .app-login-info .user-info__role {
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-narrow);
+}
+
+/* ── Sidebar imagery: constrain the OutSystems Image widgets. The design previews drew
+ * the logo + avatar as CSS circles (span.pv-avatar), so a real <img> was never sized —
+ * in ODC a full-resolution source (1024² logo, 230² avatar) renders at natural size and
+ * blows the panel out, overlapping the menu. Pin both: a 32px logo mark in the header row
+ * and a 40px circular avatar in the profile foot; flex:0 0 auto so they never stretch. */
+.layout-side .header-logo img {
+  width: var(--space-medium);
+  height: var(--space-medium);
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.layout-side .app-login-info img {
+  width: var(--space-large);
+  height: var(--space-large);
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+}
+
+/* ── Focus ring — The Loop 2px on-light outline. The sidebar is a light surface,
+ * so Blue/50 is conformant here (unlike the dark Layout Top header, FND-012). */
+.layout-side .app-menu-links a:focus-visible,
+.has-accessible-features .layout-side .app-menu-links a:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Content-area chrome — the header bar (breadcrumb + page title + utility
+ * actions) and the dark WBG footer. Figma "Form page": Header node 30132:139328
+ * (96px bar, breadcrumb+actions over title) + Footer node 30139:39737 (#1a1a1a,
+ * white text). These regions wrap the layout's Breadcrumbs / Title / Actions
+ * placeholders so each gets a styling hook (the bare OutSystems placeholder div
+ * has none); the footer is static brand chrome. Block: `loop-content`.
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+/* Content column stacks: header → screen content → footer pinned to the foot.
+ * Background: the "Form page" subtle diagonal light-blue gradient (FND-059); the
+ * white screen card and the dark footer paint over it. */
+.layout-side .content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: linear-gradient(135deg, var(--color-bg-page-start), var(--color-bg-page-end));
+}
+/* The main screen-content region grows so the footer sinks to the bottom, and
+ * insets its content so it aligns with the header/title (left edge) and breathes
+ * from the chrome — the bare MainContent placeholder has no padding of its own.
+ * Horizontal inset matches the header's var(--space-xlarge) so all three edges
+ * (breadcrumb, title, body, footer) line up. */
+.layout-side .content > .loop-content__body {
+  flex: 1 0 auto;
+  padding: var(--space-regular) var(--space-xlarge) var(--space-xlarge);
+}
+/* (An unfilled OutSystems placeholder renders as a zero-size element, so empty
+ * optional slots leave no ghost gap on their own — no collapse rule needed.
+ * Note: never select on `.placeholder-empty`; it is a runtime OutSystems UI
+ * utility, not a stable styling hook.) */
+
+/* ── Header bar: breadcrumb + actions on the top row, page title below. */
+.loop-content__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tiny);
+  padding: var(--space-small) var(--space-xlarge) var(--space-xxsmall);
+}
+.loop-content__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xxsmall);
+}
+
+/* Breadcrumb: 14px; links blue (#066db1), current crumb subdued, "|" disabled,
+ * leading home icon primary. (The breadcrumb itself is an OutSystems/Loop
+ * breadcrumb widget dropped into the slot — these style its anchors/separators.) */
+.loop-content__breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-base);
+}
+/* Crumb labels: blue links; the current (last) crumb is subdued + unlinked.
+ * Targets the native OutSystems Breadcrumbs DOM (`.breadcrumbs-item .title`)
+ * as well as plain anchors, so it works whichever breadcrumb widget is used. */
+.loop-content__breadcrumbs .breadcrumbs-item .title,
+.loop-content__breadcrumbs a {
+  color: var(--color-text-on-light-link-hover);
+  text-decoration: none;
+}
+.loop-content__breadcrumbs a:hover { text-decoration: underline; }
+.loop-content__breadcrumbs .breadcrumbs-item:last-child .title,
+.loop-content__breadcrumbs [aria-current],
+.loop-content__breadcrumbs .is-current {
+  color: var(--color-text-on-light-subdued);
+}
+/* Separator: the native per-item separator icon (the icon that is NOT a leading
+ * title icon) rendered as a thin grey "|" (Figma uses a vertical bar, not a
+ * chevron); the trailing separator on the last crumb is removed. Targeted
+ * structurally via `> :not(.title)` — never via the runtime `.placeholder-empty`
+ * utility. */
+.loop-content__breadcrumbs .breadcrumbs-item > :not(.title) .icon {
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-content__breadcrumbs .breadcrumbs-item > :not(.title) .icon::before {
+  content: "|";
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+}
+.loop-content__breadcrumbs .breadcrumbs-item:last-child > :not(.title) {
+  display: none;
+}
+/* Leading home / custom crumb icon (a filled icon slot, not the separator) → dark. */
+.loop-content__breadcrumbs .loop-icon,
+.loop-content__breadcrumbs .breadcrumbs-item .title .icon,
+.loop-content__breadcrumbs .breadcrumbs-content > .icon {
+  color: var(--color-icon-on-light-primary);
+}
+.loop-content__breadcrumbs-sep { color: var(--color-text-on-light-state-disabled); }
+
+/* Utility actions (FAQ, language) — right-aligned; the controls inside are
+ * existing Loop tertiary text-buttons. */
+.loop-content__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  margin-left: auto;
+}
+
+/* Page title: Open Sans Bold 28 / blue-90 (Heading H1 tiny). */
+.loop-content__title,
+.loop-content__title h1 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-700);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-on-light-emphasis);
+}
+
+/* ── Footer: dark WBG external bar. #1a1a1a surface, white text; institutions
+ * lockup at the left, copyright at the right. */
+.loop-content__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+  margin-top: auto;
+  /* 64px-tall bar (Figma "Footer External Web Thin CF", 1600×64): 24px block
+   * padding over the ~16px institutions line. */
+  min-height: var(--space-xxlarge);
+  padding: var(--space-regular) var(--space-xlarge);
+  background-color: var(--color-bg-footer-external);
+  color: var(--color-white);
+}
+.loop-content__footer-institutions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-narrow);
+}
+.loop-content__footer-brand { font-weight: var(--font-weight-bold); }
+.loop-content__footer-logo { height: var(--space-regular); width: auto; flex: 0 0 auto; }
+.loop-content__footer-divider {
+  width: var(--border-size-s);
+  height: var(--space-small);
+  background-color: var(--color-gray-alpha-white-24);
+  flex: 0 0 auto;
+}
+.loop-content__footer-copyright {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-100);
+  line-height: var(--line-height-narrow);
+  color: var(--color-gray-alpha-white-75);
+}

@@ -1,0 +1,85 @@
+/* loop-popover.css — Popover: native [data-popover] restyle (.popover-bottom panel + CSS pointer triangle) */
+
+/* ---- The floating panel IS the Figma card ---- */
+[data-popover] > .popover-bottom {
+  position:      relative;   /* anchor for the pointer pseudo-element */
+  box-sizing:    border-box;
+  width:         var(--loop-popover-width, 320px);
+  max-width:     var(--loop-popover-width, 320px);
+  min-width:     auto;
+
+  background-color: var(--loop-popover-bg, #fff);
+  border:        0;   /* no border — shadow only */
+  border-radius: var(--loop-popover-radius, 4px);
+  box-shadow:    var(--loop-popover-shadow, 0px 2px 3px rgba(0, 0, 0, 0.12));
+  padding:       var(--loop-popover-padding-v, 16px) var(--loop-popover-padding-h, 16px);
+
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-popover-body-size, 12px);
+  font-weight: var(--loop-popover-body-weight, 400);
+  line-height: var(--loop-popover-body-leading, 18px);
+  color:       var(--loop-popover-body-color, rgba(0, 13, 26, 0.7));
+}
+
+/* ---- Title — author marks it .heading6; scoped so the global .heading6 utility is untouched ---- */
+[data-popover] > .popover-bottom .heading6 {
+  font-family:    var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size:      var(--loop-popover-title-size, 14px);
+  font-weight:    var(--loop-popover-title-weight, 700);
+  line-height:    var(--loop-popover-title-leading, 20px);
+  letter-spacing: var(--loop-popover-title-tracking, 0.25px);
+  color:          var(--loop-popover-title-color, rgba(0, 13, 26, 0.96));
+}
+
+/* Optional divider under the title — opt-in via .loop-popover--divided */
+[data-popover] > .popover-bottom.loop-popover--divided .heading6 {
+  padding-bottom: var(--loop-popover-header-gap, 16px);
+  border-bottom:  1px solid var(--loop-popover-divider-color, rgba(0, 57, 107, 0.16));
+  margin-bottom:  var(--loop-popover-header-gap, 16px);
+}
+
+/* ---- Pointer triangle — CSS border-triangle in the panel's own bg; points up by default ---- */
+[data-popover] > .popover-bottom::before {
+  content:  "";
+  position: absolute;
+  bottom:   100%;
+  left:     var(--loop-popover-pointer-offset, 24px);
+  width:    0;
+  height:   0;
+  border-left:   calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+  border-right:  calc(var(--loop-popover-pointer-w, 18px) / 2) solid transparent;
+  border-bottom: var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
+}
+
+/* Centred panel → centred pointer. */
+[data-popover] > .popover-bottom.align-center::before {
+  left:      50%;
+  transform: translateX(-50%);
+}
+
+/* Panel flipped above the trigger → pointer flips to the bottom edge, points down. */
+[data-popover] > .popover-bottom.align-bottom::before {
+  bottom:        auto;
+  top:           100%;
+  border-bottom: 0;
+  border-top:    var(--loop-popover-pointer-h, 8px) solid var(--loop-popover-bg, #fff);
+}
+
+/* ---- Dismiss (×) affordance, when the author places one in the title row ---- */
+[data-popover] > .popover-bottom .close,
+[data-popover] > .popover-bottom [data-dismiss] {
+  color:  var(--loop-popover-dismiss-color, #4b5e71);
+  cursor: pointer;
+}
+
+/* ---- Focus indicator on the trigger (WCAG 2.2 SC 2.4.7 / 2.4.11) ---- */
+[data-popover] > .popover-top:focus-visible {
+  outline:        2px solid var(--loop-popover-focus, #004370);
+  outline-offset: 2px;
+  border-radius:  2px;
+}
+
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) — OS UI fades the panel on open ---- */
+@media (prefers-reduced-motion: reduce) {
+  [data-popover] > .popover-bottom { transition: none; }
+}

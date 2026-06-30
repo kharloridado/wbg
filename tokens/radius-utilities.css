@@ -1,0 +1,7 @@
+/* radius-utilities.css — corner-radius utility classes (OS UI .border-radius-* family) */
+
+.border-radius-xs     { border-radius: var(--radius-xs); }
+.border-radius-base   { border-radius: var(--radius-base); }   /* alias of OS UI .border-radius-soft */
+.border-radius-medium { border-radius: var(--radius-medium); }
+.border-radius-large  { border-radius: var(--radius-large); }
+.border-radius-pill   { border-radius: var(--radius-pill); }

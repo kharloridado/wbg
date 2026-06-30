@@ -1,0 +1,84 @@
+/* component-upload.css — File Uploader tokens (vanilla JS Web Component <loop-file-uploader>, Shadow DOM) */
+:root {
+  /* ---- Shared geometry ---- */
+  --loop-upload-label-gap:      var(--loop-field-label-gap, 6px);   /* label ↔ control */
+  --loop-upload-helper-gap:     var(--space-tiny);                  /* 4px — icon ↔ helper text */
+  --loop-upload-border-width:   var(--border-size-s);               /* 1px stroke (dashed on the dropzone) */
+
+  /* ---- Dropzone box ---- */
+  --loop-upload-dropzone-radius:    var(--radius-base);             /* 4px */
+  --loop-upload-dropzone-pad:       var(--space-regular);           /* 24px */
+  --loop-upload-dropzone-gap:       var(--space-small);             /* 16px — icon ↔ prompt ↔ rows */
+  --loop-upload-dropzone-icon-size: 32px;                           /* file-arrow-up glyph */
+  --loop-upload-dropzone-min-h:     179px;                          /* dropzone height (xLarge) */
+
+  /* ---- Prompt + helper typography (shared label tokens from component-field.css) ---- */
+  --loop-upload-label-size:     var(--loop-field-label-size, 16px);   /* 16px SemiBold */
+  --loop-upload-label-weight:   var(--loop-field-label-weight, 600);
+  --loop-upload-label-leading:  var(--loop-field-label-leading, 16px);
+  --loop-upload-label-color:    var(--color-text-on-light-default);   /* #000d1ab2 */
+  --loop-upload-prompt-size:    var(--font-size-200, 14px);           /* 14px */
+  --loop-upload-prompt-leading: 1.5;
+  --loop-upload-prompt-color:   var(--color-text-on-light-default);   /* #000d1ab2 */
+  --loop-upload-link-color:     var(--color-text-on-light-link-primary-enabled); /* #004370 — "browse" link */
+  --loop-upload-helper-size:    var(--loop-field-helper-size, 12px);  /* 12px */
+  --loop-upload-helper-tracking: 0.5px;
+  --loop-upload-helper-color:   var(--color-text-on-light-subdued);  /* subdued */
+
+  /* ---- Per-state colour (dropzone border + fill + accent[icon & status text]) ---- */
+  /* Enabled — info-blue dashed idle affordance */
+  --loop-upload-enabled-border: var(--color-outline-on-light-state-info-high, #00538a);
+  --loop-upload-enabled-bg:     var(--color-bg-container-on-light-low, #f5f7f9);
+  --loop-upload-enabled-icon:   var(--color-icon-on-light-link-enabled, #004370);
+
+  /* Disabled */
+  --loop-upload-disabled-border: var(--color-neutral-30, #bdccdb); /* #bdccdb — neutral-30 */
+  --loop-upload-disabled-bg:     var(--color-domain-state-disable-low, #dae3eb);
+  --loop-upload-disabled-icon:   var(--color-icon-on-light-state-disabled, #8a9db1);
+  --loop-upload-disabled-text:   var(--color-text-on-light-state-disabled, #00294d6b);
+
+  /* Success */
+  --loop-upload-success-border: var(--color-outline-on-light-state-success-high, #388004);
+  --loop-upload-success-bg:     var(--color-bg-container-state-success-low, #f6fef0);
+  --loop-upload-success-accent: var(--color-text-on-light-state-success, #388004);
+
+  /* Warning */
+  --loop-upload-warning-border: var(--color-outline-on-light-state-warning-high, #896001);
+  --loop-upload-warning-bg:     var(--color-domain-state-warning-low, #fef3d7);
+  --loop-upload-warning-accent: var(--color-text-on-light-state-warning, #473201);
+
+  /* Error */
+  --loop-upload-error-border: var(--color-outline-on-light-state-error-high, #9d161d);
+  --loop-upload-error-bg:     var(--color-bg-container-state-error-low, #fdf2f2);
+  --loop-upload-error-accent: var(--color-text-on-light-state-error, #9d161d);
+
+  /* ---- Button variant (secondary outline pill — reuses Button tokens) ---- */
+  --loop-upload-btn-radius:   var(--radius-pill, 32px);
+  --loop-upload-btn-pad-v:    var(--space-small, 16px);
+  --loop-upload-btn-pad-h:    var(--space-medium, 32px);
+  --loop-upload-btn-gap:      var(--space-button-gap, 6px);      /* icon ↔ label */
+  --loop-upload-btn-icon:     18px;
+  --loop-upload-btn-label-size:    var(--font-size-300, 16px);   /* 16px Bold */
+  --loop-upload-btn-label-weight:  var(--font-weight-bold, 700);
+  --loop-upload-btn-label-leading: 24px;
+  --loop-upload-btn-label-tracking: var(--letter-spacing-button, -0.5px);
+  --loop-upload-btn-color:    var(--color-outline-on-light-link-enabled, #004370); /* blue-70 outline + label */
+
+  /* ---- Input variant (single-line field — reuses Field tokens) ---- */
+  --loop-upload-input-radius:   var(--loop-field-radius, 32px);
+  --loop-upload-input-pad-v:    var(--loop-field-padding-block, 18px);
+  --loop-upload-input-pad-h:    var(--loop-field-padding-inline, 16px);
+  --loop-upload-input-gap:      var(--loop-field-gap, 8px);
+  --loop-upload-input-icon:     20px;
+  --loop-upload-input-placeholder: var(--color-text-on-light-subdued);
+
+  /* ---- Progress row (uploading / uploaded) ---- */
+  --loop-upload-progress-h:        8px;
+  --loop-upload-progress-radius:   var(--radius-pill, 32px);
+  --loop-upload-progress-track:    var(--color-bg-container-on-light-regular, #e7edf3);
+  --loop-upload-progress-fill:     var(--color-bg-container-primary, #004370);
+  --loop-upload-progress-pct-size: var(--font-size-300, 16px);   /* percentage label */
+
+  /* ---- Focus ring (brand) ---- */
+  --loop-upload-focus: var(--color-domain-interactive-focused, #0071bc); /* blue-50 */
+}
