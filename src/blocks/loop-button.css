@@ -37,7 +37,7 @@
   gap: var(--space-button-gap, 6px);
   height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
   padding-block: 0;
-  padding-inline: var(--space-medium, 32px);
+  padding-inline: var(--space-small, 16px);
   border-radius: var(--radius-pill, 32px);
   border-width: 2px;
 
