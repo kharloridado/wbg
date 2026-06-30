@@ -328,8 +328,8 @@ class LoopModal extends HTMLElement {
   padding: 0;
   border: 0;
   border-radius: 100px;
-  background: var(--loop-modal-close-bg, #004370);
-  color: var(--loop-modal-close-icon, #ffffff);
+  background: var(--loop-modal-close-bg, #169af3);
+  color: var(--loop-modal-close-icon, #004370);
   cursor: pointer;
 }
 .lmo__close:focus-visible {
