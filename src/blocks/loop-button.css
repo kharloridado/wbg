@@ -11,14 +11,16 @@
      .btn          → outlined: white bg, currentColor border, text 'primary', radius soft, h40, fw semi-bold
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
-   The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/16, and the WB blue-70 primary fill.
+   The Loop overrides that baseline to: 8px default radius (--radius-medium; 32px pill
+   via .btn-rounded), Open Sans 700, label tracking -0.5, icon gap 6, padding 16/16, and
+   the WB blue-70 primary fill.
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
      .btn-primary        → Primary  (filled blue-70)
-     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — the ONE added modifier,
-                            since OutSystems UI has no native ghost button style.
+     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — added modifier, no native
+                            ghost in OutSystems UI.
+     .btn.btn-rounded    → any variant with 32px pill radius (opt-in).
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
      --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
@@ -38,7 +40,7 @@
   height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
   padding-block: 0;
   padding-inline: var(--space-small, 16px);
-  border-radius: var(--radius-pill, 32px);
+  border-radius: var(--radius-medium, 8px);
   border-width: 2px;
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
@@ -112,9 +114,9 @@
 .btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
 .btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
 
-/* ---- .btn.btn-radius-sm → 8px rounded corners (alternative to the pill default) ---- */
-.btn.btn-radius-sm {
-  border-radius: var(--radius-medium, 8px);
+/* ---- .btn.btn-rounded → 32px pill corners (opt-in variant; confirmed: kharloridado 2026-06-30) ---- */
+.btn.btn-rounded {
+  border-radius: var(--radius-pill, 32px);
 }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */

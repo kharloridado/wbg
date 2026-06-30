@@ -12,7 +12,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
 > **Live Style Guide doc** — short usage spec for the Button page.
 
-**What it is.** The Loop action control — a native OutSystems Button restyled to the pill, Open Sans 700, blue-70 identity.
+**What it is.** The Loop action control — a native OutSystems Button restyled to 8px rounded corners (default) or 32px pill (`.btn-rounded` modifier), Open Sans 700, blue-70 identity.
 
 **When to use**
 - Any clickable action that submits, navigates, or triggers something.
@@ -28,6 +28,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 **How to use**
 - Use the native **Button** widget. Style = Primary → filled; Style = None → Secondary (outlined).
 - Ghost: Extended Class = `btn-ghost`. Sizes: default `.btn` is Regular (40); `btn-xlarge` (56), `btn-large` (48), `btn-small` (32), `btn-regular` (40, explicit alias of the default).
+- **Corner radius:** default is 8px (`--radius-medium`). For the 32px pill variant, add Extended Class = `btn-rounded`.
 - Icon-only buttons must keep an accessible name (`aria-label`).
 
 ## Files
@@ -57,14 +58,16 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      .btn          → outlined: white bg, currentColor border, text 'primary', radius soft, h40, fw semi-bold
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
-   The Loop overrides that baseline to: pill radius (32), Open Sans 700, label
-   tracking -0.5, icon gap 6, padding 16/16, and the WB blue-70 primary fill.
+   The Loop overrides that baseline to: 8px default radius (--radius-medium; 32px pill
+   via .btn-rounded), Open Sans 700, label tracking -0.5, icon gap 6, padding 16/16, and
+   the WB blue-70 primary fill.
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
      .btn-primary        → Primary  (filled blue-70)
-     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — the ONE added modifier,
-                            since OutSystems UI has no native ghost button style.
+     .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — added modifier, no native
+                            ghost in OutSystems UI.
+     .btn.btn-rounded    → any variant with 32px pill radius (opt-in).
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
      --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
@@ -84,7 +87,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
   height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
   padding-block: 0;
   padding-inline: var(--space-small, 16px);
-  border-radius: var(--radius-pill, 32px);
+  border-radius: var(--radius-medium, 8px);
   border-width: 2px;
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
@@ -158,9 +161,9 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 .btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
 .btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
 
-/* ---- .btn.btn-radius-sm → 8px rounded corners (alternative to the pill default) ---- */
-.btn.btn-radius-sm {
-  border-radius: var(--radius-medium, 8px);
+/* ---- .btn.btn-rounded → 32px pill corners (opt-in variant; confirmed: kharloridado 2026-06-30) ---- */
+.btn.btn-rounded {
+  border-radius: var(--radius-pill, 32px);
 }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
@@ -193,10 +196,16 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 | **Small** (32px) | `.btn-small` | native size class |
 
 ## What the override changes vs OutSystems UI baseline
-- Pill radius **32px**, Open Sans **700**, label tracking **-0.5px**, icon gap **6px**. Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px with 16px block padding.
+- **Default radius 8px** (`--radius-medium`), Open Sans **700**, label tracking **-0.5px**, icon gap **6px**. Add `.btn-rounded` Extended Class for the 32px pill variant (`--radius-pill`). Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px with 16px block padding.
 - **Primary fill = blue-70 (#004370)** — overridden directly because `.btn-primary` otherwise resolves through `--color-primary` (blue-50), which other components share.
 - Explicit Loop hover/pressed hues (replaces OutSystems' `filter: brightness()` darkening).
 - Sizes: default `.btn` → 40px (Regular), native `.btn-large` → 48px, `.btn-small` → 32px, added `.btn-xlarge` → 56px (xLarge), `.btn-regular` → 40px (explicit alias of the default).
+
+## Radius variant mapping
+| The Loop | OutSystems | How |
+|---|---|---|
+| **Default (8px rounded)** | base `.btn` | no modifier needed |
+| **Pill (32px)** | `.btn` + `btn-rounded` | Extended Class = `btn-rounded` |
 
 ## Build in ODC with Mentor Studio
 
