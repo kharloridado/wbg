@@ -79,6 +79,7 @@ semantic types, optional title, optional action, optional dismiss.
  *   button-label  Optional action button label (bold, underlined). Omit for no button.
  *   button-href   If set, the action renders as <a href>; otherwise it fires the "action" event.
  *   dismissible   Boolean — shows the × button. Value-aware; DEFAULT ON (absent → on; "false"/"0" → off).
+ *   no-action     Boolean — hides the action button even when button-label is set. Value-aware; default OFF.
  *   duration      Auto-dismiss delay in ms. Absent/empty → 5000. "0" → no auto-dismiss (stays until × / action).
  *   open          Presence reflects visibility. Set/removed by show()/hide(); not usually bound directly.
  *
@@ -106,7 +107,7 @@ semantic types, optional title, optional action, optional dismiss.
  */
 class LoopToast extends HTMLElement {
   static get observedAttributes() {
-    return ['type', 'position', 'title', 'message', 'button-label', 'button-href', 'dismissible'];
+    return ['type', 'position', 'title', 'message', 'button-label', 'button-href', 'dismissible', 'no-action'];
   }
 
   constructor() {
@@ -158,6 +159,11 @@ class LoopToast extends HTMLElement {
   get _dismissible() {
     const v = this.getAttribute('dismissible');
     if (v === null) return true;                 // default ON
+    return v !== 'false' && v !== '0';           // value-aware (ODC emits a value)
+  }
+  get _noAction() {
+    const v = this.getAttribute('no-action');
+    if (v === null) return false;
     return v !== 'false' && v !== '0';           // value-aware (ODC emits a value)
   }
   get _duration() {
@@ -260,7 +266,8 @@ class LoopToast extends HTMLElement {
     const titled      = !!title;
     const urgent      = (t === 'error' || t === 'warning');
 
-    const actionHtml = buttonLabel
+    const showAction = !!buttonLabel && !this._noAction;
+    const actionHtml = showAction
       ? buttonHref
         ? `<a class="lt__action" href="${buttonHref}">${buttonLabel}</a>`
         : `<button class="lt__action" type="button">${buttonLabel}</button>`
@@ -294,7 +301,7 @@ class LoopToast extends HTMLElement {
         ${dismissHtml}
       </div>`;
 
-    this._actionBtn  = (buttonLabel && !buttonHref) ? this.shadowRoot.querySelector('.lt__action') : null;
+    this._actionBtn  = (showAction && !buttonHref) ? this.shadowRoot.querySelector('.lt__action') : null;
     this._dismissBtn = dismissible ? this.shadowRoot.querySelector('.lt__dismiss') : null;
     this._actionBtn?.addEventListener('click', this._onAction);
     this._dismissBtn?.addEventListener('click', this._onDismiss);
@@ -527,7 +534,7 @@ if (!window.LoopToast) {
   const ATTR = {
     type: 'type', position: 'position', title: 'title', message: 'message',
     buttonLabel: 'button-label', buttonHref: 'button-href',
-    duration: 'duration', dismissible: 'dismissible',
+    duration: 'duration', dismissible: 'dismissible', noAction: 'no-action',
   };
   // idOrEl may be: a <loop-toast>, a wrapping Block/Container, or an element id string for either.
   const resolve = (idOrEl) => {
