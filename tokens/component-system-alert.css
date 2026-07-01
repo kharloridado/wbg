@@ -7,6 +7,7 @@
   --loop-sysalert-gap:              var(--space-xxsmall);   /* 8px  — icon ↔ text content */
   --loop-sysalert-action-pt:        0;                      /* multiline action margin-top (removed per designer) */
   --loop-sysalert-action-height:    42px;                   /* multiline action fixed height */
+  --loop-sysalert-padding-b-multiline: var(--space-xsmall); /* 12px — extra bottom padding in multiline (action button too close to edge) */
   --loop-sysalert-min-width:           280px;               /* single-line min-width */
   --loop-sysalert-min-width-multiline: 230px;               /* multi-line min-width */
 
