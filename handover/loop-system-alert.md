@@ -218,6 +218,7 @@ class LoopSystemAlert extends HTMLElement {
 .lsa--multiline {
   align-items: flex-start;
   min-width: var(--loop-sysalert-min-width-multiline, 230px);
+  padding-bottom: var(--loop-sysalert-padding-b-multiline, 12px);
 }
 
 .lsa--error       { background-color: var(--loop-sysalert-error-bg, #9d161d); }
