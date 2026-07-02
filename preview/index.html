@@ -141,6 +141,8 @@
     color: var(--color-text-on-light-headers);
   }
   section > .pv-figma { margin: 0 0 var(--space-regular); font-size: var(--font-size-100); color: var(--color-text-on-light-subdued); }
+  .pv-subhead { margin: var(--space-large) 0 var(--space-tiny); font-size: var(--font-size-400);
+    font-weight: var(--font-weight-bold); color: var(--color-text-on-light-headers); }
 
   /* --- component demo rows --- */
   .pv-row {
@@ -732,6 +734,14 @@
       <code>'FontAwesome'</code> / v4 / v5 <code>@font-face</code> names are dropped so this never
       clobbers the native OutSystems UI Icon widget. Decorative icons here are
       <code>aria-hidden</code>; an icon that carries meaning needs an accessible label.</p>
+
+    <h3 class="pv-subhead">Searchable reference — custom Web Component <code>&lt;loop-icon-reference&gt;</code></h3>
+    <p class="pv-figma">src/components/loop-icon-reference.js + loop-icon-data.js (generated) · the full FA6 set as a searchable grid · click any icon to copy the name for your CustomIcon block · like <code>&lt;loop-typography-reference&gt;</code></p>
+    <loop-icon-reference
+      heading="Icon library"
+      intro="The complete Font Awesome 6 Free set. Search by name or keyword, filter by style, then click an icon to copy its name."
+      copy-format="class">
+    </loop-icon-reference>
   </section>
 
   <!-- ============ BUTTON ============ -->
@@ -1920,7 +1930,7 @@
   <!-- ============ ALERT ============ -->
   <section>
     <h2>Alert — custom Web Component <code>&lt;loop-alert&gt;</code></h2>
-    <p class="pv-figma">handover/loop-alert.md · Figma node 17868-4165</p>
+    <p class="pv-figma">handover/loop-alert.md · Figma node 17868-3944</p>
 
     <div class="pv-row pv-row--stack">
       <span class="pv-label pv-label--block">Single-line (icon · title · message · action · dismiss)</span>
@@ -2331,6 +2341,9 @@
 <script src="../src/components/loop-border-reference.js"></script>
 <script src="../src/components/loop-spacing-reference.js"></script>
 <script src="../src/components/loop-class-inspector.js"></script>
+<!-- Icon reference: the GENERATED data global loads BEFORE the component that reads it. -->
+<script src="../src/components/loop-icon-data.js"></script>
+<script src="../src/components/loop-icon-reference.js"></script>
 <script>
   // Preview-only: surface the component's select/toggle events so you can verify wiring.
   const log = document.getElementById('lbd-log');

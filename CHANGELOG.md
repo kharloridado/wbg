@@ -14,7 +14,47 @@ build.
 
 ## [Unreleased]
 
-_Nothing yet — work merged to `main` since v0.6.0 lands here until the next release is cut._
+### Changed
+- **Text Field — bare `.input-*` size classes now step the input/placeholder text** —
+  `16 / 14 / 13 / 12px` across `.input-xlarge` / `.input-large` / `.input-regular` /
+  `.input-small` (Figma 19336-9729) by setting `--loop-field-text-size`, matching the
+  `.loop-field--*` wrapper modifiers so bare and wrapped fields render identically
+  (previously only `.input-small` changed the font, to 14px). Padding-block reconciled to
+  the wrapper values (regular `11px`, small `8px`); heights stay pinned 56/48/40/32.
+  Applies to every `.input-*` consumer (Search, plain Text Field, DatePicker field).
+- **Modal `<loop-modal>` — all boolean attributes value-aware** — `open`, `no-icon`, `no-close`,
+  `no-backdrop-close` and `static` now treat `="false"` the same as absent, so each binds
+  directly to an ODC Boolean Block input via `If(Flag, "true", "false")` (e.g. `NoIcon` →
+  `no-icon`) — no OnReady JS attribute wiring needed. Previously only `no-icon` was value-aware
+  and `no-close`/`static` would mis-fire when bound `"false"`. Handover Block-wiring section
+  updated to direct attribute bindings; verified in-browser (icon/close toggle, `open="false"`
+  stays hidden with no scroll lock, `static="false"` keeps ESC dismiss).
+- **Alert `<loop-alert>` — per-type state colors** (Figma node 17868-3944, 2026-07-02 update) —
+  title/message/icon are now state-colored per type instead of the shared dark text: titles use
+  the `Text/On State/*/Emphasis` roles (error `#861319` · warning `#473201` · info `#004370` ·
+  success `#234f03`), messages the per-type state text roles, and icons the `Icon/On Light/State/*`
+  roles — decoupled from the border accents (warning icon yellow-50 `#e19d00`, info icon blue-70
+  `#004370`). Dismiss × is now neutral-60 (`--loop-alert-dismiss`). Type icons switched to the
+  updated FILLED glyphs (solid shape + white knockout). The warning message keeps Figma's
+  per-layout split (single `#896001` / multi `#473201`) — FND-062. The design update also
+  resolves FND-054 (Information multi-line Action is now the primary link color).
+
+### Added
+- **Icons — Font Awesome 6 (full set)** — the entire FA6 Free icon library (~2,000 icons:
+  solid · regular · brands) is now available app-wide, self-hosted like the brand Open Sans
+  faces. New: vendored source `vendor/fontawesome-6/` (FA 6.7.2), build `build-fontawesome.mjs`
+  (`npm run build:fontawesome`) → `dist/fontawesome.css` / `.min.css` + `dist/fontawesome-webfonts/`,
+  a preview Icons section, and `handover/loop-fontawesome.md`. The build drops the legacy
+  `'FontAwesome'` / v4 / v5 `@font-face` names so it never clobbers the native OutSystems UI
+  Icon widget — only the three v6 families ship. Use `<i class="fa-solid fa-user"></i>`.
+- **Icons — searchable reference `<loop-icon-reference>`** — Live Style Guide doc for the full
+  FA6 set, like `<loop-typography-reference>`: a searchable, style-filterable grid where every
+  icon is a click-to-copy tile carrying the name to paste into the CustomIcon block
+  (`copy-format` = `class` / `prefixed` / `name`). New: `vendor/fontawesome-6/icon-manifest.json`,
+  generator `build/gen-icon-data.mjs` (`npm run gen:icon-data`) → `src/components/loop-icon-data.js`
+  (1,895 icons), component `src/components/loop-icon-reference.js`, preview section, and
+  `handover/loop-icon-reference.md`. Glyphs render from unicode inside shadow DOM (no dependence
+  on the page `.fa-*` classes — only the document `@font-face`).
 
 ## [0.6.0] — 2026-06-30
 

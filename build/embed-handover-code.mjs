@@ -180,6 +180,9 @@ const MAP = {
   "loop-border-reference.md":  [["src/components/loop-border-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
   "loop-spacing-reference.md": [["src/components/loop-spacing-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
   "loop-class-inspector.md": [["src/components/loop-class-inspector.js", "js", "Add to Resources — load on the Style-Guide screen"]],
+  /* Icon reference: embed only the component logic — the generated loop-icon-data.js (~205 KB)
+     is its OWN Resource paste (like dist/theme.css), documented in the ticket, not inlined. */
+  "loop-icon-reference.md": [["src/components/loop-icon-reference.js", "js", "Add to Resources — load on the Style-Guide screen, AFTER loop-icon-data.js"]],
   "EXAMPLE-rnt-segmented.md":[["src/components/rnt-segmented.js", "js", "Script resource (Theme Library), Include = When invoked"]],
 };
 
