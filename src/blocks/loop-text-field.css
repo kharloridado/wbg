@@ -13,7 +13,7 @@
   color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-field-text-size, 16px);
+  font-size: var(--loop-field-text-size, 13px);   /* Regular text — the family default (token: component-field.css) */
   font-weight: var(--loop-field-text-weight, 400);
   line-height: var(--loop-field-text-leading, 16px);
   letter-spacing: var(--loop-field-text-tracking, 0.5px);

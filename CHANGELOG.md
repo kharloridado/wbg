@@ -22,6 +22,11 @@ build.
   (previously only `.input-small` changed the font, to 14px). Padding-block reconciled to
   the wrapper values (regular `11px`, small `8px`); heights stay pinned 56/48/40/32.
   Applies to every `.input-*` consumer (Search, plain Text Field, DatePicker field).
+- **Text Field — Regular (13px) is now the default text size, no modifier needed** — the
+  `--loop-field-text-size` token defaults to `13px` (was 16px/`--font-size-300`), so an
+  unsized input/textarea renders the full Regular spec (40px + 13px text/placeholder) instead
+  of Regular height with xLarge text — per the Regular-as-family-default direction (FND-021).
+  Explicit sizes are unaffected; the label token stays 16px (the Upload label consumes it).
 - **Modal `<loop-modal>` — all boolean attributes value-aware** — `open`, `no-icon`, `no-close`,
   `no-backdrop-close` and `static` now treat `="false"` the same as absent, so each binds
   directly to an ODC Boolean Block input via `If(Flag, "true", "false")` (e.g. `NoIcon` →

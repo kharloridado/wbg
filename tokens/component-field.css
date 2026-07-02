@@ -15,7 +15,7 @@
   --loop-field-label-tracking:  0px;
 
   /* ---- Placeholder / value text ---- */
-  --loop-field-text-size:       var(--font-size-300);          /* 16px */
+  --loop-field-text-size:       13px;                          /* Regular is the family default (FND-021), so the unmodified input reads Regular's 13px (off-scale literal, like the Select's — FND-031 family). xLarge 16 via .input-xlarge / .loop-field--xlarge. */
   --loop-field-text-weight:     var(--font-weight-regular);    /* 400 */
   --loop-field-text-leading:    16px;
   --loop-field-text-tracking:   0.5px;
