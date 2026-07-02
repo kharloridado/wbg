@@ -24,6 +24,7 @@ action link, dismiss button.
 
 **How to use**
 - Drop the **SystemAlert** Block; set the type, single/multi-line layout, and optional action/dismiss. A type icon shows by default (`hide-icon` to remove, or slot your own). Script Include = Always.
+- Icon, title, and action are all **optional** (designer-confirmed): the icon is toggled off via the `HideIcon` boolean input; an empty `Title` or `ActionLabel` simply renders nothing and takes no space.
 
 ## Files
 | File | OutSystems destination |
@@ -169,7 +170,7 @@ class LoopSystemAlert extends HTMLElement {
         : `<button class="lsa__action" type="button">${actionLabel}</button>`
       : '';
 
-    const iconHtml = this._hideIcon
+    const iconHtml = hideIcon
       ? ''
       : `<slot name="icon" class="lsa__icon-slot" part="icon">${this._defaultIcon(t)}</slot>`;
 
@@ -184,13 +185,11 @@ class LoopSystemAlert extends HTMLElement {
         </button>`
       : '';
 
-    const iconSlot = hideIcon ? '' : `<slot name="icon" class="lsa__icon-slot"></slot>`;
-
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
       <div class="lsa lsa--${t}${multiline ? ' lsa--multiline' : ''}" role="alert" part="alert">
         <div class="lsa__content" part="content">
-          ${iconSlot}
+          ${iconHtml}
           <div class="lsa__text" part="text">
             ${titleHtml}
             ${messageHtml}

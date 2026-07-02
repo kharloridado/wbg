@@ -1896,6 +1896,23 @@
         multiline>
       </loop-system-alert>
     </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Optional parts (icon toggled off via boolean · no title)</span>
+
+      <loop-system-alert type="informative"
+        title="Icon hidden"
+        message="hide-icon=&quot;true&quot; — the HideIcon boolean removes the type icon."
+        hide-icon="true"
+        dismissible>
+      </loop-system-alert>
+
+      <loop-system-alert type="warning"
+        message="No title set — the title collapses and takes no space, like an empty action label."
+        action-label="Fix it"
+        dismissible>
+      </loop-system-alert>
+    </div>
     <p class="pv-note pv-note--spaced">⚠ Pending finding (FND-042): white text on the offline background (#8a9db1) fails WCAG AA contrast — white-75 ≈ 2.23:1, white-90 ≈ 2.6:1 — built as designed, filed for design review.</p>
     <p class="pv-log" id="sysalert-log">last event: —</p>
   </section>
