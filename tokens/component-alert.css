@@ -1,4 +1,6 @@
-/* component-alert.css — Alert component tokens (vanilla JS Web Component <loop-alert>); light contextual alert */
+/* component-alert.css — Alert component tokens (vanilla JS Web Component <loop-alert>); light contextual alert.
+ * Figma node 17868-3944 (2026-07-02 update): per-type state-colored title/message/icon replace
+ * the old shared dark text; dismiss × is neutral-60; icons decoupled from the border accents. */
 :root {
   /* ---- Geometry ---- */
   --loop-alert-corner-radius:    var(--radius-base);     /* 4px */
@@ -18,25 +20,38 @@
   --loop-alert-title-size: var(--font-size-200);   /* 14px — title (Bold) */
   --loop-alert-body-size:  var(--font-size-200);   /* 14px — message + action */
 
-  /* ---- Shared text roles (same across all types — light alert on tinted bg) ---- */
-  --loop-alert-text:   var(--color-text-on-light-default);             /* rgba(0,13,26,0.7) — title + message */
-  --loop-alert-action: var(--color-text-on-light-link-primary-enabled); /* #004370 — normalized to primary for all types */
+  /* ---- Shared text/icon roles ---- */
+  --loop-alert-action:  var(--color-text-on-light-link-primary-enabled); /* #004370 — primary for all types/layouts (FND-054 resolved by 17868-3944 update) */
+  --loop-alert-dismiss: var(--color-icon-on-light-default);              /* #4b5e71 — dismiss × (Icon/On Light/Default) */
 
-  /* Per-type background (low) + accent (border + icon) */
+  /* Per-type background (low) + accent (border) + title/message/icon text roles */
 
   /* ---- Type: error ---- */
-  --loop-alert-error-bg:     var(--color-bg-container-state-error-low);   /* #fdf2f2 */
-  --loop-alert-error-accent: var(--color-bg-container-state-error-high);  /* #9d161d */
+  --loop-alert-error-bg:      var(--color-bg-container-state-error-low);   /* #fdf2f2 */
+  --loop-alert-error-accent:  var(--color-bg-container-state-error-high);  /* #9d161d */
+  --loop-alert-error-title:   var(--color-text-on-state-error-emphasis);   /* #861319 */
+  --loop-alert-error-message: var(--color-text-on-light-state-error);      /* #9d161d */
+  --loop-alert-error-icon:    var(--color-icon-on-light-state-error);      /* #9d161d */
 
   /* ---- Type: warning ---- */
-  --loop-alert-warning-bg:     var(--color-domain-state-warning-low);     /* #fef3d7 */
-  --loop-alert-warning-accent: var(--color-domain-state-warning-medium);  /* #896001 */
+  --loop-alert-warning-bg:            var(--color-domain-state-warning-low);      /* #fef3d7 */
+  --loop-alert-warning-accent:        var(--color-domain-state-warning-medium);   /* #896001 */
+  --loop-alert-warning-title:         var(--color-text-on-state-warning-emphasis); /* #473201 */
+  --loop-alert-warning-message:       var(--color-text-on-state-warning-default); /* #896001 — single-line (Figma per-layout split, FND-062) */
+  --loop-alert-warning-message-multi: var(--color-text-on-light-state-warning);   /* #473201 — multi-line */
+  --loop-alert-warning-icon:          var(--color-icon-on-light-state-warning-regular); /* #e19d00 */
 
   /* ---- Type: information ---- */
-  --loop-alert-information-bg:     var(--color-domain-state-info-low);    /* #f6fcff */
-  --loop-alert-information-accent: var(--color-text-on-light-state-info); /* #00538a */
+  --loop-alert-information-bg:      var(--color-domain-state-info-low);          /* #f6fcff */
+  --loop-alert-information-accent:  var(--color-text-on-light-state-info);       /* #00538a */
+  --loop-alert-information-title:   var(--color-text-on-state-info-emphasis);    /* #004370 */
+  --loop-alert-information-message: var(--color-text-on-light-state-info);       /* #00538a */
+  --loop-alert-information-icon:    var(--color-icon-on-light-state-informational); /* #004370 */
 
   /* ---- Type: success ---- */
-  --loop-alert-success-bg:     var(--color-domain-state-positive-low);          /* #f6fef0 */
-  --loop-alert-success-accent: var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-alert-success-bg:      var(--color-domain-state-positive-low);           /* #f6fef0 */
+  --loop-alert-success-accent:  var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-alert-success-title:   var(--color-text-on-state-success-emphasis);      /* #234f03 */
+  --loop-alert-success-message: var(--color-text-on-state-success-default);       /* #388004 */
+  --loop-alert-success-icon:    var(--color-icon-on-light-state-success);         /* #388004 */
 }

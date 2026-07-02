@@ -49,10 +49,17 @@ built-in per-type icon (slot-overridable), action link, dismiss button.
 /**
  * <loop-alert> — Contextual inline alert (light, left-accent-border callout).
  *
- * Figma: "Alerts" [node:17868-4165]. Custom Web Component — no native OS widget.
+ * Figma: "Alerts" [node:17868-3944]. Custom Web Component — no native OS widget.
  * Renders a tinted alert with a 4px LEFT accent border (plus 1px top/right/bottom in the
  * same accent color), a type icon, optional title, message, action link/button, and a
  * dismiss (×) button. Four semantic types; single-line and multi-line layouts.
+ *
+ * Colors (per the 2026-07-02 Figma update): title/message/icon are STATE-COLORED per type
+ * (--loop-alert-<type>-title/-message/-icon), not a shared dark text; the warning message
+ * intentionally differs by layout (single-line #896001 vs multi-line #473201 — FND-062,
+ * faithful per-layout); the dismiss × is neutral-60 (--loop-alert-dismiss); the action is
+ * the primary link color for every type/layout. Icons are FILLED glyphs (solid shape in the
+ * per-type icon color with white knockout marks), matching the updated Figma assets.
  *
  * NOT to be confused with <loop-system-alert> (the dark, full-width status banner with an
  * "offline" type). This is the light, in-page contextual alert that lives in the Notes/Alerts
@@ -158,21 +165,22 @@ class LoopAlert extends HTMLElement {
     this.dispatchEvent(new CustomEvent('action', { bubbles: true, composed: true, detail: { type: this._type } }));
   }
 
-  // Built-in type icon (Figma renders one per type). 16×16, stroke/fill currentColor so it
-  // inherits the per-type accent color. Overridden by a slotted `slot="icon"` element.
+  // Built-in type icon (Figma renders one per type). 16×16 FILLED glyphs — solid shape in
+  // currentColor (driven by the per-type --loop-alert-<type>-icon token) with white knockout
+  // marks, modeled on the Figma 17868-3944 assets. Overridden by a slotted `slot="icon"` element.
   _defaultIcon(type) {
     const svg = (inner) =>
       `<svg class="loop-alert__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">${inner}</svg>`;
     switch (type) {
       case 'warning':
-        return svg('<path d="M8 2.3 14.4 13.1H1.6L8 2.3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="8" y1="6.4" x2="8" y2="9.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.3" r="0.8" fill="currentColor"/>');
+        return svg('<path d="M8 1c.44 0 .85.23 1.08.62l6.75 11.5c.23.39.23.86.01 1.25-.22.39-.64.63-1.09.63H1.25c-.45 0-.86-.24-1.08-.63-.22-.39-.22-.86.01-1.25L6.92 1.62C7.15 1.23 7.56 1 8 1Z" fill="currentColor"/><line x1="8" y1="5.75" x2="8" y2="9.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="12" r="1" fill="white"/>');
       case 'information':
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="5" r="0.85" fill="currentColor"/><line x1="8" y1="7.2" x2="8" y2="11.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>');
+        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="4.5" r="1" fill="white"/><line x1="8" y1="7.2" x2="8" y2="11.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>');
       case 'success':
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.2 7 10.2 11 5.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>');
+        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.7 8.4 7 10.7 11.3 5.9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>');
       case 'error':
       default:
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4.5" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.85" fill="currentColor"/>');
+        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><line x1="8" y1="4.5" x2="8" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="1" fill="white"/>');
     }
   }
 
@@ -246,7 +254,6 @@ class LoopAlert extends HTMLElement {
   border: var(--loop-alert-hairline-width, 1px) solid;
   border-left-width: var(--loop-alert-accent-width, 4px);
   border-radius: var(--loop-alert-corner-radius, 4px);
-  color: var(--loop-alert-text, rgba(0, 13, 26, 0.7));
 }
 .loop-alert--multiline {
   align-items: flex-start;
@@ -283,11 +290,25 @@ class LoopAlert extends HTMLElement {
 .loop-alert--multiline .loop-alert__icon,
 .loop-alert--multiline ::slotted([slot="icon"]) { margin-top: 2px; }
 
-/* icon color = per-type accent (keyed on the native OSUI alert type modifiers) */
-.alert-error   .loop-alert__icon { color: var(--loop-alert-error-accent, #9d161d); }
-.alert-warning .loop-alert__icon { color: var(--loop-alert-warning-accent, #896001); }
-.alert-info    .loop-alert__icon { color: var(--loop-alert-information-accent, #00538a); }
-.alert-success .loop-alert__icon { color: var(--loop-alert-success-accent, #388004); }
+/* icon color = per-type icon role — decoupled from the border accent (warning icon is
+ * yellow-50 on a yellow-base border; info icon is blue-70 on a blue-60 border) */
+.alert-error   .loop-alert__icon { color: var(--loop-alert-error-icon, #9d161d); }
+.alert-warning .loop-alert__icon { color: var(--loop-alert-warning-icon, #e19d00); }
+.alert-info    .loop-alert__icon { color: var(--loop-alert-information-icon, #004370); }
+.alert-success .loop-alert__icon { color: var(--loop-alert-success-icon, #388004); }
+
+/* title (emphasis) + message = per-type state text roles */
+.alert-error   .loop-alert__title { color: var(--loop-alert-error-title, #861319); }
+.alert-warning .loop-alert__title { color: var(--loop-alert-warning-title, #473201); }
+.alert-info    .loop-alert__title { color: var(--loop-alert-information-title, #004370); }
+.alert-success .loop-alert__title { color: var(--loop-alert-success-title, #234f03); }
+
+.alert-error   .loop-alert__message { color: var(--loop-alert-error-message, #9d161d); }
+.alert-warning .loop-alert__message { color: var(--loop-alert-warning-message, #896001); }
+.alert-info    .loop-alert__message { color: var(--loop-alert-information-message, #00538a); }
+.alert-success .loop-alert__message { color: var(--loop-alert-success-message, #388004); }
+/* Figma splits the warning message shade by layout (single #896001 / multi #473201) — FND-062 */
+.alert-warning.loop-alert--multiline .loop-alert__message { color: var(--loop-alert-warning-message-multi, #473201); }
 
 /* single-line: promote title + message into the content flex row; multi-line: real column */
 .loop-alert__text { display: contents; }
@@ -353,7 +374,7 @@ class LoopAlert extends HTMLElement {
   border:      0;
   padding:     0;
   cursor:      pointer;
-  color:       var(--loop-alert-text, rgba(0, 13, 26, 0.7));
+  color:       var(--loop-alert-dismiss, #4b5e71);
 }
 .loop-alert--multiline .loop-alert__dismiss { align-self: flex-start; margin-top: 2px; }
 .loop-alert__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
