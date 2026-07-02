@@ -70,7 +70,7 @@ Class on the field Container.
 /* Regular (default) — overrides the shared rule's 18px (xLarge) padding-block to make a 40px single-line input. */
 .form-control[data-input] {
   height: 40px;                  /* pinned height; border-box keeps it deterministic */
-  padding-block: 10px;
+  padding-block: 11px;
 }
 
 /* Placeholder colour */
@@ -139,24 +139,28 @@ Class on the field Container.
   padding-inline: 0px;
 }
 
-/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular ---- */
+/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular.
+   Text/placeholder steps 16 / 14 / 13 / 12 (Figma 19336-9729) via --loop-field-text-size,
+   mirroring the .loop-field--* wrapper modifiers so bare and wrapped fields render identically. ---- */
 .form-control[data-input].input-xlarge {
+  --loop-field-text-size: 16px;
   height: 56px;
   padding-block: var(--loop-field-padding-block, 18px);
 }
 .form-control[data-input].input-large {
+  --loop-field-text-size: 14px;
   height: 48px;
   padding-block: 14px;
 }
 .form-control[data-input].input-regular {
+  --loop-field-text-size: 13px;
   height: 40px;
-  padding-block: 10px;
+  padding-block: 11px;
 }
 .form-control[data-input].input-small {
+  --loop-field-text-size: 12px;
   height: 32px;
-  padding-block: 6px;
-  font-size: var(--font-size-200, 14px);
-  line-height: 14px;
+  padding-block: 8px;
 }
 /* No per-size focus padding compensation: the focus ring is an inset box-shadow, so padding stays constant. */
 
