@@ -141,26 +141,40 @@ Class on the field Container.
 
 /* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular.
    Text/placeholder steps 16 / 14 / 13 / 12 (Figma 19336-9729) via --loop-field-text-size,
-   mirroring the .loop-field--* wrapper modifiers so bare and wrapped fields render identically. ---- */
+   mirroring the .loop-field--* wrapper modifiers so bare and wrapped fields render identically.
+   font-size is declared here (not only on the base rule) because OutSystems UI sets font-size
+   directly on .input-large/.input-small at the same (0,3,0) specificity, which outranks the
+   (0,2,0) base rule that consumes the custom prop. ---- */
 .form-control[data-input].input-xlarge {
   --loop-field-text-size: 16px;
+  font-size: var(--loop-field-text-size);
   height: 56px;
   padding-block: var(--loop-field-padding-block, 18px);
 }
 .form-control[data-input].input-large {
   --loop-field-text-size: 14px;
+  font-size: var(--loop-field-text-size);
   height: 48px;
   padding-block: 14px;
 }
 .form-control[data-input].input-regular {
   --loop-field-text-size: 13px;
+  font-size: var(--loop-field-text-size);
   height: 40px;
   padding-block: 11px;
 }
 .form-control[data-input].input-small {
   --loop-field-text-size: 12px;
+  font-size: var(--loop-field-text-size);
   height: 32px;
   padding-block: 8px;
+}
+/* Tablet/phone — OutSystems UI re-asserts font-size on .input-small at (0,4,0)
+   (.tablet .form-control[data-input].input-small { font-size: var(--font-size-xs) }),
+   which would override the 12px step; match its specificity to keep the Loop size. */
+.tablet .form-control[data-input].input-small,
+.phone .form-control[data-input].input-small {
+  font-size: var(--loop-field-text-size);
 }
 /* No per-size focus padding compensation: the focus ring is an inset box-shadow, so padding stays constant. */
 
