@@ -53,12 +53,12 @@ slots with placeholder fallbacks; focus trap; body scroll lock; ESC + backdrop d
  * OutSystems with a single attribute. Reads the --loop-modal-* tokens (they cascade
  * into Shadow DOM) declared in tokens/component-modal.css.
  *
- * Attributes:
- *   open               Boolean — visible; omit/remove to hide (the toggle target)
+ * Attributes (all booleans are VALUE-AWARE: attr="false" ≡ absent, so ODC bindings
+ * of the form If(Flag, "true", "false") work — presence alone also still works):
+ *   open               Boolean — visible; omit/remove/"false" to hide (the toggle target)
  *   heading            Title text (fallback when no slot="heading" is provided)
  *   size               "medium" (default, 960px) | "small" (456px)
- *   no-icon            Boolean toggle — hide the leading information icon.
- *                      Value-aware: no-icon="false" shows the icon (ODC If binding).
+ *   no-icon            Boolean — hide the leading information icon
  *   no-close           Boolean — hide the ✕ close button (modal still closes via ESC / backdrop)
  *   no-backdrop-close  Boolean — clicking the overlay will NOT dismiss (ESC still works)
  *   static             Boolean — disable light-dismiss entirely (no ESC, no backdrop close)
@@ -117,7 +117,7 @@ class LoopModal extends HTMLElement {
   attributeChangedCallback(name, oldV, newV) {
     if (oldV === newV || !this.isConnected) return;  // pre-connect changes are handled by connectedCallback
     this._render();
-    if (name === 'open') (newV !== null ? this._activate() : this._deactivate());
+    if (name === 'open') (this._isOpen ? this._activate() : this._deactivate());
   }
 
   /* ---- value-aware boolean attribute helper ---- */
@@ -127,14 +127,14 @@ class LoopModal extends HTMLElement {
     return v !== null && v !== 'false';
   }
 
-  /* ---- attribute getters ---- */
-  get _isOpen()         { return this.hasAttribute('open'); }
+  /* ---- attribute getters (booleans all value-aware) ---- */
+  get _isOpen()         { return this._boolAttr('open'); }
   get _heading()        { return this.getAttribute('heading') || ''; }
   get _size()           { return this.getAttribute('size') === 'small' ? 'small' : 'medium'; }
   get _noIcon()         { return this._boolAttr('no-icon'); }
-  get _noClose()        { return this.hasAttribute('no-close'); }
-  get _isStatic()       { return this.hasAttribute('static'); }
-  get _noBackdropClose(){ return this.hasAttribute('no-backdrop-close') || this._isStatic; }
+  get _noClose()        { return this._boolAttr('no-close'); }
+  get _isStatic()       { return this._boolAttr('static'); }
+  get _noBackdropClose(){ return this._boolAttr('no-backdrop-close') || this._isStatic; }
 
   /* ---- public API ---- */
   show()        { this.setAttribute('open', ''); }
@@ -299,6 +299,7 @@ class LoopModal extends HTMLElement {
   display: none;
 }
 :host([open]) { display: block; }
+:host([open="false"]) { display: none; }  /* value-aware: ODC If(Flag,"true","false") binding */
 
 .lmo__overlay {
   position: absolute;
@@ -445,15 +446,18 @@ if (!customElements.get('loop-modal')) {
 </details>
 
 ## API — Attributes
-| Attribute | Values | Description |
-|---|---|---|
-| `open` | Boolean | Visible; toggle to show/hide |
-| `heading` | Text | Heading text (fallback when `slot="heading"` is empty) |
-| `size` | `medium` (default) \| `small` | Medium = 960px, Small = 456px |
-| `no-icon` | Boolean | Hide the leading information icon |
-| `no-close` | Boolean | Hide the ✕ close button |
-| `no-backdrop-close` | Boolean | Clicking the overlay will not dismiss |
-| `static` | Boolean | Disable all light-dismiss (no ESC, no backdrop) |
+All Boolean attributes are **value-aware**: `attr="false"` behaves the same as the attribute
+being absent, so they bind directly to ODC Boolean inputs with `If(Flag, "true", "false")`.
+
+| Attribute | Values | ODC binding | Description |
+|---|---|---|---|
+| `open` | Boolean | `If(IsOpen, "true", "false")` (or drive via `show()`/`hide()`) | Visible; toggle to show/hide |
+| `heading` | Text | `Heading` | Heading text (fallback when `slot="heading"` is empty) |
+| `size` | `medium` (default) \| `small` | `Size` | Medium = 960px, Small = 456px |
+| `no-icon` | Boolean | `If(NoIcon, "true", "false")` | Hide the leading information icon |
+| `no-close` | Boolean | `If(NoClose, "true", "false")` | Hide the ✕ close button |
+| `no-backdrop-close` | Boolean | `If(NoBackdropClose, "true", "false")` | Clicking the overlay will not dismiss |
+| `static` | Boolean | `If(Static, "true", "false")` | Disable all light-dismiss (no ESC, no backdrop) |
 
 ## API — Methods (call from JavaScript node)
 | Method | Description |
@@ -550,23 +554,24 @@ than the `heading` text or a custom icon.
 
 ## OutSystems Block wiring
 1. Create Block `Modal` with inputs:
-   - `Heading` (Text), `Size` (Text, default `"medium"`), `NoIcon` (Boolean), `NoClose` (Boolean),
-     `NoBackdropClose` (Boolean), `Static` (Boolean)
+   - `Heading` (Text), `Size` (Text, default `"medium"`), `NoIcon` (Boolean, default `False`),
+     `NoClose` (Boolean), `NoBackdropClose` (Boolean), `Static` (Boolean)
 2. Events: `OnOpen` (no params), `OnClose` with `Reason` (Text).
 3. Placeholders (see the slot rules above):
    - `Content` — bare Placeholder → default slot (main body widgets)
    - `Footer` — Placeholder inside a Container with attribute `slot="footer"` (button row)
    - *(optional)* `Icon` / `Heading` — each inside a Container with `slot="icon"` / `slot="heading"`
-4. In OnReady, wire inputs to the element's attributes via a JavaScript node:
-   ```javascript
-   var el = document.getElementById($parameters.WidgetId);
-   if ($parameters.Heading)         el.setAttribute('heading', $parameters.Heading);
-   if ($parameters.Size === 'small') el.setAttribute('size', 'small');
-   if ($parameters.NoIcon)          el.setAttribute('no-icon', '');
-   if ($parameters.NoClose)         el.setAttribute('no-close', '');
-   if ($parameters.NoBackdropClose) el.setAttribute('no-backdrop-close', '');
-   if ($parameters.Static)          el.setAttribute('static', '');
-   ```
+4. Bind the inputs **directly on the `<loop-modal>` element's attributes** (Properties →
+   Attributes; ODC requires a Value expression on every attribute — no JavaScript node needed;
+   all booleans are value-aware, so `"false"` behaves like absent):
+   | Attribute | Value expression |
+   |---|---|
+   | `heading` | `Heading` |
+   | `size` | `Size` |
+   | `no-icon` | `If(NoIcon, "true", "false")` |
+   | `no-close` | `If(NoClose, "true", "false")` |
+   | `no-backdrop-close` | `If(NoBackdropClose, "true", "false")` |
+   | `static` | `If(Static, "true", "false")` |
 5. Wire `open`/`close` CustomEvents to `OnOpen`/`OnClose` actions:
    ```javascript
    var el = document.getElementById($parameters.WidgetId);
@@ -668,7 +673,7 @@ Work iteratively: create the Block interface in step 1 and show it to me before 
 - [ ] Import `loop-modal.js` as Script resource, Include = **When invoked**.
 - [ ] Rebuild `dist/theme.css` and paste into ODC Theme editor (includes `--loop-modal-*` tokens).
 - [ ] Create Block `Modal` with inputs, events, a `Content` Placeholder (default slot) and a `Footer` Placeholder wrapped in a Container carrying the HTML attribute `slot="footer"` (see slot rules).
-- [ ] Wire OnReady JS node for attributes + close/open CustomEvent listeners.
+- [ ] Bind inputs directly on the element's attributes (booleans via `If(Flag, "true", "false")`, e.g. `no-icon` = `If(NoIcon, "true", "false")`); wire close/open CustomEvent listeners in a JS node.
 - [ ] Create the reusable `ToggleModal` client action (resolves modal from a Block id) and call it from triggers.
 - [ ] Test Medium + Small; test ESC, close button, backdrop click; test `static` + `no-backdrop-close`.
 - [ ] Test with all slots populated and all slots empty (placeholder fallbacks).

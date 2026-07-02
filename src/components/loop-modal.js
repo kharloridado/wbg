@@ -8,12 +8,12 @@
  * OutSystems with a single attribute. Reads the --loop-modal-* tokens (they cascade
  * into Shadow DOM) declared in tokens/component-modal.css.
  *
- * Attributes:
- *   open               Boolean — visible; omit/remove to hide (the toggle target)
+ * Attributes (all booleans are VALUE-AWARE: attr="false" ≡ absent, so ODC bindings
+ * of the form If(Flag, "true", "false") work — presence alone also still works):
+ *   open               Boolean — visible; omit/remove/"false" to hide (the toggle target)
  *   heading            Title text (fallback when no slot="heading" is provided)
  *   size               "medium" (default, 960px) | "small" (456px)
- *   no-icon            Boolean toggle — hide the leading information icon.
- *                      Value-aware: no-icon="false" shows the icon (ODC If binding).
+ *   no-icon            Boolean — hide the leading information icon
  *   no-close           Boolean — hide the ✕ close button (modal still closes via ESC / backdrop)
  *   no-backdrop-close  Boolean — clicking the overlay will NOT dismiss (ESC still works)
  *   static             Boolean — disable light-dismiss entirely (no ESC, no backdrop close)
@@ -72,7 +72,7 @@ class LoopModal extends HTMLElement {
   attributeChangedCallback(name, oldV, newV) {
     if (oldV === newV || !this.isConnected) return;  // pre-connect changes are handled by connectedCallback
     this._render();
-    if (name === 'open') (newV !== null ? this._activate() : this._deactivate());
+    if (name === 'open') (this._isOpen ? this._activate() : this._deactivate());
   }
 
   /* ---- value-aware boolean attribute helper ---- */
@@ -82,14 +82,14 @@ class LoopModal extends HTMLElement {
     return v !== null && v !== 'false';
   }
 
-  /* ---- attribute getters ---- */
-  get _isOpen()         { return this.hasAttribute('open'); }
+  /* ---- attribute getters (booleans all value-aware) ---- */
+  get _isOpen()         { return this._boolAttr('open'); }
   get _heading()        { return this.getAttribute('heading') || ''; }
   get _size()           { return this.getAttribute('size') === 'small' ? 'small' : 'medium'; }
   get _noIcon()         { return this._boolAttr('no-icon'); }
-  get _noClose()        { return this.hasAttribute('no-close'); }
-  get _isStatic()       { return this.hasAttribute('static'); }
-  get _noBackdropClose(){ return this.hasAttribute('no-backdrop-close') || this._isStatic; }
+  get _noClose()        { return this._boolAttr('no-close'); }
+  get _isStatic()       { return this._boolAttr('static'); }
+  get _noBackdropClose(){ return this._boolAttr('no-backdrop-close') || this._isStatic; }
 
   /* ---- public API ---- */
   show()        { this.setAttribute('open', ''); }
@@ -254,6 +254,7 @@ class LoopModal extends HTMLElement {
   display: none;
 }
 :host([open]) { display: block; }
+:host([open="false"]) { display: none; }  /* value-aware: ODC If(Flag,"true","false") binding */
 
 .lmo__overlay {
   position: absolute;
