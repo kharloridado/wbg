@@ -1,0 +1,65 @@
+/* ============================================
+   Component: Split Button  ("The Loop" — loop/split-btn)
+   Figma: -The Loop- Main Library · "Button Dropdown" [node:15597-3469]
+   Approach: BEM WRAPPER around two native OutSystems UI Button widgets.
+   Location: Theme CSS (paste below OutSystems UI so it wins on specificity).
+   Escalation Level: L1 (native widget restyle, BEM wrapper)
+
+   Usage in OutSystems:
+     Container   ExtendedClass = "loop-split-btn"
+     Left Btn    ExtendedClass = "loop-split-btn__action"
+     Right Btn   ExtendedClass = "loop-split-btn__toggle"
+
+   Variant matrix (set Button "Style" on each widget):
+     Left = Primary, Right = Primary    → filled both sides
+     Left = Primary, Right = (default)  → filled left + outlined right
+     Left = (default), Right = (default) → outlined both sides
+     Left = Ghost,   Right = Ghost      → text-fill both sides
+
+   Tokens consumed: --radius-pill, --loop-split-btn-toggle-w
+   ============================================ */
+
+.loop-split-btn {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* ---- Action button (left half): pill outer-left corners, flush inner-right ---- */
+.loop-split-btn .loop-split-btn__action {
+  border-start-start-radius: var(--radius-pill, 32px);
+  border-end-start-radius:   var(--radius-pill, 32px);
+  border-start-end-radius:   0;
+  border-end-end-radius:     0;
+  border-inline-end-width:   0;   /* collapse shared edge; toggle's left border is the separator */
+}
+
+/* ---- Toggle button (right half): flush inner-left, pill outer-right ---- */
+.loop-split-btn .loop-split-btn__toggle {
+  border-start-start-radius: 0;
+  border-end-start-radius:   0;
+  border-start-end-radius:   var(--radius-pill, 32px);
+  border-end-end-radius:     var(--radius-pill, 32px);
+  min-width:       var(--loop-split-btn-toggle-w, 44px);
+  padding-inline:  0;
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+/* ---- Primary + Primary: thin translucent separator across the collapsed shared edge ---- */
+.loop-split-btn .loop-split-btn__action.btn-primary {
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ---- Focus: raise focused half above sibling so the full ring shows unclipped ---- */
+.loop-split-btn .loop-split-btn__action:focus-visible,
+.loop-split-btn .loop-split-btn__toggle:focus-visible {
+  position: relative;
+  z-index:  1;
+}
+
+/* ---- Reduced motion (WCAG 2.2 SC 2.3.3) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .loop-split-btn .loop-split-btn__action,
+  .loop-split-btn .loop-split-btn__toggle { transition: none; }
+}
