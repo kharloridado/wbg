@@ -54,6 +54,7 @@ const MAP = {
   "loop-badge.md":           [["src/blocks/loop-badge.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-card.md":            [["src/blocks/loop-card.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-button-dropdown.md": [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
+  "loop-split-btn.md":       [["src/blocks/loop-split-btn.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tabs.md":            [["src/blocks/loop-tabs.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-modal.md":           [["src/components/loop-modal.js",   "js", "Script resource (Theme/Library), Include = When invoked"]],
