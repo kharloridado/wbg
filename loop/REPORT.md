@@ -25,5 +25,13 @@ Both are low → register-only per `findings.gate = high+` (no GitHub Bug opened
 - Handover Task **#66** (`[handover] Dropdown / Select`) created, assigned, added to Project #1.
 - To-build issue **#38** commented + closed as completed.
 
+## Review metrics
+Agentic-review coverage for this run (computed from `state.json` review fields — see `.claude/agents/checker.md`):
+- **Review coverage:** 1 item gated this run (Dropdown/Select) — auto-passed: 1, needs-human: 0.
+- **False-positive filter:** findings raised 2 · confirmed/filed 2 · challenged-out (not-reproduced) 0. (No finding was refuted this run; the FND-011 close and the FND-005/013/018/022 off-grid class are the precedents the challenge step now catches up front.)
+- **Checker rounds:** round-1-pass rate 0/1 (Dropdown passed on round 2 after finding-ID hygiene); mean rounds-to-pass 2.
+- **Risk-tier coverage:** core items full-stack-reviewed 0/0; this item = `standard` depth.
+- **Deterministic gate:** pass rate 1/1 (`npm run build:theme` exit 0).
+
 ## Needs-human (to advance further)
 The rest of the to-build queue (#39 Search, #40 Date Picker, #41 Upload, #42 Alert, #43 Toast, #44 Badge, #47 Progress Bar, #48 Card, #49 Tabs, #50 Accordion, #51 Modal, #52 Breadcrumbs, #53 Pagination, #54 Avatar) carries **no Figma node ids**. Provide node ids — and for provider/JS patterns the rendered OutSystems HTML — to continue. `after_composites` checkpoint = continue.
