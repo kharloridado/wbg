@@ -97,7 +97,7 @@ verify/finish · **To build** = net-new.
 ## Built but NOT on the canonical list — awaiting keep/archive ruling
 These exist in the repo but are not on the list above. Default disposition = **Archive** unless you say keep.
 - **Card** (`src/blocks/loop-card.css`, handover, in preview) — keep or archive?
-- **Layout Top** (`tokens/outsystems-ui-header.css`, handover #68) — only Layout Side is listed. Archive?
+- **Layout Top** — **Archived 2026-07-04** (user ruling: no header override; default OutSystems header). `tokens/outsystems-ui-header.css`, `--header-color`, the preview section and `handover/loop-layout-top-header.md` removed; handover #68 to close.
 - **rnt-segmented** — example/reference only → archive (not a WBG deliverable).
 - **Reference renderers** (color / type / spacing / shadow / border reference + class-inspector) — kept
   as internal Live Style Guide tooling under Foundation (not separate board items).

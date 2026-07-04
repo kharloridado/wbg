@@ -4,7 +4,7 @@
  * logo label and a profile block at the foot. Restyles the native OutSystems UI
  * Layout Side classes (.app-menu-content / .app-menu-links / .header-logo /
  * .app-login-info) — no parallel custom system, no JS. Everything is scoped under
- * .layout-side so the Layout Top header (outsystems-ui-header.css) is unaffected.
+ * .layout-side so the Layout Top header (default OutSystems, no override) is unaffected.
  * The panel width token --side-menu-size lives in outsystems-ui-overrides.css. */
 
 /* ── Panel: white surface (native neutral-0) + a dimmed right edge and the brand
@@ -148,7 +148,7 @@
 }
 
 /* ── Focus ring — The Loop 2px on-light outline. The sidebar is a light surface,
- * so Blue/50 is conformant here (unlike the dark Layout Top header, FND-012). */
+ * so Blue/50 is conformant here. */
 .layout-side .app-menu-links a:focus-visible,
 .has-accessible-features .layout-side .app-menu-links a:focus {
   outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));

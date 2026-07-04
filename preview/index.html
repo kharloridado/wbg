@@ -275,9 +275,6 @@
   /* preview-only: let the open native Dropdown list flow statically instead of JS-positioned absolute */
   .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: var(--space-tiny); }
 
-  /* preview-only: let the open submenu panel flow statically instead of JS-positioned absolute */
-  .pv-submenu-static .osui-submenu__items { position: static; margin-top: var(--space-tiny); }
-
   /* file-uploader demo: lay the dropzone state variants out in a responsive grid */
   .pv-up-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-regular); width: 100%; }
 
@@ -397,41 +394,9 @@
 
 <main>
 
-  <!-- ============ LAYOUT TOP — HEADER / MENU ============ -->
-  <section id="sec-layout">
-    <h2>Layout Top — restyle native <code>.header</code> + <code>.app-menu-links</code></h2>
-    <p class="pv-figma">tokens/outsystems-ui-overrides.css (<code>--header-color</code>) + tokens/outsystems-ui-header.css · primary header, white text/links, white active underline</p>
-
-    <div class="layout layout-top">
-      <header class="header header-top">
-        <div class="header-content">
-          <h1 class="application-name">World Bank Group</h1>
-          <nav class="header-navigation">
-            <div class="app-menu-links pv-submenu-static">
-              <a href="#0" class="active">Overview</a>
-              <a href="#0">Projects</a>
-              <a href="#0">Regions</a>
-              <div class="osui-submenu active osui-submenu--is-open">
-                <div class="osui-submenu__header">
-                  <span class="osui-submenu__header__item"><a href="#0">Reports</a></span>
-                </div>
-                <div class="osui-submenu__items">
-                  <a href="#0" class="active">Annual Report</a>
-                  <a href="#0">Regional Briefs</a>
-                  <a href="#0">Data &amp; Statistics</a>
-                </div>
-              </div>
-              <a href="#0">About</a>
-            </div>
-          </nav>
-        </div>
-      </header>
-    </div>
-    <span class="pv-note">Header bar (incl. the app name + the active <code>.osui-submenu</code> tab) renders white with a white bottom border; the floating submenu panel stays a white popup with dark links. Tab through: the Blue/50 focus ring is low-contrast here — FND-012 (flag-don't-fix).</span>
-  </section>
-
   <!-- ============ LAYOUT SIDE — SIDEBAR / MENU ============ -->
-  <section>
+  <!-- Layout Top has NO overrides — it renders the default OutSystems UI header. -->
+  <section id="sec-layout">
     <h2>Layout Side — restyle native <code>.app-menu-content</code> + <code>.app-menu-links</code></h2>
     <p class="pv-figma">tokens/outsystems-ui-overrides.css (<code>--side-menu-size</code>) + tokens/outsystems-ui-side.css · Figma node 30132-139314 "Form page" · light sidebar / dark text, 320px panel, 32px menu pills</p>
 

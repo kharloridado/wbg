@@ -14,7 +14,7 @@ node `30132:139314`. Full structural analysis: `docs/layout-side-structure.md`.
   white panel edge + brand shadow, the pill menu items (radius, sizing, SemiBold 16/24
   neutral-9 text), the hover/selected pill states, the logo label and profile type, and the
   on-light focus ring. All scoped under `.layout-side`, so the Layout **Top** header
-  (`outsystems-ui-header.css`) is unaffected — and vice-versa.
+  (default OutSystems — no override) is unaffected.
 
 **Both files are already folded into `dist/theme.css`.** There is **nothing to hand-place per
 block** — the whole sidebar branding ships in the theme paste.
@@ -34,7 +34,7 @@ Loop (white panel, dark text, 320px, pill menu items, brand logo + profile).
 
 **When not to use** (reach for instead)
 - This is page chrome, not a content component — for a contained surface use a **Card**.
-- Layout **Top** headers are branded separately (`loop-layout-top-header.md`, dark header).
+- Layout **Top** headers are **not** branded — they keep the default OutSystems header.
 
 **How to use**
 - Already folded into `dist/theme.css` — use the standard **Layout Side** template; drop your
@@ -417,5 +417,5 @@ invented brand colours. Confirm or replace the state spec with design.
   both pass AA comfortably.
 - Active state is conveyed by the pill **fill + text-colour shift**, not colour alone.
 - Menu items are ≥ 48px tall — clears the SC 2.5.8 (AA) 24px target minimum.
-- Focus ring is the on-light Blue/50 outline on a **light** surface, so (unlike the dark
-  Layout Top header, FND-012) it is perceivable here.
+- Focus ring is the on-light Blue/50 outline on a **light** surface, so it is clearly
+  perceivable here (FND-012 covers the brand ring replacing the OutSystems default).
