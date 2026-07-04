@@ -2,8 +2,8 @@
 
 A **searchable, click-to-copy icon documentation page** for the Live Style Guide — the icon
 counterpart to `<loop-color-reference>` / `<loop-typography-reference>`. Drop **one** element on
-a Style-Guide screen and it renders the **entire Font Awesome 6 Free set** (~2,000 icons across
-**solid · regular · brands**) as a grid you can search by name or keyword and filter by style.
+a Style-Guide screen and it renders the **entire Font Awesome 6 Pro set** (~3,300 icons across
+**solid · regular · light**) as a grid you can search by name or keyword and filter by style.
 **Click any icon to copy its name** to paste into your **CustomIcon** block.
 
 Pairs with `handover/loop-fontawesome.md` (the underlying font import). Built like the existing
@@ -12,7 +12,7 @@ reference Web Components — no rows built by hand in Service Studio.
 ## When to use / How to use
 
 **What it is.** A self-contained Web Component that auto-renders the full icon catalogue with a
-search box, style filters (All / Solid / Regular / Brands with live counts), and copy-on-click
+search box, style filters (All / Solid / Regular / Light with live counts), and copy-on-click
 tiles. Each tile shows the glyph, the icon name, and its style.
 
 **When to use**
@@ -35,7 +35,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 > Set `copy-format` once to whatever your `CustomIcon` block expects, then every copy is exact.
 
 ## Why this approach
-- **No hand-built catalogue.** ~2,000 icons × (glyph + name + copy) is impossible to maintain by
+- **No hand-built catalogue.** ~3,300 icons × (glyph + name + copy) is impossible to maintain by
   hand in ODC. One element renders it from generated data; the list can't drift from the font.
 - **Search that actually finds things.** Filtering uses Font Awesome's own **search keywords**
   (e.g. "trash" surfaces `dumpster` / `recycle` / `trash-can`), not just the literal name.
@@ -47,7 +47,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 ## Files
 | File | OutSystems destination |
 |---|---|
-| `src/components/loop-icon-data.js` | **Generated Resource** (~205 KB) — add to **Resources**, load on the Style-Guide screen **before** the component. Its own paste (like `dist/theme.css`); regenerate, don't hand-edit. |
+| `src/components/loop-icon-data.js` | **Generated Resource** (~415 KB) — add to **Resources**, load on the Style-Guide screen **before** the component. Its own paste (like `dist/theme.css`); regenerate, don't hand-edit. |
 | `src/components/loop-icon-reference.js` | Add to **Resources** — load on the Style-Guide screen **after** the data file. |
 | `vendor/fontawesome-6/icon-manifest.json` | Source of truth for the data (name/label/styles/unicode/terms), derived from FA metadata. |
 | `build/gen-icon-data.mjs` | Build tooling — regenerates `loop-icon-data.js` from the manifest (`npm run gen:icon-data`). |
@@ -67,19 +67,20 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
  * <loop-icon-reference> — the Live Style Guide's searchable Font Awesome 6 icon grid.
  *
  * The icon counterpart to <loop-color-reference> / <loop-typography-reference>: drop ONE
- * element on a Style-Guide screen and it renders the ENTIRE Font Awesome 6 Free set
- * (~2,000 icons across solid / regular / brands) as a searchable grid. Every tile is a
- * click-to-copy button — copy the exact icon name to paste into your CustomIcon block.
+ * element on a Style-Guide screen and it renders the ENTIRE Font Awesome 6 Pro set
+ * (~3,300 icons across solid / regular / light — brands not shipped) as a searchable grid.
+ * Every tile is a click-to-copy button — copy the exact icon name to paste into your
+ * CustomIcon block.
  *
  * DATA: reads the window.LoopIconData global from loop-icon-data.js (GENERATED — load it as
  * a <script> Resource BEFORE this file). Each row is { n:name, l:label, s:styleFlags, u:unicode,
- * t?:terms }. This component flattens it to one tile per (name × free style).
+ * t?:terms }. This component flattens it to one tile per (name × style).
  *
  * RENDERING (shadow DOM): the page's `.fa-*` class rules do NOT pierce shadow DOM, so tiles do
  * NOT depend on fontawesome.css's classes — each glyph is drawn from its unicode via
  * `content: var(--g)` against the document-scoped @font-face (which IS visible inside shadow
  * DOM). So the only runtime dependency is the FA @font-face being present (the fontawesome.css
- * paste / the 3 woff2 Resources).
+ * paste / the 4 woff2 Resources).
  *
  * COPY FORMAT (attribute `copy-format`) — what each tile copies:
  *   "class"    (default) → "fa-solid fa-user"   — paste-ready full class token
@@ -91,7 +92,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
  *   heading        Section heading (default: "Icons")
  *   intro          Optional intro line under the heading
  *   copy-format    class | prefixed | name      (default: class)
- *   default-style  all | solid | regular | brands  (default: all)
+ *   default-style  all | solid | regular | light  (default: all)
  *   page-size      Tiles rendered before "Show more" (default: 300; 0 = all at once)
  *
  * Accessibility: search is a labelled <input type="search">; the result count + copy actions
@@ -105,9 +106,9 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
   const STYLE_META = {
     s: { key: "solid", cls: "fa-solid", label: "Solid" },
     r: { key: "regular", cls: "fa-regular", label: "Regular" },
-    b: { key: "brands", cls: "fa-brands", label: "Brands" },
+    l: { key: "light", cls: "fa-light", label: "Light" },
   };
-  const ORDER = ["s", "r", "b"];
+  const ORDER = ["s", "r", "l"];
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -120,7 +121,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
       super();
       this.attachShadow({ mode: "open" });
       this._query = "";
-      this._style = null;        // active style filter flag (s/r/b) or null = all
+      this._style = null;        // active style filter flag (s/r/l) or null = all
       this._shown = 0;           // how many filtered tiles are currently rendered
       this._filtered = [];
       this._tiles = [];
@@ -148,14 +149,14 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
     }
     get _defaultStyle() {
       const s = (this.getAttribute("default-style") || "all").toLowerCase();
-      return { solid: "s", regular: "r", brands: "b" }[s] || null;
+      return { solid: "s", regular: "r", light: "l" }[s] || null;
     }
     get _pageSize() {
       const p = parseInt(this.getAttribute("page-size"), 10);
       return Number.isNaN(p) ? 300 : Math.max(0, p);
     }
 
-    /* Flatten the data global into one entry per (name × free style). */
+    /* Flatten the data global into one entry per (name × style). */
     _buildTiles() {
       const data = (typeof window !== "undefined" && window.LoopIconData) || [];
       const tiles = [];
@@ -208,7 +209,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
               ${filterBtn(null, "All", total)}
               ${filterBtn("s", "Solid", counts.s)}
               ${filterBtn("r", "Regular", counts.r)}
-              ${filterBtn("b", "Brands", counts.b)}
+              ${filterBtn("l", "Light", counts.l)}
             </div>
           </div>
           <p class="lir__hint">Click an icon to copy its name (<code>${esc(this._sampleCopy())}</code>) for your CustomIcon block.</p>
@@ -309,7 +310,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 .lir__toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 0 0 12px; }
 .lir__search { position: relative; flex: 1 1 280px; display: flex; align-items: center; }
 .lir__search-icon { position: absolute; left: 12px; width: 14px; height: 14px; pointer-events: none;
-  font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--color-text-on-light-subdued, #586e84); }
+  font-family: 'Font Awesome 6 Pro'; font-weight: 900; color: var(--color-text-on-light-subdued, #586e84); }
 .lir__search-icon::before { content: '\\f002'; font-size: 14px; }
 .lir__search-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px;
   padding: 10px 12px 10px 34px; color: var(--color-text-on-light-default, #00263e);
@@ -355,10 +356,10 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 .lir__glyph { font-style: normal; font-variant: normal; line-height: 1;
   font-size: 26px; height: 30px; display: flex; align-items: center; justify-content: center;
   color: var(--color-text-on-light-headers, #00263e);
-  font-family: 'Font Awesome 6 Free'; font-weight: 900;
+  font-family: 'Font Awesome 6 Pro'; font-weight: 900;
   -webkit-font-smoothing: antialiased; }
 .lir__glyph.r { font-weight: 400; }
-.lir__glyph.b { font-family: 'Font Awesome 6 Brands'; font-weight: 400; }
+.lir__glyph.l { font-weight: 300; }
 .lir__glyph::before { content: var(--g); }
 
 .lir__name { font-size: 12px; line-height: 1.3; color: var(--color-text-on-light-default, #00263e);
@@ -406,7 +407,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 
 ## The generated data file (`loop-icon-data.js`)
 Like `dist/theme.css` / `dist/fontawesome.css`, the data file is **its own Resource paste**, not
-inlined in this ticket (~205 KB / 1,895 icons). It defines `window.LoopIconData` — an array of
+inlined in this ticket (~415 KB / 3,323 icons). It defines `window.LoopIconData` — an array of
 `{ n:name, l:label, s:styleFlags, u:unicode, t?:searchTerms }`. Load it as a `<script>` Resource
 **before** `loop-icon-reference.js`. Regenerate after a Font Awesome bump:
 ```bash
@@ -421,7 +422,7 @@ npm run gen:icon-data   # rewrites src/components/loop-icon-data.js from vendor/
 4. On the Live Style Guide screen, add an **HTML Element** (tag `loop-icon-reference`):
    ```html
    <loop-icon-reference
-     intro="The complete Font Awesome 6 Free set — search, filter, click to copy."
+     intro="The complete Font Awesome 6 Pro set — search, filter, click to copy."
      copy-format="class">
    </loop-icon-reference>
    ```
@@ -433,12 +434,12 @@ npm run gen:icon-data   # rewrites src/components/loop-icon-data.js from vendor/
 | `heading` | `Icons` | Section heading |
 | `intro` | — | Intro line under the heading |
 | `copy-format` | `class` | What a tile copies: `class` / `prefixed` / `name` (see table above) |
-| `default-style` | `all` | Initial style filter: `all` / `solid` / `regular` / `brands` |
+| `default-style` | `all` | Initial style filter: `all` / `solid` / `regular` / `light` |
 | `page-size` | `300` | Tiles rendered before a "Show more" button (`0` = render all at once) |
 
 ### Behaviour
 - **Search** matches the name, label and Font Awesome keywords (space-separated terms = AND).
-- **Style filters** show live counts (All / Solid / Regular / Brands).
+- **Style filters** show live counts (All / Solid / Regular / Light).
 - **Click a tile** to copy its value (per `copy-format`) with a transient ✓ cue.
 
 ## Accessibility (WCAG 2.2 AA)

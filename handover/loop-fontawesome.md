@@ -1,6 +1,6 @@
-# Handover — Font Awesome 6 (full icon set) in OutSystems ODC
+# Handover — Font Awesome 6 Pro (full icon set) in OutSystems ODC
 
-Make the **entire Font Awesome 6 Free** icon set (~2,000 icons: **solid · regular · brands**)
+Make the **entire Font Awesome 6 Pro** icon set (~3,300 icons: **solid · regular · light**)
 available across the WBG "The Loop" app and usable anywhere as:
 
 ```html
@@ -10,17 +10,20 @@ available across the WBG "The Loop" app and usable anywhere as:
 It is **self-hosted** — no CDN, no Font Awesome kit. The webfonts live in **ODC Resources**
 and the `@font-face` `src` points at `/TheLoopTheme/*.woff2`, which ODC rewrites to a
 fingerprinted path at compile time — exactly the pattern the brand **Open Sans** faces already
-use (`tokens/typography.css`). Source: `@fortawesome/fontawesome-free@6.7.2`
-(license CC-BY-4.0 AND OFL-1.1 AND MIT — Free tier, redistributable).
+use (`tokens/typography.css`). Source: the designer-provided **Font Awesome Pro 6.7.2**
+desktop package (Commercial License — **licensed asset, do not redistribute** outside this
+project; self-hosting inside the WBG app is covered).
 
 ## When to use / How to use
 
-**What it is.** The complete FA6 Free glyph set as a self-hosted icon font, plus the CSS that
+**What it is.** The complete FA6 Pro glyph set as a self-hosted icon font, plus the CSS that
 maps every `.fa-<name>` class to its glyph.
 
 **When to use**
 - Any icon need not already covered by the native OutSystems UI **Icon** widget.
 - Icons inside custom Blocks, Web Components, Expressions, or rich text.
+- **Light** is the style the designer's mockups use for line icons — prefer `fa-light` when
+  matching Figma line-icon specs.
 
 **When *not* to use** (reach for instead)
 - Icons the OutSystems UI **Icon** widget already exposes — keep using the widget for those so
@@ -32,14 +35,14 @@ class string. Style families and the icon name combine:
 
 | Family class | Alias | Font |
 |---|---|---|
-| `fa-solid` | `fas` | solid (the bulk of the set) |
-| `fa-regular` | `far` | regular / outline |
-| `fa-brands` | `fab` | brand logos |
+| `fa-solid` | `fas` | solid — weight 900 |
+| `fa-regular` | `far` | regular / outline — weight 400 |
+| `fa-light` | `fal` | light / thin outline — weight 300 |
 
 ```html
 <i class="fa-solid fa-magnifying-glass"></i>   <!-- search -->
 <i class="fa-regular fa-heart"></i>            <!-- outline heart -->
-<i class="fa-brands fa-github"></i>            <!-- GitHub logo -->
+<i class="fa-light fa-heart"></i>              <!-- light (thin) heart -->
 
 <!-- sizing + utilities are built in (no inline styles needed) -->
 <i class="fa-solid fa-gear fa-2x"></i>         <!-- fa-xs … fa-2xl, fa-lg, fa-fw, fa-spin, fa-beat -->
@@ -48,20 +51,23 @@ class string. Style families and the icon name combine:
 <i class="fa-solid fa-circle-check text-green-60"></i>
 ```
 
-Full searchable list: <https://fontawesome.com/v6/search?o=r&m=free> (set **Free** + **v6**).
+Full searchable list: <https://fontawesome.com/v6/search?o=r> — or use the in-app
+`<loop-icon-reference>` grid on the Live Style Guide (handover #138), which now includes the
+Light style.
 
 ## Why this approach
 - **Self-hosted, not CDN.** The app already self-hosts Open Sans from ODC Resources; icons
   follow the same path so there is no third-party runtime dependency and no extra origin to
   allow-list. The `/TheLoopTheme/*.woff2` literal is rewritten by ODC — **do not "fix" it**.
-- **woff2 only.** The `.ttf` fallbacks are stripped (every supported browser takes woff2), so
-  only **3 files** travel to Resources.
-- **Why we keep only the v6 families.** Upstream `all.css` also declares legacy `@font-face`
-  names — `'Font Awesome 5 Free/Brands'`, `fa-v4compatibility`, and crucially **`'FontAwesome'`**,
-  which is the *exact* family the native OutSystems UI Icon widget declares
-  (`vendor/outsystems-ui/.../_icon-library-odc.scss`). The build **drops** those so this import
-  can never clobber the native widget — only `'Font Awesome 6 Free'` (400 + 900) and
-  `'Font Awesome 6 Brands'` (400) remain.
+- **woff2 only.** The Pro desktop package ships OTFs; the build converts them to woff2
+  (`build/convert-fa-otf.mjs`), so only **3 files** travel to Resources. Brands are not
+  shipped — no brand-logo icons in the designs, and dropping the face saves a Resource.
+- **Why we keep only the v6 families.** FA's web CSS historically also declares legacy
+  `@font-face` names — `'Font Awesome 5 Free/Brands'`, `fa-v4compatibility`, and crucially
+  **`'FontAwesome'`**, which is the *exact* family the native OutSystems UI Icon widget declares
+  (`vendor/outsystems-ui/.../_icon-library-odc.scss`). The build **excludes** those so this
+  import can never clobber the native widget — only `'Font Awesome 6 Pro'` (300 + 400 + 900)
+  remains.
 
 ## Files
 | File | OutSystems destination |
@@ -69,29 +75,33 @@ Full searchable list: <https://fontawesome.com/v6/search?o=r&m=free> (set **Free
 | `dist/fontawesome.css` (or `dist/fontawesome.min.css`) | **Its own paste** — paste into the ODC Theme editor *below* OutSystems UI (like `dist/theme.css`) |
 | `dist/fontawesome-webfonts/fa-solid-900.woff2` | ODC **Resources** → `Deploy Action = Deploy to Target Directory` |
 | `dist/fontawesome-webfonts/fa-regular-400.woff2` | ODC **Resources** → `Deploy Action = Deploy to Target Directory` |
-| `dist/fontawesome-webfonts/fa-brands-400.woff2` | ODC **Resources** → `Deploy Action = Deploy to Target Directory` |
-| `vendor/fontawesome-6/` | Source of truth (vendored FA 6.7.2) |
-| `build/build-fontawesome.mjs` | Build tooling — regenerates `dist/fontawesome.*` |
+| `dist/fontawesome-webfonts/fa-light-300.woff2` | ODC **Resources** → `Deploy Action = Deploy to Target Directory` |
+| `vendor/fontawesome-6/` | Source of truth (FA Pro 6.7.2: converted woff2 + generated CSS) |
+| `build/convert-fa-otf.mjs` · `build/gen-fa-pro-css.mjs` · `build/build-fontawesome.mjs` | Build tooling — regenerates `dist/fontawesome.*` |
 
 ## Code to paste into ODC
 
 > Unlike a Block/Web-Component handover, the icon CSS is **its own paste** — the same way
-> `dist/theme.css` travels — and is **not inlined here** (it is ~2,000 icon rules / ~70 KB
+> `dist/theme.css` travels — and is **not inlined here** (it is ~4,800 icon rules / ~120 KB
 > minified). Open the generated file and paste its full contents; regenerate with
 > `npm run build:fontawesome`.
 
 **1 — Upload the 3 webfonts to ODC Resources.** In Service Studio, under your Theme (or a shared
 Library): **Resources → Import Resource** each of:
-`fa-solid-900.woff2`, `fa-regular-400.woff2`, `fa-brands-400.woff2` (from
+`fa-solid-900.woff2`, `fa-regular-400.woff2`, `fa-light-300.woff2` (from
 `dist/fontawesome-webfonts/`). Set each one's **Deploy Action = `Deploy to Target Directory`**.
 The CSS references them as `/TheLoopTheme/<file>.woff2`; ODC rewrites that to the fingerprinted
 Resources URL at publish time (same mechanism as the Open Sans faces — confirmed working, see
 `tokens/typography.css`).
+> **Upgrading from the Free build?** `fa-solid-900.woff2` / `fa-regular-400.woff2` keep their
+> names — re-import them (the Pro faces replace the Free ones), add the new
+> `fa-light-300.woff2`, and **delete `fa-brands-400.woff2`** (brands are no longer shipped).
 
 **2 — Paste the icon CSS.** Open `dist/fontawesome.css` (readable) or `dist/fontawesome.min.css`
 (minified) and paste the **entire** file into the **ODC Theme** CSS, *below* the OutSystems UI
-block and below `dist/theme.css`. (It carries only the 3 v6 `@font-face` rules + the `.fa-*`
-classes — no tokens, so nothing in `theme.css` is duplicated.)
+block and below `dist/theme.css`, **replacing** the previous Font Awesome paste if present.
+(It carries only the 3 v6 `@font-face` rules + the `.fa-*` classes — no tokens, so nothing in
+`theme.css` is duplicated.)
 
 **3 — Use an icon** anywhere via an HTML Element (tag `i`) or Unescaped Expression:
 `<i class="fa-solid fa-user"></i>`.
@@ -131,7 +141,7 @@ Task — create these elements, referencing each by the exact name given:
      AriaLabel  : Text                     : ""          // accessible name when NOT decorative
    Static Entity — create first: IconStyle with a single Text attribute "Value" set as the
    record Identifier (delete the default Id/Label/Order/Is_Active). Records:
-     Solid = "fa-solid", Regular = "fa-regular", Brands = "fa-brands".
+     Solid = "fa-solid", Regular = "fa-regular", Light = "fa-light".
 2. Place an HTML Element (tag "i") in the Block. Build its class with an expression:
      Style + " fa-" + Name + If(Size <> "", " " + Size, "") + If(ColorClass <> "", " " + ColorClass, "")
    Set aria-hidden = If(Decorative, "true", "false") and, when not decorative, set
@@ -148,11 +158,15 @@ Start with step 1 (the Block "Icon" interface + the IconStyle entity) and show i
 ## Checklist
 - [ ] `npm run build:fontawesome` → produces `dist/fontawesome.css`, `dist/fontawesome.min.css`,
       and `dist/fontawesome-webfonts/` (3 woff2).
-- [ ] Import the 3 woff2 into ODC **Resources**, `Deploy Action = Deploy to Target Directory`.
+- [ ] Import the 3 woff2 into ODC **Resources**, `Deploy Action = Deploy to Target Directory`
+      (re-import `fa-solid-900` / `fa-regular-400` — now Pro faces — add `fa-light-300.woff2`,
+      and remove `fa-brands-400.woff2` if present).
 - [ ] Paste `dist/fontawesome.css` (or `.min.css`) into the ODC **Theme** CSS, below OutSystems
-      UI and below `dist/theme.css`.
+      UI and below `dist/theme.css`, replacing the previous Font Awesome paste.
 - [ ] Publish, then open in a **real browser** (hard rule #2): confirm `<i class="fa-solid fa-user">`,
-      a `fa-regular` and a `fa-brands` icon all render (not empty boxes) and that the **native
+      a `fa-regular` and a **`fa-light`** icon all render (not empty boxes), a
+      **Pro-only icon** (e.g. `<i class="fa-light fa-acorn">`) renders, and the **native
       OutSystems UI Icon widget still works** (no `'FontAwesome'` clash).
 - [ ] Spot-check colour via a token utility (`text-blue-60`) and a size class (`fa-2x`).
-- [ ] (Optional) Build the reusable **Icon** Block via the Mentor prompt above.
+- [ ] (Optional) Update the **Icon** Block's `IconStyle` entity with the new `Light = "fa-light"`
+      record (or build the Block via the Mentor prompt above).

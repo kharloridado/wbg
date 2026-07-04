@@ -2,3 +2,7 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# FA Pro full metadata (34 MB icons.json + 110 MB icon-families.json) — copy locally from
+# the Pro desktop package for gen:fa-css / gen:icon-data; see vendor/fontawesome-6/README.md
+vendor/fontawesome-6/metadata/

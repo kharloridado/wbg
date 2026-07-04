@@ -45,7 +45,7 @@ verify/finish · **To build** = net-new.
 | Spacing | Built | `tokens/spacing*.css` |
 | Borders | Built | `tokens/border.css`, `radius*.css` |
 | Shadows | Built | `tokens/shadows*.css` |
-| WBG Icons | Built | `vendor/fontawesome-6/` + `build/build-fontawesome.mjs` → `dist/fontawesome.css` (self-hosted FA6 Free, handover #137) · searchable reference `src/components/loop-icon-reference.js` + `loop-icon-data.js`, `handover/loop-icon-reference.md` (handover #138) |
+| WBG Icons | Built | `vendor/fontawesome-6/` + `build/build-fontawesome.mjs` → `dist/fontawesome.css` (self-hosted **FA6 Pro** — solid · regular · light, ~3,323 icons, no brands, handover #137) · searchable reference `src/components/loop-icon-reference.js` + `loop-icon-data.js`, `handover/loop-icon-reference.md` (handover #138) |
 
 ## Layouts
 | Deliverable | Status | Source |

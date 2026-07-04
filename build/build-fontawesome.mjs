@@ -1,22 +1,26 @@
 #!/usr/bin/env node
-/* build-fontawesome.mjs — adapt the vendored Font Awesome 6 Free CSS for ODC.
+/* build-fontawesome.mjs — adapt the vendored Font Awesome 6 Pro CSS for ODC.
  *
- * Goal: make the ENTIRE Font Awesome 6 Free icon set available in OutSystems ODC and
- * usable as `<i class="fa-solid fa-user"></i>` — self-hosted, exactly like the brand
- * Open Sans faces (typography.css @font-face → /TheLoopTheme/*.woff2, rewritten by ODC
- * at compile time). NOT a CDN/kit dependency.
+ * Goal: make the ENTIRE Font Awesome 6 Pro icon set (Solid/Regular/Light — brands not shipped)
+ * available in OutSystems ODC and usable as `<i class="fa-solid fa-user"></i>` —
+ * self-hosted, exactly like the brand Open Sans faces (typography.css @font-face →
+ * /TheLoopTheme/*.woff2, rewritten by ODC at compile time). NOT a CDN/kit dependency.
  *
- * Source of truth: vendor/fontawesome-6/css/all.css + vendor/fontawesome-6/webfonts/*.woff2
- * (from @fortawesome/fontawesome-free@6.7.2, license CC-BY-4.0 AND OFL-1.1 AND MIT).
+ * Source of truth: vendor/fontawesome-6/css/all.css + vendor/fontawesome-6/webfonts/*.woff2.
+ * The designer-provided Pro package is the DESKTOP download (no web CSS / webfonts), so
+ * both inputs are themselves generated: all.css by build/gen-fa-pro-css.mjs (core template
+ * + metadata/icons.json) and the woff2 by build/convert-fa-otf.mjs (Pro OTFs → woff2).
+ * License: Font Awesome Pro (Commercial) — licensed asset, do NOT redistribute.
  *
  * Three transforms on all.css:
- *   1. DROP the legacy @font-face blocks — 'FontAwesome' (v4 name), 'Font Awesome 5
- *      Free' / 'Font Awesome 5 Brands', and the fa-v4compatibility face. We want v6
- *      only, AND 'FontAwesome' is the very family OSUI's own Icon widget declares
- *      (vendor/.../_icon-library-odc.scss: --osui-icon-font-family: 'FontAwesome').
- *      Re-declaring it here would clobber the native icon widget — so we keep ONLY the
- *      three v6 families: 'Font Awesome 6 Free' (400 + 900) and 'Font Awesome 6 Brands'.
- *   2. STRIP the .ttf fallback from every remaining src — the project ships woff2 only
+ *   1. DROP any legacy @font-face blocks — 'FontAwesome' (v4 name), 'Font Awesome 5
+ *      Free' / 'Font Awesome 5 Brands'. We want v6 only, AND 'FontAwesome' is the very
+ *      family OSUI's own Icon widget declares (vendor/.../_icon-library-odc.scss:
+ *      --osui-icon-font-family: 'FontAwesome'). Re-declaring it here would clobber the
+ *      native icon widget — so we keep ONLY the v6 family: 'Font Awesome 6 Pro'
+ *      (300 + 400 + 900). (The generated Pro all.css already
+ *      omits them; this guard stays for safety on future vendor bumps.)
+ *   2. STRIP any .ttf fallback from every remaining src — the project ships woff2 only
  *      (matches the Open Sans pattern), so only 3 files travel to ODC Resources.
  *   3. REWRITE url("../webfonts/X.woff2") → url("/TheLoopTheme/X.woff2") — the same ODC
  *      Resources path Open Sans uses; ODC fingerprints it to /TheLoopDesignSystem/ at
@@ -48,12 +52,12 @@ const previewDir = join(root, "preview", "vendor", "fontawesome");
 const previewWebfonts = join(previewDir, "webfonts");
 
 /* The 3 v6 webfonts kept (the legacy faces that referenced extra files are dropped). */
-const WOFF2 = ["fa-solid-900.woff2", "fa-regular-400.woff2", "fa-brands-400.woff2"];
+const WOFF2 = ["fa-solid-900.woff2", "fa-regular-400.woff2", "fa-light-300.woff2"];
 
 /* FA version — single source of truth is the vendored package's own version string,
  * read from the all.css banner so a vendor bump flows through automatically. */
 function faVersion() {
-  const m = /Font Awesome Free\s+([\d.]+)/i.exec(readFileSync(srcCss, "utf8"));
+  const m = /Font Awesome (?:Free|Pro)\s+([\d.]+)/i.exec(readFileSync(srcCss, "utf8"));
   return m ? m[1] : "6.x";
 }
 
@@ -91,18 +95,19 @@ function rewriteUrls(css, base) {
 function header(version) {
   return [
     "/*!",
-    ` Font Awesome 6 Free — full icon set, adapted for WBG "The Loop" / OutSystems ODC.`,
-    ` Bundled from Font Awesome Free ${version} (fontawesome.com · CC-BY-4.0, OFL-1.1, MIT).`,
+    ` Font Awesome 6 Pro — full icon set, adapted for WBG "The Loop" / OutSystems ODC.`,
+    ` Bundled from Font Awesome Pro ${version} (fontawesome.com · Commercial License —`,
+    ` licensed asset, do NOT redistribute outside this project).`,
     ` Generated from vendor/fontawesome-6/css/all.css — do not edit directly.`,
-    ` Rebuild: npm run build:fontawesome.`,
+    ` Rebuild: npm run gen:fa-css && npm run build:fontawesome.`,
     "",
     ` Self-hosted like the brand Open Sans faces: the 3 woff2 live in ODC Resources and the`,
     ` literal /TheLoopTheme/*.woff2 src is rewritten by ODC at compile time. Legacy v4/v5`,
-    ` @font-face names (incl. 'FontAwesome', which OSUI's Icon widget owns) were dropped so`,
-    ` this never clobbers the native icon widget — only the v6 families remain.`,
+    ` @font-face names (incl. 'FontAwesome', which OSUI's Icon widget owns) are excluded so`,
+    ` this never clobbers the native icon widget — only the v6 family remains.`,
     "",
-    ` Use:  <i class=\"fa-solid fa-user\"></i>  ·  fa-regular / fa-brands  ·  full list:`,
-    ` https://fontawesome.com/v6/search?o=r&m=free`,
+    ` Use:  <i class=\"fa-solid fa-user\"></i>  ·  fa-regular / fa-light  ·  full list:`,
+    ` https://fontawesome.com/v6/search?o=r`,
     " */",
     "",
   ].join("\n");

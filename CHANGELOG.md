@@ -15,6 +15,21 @@ build.
 ## [Unreleased]
 
 ### Changed
+- **Icons — Font Awesome 6 upgraded Free → Pro 6.7.2, Light style added, Brands dropped** —
+  the designer-provided Pro desktop package (OTFs + metadata; no webfonts/CSS ship in it)
+  replaces the Free build: `build/convert-fa-otf.mjs` (new, `wawoff2`) converts the Pro OTFs →
+  the 3 vendored woff2 (solid 900 · regular 400 · **light 300, new**), and
+  `build/gen-fa-pro-css.mjs` (new) generates `vendor/fontawesome-6/css/all.css` from
+  `css/core-template.css` + `metadata/icons.json` (gitignored). Family renamed
+  `'Font Awesome 6 Free'` → `'Font Awesome 6 Pro'`; `.fal`/`.fa-light` rules added; **brands
+  removed** (no brand-logo icons in the designs — `fa-brands-400.woff2`, the
+  `'Font Awesome 6 Brands'` face and all `.fab`/`.fa-brands` rules are gone); legacy
+  `'FontAwesome'`/v5 faces still excluded (OSUI Icon-widget guard). Icon set: **3,323 names ×
+  3 styles = 9,969 tiles**; `<loop-icon-reference>` gains a Light filter + 300-weight glyphs,
+  drops the Brands filter, and `loop-icon-data.js` regenerates (~415 KB). ODC takes **3** woff2
+  Resources (`fa-light-300.woff2` new; solid/regular names unchanged, faces replaced; delete the
+  old `fa-brands-400.woff2`) and a re-paste of `dist/fontawesome.css`. Pro is a licensed asset —
+  private repo/app hosting only, do not redistribute (handovers #137/#138 updated).
 - **Text Field — bare `.input-*` size classes now step the input/placeholder text** —
   `16 / 14 / 13 / 12px` across `.input-xlarge` / `.input-large` / `.input-regular` /
   `.input-small` (Figma 19336-9729) by setting `--loop-field-text-size`, matching the

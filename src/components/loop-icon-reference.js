@@ -2,19 +2,20 @@
  * <loop-icon-reference> — the Live Style Guide's searchable Font Awesome 6 icon grid.
  *
  * The icon counterpart to <loop-color-reference> / <loop-typography-reference>: drop ONE
- * element on a Style-Guide screen and it renders the ENTIRE Font Awesome 6 Free set
- * (~2,000 icons across solid / regular / brands) as a searchable grid. Every tile is a
- * click-to-copy button — copy the exact icon name to paste into your CustomIcon block.
+ * element on a Style-Guide screen and it renders the ENTIRE Font Awesome 6 Pro set
+ * (~3,300 icons across solid / regular / light — brands not shipped) as a searchable grid.
+ * Every tile is a click-to-copy button — copy the exact icon name to paste into your
+ * CustomIcon block.
  *
  * DATA: reads the window.LoopIconData global from loop-icon-data.js (GENERATED — load it as
  * a <script> Resource BEFORE this file). Each row is { n:name, l:label, s:styleFlags, u:unicode,
- * t?:terms }. This component flattens it to one tile per (name × free style).
+ * t?:terms }. This component flattens it to one tile per (name × style).
  *
  * RENDERING (shadow DOM): the page's `.fa-*` class rules do NOT pierce shadow DOM, so tiles do
  * NOT depend on fontawesome.css's classes — each glyph is drawn from its unicode via
  * `content: var(--g)` against the document-scoped @font-face (which IS visible inside shadow
  * DOM). So the only runtime dependency is the FA @font-face being present (the fontawesome.css
- * paste / the 3 woff2 Resources).
+ * paste / the 4 woff2 Resources).
  *
  * COPY FORMAT (attribute `copy-format`) — what each tile copies:
  *   "class"    (default) → "fa-solid fa-user"   — paste-ready full class token
@@ -26,7 +27,7 @@
  *   heading        Section heading (default: "Icons")
  *   intro          Optional intro line under the heading
  *   copy-format    class | prefixed | name      (default: class)
- *   default-style  all | solid | regular | brands  (default: all)
+ *   default-style  all | solid | regular | light  (default: all)
  *   page-size      Tiles rendered before "Show more" (default: 300; 0 = all at once)
  *
  * Accessibility: search is a labelled <input type="search">; the result count + copy actions
@@ -40,9 +41,9 @@
   const STYLE_META = {
     s: { key: "solid", cls: "fa-solid", label: "Solid" },
     r: { key: "regular", cls: "fa-regular", label: "Regular" },
-    b: { key: "brands", cls: "fa-brands", label: "Brands" },
+    l: { key: "light", cls: "fa-light", label: "Light" },
   };
-  const ORDER = ["s", "r", "b"];
+  const ORDER = ["s", "r", "l"];
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -55,7 +56,7 @@
       super();
       this.attachShadow({ mode: "open" });
       this._query = "";
-      this._style = null;        // active style filter flag (s/r/b) or null = all
+      this._style = null;        // active style filter flag (s/r/l) or null = all
       this._shown = 0;           // how many filtered tiles are currently rendered
       this._filtered = [];
       this._tiles = [];
@@ -83,14 +84,14 @@
     }
     get _defaultStyle() {
       const s = (this.getAttribute("default-style") || "all").toLowerCase();
-      return { solid: "s", regular: "r", brands: "b" }[s] || null;
+      return { solid: "s", regular: "r", light: "l" }[s] || null;
     }
     get _pageSize() {
       const p = parseInt(this.getAttribute("page-size"), 10);
       return Number.isNaN(p) ? 300 : Math.max(0, p);
     }
 
-    /* Flatten the data global into one entry per (name × free style). */
+    /* Flatten the data global into one entry per (name × style). */
     _buildTiles() {
       const data = (typeof window !== "undefined" && window.LoopIconData) || [];
       const tiles = [];
@@ -143,7 +144,7 @@
               ${filterBtn(null, "All", total)}
               ${filterBtn("s", "Solid", counts.s)}
               ${filterBtn("r", "Regular", counts.r)}
-              ${filterBtn("b", "Brands", counts.b)}
+              ${filterBtn("l", "Light", counts.l)}
             </div>
           </div>
           <p class="lir__hint">Click an icon to copy its name (<code>${esc(this._sampleCopy())}</code>) for your CustomIcon block.</p>
@@ -244,7 +245,7 @@
 .lir__toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 0 0 12px; }
 .lir__search { position: relative; flex: 1 1 280px; display: flex; align-items: center; }
 .lir__search-icon { position: absolute; left: 12px; width: 14px; height: 14px; pointer-events: none;
-  font-family: 'Font Awesome 6 Free'; font-weight: 900; color: var(--color-text-on-light-subdued, #586e84); }
+  font-family: 'Font Awesome 6 Pro'; font-weight: 900; color: var(--color-text-on-light-subdued, #586e84); }
 .lir__search-icon::before { content: '\\f002'; font-size: 14px; }
 .lir__search-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px;
   padding: 10px 12px 10px 34px; color: var(--color-text-on-light-default, #00263e);
@@ -290,10 +291,10 @@
 .lir__glyph { font-style: normal; font-variant: normal; line-height: 1;
   font-size: 26px; height: 30px; display: flex; align-items: center; justify-content: center;
   color: var(--color-text-on-light-headers, #00263e);
-  font-family: 'Font Awesome 6 Free'; font-weight: 900;
+  font-family: 'Font Awesome 6 Pro'; font-weight: 900;
   -webkit-font-smoothing: antialiased; }
 .lir__glyph.r { font-weight: 400; }
-.lir__glyph.b { font-family: 'Font Awesome 6 Brands'; font-weight: 400; }
+.lir__glyph.l { font-weight: 300; }
 .lir__glyph::before { content: var(--g); }
 
 .lir__name { font-size: 12px; line-height: 1.3; color: var(--color-text-on-light-default, #00263e);
