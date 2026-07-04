@@ -33,8 +33,10 @@
         toggle.className = "loop-dp-yeartoggle";
         toggle.setAttribute("aria-label", "Choose year");
         toggle.setAttribute("aria-expanded", "false");
+        // FA 6 Pro caret-down (solid) — glyph is drawn by loop-datepicker.css
+        // (.loop-dp-yeartoggle__glyph: font-family/weight/content sizing)
         toggle.innerHTML =
-          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4z"/></svg>';
+          '<span class="loop-dp-yeartoggle__glyph" aria-hidden="true"></span>';
         toggle.addEventListener("click", function (e) {
           e.preventDefault();
           e.stopPropagation();

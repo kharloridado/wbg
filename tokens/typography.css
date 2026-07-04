@@ -39,6 +39,14 @@
   --font-family-label:   "Open Sans";
   --font-family-base:    var(--font-family-body);
 
+  /* ---- Icon font (Font Awesome 6 Pro, self-hosted — see loop-fontawesome handover).
+     Components render icons as FA unicode glyphs against this family instead of inline
+     SVGs; the document @font-face is visible inside shadow DOM (.fa-* classes are not). */
+  --font-family-icon:         "Font Awesome 6 Pro";
+  --font-weight-icon-solid:   900;
+  --font-weight-icon-regular: 400;
+  --font-weight-icon-light:   300;
+
   /* ---- Weights ---- */
   --font-weight-regular:   400;
   --font-weight-medium:    500;   /* Open Sans Medium — Badge 500 label styles */

@@ -311,17 +311,24 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   border-bottom: 1px solid var(--color-outline-on-light-subdued);
   padding: var(--space-xtiny, 4px) var(--loop-select-padding-inline, 16px);
 }
-/* leading magnifier glyph (provider ships none in this build) */
+/* leading magnifier glyph (provider ships none in this build) — FA 6 Pro font glyph */
 .osui-dropdown-search .vscomp-search-container::before,
 .osui-dropdown-tags .vscomp-search-container::before {
-  content: "";
+  content: var(--loop-select-search-icon-char, "\f002");
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
   height: 16px;
   margin-right: var(--space-xxsmall, 8px);
-  background-color: var(--color-icon-on-light-subdued);
-  -webkit-mask: var(--loop-select-search-icon) center / contain no-repeat;
-  mask: var(--loop-select-search-icon) center / contain no-repeat;
+  color: var(--color-icon-on-light-subdued);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-select-search-icon-weight, 400);
+  font-size: var(--loop-select-search-icon-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 .osui-dropdown-search .vscomp-search-input,
 .osui-dropdown-tags .vscomp-search-input {

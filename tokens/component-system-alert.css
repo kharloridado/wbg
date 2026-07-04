@@ -15,33 +15,38 @@
   --loop-sysalert-body-size:  var(--font-size-200);   /* 14px — alert text */
 
   /* Per-element text roles mirror the distinct title / message / action / icon colors.
-   * Single- and multi-line shades are normalized here to the single-line values. */
+   * Where Figma (node 17873:7408) assigns a DIFFERENT shade in the multi-line layout,
+   * a `-multi` token carries it (per-layout faithful build, FND-048 / FND-062 precedent). */
 
   /* ---- Type: error ---- */
-  --loop-sysalert-error-bg:      var(--color-bg-container-state-error-high);  /* #9d161d */
-  --loop-sysalert-error-title:   var(--color-gray-alpha-white-75);           /* #ffffffbf */
-  --loop-sysalert-error-message: var(--color-gray-alpha-white-75);           /* #ffffffbf */
-  --loop-sysalert-error-action:  var(--color-neutral-05);                    /* #f5f7f9 */
-  --loop-sysalert-error-icon:    var(--color-gray-alpha-white-75);           /* #ffffffbf — = title */
+  --loop-sysalert-error-bg:            var(--color-bg-container-state-error-high);  /* #9d161d */
+  --loop-sysalert-error-title:         var(--color-gray-alpha-white-75);           /* #ffffffbf */
+  --loop-sysalert-error-message:       var(--color-gray-alpha-white-75);           /* #ffffffbf */
+  --loop-sysalert-error-message-multi: var(--color-gray-alpha-white-90);           /* #ffffffe5 */
+  --loop-sysalert-error-action:        var(--color-neutral-05);                    /* #f5f7f9 */
+  --loop-sysalert-error-action-multi:  var(--color-gray-alpha-white-90);           /* #ffffffe5 */
+  --loop-sysalert-error-icon:          var(--color-white);                         /* #ffffff — Icon/On Dark/Emphasis */
 
   /* ---- Type: warning ---- */
   --loop-sysalert-warning-bg:      var(--color-domain-state-warning-regular); /* #e19d00 */
-  --loop-sysalert-warning-title:   var(--color-text-on-light-state-warning);  /* #473201 */
+  --loop-sysalert-warning-title:   var(--color-gray-alpha-white-75);          /* #ffffffbf — per sticker render; ≈1.9:1 on #e19d00, FND-067 */
   --loop-sysalert-warning-message: var(--color-text-on-light-state-warning);  /* #473201 */
   --loop-sysalert-warning-action:  var(--color-text-on-light-state-warning);  /* #473201 */
-  --loop-sysalert-warning-icon:    var(--color-text-on-light-state-warning);  /* #473201 — = title */
+  --loop-sysalert-warning-icon:    var(--color-text-on-light-state-warning);  /* #473201 — Icon/On Light/State/Warning/High */
 
   /* ---- Type: informative ---- */
-  --loop-sysalert-informative-bg:      var(--color-bg-container-state-info-high); /* #004370 */
-  --loop-sysalert-informative-title:   var(--color-gray-alpha-white-75);          /* #ffffffbf */
-  --loop-sysalert-informative-message: var(--color-domain-state-info-low);        /* #f6fcff */
-  --loop-sysalert-informative-action:  var(--color-gray-alpha-white-90);          /* #ffffffe5 */
-  --loop-sysalert-informative-icon:    var(--color-gray-alpha-white-75);          /* #ffffffbf — = title */
+  --loop-sysalert-informative-bg:           var(--color-bg-container-state-info-high); /* #004370 */
+  --loop-sysalert-informative-title:        var(--color-gray-alpha-white-75);          /* #ffffffbf */
+  --loop-sysalert-informative-message:      var(--color-domain-state-info-low);        /* #f6fcff */
+  --loop-sysalert-informative-action:       var(--color-gray-alpha-white-90);          /* #ffffffe5 */
+  --loop-sysalert-informative-action-multi: var(--color-white);                        /* #ffffff */
+  --loop-sysalert-informative-icon:         var(--color-white);                        /* #ffffff — Icon/On Dark/Emphasis */
 
   /* ---- Type: offline ---- */
-  --loop-sysalert-offline-bg:      var(--color-domain-interactive-disable);   /* #8a9db1 */
-  --loop-sysalert-offline-title:   var(--color-gray-alpha-white-75);          /* #ffffffbf */
-  --loop-sysalert-offline-message: var(--color-gray-alpha-white-90);          /* #ffffffe5 */
-  --loop-sysalert-offline-action:  var(--color-gray-alpha-white-90);          /* #ffffffe5 */
-  --loop-sysalert-offline-icon:    var(--color-gray-alpha-white-75);          /* #ffffffbf — = title */
+  --loop-sysalert-offline-bg:            var(--color-domain-interactive-disable);   /* #8a9db1 */
+  --loop-sysalert-offline-title:         var(--color-gray-alpha-white-75);          /* #ffffffbf */
+  --loop-sysalert-offline-message:       var(--color-gray-alpha-white-90);          /* #ffffffe5 */
+  --loop-sysalert-offline-message-multi: var(--color-gray-alpha-white-75);          /* #ffffffbf — FND-042 note */
+  --loop-sysalert-offline-action:        var(--color-gray-alpha-white-90);          /* #ffffffe5 */
+  --loop-sysalert-offline-icon:          var(--color-white);                        /* #ffffff — Icon/On Dark/Emphasis */
 }

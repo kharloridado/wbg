@@ -183,26 +183,21 @@ class LoopModal extends HTMLElement {
     this._scrollLocked = false;
   }
 
-  /* ---- icons ---- */
-  _circleInfoSvg() {
-    return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-      <path d="M12 11v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="12" cy="8" r="1.25" fill="currentColor"/>
-    </svg>`;
+  /* ---- icons — Font Awesome 6 Pro glyphs, rendered from unicode codepoints against the
+     document-level @font-face (visible inside shadow DOM, unlike .fa-* classes) ---- */
+  _circleInfoGlyph() {
+    return `<span class="lmo__icon-glyph" aria-hidden="true">&#xf05a;</span>`;  /* fa-circle-info */
   }
-  _closeSvg() {
-    return `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">
-      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>`;
+  _closeGlyph() {
+    return `<span class="lmo__close-glyph" aria-hidden="true">&#xf00d;</span>`;  /* fa-xmark */
   }
 
   _render() {
     const heading = this._heading || 'Modal title';
     const iconHtml = this._noIcon ? '' :
-      `<span class="lmo__icon" part="icon"><slot name="icon">${this._circleInfoSvg()}</slot></span>`;
+      `<span class="lmo__icon" part="icon"><slot name="icon">${this._circleInfoGlyph()}</slot></span>`;
     const closeHtml = this._noClose ? '' :
-      `<button class="lmo__close" type="button" part="close" aria-label="Close dialog">${this._closeSvg()}</button>`;
+      `<button class="lmo__close" type="button" part="close" aria-label="Close dialog">${this._closeGlyph()}</button>`;
 
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
@@ -306,7 +301,22 @@ class LoopModal extends HTMLElement {
   height: var(--loop-modal-icon-size, 24px);
   color: var(--loop-modal-icon-color, #004370);
 }
-.lmo__icon svg, .lmo__icon ::slotted(*) { width: 100%; height: 100%; }
+.lmo__icon ::slotted(*) { width: 100%; height: 100%; }
+/* FA circle-info (regular) — 20px em box ≈ the 20px outline circle the Figma header draws
+   inside the 24px icon box */
+.lmo__icon-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-modal-icon-glyph, 20px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 .lmo__title {
   flex: 1 0 0;
   min-width: 0;
@@ -332,6 +342,15 @@ class LoopModal extends HTMLElement {
   background: var(--loop-modal-close-bg, #169af3);
   color: var(--loop-modal-close-icon, #004370);
   cursor: pointer;
+}
+/* FA xmark (regular) — 14px em box renders the ~11px × the Figma close button draws */
+.lmo__close-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-modal-close-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 .lmo__close:focus-visible {
   outline: 2px solid var(--loop-modal-close-focus, #0071bc);

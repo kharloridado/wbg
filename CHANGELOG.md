@@ -14,7 +14,54 @@ build.
 
 ## [Unreleased]
 
+### Fixed
+- **System Alert — per-element text/icon colors rebuilt faithful to Figma node 17873-7408**,
+  reversing the FND-048 "normalize to single-line" disposition (per-layout faithful, the
+  FND-062 Alert precedent): multi-line error message/action → white-90, multi-line
+  informative action → pure white, multi-line offline message → white-75 (new
+  `--loop-sysalert-*-multi` tokens in `tokens/component-system-alert.css` + `.lsa--multiline`
+  overrides in `loop-system-alert.js`/`.css`); left/dismiss icons on the dark types
+  (error/informative/offline) → pure white (`Icon/On Dark/Emphasis`); System Alert icons now
+  render **Solid** (was Regular). The **warning title** is now the sticker's white-75 —
+  ≈1.9:1 on the amber bg, **filed as FND-067** (GitHub Bug
+  [#141](https://github.com/kharloridado/wbg/issues/141), awaiting designer) per the
+  fidelity-first rule. The stale `--loop-sysalert-*-text` rules in the light-DOM mirror
+  `loop-system-alert.css` were resynced to the shadow CSS in the same pass.
+- **Button — label, icon and gap now scale with the size modifier** (they were frozen at
+  16px label / unscaled icons for every size except a 14px Small). Deep-pull of Figma node
+  15597-847 ("Main Library (2)") showed the `loop/button/*` variables are **mode-based per
+  size**: label 16/14/12/11px (line height 24; 20 on Small), Font Awesome icon glyph
+  18/16/14/12px, icon↔label gap 6px (4px on Small) for xLarge/Large/Regular/Small. New
+  per-size tokens in `tokens/component-button.css` (`--loop-btn-font-*`, `--loop-btn-lh*`,
+  `--loop-btn-icon-*`, `--loop-btn-gap-small`); `.btn` size modifiers re-point size-scoped
+  custom props so label and icon scale together, and `.btn [class*="fa-"]` sizes native
+  Icon-widget glyphs. Inline padding stays at the user-approved 16px (PR #124) — the
+  per-size Figma paddings (32/28/20/14) are recorded in `loop/refs/cmp-button/spec.md`
+  but deliberately not applied. Frozen ref updated with the per-size mode table.
+
 ### Changed
+- **Icons — all component icons now render as Font Awesome 6 Pro glyphs, no more inline
+  SVGs** — every shipped icon is a unicode glyph against the self-hosted
+  `'Font Awesome 6 Pro'` face (new `--font-family-icon` / `--font-weight-icon-solid|regular|light`
+  tokens in `tokens/typography.css`; glyphs render inside shadow DOM because the document
+  `@font-face` pierces it — `.fa-*` classes don't). Converted: **loop-alert** (solid
+  triangle-exclamation / circle-info / circle-exclamation + regular xmark; success uses the
+  circle-info "i" glyph — that's what the Figma sticker draws for both success layouts,
+  node 17868-4020 — logged as FND-066),
+  **loop-system-alert** (solid set + wifi for offline), **loop-toast** (regular set, incl.
+  phone-breakpoint glyph sizes), **loop-modal** (regular circle-info + xmark),
+  **loop-button-dropdown** (solid chevron-down), **loop-file-uploader** (regular
+  file-arrow-up / arrow-up, light circle-info, regular xmark), **DatePicker**
+  (solid chevron-left/right nav — replacing the border-drawn chevrons — and the year-grid
+  caret-down via `.loop-dp-yeartoggle__glyph`), **Search** (regular magnifying-glass glyph
+  replaces the data-URI mask; token split into `--loop-search-icon-char|weight|glyph`),
+  **Dropdown search** (same, `--loop-select-search-icon-char|weight|glyph`), and
+  **loop-badge-status** Icon type (solid state glyphs; not-started/in-progress use the
+  regular face — preview instances converted). One documented exception: the Search
+  clear (×) sits on `::-webkit-search-cancel-button`, a native pseudo-element that can't
+  render font glyphs — it stays a mask but the shape is now the genuine FA 6 Pro xmark
+  path from `metadata/icons.json`. Shadow-CSS mirrors (`loop-system-alert.css`,
+  `loop-toast.css`, `loop-button-dropdown.css`) kept in sync; handovers re-embedded.
 - **Icons — Font Awesome 6 upgraded Free → Pro 6.7.2, Light style added, Brands dropped** —
   the designer-provided Pro desktop package (OTFs + metadata; no webfonts/CSS ship in it)
   replaces the Free build: `build/convert-fa-otf.mjs` (new, `wawoff2`) converts the Pro OTFs →

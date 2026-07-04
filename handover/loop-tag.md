@@ -113,6 +113,8 @@ numbers/counter.
 }
 
 /* ---- Leading icon slot ---- */
+/* Holds a Font Awesome glyph (`fa-solid fa-…` classes on the <i>) — font-size drives the
+   glyph to the icon box; a slotted <svg>/<img> still fills the box. */
 .loop-tag__icon {
   display: inline-flex;
   align-items: center;
@@ -120,6 +122,8 @@ numbers/counter.
   flex-shrink: 0;
   width:  var(--loop-tag-icon-size, 14px);
   height: var(--loop-tag-icon-size, 14px);
+  font-size: var(--loop-tag-icon-size, 14px);
+  line-height: 1;
 }
 
 .loop-tag__icon svg,

@@ -59,23 +59,33 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
   padding-left: var(--loop-search-pad-left, 44px);
 }
 
+/* FA 6 Pro magnifying-glass rendered as a font glyph (codepoint + weight from tokens) */
 .osui-search__input::after {
-  content: "";
+  content: var(--loop-search-icon-char, "\f002");
   position: absolute;
   left: var(--loop-search-icon-inset, 16px);
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: var(--loop-search-icon-size, 20px);
   height: var(--loop-search-icon-size, 20px);
-  background-color: var(--loop-search-icon-color);
-  -webkit-mask: var(--loop-search-icon) center / contain no-repeat;
-  mask: var(--loop-search-icon) center / contain no-repeat;
+  color: var(--loop-search-icon-color);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-search-icon-weight, 400);
+  font-size: var(--loop-search-icon-glyph, 18px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
   pointer-events: none;                                          /* glyph never eats clicks/focus */
 }
 
 /* ---- Clear (×) — Filled state ----
    WebKit/Blink show the cancel button on <input type="search"> only while it holds a value
-   (matches the Filled state); set the Search Input's type to Search to surface it. Firefox draws none. */
+   (matches the Filled state); set the Search Input's type to Search to surface it. Firefox draws none.
+   Stays a MASK (native pseudo-element can't render font glyphs) but the shape is the genuine
+   FA 6 Pro xmark path — see --loop-search-clear-icon in tokens/component-search.css. */
 .osui-search input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
           appearance: none;
@@ -108,6 +118,7 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
   width:  var(--loop-search-icon-size-small, 16px);
   height: var(--loop-search-icon-size-small, 16px);
   left:   var(--loop-search-icon-inset-small, 12px);
+  font-size: var(--loop-search-icon-glyph-small, 14px);
 }
 
 .osui-search .form-control[data-input].input-small::-webkit-search-cancel-button {

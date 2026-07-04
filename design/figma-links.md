@@ -3,9 +3,9 @@
 | Screen / Flow | Figma URL | Key node ids | Notes |
 |---|---|---|---|
 | | | | |
-Alerts- https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=17868-4165&t=M7BBGl3kzV3fhA8T-4
+Alerts- https://www.figma.com/design/zx8q9nRf8Dbqam1rfquQ2E/-The-Loop--Main-Library--2-?node-id=17868-3944&m=dev
 
-System Alert - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=17873-7603&t=M7BBGl3kzV3fhA8T-4
+System Alert - https://www.figma.com/design/zx8q9nRf8Dbqam1rfquQ2E/-The-Loop--Main-Library--2-?node-id=17873-7408&m=dev
 
 Modal/Popup - https://www.figma.com/design/aHtnwyPhI8WRbiGHZ8E5Gb/-The-Loop--Main-Library?node-id=22049-35100&t=M7BBGl3kzV3fhA8T-4
 

@@ -10,7 +10,7 @@ element inside a Block. Three **types**, seven **states**, four **sizes**. The l
 is the same neutral dark for every state — only the dot / icon / pill-border carries the
 state hue (per Figma).
 
-- **Types:** **Light** (CSS dot + label) · **Icon** (inline-SVG glyph + label) · **Headline** (`--headline` modifier — dot/icon + label in a bordered, tinted pill)
+- **Types:** **Light** (CSS dot + label) · **Icon** (Font Awesome 6 Pro glyph + label) · **Headline** (`--headline` modifier — dot/icon + label in a bordered, tinted pill)
 - **States:** `success` · `informational` · `warning` · `error` · `suggestive` · `not-started` · `in-progress`
 - **Sizes:** `small` · `regular` (default) · `large` · `xlarge`
 
@@ -120,15 +120,32 @@ state hue (per Figma).
 }
 
 /* ---- Indicator: icon (Icon type + in-progress) ----
- * The in-progress glyph is rendered STATIC (no rotation) per review on #88. */
+ * The in-progress glyph is rendered STATIC (no rotation) per review on #88.
+ * The element holds a Font Awesome 6 Pro unicode glyph (solid fills per Figma;
+ * not-started / in-progress override to regular outline weight below). A slotted
+ * <svg> still paints with currentColor for backwards compatibility. */
 .loop-badge-status__icon {
   flex-shrink: 0;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width:  var(--_lbs-icon);
   height: var(--_lbs-icon);
-  color:  var(--_lbs-indicator);   /* inline SVG paints with currentColor */
+  color:  var(--_lbs-indicator);   /* glyph/SVG paints with currentColor */
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--_lbs-icon);
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
 }
 .loop-badge-status__icon svg { width: 100%; height: 100%; display: block; }
+/* outline states — thin ring glyphs (fa-circle / fa-circle-notch) use the regular face */
+.loop-badge-status--not-started .loop-badge-status__icon,
+.loop-badge-status--in-progress .loop-badge-status__icon {
+  font-weight: var(--font-weight-icon-regular, 400);
+}
 
 /* ---- Indicator colour per state (the label stays neutral) ---- */
 .loop-badge-status--success      { --_lbs-indicator: var(--loop-badge-status-success-indicator, #388004); }
@@ -165,7 +182,7 @@ state hue (per Figma).
 | `loop-badge-status--{size}` | `small` \| `regular` \| `large` \| `xlarge` (optional; omit = regular) |
 | `loop-badge-status--headline` | Wraps the indicator + label in a bordered, tinted pill |
 | `loop-badge-status__dot` | Indicator element for **Light/Headline** — an empty span; CSS draws the coloured dot |
-| `loop-badge-status__icon` | Indicator element for **Icon** type and **in-progress** — wraps an inline SVG (paints with `currentColor`). Rendered static (no rotation). |
+| `loop-badge-status__icon` | Indicator element for **Icon** type and **in-progress** — holds a Font Awesome 6 Pro unicode glyph (solid by default; not-started / in-progress use the regular face; paints with `currentColor`). A slotted inline SVG still works. Rendered static (no rotation). |
 | `loop-badge-status__label` | The status text |
 
 > **Size default:** Figma's canonical variant is `xlarge`; the block treats `regular` as the

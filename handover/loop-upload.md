@@ -223,25 +223,16 @@ class LoopFileUploader extends HTMLElement {
     }
   }
 
-  /* ---- file-arrow-up glyph (Figma dropzone icon, 32×32, currentColor) ---- */
+  /* ---- Font Awesome 6 Pro glyphs (unicode against the document @font-face — visible
+     inside shadow DOM, unlike .fa-* classes), currentColor ---- */
   _uploadGlyph() {
-    return `<svg class="fu__glyph" viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M12 17v-5M9.5 13.5 12 11l2.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
+    return `<span class="fu__glyph" aria-hidden="true">&#xf574;</span>`;       /* fa-file-arrow-up (Figma dropzone icon) */
   }
   _arrowGlyph() {
-    return `<svg class="fu__btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-      <path d="M12 19V6M7 11l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
+    return `<span class="fu__btn-icon" aria-hidden="true">&#xf062;</span>`;    /* fa-arrow-up */
   }
   _infoGlyph() {
-    return `<svg viewBox="0 0 12 12" width="12" height="12" fill="none" aria-hidden="true">
-      <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1"/>
-      <circle cx="6" cy="3.8" r="0.7" fill="currentColor"/>
-      <line x1="6" y1="5.4" x2="6" y2="8.6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
-    </svg>`;
+    return `<span class="fu__hint-icon" aria-hidden="true">&#xf05a;</span>`;   /* fa-circle-info */
   }
 
   _render() {
@@ -322,7 +313,7 @@ class LoopFileUploader extends HTMLElement {
           <span class="fu__file-name" title="${this._esc(f.name)}">${this._esc(f.name)}</span>
           <span class="fu__file-pct">${done ? '' : f.pct + '%'}</span>
           <button class="fu__file-remove" type="button" data-i="${i}" aria-label="Remove ${this._esc(f.name)}">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="fu__file-remove-glyph" aria-hidden="true">&#xf00d;</span>
           </button>
         </div>
         <div class="fu__progress" role="progressbar" aria-valuenow="${f.pct}" aria-valuemin="0" aria-valuemax="100">
@@ -385,7 +376,21 @@ class LoopFileUploader extends HTMLElement {
   transition: border-color .15s ease, background-color .15s ease;
 }
 .fu__glyph-slot { display: inline-flex; }
-.fu__glyph { width: var(--loop-upload-dropzone-icon-size, 32px); height: var(--loop-upload-dropzone-icon-size, 32px); }
+/* FA file-arrow-up (regular) — 24px em box ≈ the 24px-tall file outline the Figma dropzone
+   draws inside the 32px icon box */
+.fu__glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-upload-dropzone-icon-size, 32px);
+  height: var(--loop-upload-dropzone-icon-size, 32px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-upload-dropzone-glyph, 24px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) { width: var(--loop-upload-dropzone-icon-size, 32px); height: var(--loop-upload-dropzone-icon-size, 32px); }
 
 .fu__prompt {
@@ -417,7 +422,11 @@ class LoopFileUploader extends HTMLElement {
 }
 .fu__input-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fu__input-icon { display: inline-flex; flex-shrink: 0; color: var(--color-icon-on-light-default, #4b5e71); }
-.fu__input-icon svg { width: var(--loop-upload-input-icon, 20px); height: var(--loop-upload-input-icon, 20px); }
+.fu__input-icon .fu__btn-icon {
+  width: var(--loop-upload-input-icon, 20px);
+  height: var(--loop-upload-input-icon, 20px);
+  font-size: var(--loop-upload-input-glyph, 14px);
+}
 
 /* ===================== Button ===================== */
 .fu__btn {
@@ -438,7 +447,20 @@ class LoopFileUploader extends HTMLElement {
   letter-spacing: var(--loop-upload-btn-label-tracking, -0.5px);
   cursor: pointer;
 }
-.fu__btn-icon { width: var(--loop-upload-btn-icon, 18px); height: var(--loop-upload-btn-icon, 18px); }
+/* FA arrow-up (regular) — 12px em box ≈ the ~10px arrow the Figma button draws in its 18px icon box */
+.fu__btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-upload-btn-icon, 18px);
+  height: var(--loop-upload-btn-icon, 18px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-upload-btn-glyph, 12px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 
 /* ===================== Per-state colour ===================== */
 .fu--disabled .fu__zone,
@@ -480,6 +502,19 @@ class LoopFileUploader extends HTMLElement {
   letter-spacing: var(--loop-upload-helper-tracking, .5px);
   color: var(--loop-upload-helper-color, #00294d91);
 }
+/* FA circle-info (light) — hairline outline matching the Figma 1px-stroke 12px hint icon */
+.fu__hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-light, 300);
+  font-size: var(--loop-upload-hint-glyph, 11px);
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
 
 /* ---- File list + per-file progress ---- */
 .fu__files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--loop-upload-helper-gap, 4px); }
@@ -487,7 +522,17 @@ class LoopFileUploader extends HTMLElement {
 .fu__file-row { display: flex; align-items: center; gap: var(--loop-upload-input-gap, 8px); }
 .fu__file-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--loop-upload-helper-size, 12px); color: var(--loop-upload-label-color, #000d1ab2); }
 .fu__file-pct { flex-shrink: 0; font-size: var(--loop-upload-helper-size, 12px); color: var(--loop-upload-helper-color, #00294d91); }
-.fu__file-remove { flex-shrink: 0; display: inline-flex; padding: 0; background: none; border: 0; color: var(--color-icon-on-light-default, #4b5e71); cursor: pointer; }
+.fu__file-remove { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; padding: 0; background: none; border: 0; color: var(--color-icon-on-light-default, #4b5e71); cursor: pointer; }
+/* FA xmark (regular) — 14px em box renders the ~10px × the Figma 16px remove box draws */
+.fu__file-remove-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-upload-remove-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
 
 .fu__progress { block-size: var(--loop-upload-progress-h, 8px); background: var(--loop-upload-progress-track, #e7edf3); border-radius: var(--loop-upload-progress-radius, 32px); overflow: hidden; }
 .fu__progress-fill { block-size: 100%; background: var(--loop-upload-progress-fill, #004370); border-radius: inherit; transition: inline-size .2s ease; }

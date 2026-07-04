@@ -86,10 +86,21 @@
   border-radius: 0 var(--lbd-radius) var(--lbd-radius) 0;
 }
 
+/* FA chevron-down (solid) — 11px em box ≈ the 9px-wide, 1.8px-stroke chevron the
+   Figma toggle draws inside its 18px icon box */
 .lbd__icon {
   width: 18px;
   height: 18px;
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--lbd-icon-glyph, 11px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* === PRIMARY+PRIMARY (no type attr = default) === */

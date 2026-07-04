@@ -171,10 +171,19 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   cursor: pointer;
   border-radius: var(--radius-base, 4px);
 }
-.flatpickr-calendar .loop-dp-yeartoggle svg { width: 12px; height: 12px; fill: currentColor; }
+/* FA caret-down (solid) — the filled triangle the Figma header draws */
+.flatpickr-calendar .loop-dp-yeartoggle__glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-datepicker-caret-glyph, 12px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.flatpickr-calendar .loop-dp-yeartoggle__glyph::before { content: "\f0d7"; }
 .flatpickr-calendar .loop-dp-yeartoggle:hover { background-color: var(--loop-datepicker-nav-hover-bg); }
 /* caret flips when the year grid is open */
-.flatpickr-calendar.loop-dp--yearview .loop-dp-yeartoggle svg { transform: rotate(180deg); }
+.flatpickr-calendar.loop-dp--yearview .loop-dp-yeartoggle__glyph { transform: rotate(180deg); }
 
 /* prev / next — circular neutral hover, brand-neutral chevrons, grouped right */
 .flatpickr-calendar .flatpickr-prev-month,
@@ -192,29 +201,24 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
 .flatpickr-calendar .flatpickr-next-month:hover {
   background-color: var(--loop-datepicker-nav-hover-bg);
 }
-/* Chevron: OSUI hides Flatpickr's <svg> and draws a FontAwesome glyph in ::before. We draw
-   our own border-chevron instead so it matches Figma and renders without the icon font
-   (selector carries .flatpickr-months to outrank OSUI's ::before rule). */
+/* Chevron: OSUI hides Flatpickr's <svg> and draws a legacy-'FontAwesome' glyph in ::before.
+   We draw FA 6 Pro chevrons instead (self-hosted face; the legacy family is never declared)
+   — selector carries .flatpickr-months to outrank OSUI's ::before rule. */
 .flatpickr-calendar .flatpickr-months .flatpickr-prev-month svg,
 .flatpickr-calendar .flatpickr-months .flatpickr-next-month svg { display: none; }
 .flatpickr-calendar .flatpickr-months .flatpickr-prev-month::before,
 .flatpickr-calendar .flatpickr-months .flatpickr-next-month::before {
-  content: "";
   display: block;
-  width: 7px;
-  height: 7px;
-  font-family: inherit;
-  border: solid var(--loop-datepicker-nav-icon);
-  border-width: 2px 2px 0 0;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-datepicker-nav-glyph, 12px);
+  font-style: normal;
+  line-height: 1;
+  color: var(--loop-datepicker-nav-icon);
+  -webkit-font-smoothing: antialiased;
 }
-.flatpickr-calendar .flatpickr-months .flatpickr-prev-month::before {
-  transform: rotate(-135deg);   /* points left ‹ */
-  margin-inline-start: 3px;
-}
-.flatpickr-calendar .flatpickr-months .flatpickr-next-month::before {
-  transform: rotate(45deg);     /* points right › */
-  margin-inline-end: 3px;
-}
+.flatpickr-calendar .flatpickr-months .flatpickr-prev-month::before { content: "\f053"; }  /* fa-chevron-left */
+.flatpickr-calendar .flatpickr-months .flatpickr-next-month::before { content: "\f054"; }  /* fa-chevron-right */
 
 /* =====================================================================
    3) Weekday header row
@@ -429,8 +433,10 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
         toggle.className = "loop-dp-yeartoggle";
         toggle.setAttribute("aria-label", "Choose year");
         toggle.setAttribute("aria-expanded", "false");
+        // FA 6 Pro caret-down (solid) — glyph is drawn by loop-datepicker.css
+        // (.loop-dp-yeartoggle__glyph: font-family/weight/content sizing)
         toggle.innerHTML =
-          '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4z"/></svg>';
+          '<span class="loop-dp-yeartoggle__glyph" aria-hidden="true"></span>';
         toggle.addEventListener("click", function (e) {
           e.preventDefault();
           e.stopPropagation();

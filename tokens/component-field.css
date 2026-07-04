@@ -49,9 +49,12 @@
   --loop-select-text-tracking:    0.5px;
   --loop-select-list-radius:      var(--radius-medium);        /* 8px — popup list */
   --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px */
-  /* search-box magnifier (Dropdown Search open state) — drawn as a mask, self-contained
-     so it renders identically in preview and ODC. */
-  --loop-select-search-icon:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Ccircle cx='7' cy='7' r='4.5'/%3E%3Cpath d='M10.5 10.5L14 14' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* search-box magnifier (Dropdown Search open state) — FA 6 Pro magnifying-glass,
+     rendered as a font glyph (loop-dropdown.css ::before); regular weight matches the
+     Figma stroke */
+  --loop-select-search-icon-char:   "\f002";                     /* fa-magnifying-glass */
+  --loop-select-search-icon-weight: var(--font-weight-icon-regular, 400);
+  --loop-select-search-icon-glyph:  14px;                        /* em box inside the 16px icon box */
 
   /* ---- Multi-select (DropdownTags) ---- */
   --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */

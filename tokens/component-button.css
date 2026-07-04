@@ -1,8 +1,28 @@
-/* component-button.css — Button height tokens (applied as fixed height so the border never shifts size) */
+/* component-button.css — Button size tokens (heights pinned so the border never shifts size;
+   label / icon / gap scale per size — Figma "loop/button" size modes, node 15597:847) */
 :root {
   /* ---- Sizes (pinned, applied as fixed height) ---- */
   --loop-btn-h-xlarge:  56px;   /* xLarge (added modifier) */
   --loop-btn-h-large:   48px;   /* Large */
   --loop-btn-h-regular: 40px;   /* Regular (default) */
   --loop-btn-h-small:   32px;   /* Small */
+
+  /* ---- Label font size per size (Figma loop/button/label/font size, per size mode) ---- */
+  --loop-btn-font-xlarge:  var(--font-size-300, 16px);
+  --loop-btn-font-large:   var(--font-size-200, 14px);
+  --loop-btn-font-regular: var(--font-size-100, 12px);
+  --loop-btn-font-small:   11px;   /* Figma Small mode — no step on the global type scale */
+
+  /* ---- Label line height (Figma loop/button/label/line height: 24 for xLarge/Large/Regular, 20 for Small) ---- */
+  --loop-btn-lh:        24px;
+  --loop-btn-lh-small:  20px;
+
+  /* ---- Icon glyph box per size (Figma icon 18/16/14/12) ---- */
+  --loop-btn-icon-xlarge:  18px;
+  --loop-btn-icon-large:   16px;
+  --loop-btn-icon-regular: 14px;
+  --loop-btn-icon-small:   12px;
+
+  /* ---- Icon ↔ label gap (6px default via --space-button-gap; Small tightens to 4px) ---- */
+  --loop-btn-gap-small: 4px;
 }

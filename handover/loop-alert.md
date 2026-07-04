@@ -165,23 +165,22 @@ class LoopAlert extends HTMLElement {
     this.dispatchEvent(new CustomEvent('action', { bubbles: true, composed: true, detail: { type: this._type } }));
   }
 
-  // Built-in type icon (Figma renders one per type). 16×16 FILLED glyphs — solid shape in
-  // currentColor (driven by the per-type --loop-alert-<type>-icon token) with white knockout
-  // marks, modeled on the Figma 17868-3944 assets. Overridden by a slotted `slot="icon"` element.
+  // Built-in type icon (Figma renders one per type). Font Awesome 6 Pro SOLID glyph —
+  // filled shape in currentColor (driven by the per-type --loop-alert-<type>-icon token)
+  // with knockout marks, matching the Figma 17868-3944 assets: triangle-exclamation /
+  // circle-info / circle-exclamation. Success reuses the circle-info "i" glyph — that is
+  // what the Figma set draws for BOTH success layouts (17868-4020), not a check
+  // (see the consistency finding in findings/findings-register.md). Rendered from the
+  // unicode codepoint against the document-level @font-face (visible inside shadow DOM,
+  // unlike .fa-* classes). Overridden by a slotted `slot="icon"` element.
   _defaultIcon(type) {
-    const svg = (inner) =>
-      `<svg class="loop-alert__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">${inner}</svg>`;
-    switch (type) {
-      case 'warning':
-        return svg('<path d="M8 1c.44 0 .85.23 1.08.62l6.75 11.5c.23.39.23.86.01 1.25-.22.39-.64.63-1.09.63H1.25c-.45 0-.86-.24-1.08-.63-.22-.39-.22-.86.01-1.25L6.92 1.62C7.15 1.23 7.56 1 8 1Z" fill="currentColor"/><line x1="8" y1="5.75" x2="8" y2="9.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="12" r="1" fill="white"/>');
-      case 'information':
-        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="4.5" r="1" fill="white"/><line x1="8" y1="7.2" x2="8" y2="11.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>');
-      case 'success':
-        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.7 8.4 7 10.7 11.3 5.9" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>');
-      case 'error':
-      default:
-        return svg('<circle cx="8" cy="8" r="8" fill="currentColor"/><line x1="8" y1="4.5" x2="8" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="1" fill="white"/>');
-    }
+    const glyph = {
+      warning:     '&#xf071;',  /* fa-triangle-exclamation */
+      information: '&#xf05a;',  /* fa-circle-info */
+      success:     '&#xf05a;',  /* fa-circle-info — per Figma 17868-4020, not circle-check */
+      error:       '&#xf06a;',  /* fa-circle-exclamation */
+    }[type] || '&#xf06a;';
+    return `<span class="loop-alert__icon" aria-hidden="true">${glyph}</span>`;
   }
 
   _render() {
@@ -208,9 +207,7 @@ class LoopAlert extends HTMLElement {
 
     const dismissHtml = dismissible
       ? `<button class="loop-alert__dismiss" type="button" aria-label="Dismiss alert">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <span class="loop-alert__dismiss-glyph" aria-hidden="true">&#xf00d;</span>
         </button>`
       : '';
 
@@ -279,9 +276,24 @@ class LoopAlert extends HTMLElement {
 }
 .loop-alert--multiline .loop-alert__content { align-items: flex-start; gap: var(--loop-alert-gap-multi, 8px); }
 
-/* slot is transparent to flex so its content (default svg or slotted icon) is the flex item */
+/* slot is transparent to flex so its content (default glyph or slotted icon) is the flex item */
 .loop-alert__icon-slot { display: contents; }
-.loop-alert__icon { flex-shrink: 0; display: block; width: var(--loop-alert-icon-size, 16px); height: var(--loop-alert-icon-size, 16px); }
+/* FA 6 Pro solid glyph — the filled circle/triangle spans the full em box, so
+   font-size = icon-size reproduces the 16px Figma icon */
+.loop-alert__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-alert-icon-size, 16px);
+  height: var(--loop-alert-icon-size, 16px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-alert-icon-size, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) {
   flex-shrink: 0;
   width: var(--loop-alert-icon-size, 16px);
@@ -376,6 +388,15 @@ class LoopAlert extends HTMLElement {
   cursor:      pointer;
   color:       var(--loop-alert-dismiss, #4b5e71);
 }
+/* FA xmark (regular) — 14px em box renders the ~10px × the Figma 16px dismiss box draws */
+.loop-alert__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-alert-dismiss-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 .loop-alert--multiline .loop-alert__dismiss { align-self: flex-start; margin-top: 2px; }
 .loop-alert__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
@@ -413,7 +434,7 @@ if (!customElements.get('loop-alert')) {
 ## API — Slots
 | Slot | Description |
 |---|---|
-| `icon` | Overrides the **built-in** type icon. Each type ships a default 16×16 icon (error / warning / information / success); slot a `<img slot="icon" src="…" alt="">` or inline SVG to replace it, or set `hide-icon` to remove it. The default SVGs **approximate** the Figma glyphs — swap in the exact assets if design supplies them. |
+| `icon` | Overrides the **built-in** type icon. Each type ships a default 16×16 icon (error / warning / information / success); slot a `<img slot="icon" src="…" alt="">` or inline SVG to replace it, or set `hide-icon` to remove it. The defaults are **Font Awesome 6 Pro solid glyphs** rendered from unicode against the self-hosted icon font: triangle-exclamation (warning) / circle-info (information **and** success — the Figma Alerts set draws the "i" glyph for success, node 17868-4020) / circle-exclamation (error). |
 
 ## Example HTML
 ```html

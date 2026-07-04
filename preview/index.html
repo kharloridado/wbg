@@ -748,10 +748,19 @@
     <div class="pv-row">
       <span class="pv-label">With icon</span>
       <button class="btn btn-primary">
-        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
         Add item
       </button>
       <span class="pv-note">Icon gap 6px (FND-013).</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Type + icon scale per size</span>
+      <button class="btn btn-primary btn-xlarge"><i class="fa-solid fa-plus" aria-hidden="true"></i>xLarge 16/18</button>
+      <button class="btn btn-primary btn-large"><i class="fa-solid fa-plus" aria-hidden="true"></i>Large 14/16</button>
+      <button class="btn btn-primary btn-regular"><i class="fa-solid fa-plus" aria-hidden="true"></i>Regular 12/14</button>
+      <button class="btn btn-primary btn-small"><i class="fa-solid fa-plus" aria-hidden="true"></i>Small 11/12</button>
+      <span class="pv-note">Label 16/14/12/11 · icon glyph 18/16/14/12 · gap 6 (4 on Small) — Figma 15597-847 size modes.</span>
     </div>
   </section>
 
@@ -1508,22 +1517,22 @@
 
     <div class="pv-row pv-row--stack pv-row--measure">
       <div class="alert alert-info">
-        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></div>
+        <div class="alert-icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></div>
         <div class="alert-message">This record will be reviewed by the compliance team within 3 business days of submission.</div>
       </div>
 
       <div class="alert alert-success">
-        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></div>
+        <div class="alert-icon" aria-hidden="true"><i class="fa-solid fa-circle-info"></i></div>
         <div class="alert-message">Your changes have been saved and submitted for approval.</div>
       </div>
 
       <div class="alert alert-warning">
-        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></div>
+        <div class="alert-icon" aria-hidden="true"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div class="alert-message">This record requires approval before it can be submitted to the World Bank procurement portal.</div>
       </div>
 
       <div class="alert alert-error">
-        <div class="alert-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></div>
+        <div class="alert-icon" aria-hidden="true"><i class="fa-solid fa-circle-exclamation"></i></div>
         <div class="alert-message">Submission failed — the procurement portal is unavailable. Try again or contact support.</div>
       </div>
     </div>
@@ -1537,22 +1546,22 @@
 
     <div class="pv-row pv-row--stack pv-row--measure">
       <div class="feedback-message feedback-message-info">
-        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9V9h2v5zm0-7H9V5h2v2z"/></svg></i>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
         <span class="feedback-message-text">This record will be reviewed by the compliance team within 3 business days.</span>
       </div>
 
       <div class="feedback-message feedback-message-success">
-        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-9"/></svg></i>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
         <span class="feedback-message-text">Your changes have been saved and submitted for approval.</span>
       </div>
 
       <div class="feedback-message feedback-message-warning">
-        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l9 16H1L10 2zm-1 6v4h2V8H9zm0 5v2h2v-2H9z"/></svg></i>
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
         <span class="feedback-message-text">This record requires approval before it can be submitted.</span>
       </div>
 
       <div class="feedback-message feedback-message-error">
-        <i aria-hidden="true"><svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12H9v-2h2v2zm0-3H9V5h2v6z"/></svg></i>
+        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
         <span class="feedback-message-text">Submission failed — the procurement portal is unavailable. Try again.</span>
       </div>
     </div>
@@ -1638,7 +1647,7 @@
     <div class="pv-row">
       <span class="pv-label">With icon</span>
       <span class="loop-tag loop-tag--green">
-        <i class="loop-tag__icon" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 10l4 4 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+        <i class="loop-tag__icon fa-solid fa-check" aria-hidden="true"></i>
         <span class="loop-tag__label">Approved</span>
       </span>
     </div>
@@ -1768,38 +1777,38 @@
 
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
-        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><path d="M4.6 8.4l2.2 2.2 4.6-5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="loop-badge-status__label">Success</span></span>
+        <span class="loop-badge-status loop-badge-status--success loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf058;</span><span class="loop-badge-status__label">Success</span></span>
         <span class="loop-badge-status loop-badge-status--success loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Success</span></span>
       </div>
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
-        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><circle cx="8" cy="4.7" r="1" fill="#fff"/><rect x="7.1" y="6.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/></svg></span><span class="loop-badge-status__label">Informative</span></span>
+        <span class="loop-badge-status loop-badge-status--informational loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf05a;</span><span class="loop-badge-status__label">Informative</span></span>
         <span class="loop-badge-status loop-badge-status--informational loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Informative</span></span>
       </div>
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
-        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M7.13 1.7a1 1 0 0 1 1.74 0l6.0 10.9a1 1 0 0 1-.87 1.5H1.99a1 1 0 0 1-.87-1.5z" fill="currentColor"/><rect x="7.1" y="5.4" width="1.8" height="4.6" rx="0.9" fill="#fff"/><circle cx="8" cy="11.7" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Warning</span></span>
+        <span class="loop-badge-status loop-badge-status--warning loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf071;</span><span class="loop-badge-status__label">Warning</span></span>
         <span class="loop-badge-status loop-badge-status--warning loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Warning</span></span>
       </div>
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
-        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Error</span></span>
+        <span class="loop-badge-status loop-badge-status--error loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf06a;</span><span class="loop-badge-status__label">Error</span></span>
         <span class="loop-badge-status loop-badge-status--error loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Error</span></span>
       </div>
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
-        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="currentColor"/><rect x="7.1" y="3.6" width="1.8" height="5.2" rx="0.9" fill="#fff"/><circle cx="8" cy="11.3" r="1" fill="#fff"/></svg></span><span class="loop-badge-status__label">Suggestive</span></span>
+        <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf06a;</span><span class="loop-badge-status__label">Suggestive</span></span>
         <span class="loop-badge-status loop-badge-status--suggestive loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Suggestive</span></span>
       </div>
       <div class="pv-row">
         <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
-        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="loop-badge-status__label">Not Started</span></span>
+        <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf111;</span><span class="loop-badge-status__label">Not Started</span></span>
         <span class="loop-badge-status loop-badge-status--not-started loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__dot" aria-hidden="true"></span><span class="loop-badge-status__label">Not Started</span></span>
       </div>
       <div class="pv-row">
-        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
-        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
-        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.6" stroke-opacity="0.25"/><path d="M8 1.6a6.4 6.4 0 0 1 6.4 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf1ce;</span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf1ce;</span><span class="loop-badge-status__label">In Progress</span></span>
+        <span class="loop-badge-status loop-badge-status--in-progress loop-badge-status--headline loop-badge-status--xlarge"><span class="loop-badge-status__icon" aria-hidden="true">&#xf1ce;</span><span class="loop-badge-status__label">In Progress</span></span>
       </div>
     </div>
 
@@ -1823,7 +1832,7 @@
   <!-- ============ SYSTEM ALERT ============ -->
   <section>
     <h2>System Alert — custom Web Component <code>&lt;loop-system-alert&gt;</code></h2>
-    <p class="pv-figma">handover/loop-system-alert.md · Figma node 17873-7603</p>
+    <p class="pv-figma">handover/loop-system-alert.md · Figma node 17873-7408</p>
 
     <div class="pv-row pv-row--stack">
       <span class="pv-label pv-label--block">Single-line (with dismiss)</span>
@@ -1892,6 +1901,7 @@
       </loop-system-alert>
     </div>
     <p class="pv-note pv-note--spaced">⚠ Pending finding (FND-042): white text on the offline background (#8a9db1) fails WCAG AA contrast — white-75 ≈ 2.23:1, white-90 ≈ 2.6:1 — built as designed, filed for design review.</p>
+    <p class="pv-note pv-note--spaced">⚠ Pending finding (FND-067): the warning <em>title</em> is white-75 on #e19d00 ≈ 1.9:1 (nearly invisible) — that is what the Figma sticker renders; built as designed, filed for design review (issue #141).</p>
     <p class="pv-log" id="sysalert-log">last event: —</p>
   </section>
 
@@ -2210,7 +2220,7 @@
         <div class="card-background-image pv-card-img"></div>
         <div class="card-background-content">
           <button class="loop-card__media-button" aria-label="Play video">
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <i class="fa-solid fa-play" aria-hidden="true"></i>
           </button>
           <p class="loop-card__eyebrow">Podcast</p>
           <h3 class="loop-card__title">Voices from the field</h3>

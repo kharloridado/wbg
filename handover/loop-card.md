@@ -156,7 +156,8 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   color: var(--loop-card-multimedia-title);
 }
 
-/* round media affordance (play / microphone) */
+/* round media affordance (play / microphone) — holds a Font Awesome glyph
+   (`fa-solid fa-…` <i>); font-size sizes the glyph inside the 64px circle */
 .card-background .loop-card__media-button {
   display: inline-flex;
   align-items: center;
@@ -167,6 +168,7 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
   border-radius: 100px;
   background-color: var(--loop-card-multimedia-icon-bg);
   color: var(--color-blue-90, #012740);
+  font-size: var(--loop-card-multimedia-glyph, 22px);
   cursor: pointer;
 }
 .card-background .loop-card__media-button:focus-visible {
