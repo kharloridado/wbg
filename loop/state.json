@@ -307,6 +307,8 @@
       "status": "built",
       "checker": "PASS (round 2 — finding-ID hygiene)",
       "ref": "loop/refs/cmp-dropdown-select/",
+      "reaudit_2026_07_04": "Frozen-ref checker pilot returned FAIL: popup row hpadding 16 vs ref 12 (FND-063) + native row text 13 vs ref 14 (FND-064) + Figma shadow-color drift (FND-065, follow-up to FND-003). All low/register-only; code unchanged pending call.",
+      "visual": "fail (pilot 2026-07-04): closed states (error/warning/disabled/focused) match refs/figma.png; open popup list is painted OVER by the next section's datepicker input — loop-dropdown.css sets no position/z-index on the list (relies on native OSUI stacking). May be preview-demo markup missing OSUI's open-state class; verify on published ODC DOM (restyle-verify-against-live-runtime-dom) or add an explicit z-index in a maker round. Multi-select tag chips also rendered with box glyphs locally (FA font load in preview — environment, not CSS).",
       "handover_doc": "handover/loop-dropdown.md",
       "findings": [
         "FND-031",
