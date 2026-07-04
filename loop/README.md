@@ -6,9 +6,10 @@ A bounded, autonomous maker/checker loop that runs in **Claude Code**. Set a goa
 
 - `loop/goal.md` — you fill this in: the goal, Figma URL, scope, done-criteria, caps.
 - `loop/state.json` — the loop's memory: work queue, per-item status/rounds, findings, handovers. Resumable.
+- `loop/refs/<item-id>/` — the **frozen Figma spec snapshot** per work item: `spec.md` (get_design_context), `variables.json` (get_variable_defs), `figma.png` (get_screenshot). The orchestrator saves it before the maker runs (subagents have no Figma MCP access); the maker builds to it and the checker judges against it — never against handover prose or live Figma. No ref = the item goes `needs-human`, not built. This also makes headless runs fidelity-capable.
 - `.claude/commands/design-loop.md` — the orchestrator procedure (`/design-loop`).
 - `.claude/agents/maker.md` — builds one artifact faithfully (uses the outsystems-* skills).
-- `.claude/agents/checker.md` — independently judges it (fidelity / token-only / BEM / a11y flag-don't-fix). Separate context = real critique.
+- `.claude/agents/checker.md` — independently judges it (fidelity vs `loop/refs/<id>/` / token-only / BEM / a11y flag-don't-fix). Separate context = real critique. After a checker PASS the orchestrator also runs a **visual check**: preview render in Chrome vs `refs/<id>/figma.png` (recorded as `visual` on the item; a mismatch counts as a FAIL round).
 - `.claude/settings.json` — scoped tool permissions so unattended runs don't prompt, a destructive-command deny-list, and an edit-logging hook. No `--dangerously-skip-permissions`.
 - `loop/run.sh` — the external bounded loop (one item per call, until done or cap).
 

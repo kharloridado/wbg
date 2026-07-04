@@ -14,8 +14,13 @@ Given a work item and the files the MAKER produced, validate against:
 
 CRITICAL nuance: code that faithfully implements a brand color which fails contrast is a PASS for the code (built as designed) — PROVIDED the maker raised that finding. If the maker altered a brand value to pass contrast, that is a FIDELITY FAILURE → FAIL. If the maker missed a real conflict and did not flag it → FAIL.
 
+CALIBRATION (false-positive guard):
+- Never flag a value the ref itself prescribes. Every fidelity critique item MUST cite the ref value vs. the code value, with file:line — no citation, no flag.
+- The spacing grid spec is TBD for this project. NEVER flag values as "off the 4pt grid" or off any assumed grid (this produced false findings FND-005/013/018/022).
+- Distinguish "code deviates from the ref" (→ FAIL) from "I disagree with the ref" (design-level concern → list under MISSED-FINDINGS as a candidate finding; NEVER a FAIL).
+
 Return strictly:
-  VERDICT: PASS | FAIL
+  VERDICT: PASS | FAIL | BLOCKED
   CRITIQUE: specific, actionable, cite file:line; if FAIL say exactly what to change
   FINDINGS-CONFIRMED: findings the maker correctly raised
   MISSED-FINDINGS: conflicts that should have been flagged but were not

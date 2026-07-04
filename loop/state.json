@@ -6,7 +6,7 @@
   "status": "composites-in-progress",
   "mode": "library",
   "phase": "composites",
-  "pause_reason": "Dropdown/Select (#38) now BUILT (checker PASS) from Figma nodes 18787-4817 (Select) + 18830-17312 (Multiselect) + rendered DOM the user supplied 2026-06-18. Still BLOCKED on design input for the REST of the to-build queue (#39-54: Search, Date Picker, Upload, Alert, Toast, Badge, Progress Bar, Card, Tabs, Accordion, Modal, Breadcrumbs, Pagination, Avatar) — none carry Figma node ids yet. Provide node ids + (for provider/JS patterns) rendered OutSystems HTML to advance further.",
+  "pause_reason": "2026-07-04: frozen-ref process adopted (loop/refs/<id>/ snapshots backfilled for all built items with node ids; see loop/refs/README.md). The queue's node-id blocker is largely LIFTED — design/figma-links.md now carries nodes for Search 17191-8728, DatePicker 17897-12293 (+range 19338-21849, time 19340-28355), Upload 18306-3832, Alert 17868-4165, Toast 17874-6524, Badge Status 18153-7159, Badge Label 22966-4806, Progress Bar 20144-167950, Card 20315-6122, Tabs 18686-5559, Modal 22049-35100, Pagination 23714-3722. Still missing: Accordion, Breadcrumbs, Avatar, and rendered OutSystems HTML for provider/JS patterns. cmp-segmented lacks a durable node id.",
   "project": {
     "owner": "kharloridado",
     "number": 1,
@@ -60,6 +60,7 @@
       "level": "L1",
       "node": "11122-2143",
       "artifact": "tokens/colors.css",
+      "ref": "loop/refs/tok-colors-primitives/",
       "status": "built"
     },
     {
@@ -68,6 +69,7 @@
       "level": "L1",
       "node": "11122-2879",
       "artifact": "tokens/semantic-colors.css",
+      "ref": "loop/refs/tok-semantic-colors/",
       "status": "built",
       "scope": "light"
     },
@@ -87,6 +89,7 @@
       "level": "L1",
       "node": "10994-5086",
       "artifact": "tokens/spacing.css",
+      "ref": "loop/refs/tok-spacing/",
       "status": "built"
     },
     {
@@ -95,6 +98,7 @@
       "level": "L1",
       "node": "10995-7259",
       "artifact": "tokens/typography.css",
+      "ref": "loop/refs/tok-typography/",
       "status": "built"
     },
     {
@@ -103,6 +107,7 @@
       "level": "L1",
       "node": "19737-9489",
       "artifact": "tokens/radius.css",
+      "ref": "loop/refs/tok-radius-shadows/",
       "status": "built"
     },
     {
@@ -111,6 +116,7 @@
       "level": "L1",
       "node": "19737-9489",
       "artifact": "tokens/shadows.css",
+      "ref": "loop/refs/tok-radius-shadows/",
       "status": "built"
     },
     {
@@ -120,6 +126,7 @@
       "node": "15597-766",
       "artifact": "src/blocks/loop-button.css",
       "approach": "restyle native .btn",
+      "ref": "loop/refs/cmp-button/",
       "status": "built"
     },
     {
@@ -129,6 +136,7 @@
       "node": "15597-4652",
       "artifact": "src/blocks/loop-button-text.css",
       "approach": "native button-link",
+      "ref": "loop/refs/cmp-button-text/",
       "status": "built"
     },
     {
@@ -138,6 +146,7 @@
       "node": "15597-2978",
       "artifact": "src/blocks/loop-button-group.css",
       "approach": "restyle native button-group (+Button Switch 15597-4070)",
+      "ref": "loop/refs/cmp-button-group/",
       "status": "built"
     },
     {
@@ -147,6 +156,7 @@
       "node": "15597-766",
       "artifact": "src/components/loop-button-dropdown.js",
       "approach": "vanilla JS Web Component",
+      "ref": "loop/refs/cmp-button/",
       "status": "built"
     },
     {
@@ -156,6 +166,7 @@
       "node": "19336-17679",
       "artifact": "src/blocks/loop-checkbox.css",
       "approach": "restyle native checkbox",
+      "ref": "loop/refs/cmp-checkbox/",
       "status": "built"
     },
     {
@@ -165,6 +176,7 @@
       "node": "19336-18637",
       "artifact": "src/blocks/loop-radio-button.css",
       "approach": "restyle native .radio-button",
+      "ref": "loop/refs/cmp-radio-button/",
       "status": "built"
     },
     {
@@ -174,6 +186,7 @@
       "node": "19336-9606",
       "artifact": "src/blocks/loop-text-field.css",
       "approach": "restyle native .form-control[data-input]",
+      "ref": "loop/refs/cmp-text-field/",
       "status": "built"
     },
     {
@@ -183,15 +196,17 @@
       "node": "25344-27822",
       "artifact": "src/blocks/loop-switch.css",
       "approach": "restyle native [data-switch]",
+      "ref": "loop/refs/cmp-toggle/",
       "status": "built"
     },
     {
       "id": "cmp-tag",
       "tier": "composites",
       "level": "L3",
-      "node": "live-select",
+      "node": "17313-5502",
       "artifact": "src/blocks/loop-tag.css",
       "approach": "custom Tag block, color-configurable",
+      "ref": "loop/refs/cmp-tag/",
       "status": "built",
       "handover": [
         64,
@@ -202,9 +217,10 @@
       "id": "cmp-tooltip",
       "tier": "composites",
       "level": "L3",
-      "node": "live-select",
+      "node": "17874-7113",
       "artifact": "src/blocks/loop-tooltip.css",
       "approach": "restyle native Tooltip pattern",
+      "ref": "loop/refs/cmp-tooltip/",
       "status": "built",
       "handover": [
         58,
@@ -215,9 +231,10 @@
       "id": "cmp-note",
       "tier": "composites",
       "level": "L3",
-      "node": "live-select",
+      "node": "26642-61530",
       "artifact": "src/blocks/loop-note.css",
       "approach": "CSS block (Notes)",
+      "ref": "loop/refs/cmp-note/",
       "status": "built",
       "handover": [
         61
@@ -227,9 +244,10 @@
       "id": "cmp-system-alert",
       "tier": "composites",
       "level": "L5",
-      "node": "live-select",
+      "node": "17873-7603",
       "artifact": "src/components/loop-system-alert.js",
       "approach": "vanilla JS Web Component",
+      "ref": "loop/refs/cmp-system-alert/",
       "status": "built",
       "handover": [
         62
@@ -239,9 +257,10 @@
       "id": "cmp-popover",
       "tier": "composites",
       "level": "L5",
-      "node": "live-select",
+      "node": "26345-2762",
       "artifact": "src/components/loop-popover.js",
       "approach": "vanilla JS Web Component",
+      "ref": "loop/refs/cmp-popover/",
       "status": "built",
       "handover": [
         63
@@ -254,6 +273,7 @@
       "node": "live-select",
       "artifact": "src/components/rnt-segmented.js",
       "approach": "vanilla JS Web Component",
+      "ref_status": "needs-ref-id (no durable Figma node recorded; supply in design/figma-links.md)",
       "status": "built"
     },
     {
@@ -263,6 +283,7 @@
       "node": "11122-2143",
       "artifact": "tokens/*.css (gen:color-utilities)",
       "approach": "generated .background-/.text- utilities + loop-color-reference.js",
+      "ref": "loop/refs/tok-colors-primitives/",
       "status": "built"
     },
     {
@@ -272,6 +293,7 @@
       "node": "10995-7259",
       "artifact": "tokens/typography*.css (gen:type-utilities)",
       "approach": "generated .font-size-/.font-weight- utilities + loop-type-reference.js",
+      "ref": "loop/refs/tok-typography/",
       "status": "built"
     },
     {
@@ -284,6 +306,7 @@
       "approach": "restyle native Dropdown pattern (.dropdown) + VirtualSelect provider (.osui-dropdown-search/-tags)",
       "status": "built",
       "checker": "PASS (round 2 — finding-ID hygiene)",
+      "ref": "loop/refs/cmp-dropdown-select/",
       "handover_doc": "handover/loop-dropdown.md",
       "findings": [
         "FND-031",
@@ -303,6 +326,7 @@
       "node_multimedia": "20315-7404",
       "artifact": "src/blocks/loop-card.css",
       "tokens": "tokens/component-card.css",
+      "ref": "loop/refs/cmp-card/",
       "approach": "restyle native OutSystems UI Card family (.card / .card-background / .card-sectioned + list cards)",
       "status": "built",
       "handover_doc": "handover/loop-card.md",

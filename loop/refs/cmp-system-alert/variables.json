@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "item": "cmp-system-alert",
+    "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
+    "node": "17873:7603",
+    "tool": "get_variable_defs",
+    "pulled": "2026-07-04",
+    "note": "Frozen Figma variable defs for the System Alert page node. Built as live-select originally (loop-system-alert.js); this pins the durable node."
+  },
+  "variables": {
+    "Body/Text/Small/Narrow": "Font(family: \"Global/Font Family\", style: Regular, size: 14, weight: Body/Font Weight/Regular, lineHeight: 1.25, letterSpacing: 0)",
+    "Global/Font Family": "Open Sans",
+    "Body/Font Weight/Regular": "400",
+    "Background/Container/On Light/State/Information/High": "#004370",
+    "Background/Container/On Light/State/Error/High": "#9d161d",
+    "Background/Container/On Light/State/Warning/Regular": "#e19d00",
+    "Background/Container/On Light/State/Disable/High": "#8a9db1",
+    "Text/On State/Primary/Default": "#f6fcff",
+    "Text/On State/Primary/Emphasis": "#ffffff",
+    "Text/On Dark/Default": "#ffffffbf",
+    "Text/On Dark/Emphasis": "#ffffffe5",
+    "Text/On Dark/Link/Secondary": "#f5f7f9",
+    "Icon/On Dark/Emphasis": "#ffffff",
+    "Icon/On Light/State/Warning/High": "#473201",
+    "Text/On Light/State/Warning": "#473201",
+    "Spacing/none": "0",
+    "Spacing/tiny": "4",
+    "Spacing/xxsmall": "8",
+    "Spacing/xsmall": "12",
+    "Spacing/regular": "24",
+    "Spacing/large": "40",
+    "Spacing/xlarge": "48",
+    "Background": "#ffffff",
+    "Neutral/Solid/05 S": "#f5f7f9"
+  }
+}

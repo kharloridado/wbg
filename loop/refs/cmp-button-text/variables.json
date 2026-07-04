@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "item": "cmp-button-text",
+    "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
+    "node": "15597:4652",
+    "tool": "get_variable_defs",
+    "pulled": "2026-07-04",
+    "note": "Frozen Figma variable defs for the Text Button page node."
+  },
+  "variables": {
+    "loop/button/label/letter spacing": "-0.5",
+    "loop/button/label/font size": "16",
+    "Global/Font Family": "Open Sans",
+    "loop/button/label/font weight": "700",
+    "loop/button/gap": "6",
+    "Text/On Light/Link/Primary Enabled": "#004370",
+    "Text/On Light/Link/Disabled": "#8a9db1",
+    "Text/On Dark/Link/Primary Enabled": "#ffffffe5",
+    "Text/On Dark/State/Disabled": "#ffffff7a",
+    "Keyboard Focus/On Light": "#b6490c",
+    "Keyboard Focus/On Dark": "#f5926c",
+    "Blue/90": "#012740",
+    "Spacing/none": "0",
+    "Spacing/xtiny": "2",
+    "Spacing/tiny": "4",
+    "Spacing/regular": "24",
+    "Spacing/large": "40",
+    "Spacing/xlarge": "48",
+    "Spacing/xxlarge": "64",
+    "Text/On Light/Subdued": "#000d1a91",
+    "Text/On Light/Headers": "#000d1af5",
+    "Text/On Dark/Subdued": "#ffffff99",
+    "Text/On Blue/Text": "#004099",
+    "Neutral/Solid/05 S": "#f5f7f9"
+  }
+}

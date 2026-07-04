@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "item": "cmp-tooltip",
+    "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
+    "node": "17874:7113",
+    "tool": "get_variable_defs",
+    "pulled": "2026-07-04",
+    "note": "Frozen Figma variable defs for the Tooltip page node."
+  },
+  "variables": {
+    "Background/Black": "#000000",
+    "Text/On Dark/Emphasis": "#ffffffe5",
+    "Body/Text/Small/Narrow": "Font(family: \"Global/Font Family\", style: Regular, size: Font-size/200, weight: Body/Font Weight/Regular, lineHeight: 1.25, letterSpacing: 0)",
+    "Font-size/200": "14",
+    "Global/Font Family": "Open Sans",
+    "Body/Font Weight/Regular": "400",
+    "Border Radius/Small": "2",
+    "Background/White": "#ffffff",
+    "Text/On Light/Default": "#000d1ab2",
+    "Background/Page/Default": "#f5f7f9",
+    "Spacing/none": "0",
+    "Spacing/regular": "24",
+    "Spacing/large": "40",
+    "Spacing/xlarge": "48",
+    "Neutral/Solid/05 S": "#f5f7f9"
+  }
+}
