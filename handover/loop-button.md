@@ -75,7 +75,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
      --loop-btn-h-*, --loop-btn-font-*, --loop-btn-lh(-small), --loop-btn-icon-*,
-     --loop-btn-gap-small (component-button.css),
+     --loop-btn-gap-small, --loop-btn-adjacent-gap (component-button.css),
      --font-family-label, --font-weight-bold, --letter-spacing-button,
      --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
      --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
@@ -200,6 +200,15 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
   line-height: 1;
 }
 
+/* ---- Adjacent buttons — The Loop spacing is 8px (OSUI baseline: --space-m / 16px);
+   the phone layout stacks buttons full-width, same 8px between them ---- */
+.btn + .btn {
+  margin-left: var(--loop-btn-adjacent-gap, 8px);
+}
+.phone .layout:not(.layout-native) .btn + .btn {
+  margin-top: var(--loop-btn-adjacent-gap, 8px);
+}
+
 /* ---- .btn.btn-rounded → 32px pill corners (opt-in variant; confirmed: kharloridado 2026-06-30) ---- */
 .btn.btn-rounded {
   border-radius: var(--radius-pill, 32px);
@@ -240,6 +249,7 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 - Explicit Loop hover/pressed hues (replaces OutSystems' `filter: brightness()` darkening).
 - Sizes: default `.btn` → 40px (Regular), native `.btn-large` → 48px, `.btn-small` → 32px, added `.btn-xlarge` → 56px (xLarge), `.btn-regular` → 40px (explicit alias of the default).
 - **Label, icon and gap scale with the size** (Figma node 15597:847 size modes): label **16/14/12/11px** (line height 24, 20 on Small), Font Awesome icon glyph **18/16/14/12px**, icon↔label gap **6px** (4px on Small) for xLarge/Large/Regular/Small. Icons placed with the native Icon widget inside the Button pick this up automatically (`.btn [class*="fa-"]`).
+- **Adjacent buttons sit 8px apart** (`.btn + .btn` margin via `--loop-btn-adjacent-gap`, replacing the OutSystems UI 16px `--space-m` default; the phone stacked layout gets the same 8px vertical gap). No extra classes needed — place Buttons side by side as usual.
 
 ## Radius variant mapping
 | The Loop | OutSystems | How |

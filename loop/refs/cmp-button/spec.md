@@ -31,6 +31,9 @@ The `loop/button/*` variables are **mode-based per size** — the flat values ab
 Source nodes: labels 15597:955/954/965/970 · icon-only 15597:976/975/985/990 · icon+label 15597:960/959/966/971.
 Note: implementation keeps the user-approved 16px inline padding (PR #124) — the per-size
 paddings above are recorded for the spec but were deliberately not applied.
+
+Adjacent-button spacing: **8px** (user-specified 2026-07-04, not a Figma variable pull) —
+implemented as `.btn + .btn` margin via `--loop-btn-adjacent-gap` → `--space-xxsmall`.
 | Primary bg enabled/hover/pressed/disabled | #004370 / #169af3 / #012740 / #8a9db1 | `Background/Container/On Light/Link/Primary/*` |
 | Primary label | #ffffff | `Button/Primary/Label/Default` |
 | Secondary | transparent bg, #004370 outline+text; hover #169af3, pressed #a3daff | `…/Link/Secondary/*`, `Outline/On Light/Link/Enabled` |

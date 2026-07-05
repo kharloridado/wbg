@@ -38,6 +38,9 @@ build.
   Icon-widget glyphs. Inline padding stays at the user-approved 16px (PR #124) — the
   per-size Figma paddings (32/28/20/14) are recorded in `loop/refs/cmp-button/spec.md`
   but deliberately not applied. Frozen ref updated with the per-size mode table.
+  Same pass: **spacing between adjacent buttons is now 8px** (`.btn + .btn` margin via new
+  `--loop-btn-adjacent-gap` → `--space-xxsmall`; user-specified) replacing the OSUI 16px
+  `--space-m` default, incl. the phone stacked-buttons layout.
 
 ### Changed
 - **Icons — all component icons now render as Font Awesome 6 Pro glyphs, no more inline

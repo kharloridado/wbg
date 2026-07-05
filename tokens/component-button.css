@@ -25,4 +25,7 @@
 
   /* ---- Icon ↔ label gap (6px default via --space-button-gap; Small tightens to 4px) ---- */
   --loop-btn-gap-small: 4px;
+
+  /* ---- Spacing between adjacent buttons (The Loop: 8px; OSUI default is --space-m/16px) ---- */
+  --loop-btn-adjacent-gap: var(--space-xxsmall, 8px);
 }

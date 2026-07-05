@@ -28,7 +28,7 @@
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
      --loop-btn-h-*, --loop-btn-font-*, --loop-btn-lh(-small), --loop-btn-icon-*,
-     --loop-btn-gap-small (component-button.css),
+     --loop-btn-gap-small, --loop-btn-adjacent-gap (component-button.css),
      --font-family-label, --font-weight-bold, --letter-spacing-button,
      --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
      --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
@@ -151,6 +151,15 @@
 .btn [class*="fa-"] {
   font-size: var(--loop-btn-icon);
   line-height: 1;
+}
+
+/* ---- Adjacent buttons — The Loop spacing is 8px (OSUI baseline: --space-m / 16px);
+   the phone layout stacks buttons full-width, same 8px between them ---- */
+.btn + .btn {
+  margin-left: var(--loop-btn-adjacent-gap, 8px);
+}
+.phone .layout:not(.layout-native) .btn + .btn {
+  margin-top: var(--loop-btn-adjacent-gap, 8px);
 }
 
 /* ---- .btn.btn-rounded → 32px pill corners (opt-in variant; confirmed: kharloridado 2026-06-30) ---- */
