@@ -63,6 +63,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-tooltip.css">
 <link rel="stylesheet" href="../src/blocks/loop-popover.css">
 <link rel="stylesheet" href="../src/blocks/loop-tabs.css">
+<link rel="stylesheet" href="../src/blocks/loop-pagination.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
 
 <!-- 4) Preview page chrome. NOT part of the design system, but still authored to
@@ -1485,6 +1486,148 @@
         </div>
       </div>
       <span class="pv-note">States: <strong>News</strong> selected (emphasis label + 4px blue bar), Stories/Blogs enabled (blue-70), Archive disabled (muted). Hover a tab to see the 2px underline affordance. In ODC the bar is the native JS-driven indicator; this static preview draws it with the same inset box-shadow.</span>
+    </div>
+  </section>
+
+  <!-- ============ PAGINATION ============ -->
+  <section>
+    <h2>Pagination — custom CSS block <code>.loop-pagination</code> (<code>ExtendedClass</code> on the native Pagination)</h2>
+    <p class="pv-figma">tokens/component-pagination.css · src/blocks/loop-pagination.css · Figma nodes 23714-3726 / 23714-3840 · Regular size (Small also specced; Large/xLarge not in use) · 40px controls, pill active page, blue link chips</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">With labels + items per page &amp; showing</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav">
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">First</span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">Prev</span>
+          </a>
+          <a class="loop-pagination__page" href="#">1</a>
+          <a class="loop-pagination__page loop-pagination__page--active" href="#" aria-current="page">2</a>
+          <a class="loop-pagination__page" href="#">3</a>
+          <a class="loop-pagination__page" href="#">4</a>
+          <a class="loop-pagination__page" href="#">5</a>
+          <a class="loop-pagination__page" href="#">6</a>
+          <a class="loop-pagination__page" href="#">7</a>
+          <a class="loop-pagination__page" href="#">8</a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Next</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Last</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+        <div class="loop-pagination__controls">
+          <div class="loop-pagination__items-per-page">
+            <span class="loop-pagination__label">items per page</span>
+            <select class="loop-pagination__input" aria-label="Items per page">
+              <option>10</option><option selected>20</option><option>50</option>
+            </select>
+          </div>
+          <span class="loop-pagination__showing">Showing <span class="loop-pagination__showing-count">1-20</span> of <span class="loop-pagination__showing-count">500</span></span>
+        </div>
+      </div>
+      <span class="pv-note">Left nav (First / Prev / page chips / Next / Last) plus a right rail (items-per-page dropdown + Showing summary). Active page <strong>2</strong> carries the pill outline; numeric ranges in the summary are bold 18px per Figma.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Without labels (icon-only + ellipsis)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--simple">
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="First page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Previous page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__page" href="#">1</a>
+          <a class="loop-pagination__page loop-pagination__page--active" href="#" aria-current="page">2</a>
+          <a class="loop-pagination__page" href="#">3</a>
+          <span class="loop-pagination__ellipsis" aria-hidden="true">…</span>
+          <a class="loop-pagination__page" href="#">48</a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Next page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Last page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">The <code>--simple</code> nav tightens the gap to 4px and drops the labels; each control becomes a 40×40 <code>--icon-only</code> hit target. An <code>__ellipsis</code> collapses the skipped range.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump to (with labels)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--jump">
+          <span class="loop-pagination__btn loop-pagination__btn--icon-first loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">First</span>
+          </span>
+          <span class="loop-pagination__btn loop-pagination__btn--icon-first loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">Prev</span>
+          </span>
+          <div class="loop-pagination__goto">
+            <input type="text" class="loop-pagination__input" size="3" value="20" aria-label="Page number">
+            <span class="loop-pagination__label">of 500 pages</span>
+          </div>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Next</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Last</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">A page-number <code>__input</code> replaces the chip strip; First / Prev shown <code>--disabled</code> (on the first reachable page). The <code>--jump</code> nav centres the group.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump to (without labels)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--jump">
+          <span class="loop-pagination__btn loop-pagination__btn--icon-only loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </span>
+          <span class="loop-pagination__btn loop-pagination__btn--icon-only loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </span>
+          <div class="loop-pagination__goto">
+            <input type="text" class="loop-pagination__input" size="3" value="20" aria-label="Page number">
+            <span class="loop-pagination__label">of 500 pages</span>
+          </div>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Next page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Last page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">Same jump-to layout with icon-only controls.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Go to</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__goto">
+          <span class="loop-pagination__label">Go to</span>
+          <select class="loop-pagination__input" aria-label="Go to page">
+            <option>10</option><option selected>20</option><option>50</option>
+          </select>
+          <span class="loop-pagination__label">page</span>
+        </div>
+      </div>
+      <span class="pv-note">Compact dropdown jump — <code>Go to [n] page</code>.</span>
     </div>
   </section>
 
