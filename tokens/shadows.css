@@ -1,5 +1,7 @@
 /* shadows.css — elevation / drop-shadow scale */
 :root {
+  /* canonical shadow color per FND-003 sign-off (2026-06-24); Figma still emits
+   * effects/shadow/default = #00396b29 — unreconciled drift tracked as FND-065 */
   --shadow-color: #21262d29;
 
   --shadow-lowest:  0 0  8px  0 var(--shadow-color);

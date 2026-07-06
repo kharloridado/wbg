@@ -73,6 +73,15 @@ build.
   `--space-m` default, incl. the phone stacked-buttons layout.
 
 ### Changed
+- **Card now overrides the native `.card` directly** (reverses the 2026-07-04 opt-in
+  re-scope, per user ruling): the Loop card look — white, 8px radius, no border,
+  `--shadow-medium` (0 8px 20px), 24px padding — is now the **default for every native
+  OutSystems UI Card widget**, no Extended Class required. The two treatments are renamed to
+  BEM-consistent opt-out modifiers: `.loop-card--no-shadow` → `.card--no-shadow` (Modern /
+  external web, flat) and `.loop-card--flush` → `.card--flush` (no padding); the dev
+  placeholder element is `.card__placeholder`. Design values and the FND-003/FND-065 shadow-
+  colour ruling are unchanged (`src/blocks/loop-card.css`, `tokens/component-card.css`,
+  `handover/loop-card.md`, preview, `loop/refs/cmp-card/`).
 - **Icons — all component icons now render as Font Awesome 6 Pro glyphs, no more inline
   SVGs** — every shipped icon is a unicode glyph against the self-hosted
   `'Font Awesome 6 Pro'` face (new `--font-family-icon` / `--font-weight-icon-solid|regular|light`

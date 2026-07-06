@@ -1,22 +1,25 @@
-# Handover — Card (restyle native OutSystems UI Card family)
+# Handover — Card (bare `.card` override on the native Card widget)
 
 The Loop **Card** styling, ready to add into OutSystems.
-Figma: `-The Loop- Main Library` · "Card" [node 20315-6122] · base [node 19547-47101] · multimedia [node 20315-7404].
+Figma: `-The Loop- Main Library (2)` · dev specs [node 20315-6129] · examples [node 20315-6189] · [node 20376-15012].
 
-**Approach:** No custom card class system. This **restyles the native OutSystems UI Card
-family** to The Loop — same pattern as the Button / Text Field / Dropdown. The Loop "Card" is
-a flexible **container shell** (white, 8px radius, **flat — the Figma shadow is zeroed**, 24px
-padding, content placeholder). Built one variant at a time: `.card` → `.card-background` →
-`.card-sectioned` → list cards.
+**Approach:** A **bare override** of the native OutSystems UI `.card` — **every** native Card
+widget renders as The Loop card by default: white, 8px radius, transparent outline, 24px
+padding, and the Classic shadow (`--shadow-medium`, 0 8px 20px). No Extended Class is needed
+for the default look. Opt out per-instance with `ExtendedClass="card--no-shadow"` (Modern /
+external web, flat) or `ExtendedClass="card--flush"` (no padding). Because `.card` is the base
+class under Card Item / Card Sectioned / Card Background, this restyle applies app-wide.
+**(This reverses the 2026-07-04 opt-in `.loop-card` re-scope per the 2026-07-05 user ruling.)**
 
 ## When to use / How to use
 
 > **Live Style Guide doc** — short usage spec for the Card page.
 
-**What it is.** A flexible container shell — white, 8px radius, flat (shadow zeroed), 24px padding — native Card family restyled.
+**What it is.** A simple container surface — white, 8px radius, 24px padding, shadow by default with a no-shadow option. This is now the **default** for every native Card.
 
 **When to use**
-- Group related content into a contained surface — dashboard tiles, list/grid items, media cards, sectioned panels.
+- Group related content into a contained surface — dashboard tiles, grid items, content panels.
+- **Classic (default, with shadow)** → dashboard apps. **Modern (`card--no-shadow`)** → external web pages.
 
 **When not to use** (reach for instead)
 - A page-level message → **System Alert**.
@@ -24,7 +27,7 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 - A floating panel anchored to a control → **Popover**.
 
 **How to use**
-- Use the native **Card** widget; variants `.card-background`, `.card-sectioned`, and list cards. Place content in the placeholder.
+- Use the native **Card** widget — it is styled by default. Drop content in the Card's placeholder. Add an Extended Class only to opt out (`card--no-shadow` / `card--flush`).
 
 ## Files
 | File | OutSystems destination |
@@ -43,204 +46,84 @@ padding, content placeholder). Built one variant at a time: `.card` → `.card-b
 <summary><code>loop-card.css</code> → Theme CSS (also folded into dist/theme.css)</summary>
 
 ```css
-/* loop-card.css — Card: native OutSystems UI Card family restyle (not a parallel class system) */
+/* loop-card.css — The Loop card (Figma 20315-6129 dev specs · 20315-6189 · 20376-15012)
+ *
+ * BARE restyle: overrides the native OutSystems UI .card directly, so EVERY native Card
+ * widget gets The Loop look by default — white, 8px radius, transparent outline, 24px
+ * padding, Classic shadow. Paste BELOW OutSystems UI so source order wins. Opt out with
+ * the modifiers .card--no-shadow (Modern / external web, flat) and .card--flush (no padding).
+ * (Reverses the 2026-07-04 opt-in re-scope per the 2026-07-05 user ruling.) */
 
-/* =====================================================================
-   1) Native Card  (.card)  — base card
-   ===================================================================== */
 .card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--loop-card-gap, 24px);
-  align-items: stretch;
-
   background-color: var(--loop-card-container-color);
-  border: 0;
+  border: 0;                                /* Figma card/outline: transparent (all styles) */
   border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
+  box-shadow: var(--loop-card-shadow);      /* default = Classic (dashboard apps) shadow */
   padding: var(--loop-card-padding);
 }
 
-/* Type=No Padding — Extended Class is-flush (or BEM card--no-padding) */
-.card.is-flush,
-.card--no-padding {
+/* Note: native .layout-native .card (0,2,0) out-specifies bare .card (0,1,0) on padding.
+ * WBG is ODC web, where .layout-native is not in play, so we keep the selector flat. If
+ * native-layout support is later required, add a .layout-native-scoped rule / bump the
+ * modifier specificity so 24px and .card--flush still hold there. */
+
+/* Modern (external web) style — no shadow */
+.card--no-shadow {
+  box-shadow: none;
+}
+
+/* No-padding variant (Figma 20376:15327 — content bleeds to the card edge) */
+.card--flush {
   padding: var(--space-none, 0px);
 }
 
-/* Optional elevation — Extended Class card--elevated */
-.card--elevated {
-  box-shadow: var(--loop-card-shadow-elevated);
-}
-
 /* Content placeholder (dev affordance shown before real content is swapped in) */
-.card .loop-card__placeholder {
+.card .card__placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 150px;
   width: 100%;
   background-color: var(--loop-card-placeholder-bg);
-  border-radius: var(--radius-base, 4px);
   color: var(--loop-card-placeholder-text);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
 }
 
-/* =====================================================================
-   2) Card Background  (.card-background)  — multimedia hero
-   ===================================================================== */
-.card-background {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
-  width: var(--loop-card-multimedia-width);
-  max-width: 100%;
-}
-
-/* the background image fills the card */
-.card-background .card-background-image,
-.card-background > img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
-/* bottom scrim so on-dark text stays legible over any image */
-.card-background::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--loop-card-multimedia-scrim);
-  pointer-events: none;
-}
-
-/* content overlay — bottom-aligned, padded, on-dark */
-.card-background .card-background-content,
-.card-background .card-item {
-  position: relative;            /* above the ::after scrim */
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: var(--space-small, 16px);
-  padding: var(--loop-card-multimedia-pad);
-}
-
-/* eyebrow — bold uppercase, on-dark */
-.card-background .loop-card__eyebrow {
-  margin: 0;
-  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-card-multimedia-eyebrow-size, 13px);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: var(--line-height-narrow, 1.25);
-  text-transform: uppercase;
-  color: var(--loop-card-multimedia-eyebrow);
-}
-
-/* title — on-dark emphasis */
-.card-background .loop-card__title,
-.card-background h1, .card-background h2, .card-background h3 {
-  margin: 0;
-  font-family: var(--font-family-heading, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-500, 20px);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: var(--line-height-narrow, 1.25);
-  letter-spacing: var(--loop-card-multimedia-title-tracking, -0.25px);
-  color: var(--loop-card-multimedia-title);
-}
-
-/* round media affordance (play / microphone) — holds a Font Awesome glyph
-   (`fa-solid fa-…` <i>); font-size sizes the glyph inside the 64px circle */
-.card-background .loop-card__media-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--loop-card-multimedia-icon-size, 64px);
-  height: var(--loop-card-multimedia-icon-size, 64px);
-  border: 0;
-  border-radius: 100px;
-  background-color: var(--loop-card-multimedia-icon-bg);
-  color: var(--color-blue-90, #012740);
-  font-size: var(--loop-card-multimedia-glyph, 22px);
-  cursor: pointer;
-}
-.card-background .loop-card__media-button:focus-visible {
-  outline: 2px solid var(--color-outline-white, #ffffff);
-  outline-offset: 2px;
-}
-
-/* =====================================================================
-   3) Card Sectioned  (.card-sectioned)  — branded sectioned card
-   ===================================================================== */
-.card-sectioned {
-  background-color: var(--loop-card-container-color);
-  border: 0;
-  border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
-  overflow: hidden;                                          /* clip section corners */
-}
-.card-sectioned .card-sectioned-item {
-  padding: var(--loop-card-padding);
-}
-/* divider between consecutive sections */
-.card-sectioned .card-sectioned-item + .card-sectioned-item {
-  border-top: 1px solid var(--loop-card-divider);
-}
-
-/* =====================================================================
-   4) List cards  (.card inside a List / .card-item)
-   ===================================================================== */
-.list .card,
-.card-item.card {
-  margin-bottom: var(--space-regular, 24px);
-}
-
-/* =====================================================================
-   Reduced motion
-   ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .card,
-  .card-background .loop-card__media-button { transition: none; }
+  .card { transition: none; }
 }
 ```
 
 </details>
 
-## OutSystems UI variant ↔ The Loop mapping
-| OutSystems UI pattern | The Loop variant | Treatment |
+## Variant mapping
+| Figma style | Extended Class | Treatment |
 |---|---|---|
-| **Card** `.card` | Base card (Type=With Padding) | white, 8px radius, **flat**, 24px padding, 24px gap |
-| **Card** `.card.is-flush` | Base card (Type=No Padding) | padding 0 (Extended Class `is-flush` / BEM `card--no-padding`) |
-| **Card** `.card--elevated` | "Classic / Dashboard" | adds `--shadow-low` (opt-in; Loop default is flat) |
-| **Card Background** `.card-background` | Multimedia hero | full-bleed image + bottom blue-90 scrim + on-dark eyebrow/title/media button |
-| **Card Sectioned** `.card-sectioned` | (no exact Loop variant) | branded: 8px, flat, Loop divider between `.card-sectioned-item`, 24px sections |
-| **Card** in a **List** / `.card-item` | List cards | inherit base `.card`; 24px list rhythm |
+| Classic / mixed (dashboard apps) | _(none — native Card default)_ | white, 8px radius, `--shadow-medium` shadow (0 8px 20px), 24px padding |
+| Modern (external web) | `card--no-shadow` | same, no shadow |
+| No padding (node 20376:15327) | `card--flush` | content bleeds to the card edge |
 
-> **Featured item** and **chart** cards in Figma are bespoke compositions (not native OS card
-> patterns) → a later custom-block pass, out of scope here.
+> The multimedia hero / sectioned / list-card treatments from the earlier restyle are **out of
+> scope**. Native Card Background / Card Sectioned / Card Item inherit the base `.card` look
+> (white, 8px radius, shadow) but keep their own layout/structure.
 
 ## Layout / usage (Extended Class on the Card widget)
-- **No Padding** → `is-flush` (or `card--no-padding`).
-- **Elevated / dashboard** → `card--elevated`.
-- **Multimedia** → Card Background widget; mark up content with `loop-card__eyebrow`,
-  `loop-card__title`, and a `loop-card__media-button` for the play/microphone affordance.
-- **Placeholder** → `loop-card__placeholder` renders the grey dev placeholder before real content.
+- **Default (Classic)** → no Extended Class; every native Card is styled.
+- **Modern / external web** → add `card--no-shadow`.
+- **No padding** → add `card--flush`.
+- **Placeholder** → `card__placeholder` renders the grey dev placeholder before real content.
 
 ## What the override changes vs OutSystems UI baseline
-- `.card` is **flat** (no shadow) with an **8px** radius and **24px** padding — vs OutSystems UI's
-  default shadowed card. Flat is faithful to The Loop (FND-033); `card--elevated` restores a subtle shadow.
-- `.card-background` clips to 8px, lays an image full-bleed, adds a bottom blue-90 **scrim** and
-  bottom-anchored **on-dark** content (eyebrow 13px bold uppercase, title 20px bold), plus a
-  white/60 round media button.
-- `.card-sectioned` is branded white/flat/8px with a Loop **divider** (`--color-divider-on-light-default`)
-  between sections and 24px section padding.
+- The native `.card` itself is restyled, so **all** Cards change: white fill, **8px** radius
+  (`--radius-medium`), **no border** (Figma outline: transparent), **24px** padding, and the
+  Figma classic card shadow (x0 y8 blur20) = `--shadow-medium`.
+- Opt-out modifiers: `.card--no-shadow` drops the shadow (Modern); `.card--flush` drops the
+  padding (content bleeds to the edge).
+- The Figma shadow *color* (`effects/shadow/default` #00396b29) is known drift — the FND-003
+  sign-off fixed `--shadow-color` #21262d29 canonical (tracked FND-065).
+- **Specificity note:** native `.layout-native .card` out-specifies bare `.card` on padding.
+  WBG is ODC web (no `.layout-native`), so this is a no-op here; revisit if native layouts ship.
 
 ## Build in ODC with Mentor Studio
 
@@ -270,20 +153,16 @@ generating, list what you created by name and flag anything you could not finish
 ```
 
 ## Checklist
-- [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-card-*` tokens).
+- [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the `--loop-card-*` tokens and the `--text-color-neutral-10` contrast fix).
 - [ ] Paste `loop-card.css` into Theme CSS, **below** OutSystems UI.
-- [ ] Base → native **Card**; No-Padding → Extended Class `is-flush`; Dashboard → `card--elevated`.
-- [ ] Multimedia → native **Card Background**; add `loop-card__eyebrow` / `loop-card__title` / `loop-card__media-button`.
-- [ ] Sectioned → native **Card Sectioned**.
-- [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio
-      Preview). OutSystems UI is not vendored in the repo, so **confirm the `.card-background` /
-      `.card-sectioned` inner class names** match the published markup and the overrides land.
+- [ ] Card → native **Card** widget (styled by default, no Extended Class); Modern → `card--no-shadow`; No padding → `card--flush`.
+- [ ] Verify default Cards / Card Items now render the Loop look (white, 8px radius, shadow, 24px padding) app-wide, and Card Item titles stay legible.
+- [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).
 
-## Open findings linked to this work (register-only — low, no GitHub Bug auto-filed)
-- **FND-033** (design-token/consistency, low) — The Loop card defines `-loop shadows/cards` but its
-  x/y/blur/spread are all `0` → no visible elevation, vs OutSystems UI's default card shadow. Built
-  flat; confirm whether the zeroed shadow is intentional or a token-authoring slip.
-- **FND-034** (consistency, low) — the multimedia card's on-dark text/scrim reference the
-  `--color-gray-alpha-white-*` / `--color-blue-90` **primitives** directly, because the semantic
-  **On-Dark** role layer is parked in `semantic-colors-dark.css` (not in the light build). Revisit
-  when the dark-mode phase lands so these point at semantic On-Dark roles.
+## Findings linked to this work (register-only)
+- **FND-034 resolved** — the previously zeroed card shadow is now explicitly a styles-collection
+  switch in Figma (classic/mixed = 0 8 20, modern = none); built shadow-by-default accordingly.
+- **FND-035 superseded** — the multimedia on-dark treatment left scope with the 2026-07-04 revert.
+- **FND-065 (open, designer action)** — the ref's `effects/shadow/default` #00396b29 is
+  unreconciled Figma drift; code uses the canonical `--shadow-color` #21262d29 per the
+  FND-003 sign-off. No new finding filed (would duplicate FND-065).

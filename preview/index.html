@@ -299,12 +299,7 @@
     align-items: start;
     padding: var(--space-small) 0;
   }
-  .pv-card-grid--media { grid-template-columns: repeat(auto-fill, minmax(280px, 360px)); }
-  /* the .card-background expects an <img>; in this offline preview a token-painted
-     div stands in for the hero image so the scrim + on-dark content read correctly. */
-  .pv-card-hero { height: 320px; }
-  .pv-card-img { background: linear-gradient(135deg, var(--color-blue-70), var(--color-blue-90)); }
-  /* the card-sectioned needs a header row + media affordance; small inline helpers */
+  /* card header row + flush-content padding; small inline helpers */
   .pv-card-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-small); }
   .pv-card-pad { padding: var(--space-regular); }
 
@@ -2300,102 +2295,46 @@
 
   <!-- ============ CARD ============ -->
   <section>
-    <h2>Card — restyle native OutSystems UI Card family (<code>.card</code> / <code>.card-background</code> / <code>.card-sectioned</code>)</h2>
-    <p class="pv-figma">handover/loop-card.md · Figma node 20315-6122 · base 19547-47101 · multimedia 20315-7404 · white · 8px radius · flat (FND-033) · 24px padding</p>
+    <h2>Card — bare <code>.card</code> override on the native Card widget</h2>
+    <p class="pv-figma">handover/loop-card.md · Figma 20315-6129 (dev specs) · 20315-6189 · 20376-15012 · white · 8px radius · shadow 0 8 20 (classic, --shadow-medium) / none (modern) · 24px padding</p>
 
-    <!-- 1) Base card: padding / no-padding / elevated -->
-    <p class="pv-label pv-label--full">Base card <code>.card</code></p>
+    <!-- 1) The Loop card: default (shadow) / no-shadow / flush -->
+    <p class="pv-label pv-label--full">Card <code>.card</code> — styled by default; opt out with <code>.card--no-shadow</code> / <code>.card--flush</code></p>
     <div class="pv-card-grid">
       <div class="card">
-        <h3 class="loop-heading-h3-base">With padding</h3>
-        <p class="loop-body-base">Default Loop card — white fill, 8px radius, flat (no shadow), 24px padding, 24px content gap.</p>
-        <button class="btn btn-primary btn-small">View report</button>
+        <div class="card__placeholder">Content placeholder</div>
       </div>
 
-      <div class="card is-flush">
-        <div class="loop-card__placeholder">Image / media (No Padding · <code>is-flush</code>)</div>
+      <div class="card card--no-shadow">
+        <div class="card__placeholder">Content placeholder</div>
+      </div>
+
+      <div class="card card--flush">
+        <div class="card__placeholder">Content placeholder</div>
         <div class="pv-card-meta pv-card-pad">
-          <h3 class="loop-heading-h3-base">No padding</h3>
-          <span class="loop-tag loop-tag--blue loop-tag--regular">Flush</span>
+          <h3 class="loop-heading-h3-base">Flush</h3>
+          <span class="loop-tag loop-tag--blue loop-tag--regular">No padding</span>
         </div>
       </div>
-
-      <div class="card card--elevated">
-        <h3 class="loop-heading-h3-base">Elevated</h3>
-        <p class="loop-body-base">Opt-in <code>card--elevated</code> restores a subtle <code>--shadow-low</code>. The Loop default stays flat.</p>
-      </div>
     </div>
-    <span class="pv-note">FND-033: The Loop card shadow tokens are all zeroed → built flat, vs OutSystems UI's default shadowed card. <code>card--elevated</code> is the opt-in elevation.</span>
+    <span class="pv-note">Default = Classic (dashboard apps): <code>--shadow-medium</code> (0 8px 20px — the Figma <code>effects/shadow/default</code> color is FND-065 drift; canonical <code>--shadow-color</code> per FND-003). <code>card--no-shadow</code> = Modern (external web). <code>card--flush</code> = the no-padding example (20376:15327). Outline transparent in all styles.</span>
 
-    <!-- 2) Content placeholder (dev affordance) -->
-    <p class="pv-label pv-label--full">Placeholder <code>.loop-card__placeholder</code></p>
+    <!-- 2) The bare override applies app-wide — native Card widgets inherit the Loop look -->
+    <p class="pv-label pv-label--full">Native <code>.card</code> / Card Item — inherit the Loop look by default (bare override)</p>
     <div class="pv-card-grid">
       <div class="card">
-        <div class="loop-card__placeholder">Content placeholder</div>
-      </div>
-    </div>
-
-    <!-- 3) Multimedia hero -->
-    <p class="pv-label pv-label--full">Multimedia hero <code>.card-background</code></p>
-    <div class="pv-card-grid pv-card-grid--media">
-      <div class="card-background pv-card-hero">
-        <div class="card-background-image pv-card-img"></div>
-        <div class="card-background-content">
-          <p class="loop-card__eyebrow">Climate</p>
-          <h3 class="loop-card__title">Financing a resilient future across six regions</h3>
-        </div>
+        <h3 class="loop-heading-h3-base">Native card</h3>
+        <p class="loop-body-base">Every native OutSystems UI Card now renders the Loop look (white, 8px radius, shadow, 24px padding) with no Extended Class — the restyle targets bare <code>.card</code>.</p>
       </div>
 
-      <div class="card-background pv-card-hero">
-        <div class="card-background-image pv-card-img"></div>
-        <div class="card-background-content">
-          <button class="loop-card__media-button" aria-label="Play video">
-            <i class="fa-solid fa-play" aria-hidden="true"></i>
-          </button>
-          <p class="loop-card__eyebrow">Podcast</p>
-          <h3 class="loop-card__title">Voices from the field</h3>
+      <div class="card card-detail">
+        <div class="card-detail-center">
+          <div class="card-detail-title">Jane Doe</div>
+          <div class="card-detail-text text-grey">Front End Developer</div>
         </div>
       </div>
     </div>
-    <span class="pv-note">Full-bleed image + bottom blue-90 scrim + on-dark eyebrow/title/media button. The on-dark eyebrow/title now reference the semantic On-Dark layer (<code>--color-text-on-dark-*</code>, shipped in the theme); the blue-90 scrim still uses the brand primitive. Hero image is a token-painted stand-in in this offline preview.</span>
-
-    <!-- 4) Sectioned card -->
-    <p class="pv-label pv-label--full">Sectioned <code>.card-sectioned</code></p>
-    <div class="pv-card-grid">
-      <div class="card-sectioned">
-        <div class="card-sectioned-item">
-          <div class="pv-card-meta">
-            <h3 class="loop-heading-h3-base">Portfolio summary</h3>
-            <span class="loop-tag loop-tag--green loop-tag--regular">Active</span>
-          </div>
-        </div>
-        <div class="card-sectioned-item">
-          <p class="loop-body-base">Sections are separated by a Loop divider, 24px padding each, flat 8px container.</p>
-        </div>
-        <div class="card-sectioned-item">
-          <button class="btn btn-text">View details</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 5) List cards -->
-    <p class="pv-label pv-label--full">List cards <code>.list .card</code> / <code>.card-item</code></p>
-    <div class="list pv-row--narrow">
-      <div class="card card-item">
-        <div class="pv-card-meta">
-          <h3 class="loop-heading-h3-base">Annual Report 2025</h3>
-          <span class="loop-tag loop-tag--regular">PDF</span>
-        </div>
-        <p class="loop-body-small">List cards inherit the base treatment with 24px list rhythm between items.</p>
-      </div>
-      <div class="card card-item">
-        <div class="pv-card-meta">
-          <h3 class="loop-heading-h3-base">Regional Briefs</h3>
-          <span class="loop-tag loop-tag--regular">PDF</span>
-        </div>
-        <p class="loop-body-small">Second list item — note the inter-card spacing.</p>
-      </div>
-    </div>
+    <span class="pv-note">The Card Item title (<code>.card-detail-title</code>) is colored by OSUI with <code>var(--text-color-neutral-10, var(--color-neutral-10))</code> — with the Loop LIGHT <code>--color-neutral-10</code> it fell through to near-white-on-white. Fixed via <code>--text-color-neutral-10: var(--color-neutral-95)</code> in <code>outsystems-ui-overrides.css</code>; the title above must render near-black.</span>
   </section>
 
   <!-- ============ CLASS INSPECTOR (Live Style Guide tool) ============ -->

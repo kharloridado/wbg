@@ -323,20 +323,22 @@
       "id": "cmp-card",
       "tier": "composites",
       "level": "L1/L2",
-      "node": "20315-6122",
-      "node_base": "19547-47101",
-      "node_multimedia": "20315-7404",
+      "figma_file": "zx8q9nRf8Dbqam1rfquQ2E",
+      "node": "20315-6129",
+      "node_examples": "20315-6189",
+      "node_examples_2": "20376-15012",
       "artifact": "src/blocks/loop-card.css",
       "tokens": "tokens/component-card.css",
       "ref": "loop/refs/cmp-card/",
-      "approach": "restyle native OutSystems UI Card family (.card / .card-background / .card-sectioned + list cards)",
+      "approach": "bare .card override — every native Card widget restyled by default (white, radius-medium 8px, no border, shadow-medium, 24px padding); opt out with .card--no-shadow (modern) / .card--flush (no padding)",
       "status": "built",
       "handover_doc": "handover/loop-card.md",
       "findings": [
-        "FND-033",
-        "FND-034"
+        "FND-034",
+        "FND-035",
+        "FND-065"
       ],
-      "note": "Restyle only (user decision 2026-06-20): no custom component. Built one variant at a time. Loop card = flat container shell (white, 8px, shadow zeroed, 24px padding) + multimedia hero. Featured-item & chart are bespoke compositions, deferred to a later custom-block pass. OS UI not vendored — inner card-background/card-sectioned classes to confirm on published DOM."
+      "note": "Bare .card override adopted 2026-07-05 (user ruling) — REVERSES the 2026-07-04 opt-in re-scope: the Loop card look is now the default for every native Card widget (bare .card selector), with .card--no-shadow (modern/external web) and .card--flush (no padding) as opt-out modifiers (renamed from loop-card--*). Design values unchanged: white, radius-medium 8px, no border, shadow-medium by default (Figma classic 0 8 20; color per FND-003 ruling — Figma effects/shadow/default is FND-065 drift). Multimedia/sectioned/card-background family restyle remains out of scope (FND-035 superseded); those widgets inherit the base .card look but keep their own structure. FND-034 resolved (shadow specced). Specificity edge: native .layout-native .card out-specifies bare .card on padding — no-op for ODC web, revisit if native layouts ship. Companion fix retained: --text-color-neutral-10 -> --color-neutral-95 in outsystems-ui-overrides.css keeps native card-detail-title contrast against the Loop LIGHT --color-neutral-10."
     }
   ],
   "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",

@@ -98,7 +98,12 @@ verify/finish · **To build** = net-new.
 
 ## Built but NOT on the canonical list — awaiting keep/archive ruling
 These exist in the repo but are not on the list above. Default disposition = **Archive** unless you say keep.
-- **Card** (`src/blocks/loop-card.css`, handover, in preview) — keep or archive?
+- **Card** — **Kept; bare `.card` override adopted 2026-07-05** (user ruling, reversing the
+  2026-07-04 opt-in re-scope): the Loop card look (white, 8px radius, no border, shadow, 24px
+  padding) is now the **default for every native Card** via a bare `.card` override, with
+  `.card--no-shadow` (modern) / `.card--flush` (no padding) as opt-out modifiers (renamed from
+  `loop-card--*`) per Figma 20315-6129 / 20315-6189 / 20376-15012. `src/blocks/loop-card.css`,
+  `handover/loop-card.md`, in preview; issue #48.
 - **Layout Top** — **Archived 2026-07-04** (user ruling: no header override; default OutSystems header). `tokens/outsystems-ui-header.css`, `--header-color`, the preview section and `handover/loop-layout-top-header.md` removed; handover #68 to close.
 - **rnt-segmented** — example/reference only → archive (not a WBG deliverable).
 - **Reference renderers** (color / type / spacing / shadow / border reference + class-inspector) — kept

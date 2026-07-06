@@ -1,166 +1,47 @@
-/* loop-card.css — Card: native OutSystems UI Card family restyle (not a parallel class system) */
+/* loop-card.css — The Loop card (Figma 20315-6129 dev specs · 20315-6189 · 20376-15012)
+ *
+ * BARE restyle: overrides the native OutSystems UI .card directly, so EVERY native Card
+ * widget gets The Loop look by default — white, 8px radius, transparent outline, 24px
+ * padding, Classic shadow. Paste BELOW OutSystems UI so source order wins. Opt out with
+ * the modifiers .card--no-shadow (Modern / external web, flat) and .card--flush (no padding).
+ * (Reverses the 2026-07-04 opt-in re-scope per the 2026-07-05 user ruling.) */
 
-/* =====================================================================
-   1) Native Card  (.card)  — base card
-   ===================================================================== */
 .card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--loop-card-gap, 24px);
-  align-items: stretch;
-
   background-color: var(--loop-card-container-color);
-  border: 0;
+  border: 0;                                /* Figma card/outline: transparent (all styles) */
   border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
+  box-shadow: var(--loop-card-shadow);      /* default = Classic (dashboard apps) shadow */
   padding: var(--loop-card-padding);
 }
 
-/* Type=No Padding — Extended Class is-flush (or BEM card--no-padding) */
-.card.is-flush,
-.card--no-padding {
+/* Note: native .layout-native .card (0,2,0) out-specifies bare .card (0,1,0) on padding.
+ * WBG is ODC web, where .layout-native is not in play, so we keep the selector flat. If
+ * native-layout support is later required, add a .layout-native-scoped rule / bump the
+ * modifier specificity so 24px and .card--flush still hold there. */
+
+/* Modern (external web) style — no shadow */
+.card--no-shadow {
+  box-shadow: none;
+}
+
+/* No-padding variant (Figma 20376:15327 — content bleeds to the card edge) */
+.card--flush {
   padding: var(--space-none, 0px);
 }
 
-/* Optional elevation — Extended Class card--elevated */
-.card--elevated {
-  box-shadow: var(--loop-card-shadow-elevated);
-}
-
 /* Content placeholder (dev affordance shown before real content is swapped in) */
-.card .loop-card__placeholder {
+.card .card__placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 150px;
   width: 100%;
   background-color: var(--loop-card-placeholder-bg);
-  border-radius: var(--radius-base, 4px);
   color: var(--loop-card-placeholder-text);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
 }
 
-/* =====================================================================
-   2) Card Background  (.card-background)  — multimedia hero
-   ===================================================================== */
-.card-background {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-  border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
-  width: var(--loop-card-multimedia-width);
-  max-width: 100%;
-}
-
-/* the background image fills the card */
-.card-background .card-background-image,
-.card-background > img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-}
-
-/* bottom scrim so on-dark text stays legible over any image */
-.card-background::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--loop-card-multimedia-scrim);
-  pointer-events: none;
-}
-
-/* content overlay — bottom-aligned, padded, on-dark */
-.card-background .card-background-content,
-.card-background .card-item {
-  position: relative;            /* above the ::after scrim */
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: var(--space-small, 16px);
-  padding: var(--loop-card-multimedia-pad);
-}
-
-/* eyebrow — bold uppercase, on-dark */
-.card-background .loop-card__eyebrow {
-  margin: 0;
-  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-card-multimedia-eyebrow-size, 13px);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: var(--line-height-narrow, 1.25);
-  text-transform: uppercase;
-  color: var(--loop-card-multimedia-eyebrow);
-}
-
-/* title — on-dark emphasis */
-.card-background .loop-card__title,
-.card-background h1, .card-background h2, .card-background h3 {
-  margin: 0;
-  font-family: var(--font-family-heading, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-500, 20px);
-  font-weight: var(--font-weight-bold, 700);
-  line-height: var(--line-height-narrow, 1.25);
-  letter-spacing: var(--loop-card-multimedia-title-tracking, -0.25px);
-  color: var(--loop-card-multimedia-title);
-}
-
-/* round media affordance (play / microphone) — holds a Font Awesome glyph
-   (`fa-solid fa-…` <i>); font-size sizes the glyph inside the 64px circle */
-.card-background .loop-card__media-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--loop-card-multimedia-icon-size, 64px);
-  height: var(--loop-card-multimedia-icon-size, 64px);
-  border: 0;
-  border-radius: 100px;
-  background-color: var(--loop-card-multimedia-icon-bg);
-  color: var(--color-blue-90, #012740);
-  font-size: var(--loop-card-multimedia-glyph, 22px);
-  cursor: pointer;
-}
-.card-background .loop-card__media-button:focus-visible {
-  outline: 2px solid var(--color-outline-white, #ffffff);
-  outline-offset: 2px;
-}
-
-/* =====================================================================
-   3) Card Sectioned  (.card-sectioned)  — branded sectioned card
-   ===================================================================== */
-.card-sectioned {
-  background-color: var(--loop-card-container-color);
-  border: 0;
-  border-radius: var(--loop-card-radius);
-  box-shadow: var(--loop-card-shadow);
-  overflow: hidden;                                          /* clip section corners */
-}
-.card-sectioned .card-sectioned-item {
-  padding: var(--loop-card-padding);
-}
-/* divider between consecutive sections */
-.card-sectioned .card-sectioned-item + .card-sectioned-item {
-  border-top: 1px solid var(--loop-card-divider);
-}
-
-/* =====================================================================
-   4) List cards  (.card inside a List / .card-item)
-   ===================================================================== */
-.list .card,
-.card-item.card {
-  margin-bottom: var(--space-regular, 24px);
-}
-
-/* =====================================================================
-   Reduced motion
-   ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .card,
-  .card-background .loop-card__media-button { transition: none; }
+  .card { transition: none; }
 }

@@ -21,7 +21,8 @@
    * COLLISION: OS's darkest step --color-neutral-10 shares its name with a Loop LIGHT
    * primitive (#e7edf3). The Loop light value must win (it backs the neutral-2 hover bg
    * and the Style Guide swatches), so --color-neutral-10 is NOT remapped here; the dark
-   * end OS needs for the focus ring is delivered via --color-focus-inner above. */
+   * end OS needs is delivered via --color-focus-inner above (focus ring) and
+   * --text-color-neutral-10 below (text sites). */
   --color-neutral-0:  var(--color-white);       /* #ffffff = #ffffff */
   --color-neutral-1:  var(--color-neutral-05);  /* #f8f9fa → #f5f7f9 */
   --color-neutral-2:  var(--color-neutral-10);  /* #f1f3f5 → #e7edf3 (Loop light; the hover bg) */
@@ -32,7 +33,12 @@
   --color-neutral-7:  var(--color-neutral-50);  /* #6a7178 → #586e84 */
   --color-neutral-8:  var(--color-neutral-70);  /* #4f575e → #3d4c5c */
   --color-neutral-9:  var(--color-neutral-80);  /* #272b30 → #252e37 */
-  /* --color-neutral-10: intentionally NOT remapped — kept as the Loop LIGHT primitive. */
+  /* --color-neutral-10: intentionally NOT remapped — kept as the Loop LIGHT primitive.
+   * OS UI colors titles/emphasis text with var(--text-color-neutral-10, var(--color-neutral-10))
+   * (card-detail-title, alert, feedback-message, links, list-item selected, button-group…).
+   * Without a setter that falls through to the Loop LIGHT #e7edf3 → near-white-on-white text.
+   * Define the text var so it wins ahead of the fallback, pointing at the Loop dark end. */
+  --text-color-neutral-10: var(--color-neutral-95); /* was #101213 → #0c0f12 (OSUI darkest text step) */
 
   /* ====== Semantic ====== (OS $osui-colors-semantic) */
   --color-error:         var(--color-red-50);    /* #dc2020 → #da1e28 */
