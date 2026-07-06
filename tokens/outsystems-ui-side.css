@@ -86,20 +86,37 @@
   margin-left: auto;
 }
 
-/* Hover / selected states — PROVISIONAL (the design frame ships only the resting
- * state; see finding FND-057). Neutral pill on hover; brand-tint pill + primary
- * text + icon when active/selected. No invented brand colours — both fills are
- * existing Loop role tokens. */
+/* Hover / pressed / selected states — CONFIRMED by the "Nav/Menu-Actions" side-
+ * navigation frame (Figma 23980:12219), which ships the full interaction set and so
+ * RESOLVES the earlier provisional FND-057. L1 menu items: hover = Blue/20, pressed
+ * = Blue/30, selected = a 5% neutral-alpha pill + a leading Blue/40 indicator bar.
+ * All values are existing Loop primitives; the selected indicator is a zero-layout
+ * ::before bar (4×18, never a real border — the border-no-height-shift rule). */
 .layout-side .app-menu-links a:hover {
-  background-color: var(--color-neutral-2);
+  background-color: var(--color-blue-20);
   color: var(--color-neutral-9);
   text-decoration: none;
 }
+.layout-side .app-menu-links a:active {
+  background-color: var(--color-blue-30);
+}
 .layout-side .app-menu-links a.active,
 .layout-side .app-menu-links a.active:hover {
-  background-color: var(--color-primary-selected);
+  position: relative;
+  background-color: var(--color-neutral-alpha-04);
   border-left: 0;
-  color: var(--color-primary);
+  color: var(--color-neutral-9);
+}
+.layout-side .app-menu-links a.active::before {
+  content: "";
+  position: absolute;
+  left: var(--space-tiny);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-tiny);
+  height: 18px; /* Figma selected-indicator height (Blue/40 bar) — no matching size token */
+  border-radius: var(--radius-base);
+  background-color: var(--color-blue-40);
 }
 
 /* ── Profile block at the foot: avatar on the LEFT, name (Bold 16) stacked over
@@ -151,6 +168,160 @@
  * so Blue/50 is conformant here (unlike the dark Layout Top header, FND-012). */
 .layout-side .app-menu-links a:focus-visible,
 .has-accessible-features .layout-side .app-menu-links a:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Side-nav Submenu — the native OutSystems UI `.osui-submenu` pattern used inside
+ * Layout Side. Figma "Nav/Menu-Actions" (node 23980:12219): the expandable parent
+ * row is an identical 32px pill to a flat .app-menu-links link, plus a trailing
+ * disclosure chevron (points right when closed, down when open); its children (L2)
+ * render as an indented plain-text (Regular) list. Behaviour (open/close, keyboard,
+ * ARIA) is the stock OSUI pattern — this is look-and-feel only, no JS. Selectors
+ * carry `.osui-submenu` in the chain to match/beat the vendor's own
+ * `.layout-side .app-menu-links .osui-submenu` rules (equal specificity, and this
+ * file is folded into dist/theme.css which loads after outsystems-ui.css). State
+ * colours reuse the confirmed L1 set above; L2 children hover on neutral-2 (#e7edf3)
+ * per the frame's "content item" hover.
+ * ════════════════════════════════════════════════════════════════════════════ */
+.layout-side .app-menu-links .osui-submenu {
+  width: 100%;
+}
+
+/* Parent row = the same pill as a flat menu link (SemiBold 16/24, neutral-9). */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header {
+  align-items: center;
+  border: 0;
+  border-radius: var(--radius-pill);
+  display: flex;
+  gap: var(--space-xxsmall);
+  min-height: var(--space-xlarge);
+  padding: var(--space-xxsmall) var(--space-small);
+  transition: background-color 150ms linear;
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__item,
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__item a {
+  color: var(--color-neutral-9);
+  flex: 1 1 auto;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-base);
+}
+/* label link carries the leading icon + label, spaced like a flat menu link */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__item a {
+  align-items: center;
+  display: flex;
+  gap: var(--space-xxsmall);
+}
+
+/* Disclosure chevron: the native draws a down-arrow that rotates 180° on open.
+ * Match Figma — point it RIGHT at rest (rotate -90°) and DOWN when the group is
+ * open (rotate 0°); pinned to the right edge, primary icon colour. */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__icon {
+  color: var(--color-icon-on-light-default);
+  margin-inline-start: auto;
+  transform: rotate(-90deg);
+}
+.layout-side .app-menu-links .osui-submenu--is-open .osui-submenu__header__icon {
+  transform: rotate(0deg);
+}
+
+/* Header states — hover Blue/20, pressed Blue/30, selected 5% neutral-alpha pill
+ * + a leading Blue/40 indicator bar (zero-layout ::before, same as flat links).
+ * border-left: 0 re-clears the vendor's `.desktop …__header:hover` primary left
+ * bar (outsystems-ui.css, specificity 0,5,0 — beats our base border:0), which
+ * would otherwise bleed a stray blue bar through on desktop hover/press. */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header:hover {
+  background-color: var(--color-blue-20);
+  border-left: 0;
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header:active {
+  background-color: var(--color-blue-30);
+  border-left: 0;
+}
+.layout-side .app-menu-links .osui-submenu.active .osui-submenu__header {
+  position: relative;
+  border: 0;
+  background-color: var(--color-neutral-alpha-04);
+}
+.layout-side .app-menu-links .osui-submenu.active .osui-submenu__header::before {
+  content: "";
+  position: absolute;
+  left: var(--space-tiny);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-tiny);
+  height: 18px; /* Figma selected-indicator height (Blue/40 bar) — no matching size token */
+  border-radius: var(--radius-base);
+  background-color: var(--color-blue-40);
+}
+
+/* Children (L2): an indented plain-text (Regular 16/24, tracking 0) list. The
+ * native panel already renders inline (position:relative, display:flex when open)
+ * in Layout Side, so only look-and-feel is set here. Container inset per the Figma
+ * "Menu-L2" (pl 4 / pb 8); each row is a 48px pill on hover/select. */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items {
+  display: none; /* collapsed by default; the pattern JS toggles --is-open */
+  flex-direction: column;
+  gap: 0;
+  padding: 0 0 var(--space-xxsmall) var(--space-tiny);
+}
+.layout-side .app-menu-links .osui-submenu--is-open > .osui-submenu__items {
+  display: flex;
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a {
+  align-items: center;
+  border-radius: var(--radius-pill);
+  color: var(--color-neutral-9);
+  display: flex;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--letter-spacing-none);
+  line-height: var(--line-height-base);
+  min-height: var(--space-xlarge);
+  padding: var(--space-xxsmall) var(--space-xxsmall) var(--space-xxsmall) var(--space-xsmall);
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a:hover {
+  background-color: var(--color-neutral-2);
+  color: var(--color-neutral-9);
+  text-decoration: none;
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a:active {
+  background-color: var(--color-blue-30);
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a.active {
+  position: relative;
+  background-color: var(--color-neutral-alpha-04);
+  color: var(--color-neutral-9);
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a.active::before {
+  content: "";
+  position: absolute;
+  left: var(--space-tiny);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-tiny);
+  height: 18px; /* Figma L2 selected-indicator height (Blue/40 bar) — no matching size token */
+  border-radius: var(--radius-base);
+  background-color: var(--color-blue-40);
+}
+
+/* Focus ring — 2px on-light blue, matching the flat links. The native pattern
+ * wraps the whole group in a :focus-within box-shadow; neutralise it and ring the
+ * individual focused link/header instead. */
+.has-accessible-features .layout-side .app-menu-links .osui-submenu:focus-within {
+  box-shadow: none;
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__item a:focus-visible,
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items a:focus-visible,
+.has-accessible-features .layout-side .app-menu-links .osui-submenu .osui-submenu__header__item a:focus,
+.has-accessible-features .layout-side .app-menu-links .osui-submenu .osui-submenu__items a:focus {
   outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
   outline-offset: 2px;
   background-color: transparent;
