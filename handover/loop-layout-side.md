@@ -7,14 +7,36 @@ brand-emphasis logo label, and a profile block at the foot.** Restyles the nativ
 block, no JS. Source design: Figma *The Loop — OutSystems Library*, frame **"Form page"**
 node `30132:139314`. Full structural analysis: `docs/layout-side-structure.md`.
 
-**Approach:** native-widget restyle (no parallel `loop-` system). Two theme-layer files:
+**Approach:** native-widget restyle (no parallel `loop-` system). Three theme-layer files:
 - `tokens/outsystems-ui-overrides.css` sets `--side-menu-size: 320px` (the panel width OS UI
   resolves on `.app-menu-content`).
 - `tokens/outsystems-ui-side.css` carries the class-level bits a token can't express: the
   white panel edge + brand shadow, the pill menu items (radius, sizing, SemiBold 16/24
-  neutral-9 text), the hover/selected pill states, the logo label and profile type, and the
-  on-light focus ring. All scoped under `.layout-side`, so the Layout **Top** header
+  neutral-9 text), the hover/pressed/selected pill states, the logo label and profile type,
+  the on-light focus ring, **and the native `.osui-submenu` (expandable menu group) restyle**
+  (see below). All scoped under `.layout-side`, so the Layout **Top** header
   (`outsystems-ui-header.css`) is unaffected — and vice-versa.
+
+**Submenu (expandable menu group).** When a side-menu entry has children, author it with the
+OutSystems UI **Submenu** pattern. It's restyled to match the flat links: the parent row is
+the **same 32px pill** (leading Icon + label) with a trailing **disclosure chevron** that
+points **right when closed** and **down when open**; the children (L2) render as an **indented
+plain-text (Regular 16/24) list**. Behaviour (open/close, keyboard, ARIA) is the stock OSUI
+pattern — nothing to wire. States (confirmed by Figma frame `23980:12219` "Nav/Menu-Actions"):
+hover Blue/20, pressed Blue/30, selected 5% neutral pill + a Blue/40 left indicator bar; L2
+children hover on neutral-2. This frame also **resolves FND-057** (the earlier provisional
+side-nav hover/selected states are now the confirmed spec). Structure inside `.app-menu-links`:
+`.osui-submenu` › `.osui-submenu__header` (`.osui-submenu__header__item` › `a` with the Icon +
+label, and `.osui-submenu__header__icon` chevron) › `.osui-submenu__items` › child `a`s.
+- `tokens/outsystems-ui-side-responsive.css` adds the **responsive nav toggle** (hamburger):
+  desktop docks the panel with an in-header **collapse/expand toggle**; tablet/phone collapse
+  it to a white top bar whose `sidebar`-glyph toggle slides the 320px panel in as an
+  **off-canvas drawer** over a **blue scrim**. Source: Figma "Templates" nodes `26740:27385`
+  (Desktop) / `27212:26063` (Tablet) / `27212:26064` (Mobile). It **restyles OSUI's own
+  `.desktop`/`.tablet`/`.phone` + `.menu-visible` machinery** — the native `.menu-icon` is
+  already runtime-wired to toggle the drawer, so **no custom JS** ships; the desktop collapse
+  shrinks the panel to a **84px icon-only rail** (via an `.aside-collapsed` modifier), not a
+  hidden panel — the content reflows to meet the rail.
 
 **Both files are already folded into `dist/theme.css`.** There is **nothing to hand-place per
 block** — the whole sidebar branding ships in the theme paste.
@@ -45,6 +67,7 @@ Loop (white panel, dark text, 320px, pill menu items, brand logo + profile).
 |---|---|
 | `tokens/outsystems-ui-overrides.css` | Included automatically in `dist/theme.css` — paste theme into ODC Theme editor |
 | `tokens/outsystems-ui-side.css` | Included automatically in `dist/theme.css` |
+| `tokens/outsystems-ui-side-responsive.css` | Included automatically in `dist/theme.css` (responsive nav toggle) |
 
 ## Code to paste into ODC
 
@@ -99,14 +122,36 @@ Loop (white panel, dark text, 320px, pill menu items, brand logo + profile).
 .layout-side .app-menu-links a > .indicator,
 .layout-side .app-menu-links a > .menu-item-indicator { margin-left: auto; }
 
-/* Hover / selected — PROVISIONAL (resting state is all the frame ships; FND-057). */
+/* Hover / pressed / selected — CONFIRMED by frame 23980:12219 (resolves FND-057):
+   hover Blue/20, pressed Blue/30, selected 5% neutral pill + Blue/40 indicator bar. */
 .layout-side .app-menu-links a:hover {
-  background-color: var(--color-neutral-2); color: var(--color-neutral-9); text-decoration: none;
+  background-color: var(--color-blue-20); color: var(--color-neutral-9); text-decoration: none;
 }
+.layout-side .app-menu-links a:active { background-color: var(--color-blue-30); }
 .layout-side .app-menu-links a.active,
 .layout-side .app-menu-links a.active:hover {
-  background-color: var(--color-primary-selected); border-left: 0; color: var(--color-primary);
+  position: relative; background-color: var(--color-neutral-alpha-04);
+  border-left: 0; color: var(--color-neutral-9);
 }
+.layout-side .app-menu-links a.active::before {           /* 4×18 Blue/40 indicator bar (zero-layout) */
+  content: ""; position: absolute; left: var(--space-tiny); top: 50%; transform: translateY(-50%);
+  width: var(--space-tiny); height: 18px; border-radius: var(--radius-base);
+  background-color: var(--color-blue-40);
+}
+
+/* Submenu (native .osui-submenu) — parent row = same pill + disclosure chevron
+   (right closed / down open); L2 children = indented plain-text (Regular) list.
+   Full rules in tokens/outsystems-ui-side.css; states mirror the links above,
+   L2 hover on neutral-2. See the "Submenu" note in the Approach section. */
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header {
+  align-items: center; border: 0; border-radius: var(--radius-pill); display: flex;
+  gap: var(--space-xxsmall); min-height: var(--space-xlarge);
+  padding: var(--space-xxsmall) var(--space-small);
+}
+.layout-side .app-menu-links .osui-submenu .osui-submenu__header__icon { margin-inline-start: auto; transform: rotate(-90deg); }
+.layout-side .app-menu-links .osui-submenu--is-open .osui-submenu__header__icon { transform: rotate(0deg); }
+.layout-side .app-menu-links .osui-submenu .osui-submenu__items { display: none; flex-direction: column; }
+.layout-side .app-menu-links .osui-submenu--is-open > .osui-submenu__items { display: flex; }
 
 /* Profile block: name (Bold 16) + role (Regular 12), on-light text. */
 .layout-side .app-login-info { color: var(--color-text-on-light-default); }
@@ -122,6 +167,118 @@ Loop (white panel, dark text, 320px, pill menu items, brand logo + profile).
 .has-accessible-features .layout-side .app-menu-links a:focus {
   outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
   outline-offset: 2px; background-color: transparent; box-shadow: none;
+}
+```
+
+</details>
+
+<details>
+<summary><code>tokens/outsystems-ui-side-responsive.css</code> → already in dist/theme.css (responsive nav toggle)</summary>
+
+```css
+/* Responsive nav toggle — restyles OSUI's native .desktop/.tablet/.phone + .menu-visible
+ * machinery (no custom JS: the native .menu-icon is runtime-wired to toggle the drawer).
+ * Desktop docks the panel with an in-header collapse toggle; tablet/phone show a white top
+ * bar whose `sidebar`-glyph toggle slides the 320px panel in over a blue scrim. */
+
+/* Top-bar height composed from tokens (52px Nav/Header row + block padding → 76px tablet). */
+.layout-side { --loop-side-topbar-h: calc(var(--space-xlarge) + 2 * var(--space-xtiny) + 2 * var(--space-xsmall)); }
+
+/* Scrim → blue "Blocker Overlay" (#00396b3d), scoped so modals/popovers keep the black default. */
+.layout-side .app-menu-overlay { background-color: var(--color-bg-overlay-on-light-medium); }
+
+/* Toggle pill (native .menu-icon on tablet/phone + .loop-nav-toggle on the desktop header). */
+.layout-side .menu-icon,
+.layout-side .loop-nav-toggle {
+  align-items: center; justify-content: center; flex-direction: row;
+  width: var(--space-medium); height: var(--space-medium); min-width: var(--space-medium);
+  margin: 0; padding: 0; border: none; border-radius: var(--radius-pill);
+  background-color: transparent; color: var(--color-icon-on-light-default); cursor: pointer;
+}
+.layout-side .menu-icon .menu-icon-line { display: none; }  /* hide native 3 bars */
+.layout-side .menu-icon::before,
+.layout-side .loop-nav-toggle::before {
+  content: ""; width: var(--space-small); height: var(--space-small);
+  background-color: currentColor;
+  -webkit-mask: var(--loop-side-toggle-icon) center / contain no-repeat;
+          mask: var(--loop-side-toggle-icon) center / contain no-repeat;
+}
+/* `sidebar` glyph — a rounded panel with a divided, filled left column (masked inline SVG). */
+.layout-side { --loop-side-toggle-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2.5' y='3.5' width='15' height='13' rx='2.5'/%3E%3Cline x1='8' y1='3.5' x2='8' y2='16.5'/%3E%3C/svg%3E"); }
+.layout-side .menu-icon:hover,
+.layout-side .loop-nav-toggle:hover { background-color: var(--color-neutral-2); }
+.layout-side .menu-icon:focus-visible,
+.layout-side .loop-nav-toggle:focus-visible,
+.has-accessible-features .layout-side .menu-icon:focus,
+.has-accessible-features .layout-side .loop-nav-toggle:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px; box-shadow: none;
+}
+
+/* DESKTOP — the in-header toggle collapses the docked panel to an 84px ICON RAIL
+   (.aside-collapsed), not hidden: shrinking --side-menu-size reflows the panel + content; icons
+   centre, text hides. The `.is-swapped` modifier (Figma "is Swaped") picks the rail header glyph:
+   default = the LOGO (and it is the click target); .is-swapped = the sidebar TOGGLE icon. */
+.layout-side { --side-menu-collapsed: 84px; } /* Figma "panel width compact" */
+.desktop .layout-side .loop-nav-toggle { display: flex; flex: 0 0 auto; }
+.desktop .layout-side .menu-icon { display: none; }
+.desktop .layout-side .app-menu-content { transition: width 220ms ease, max-width 220ms ease; }
+.desktop .layout-side .main { transition: margin-left 220ms ease; }
+/* Expanded header: line the logo mark + avatar up with the menu-item icons (neutralise OSUI's
+   24px header padding + max-width:120px label cap) and pin the toggle flush-right. */
+.desktop .layout-side:not(.aside-collapsed) .header-logo,
+.desktop .layout-side:not(.aside-collapsed) .app-login-info { padding-inline: var(--space-small); }
+.desktop .layout-side:not(.aside-collapsed) .header-logo .application-name,
+.desktop .layout-side:not(.aside-collapsed) .header-logo .app-logo { max-width: none; }
+.desktop .layout-side:not(.aside-collapsed) .header-logo .loop-nav-toggle { margin-left: auto; }
+.desktop .layout-side.aside-collapsed { --side-menu-size: var(--side-menu-collapsed); }
+.desktop .layout-side.aside-collapsed .header-logo { justify-content: center; }
+.desktop .layout-side.aside-collapsed .header-logo .application-name,
+.desktop .layout-side.aside-collapsed .header-logo .app-logo { display: none; }
+.desktop .layout-side.aside-collapsed:not(.is-swapped) .loop-nav-toggle { display: none; }
+.desktop .layout-side.aside-collapsed:not(.is-swapped) .header-logo { cursor: pointer; } /* logo = expand trigger */
+.desktop .layout-side.aside-collapsed.is-swapped .header-logo img { display: none; }
+.desktop .layout-side.aside-collapsed.is-swapped .loop-nav-toggle { margin: 0 auto; }
+.desktop .layout-side.aside-collapsed .app-menu-links a {
+  width: var(--space-xlarge); margin-inline: auto; justify-content: center; gap: 0; padding-inline: 0;
+}
+.desktop .layout-side.aside-collapsed .app-menu-links a > .indicator,
+.desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-indicator,
+.desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-caption,
+.desktop .layout-side.aside-collapsed .app-menu-links a > span:not(.icon) { display: none; }
+.desktop .layout-side.aside-collapsed .app-login-info { justify-content: center; }
+.desktop .layout-side.aside-collapsed .app-login-info .user-info { display: none; }
+
+/* TABLET / PHONE — white top bar (toggle + logo); drawer + scrim below the bar. */
+.tablet .layout-side .loop-nav-toggle,
+.phone  .layout-side .loop-nav-toggle { display: none; }
+.tablet .layout-side .header,
+.phone  .layout-side .header {
+  display: flex; align-items: center; gap: var(--space-tiny);
+  min-height: var(--loop-side-topbar-h); padding: var(--space-xsmall) var(--space-xxsmall);
+  background-color: var(--color-white); box-shadow: var(--shadow-low);
+  color: var(--color-text-on-light-emphasis);
+}
+.phone .layout-side { --loop-side-topbar-h: calc(var(--space-xlarge) + 2 * var(--space-xtiny) + 2 * var(--space-xxsmall)); } /* 68px */
+.phone .layout-side .header { padding-block: var(--space-xxsmall); }
+.tablet .layout-side .header .header-logo,
+.phone  .layout-side .header .header-logo {
+  display: flex; align-items: center; gap: var(--space-xxsmall); flex: 1 1 auto; min-width: 0; border-bottom: 0;
+}
+.tablet .layout-side .header .header-logo img,
+.phone  .layout-side .header .header-logo img { width: var(--space-medium); height: var(--space-medium); flex: 0 0 auto; object-fit: contain; }
+.tablet .layout-side .header .app-logo, .tablet .layout-side .header .application-name,
+.phone  .layout-side .header .app-logo, .phone  .layout-side .header .application-name {
+  font-family: var(--font-family-heading); font-size: var(--font-size-400);
+  font-weight: var(--font-weight-bold); line-height: var(--line-height-narrow);
+  color: var(--color-text-on-light-emphasis);
+}
+/* Drawer's own logo suppressed on tablet/phone (the bar has it); drawer + scrim below the bar. */
+.tablet .layout-side .app-menu-content .header-logo,
+.phone  .layout-side .app-menu-content .header-logo { display: none; }
+.tablet .layout-side .app-menu-content, .phone .layout-side .app-menu-content,
+.tablet .layout-side .app-menu-overlay, .phone .layout-side .app-menu-overlay {
+  top: var(--loop-side-topbar-h); height: calc(100% - var(--loop-side-topbar-h));
 }
 ```
 
@@ -159,8 +316,8 @@ Task — referencing every element by name:
 
 Net-new pieces NOT covered by this theme-only restyle — build them as their own items, do
 not expect them from the Layout Side template: the breadcrumb + utility header (FAQ link,
-language selector), the dark WBG footer (IBRD · IDA · IFC · MIGA · ICSID · ©), and the
-in-logo collapse/expand toggle.
+language selector) and the dark WBG footer (IBRD · IDA · IFC · MIGA · ICSID · ©). (The
+responsive nav toggle / in-header collapse IS covered — see the responsive Mentor prompt.)
 
 Constraints: never edit the OutSystems UI module; add no CSS or hard-coded colors/sizes — all
 styling already comes from var(--token) in the pasted Theme. After generating, list what you
@@ -231,8 +388,9 @@ Container "Main"             Style Classes: main
 > The **footer is static brand chrome** (same on every screen) — build it as real content, not a
 > placeholder, so it is never empty. The header bar + footer are now **fully styled by the
 > theme** (`tokens/outsystems-ui-side.css`, Figma "Form page" Header `30132:139328` + Footer
-> `30139:39737`); the breadcrumb widget, the language selector behaviour, and the in-logo
-> collapse toggle remain net-new items.
+> `30139:39737`); the breadcrumb widget and the language selector behaviour remain net-new
+> items. The in-header collapse toggle + responsive drawer are now **delivered**
+> (`tokens/outsystems-ui-side-responsive.css`).
 
 > The trailing chevron's `indicator` class is what the CSS hooks to right-align it
 > (`.app-menu-links a > .indicator { margin-left:auto }`). The `active` class on the current
@@ -307,7 +465,8 @@ MenuLinks, Profile) + Main → Content + Placeholder tree, and show it to me bef
 
 > The header bar + dark WBG footer are now **styled by the theme** (`loop-content__*` classes).
 > Still net-new inside them: the **Breadcrumb widget** (drop into the `loop-content__breadcrumbs`
-> slot), the **language-selector** behaviour, and the **in-logo collapse/expand toggle**.
+> slot) and the **language-selector** behaviour. (The in-header collapse toggle is **delivered**
+> via `tokens/outsystems-ui-side-responsive.css` — see the responsive Mentor prompt.)
 
 ### Mentor Studio prompt — UPDATE an existing block to the chrome
 
@@ -368,9 +527,76 @@ Do step 1 first (the header bar wrapping Breadcrumbs/Title/Actions) and show it 
 the footer.
 ```
 
+### Mentor Studio prompt — configure the responsive nav toggle
+
+Use this to turn on the responsive collapse behaviour (tablet/phone hamburger → off-canvas
+drawer; desktop collapse/expand). The look is 100% the theme paste — Mentor only sets the
+Layout's menu mode and places/binds the toggle affordances.
+
+```
+Goal: In ODC Studio, configure the WBG "The Loop" Layout-Side screen/block so the side nav is
+RESPONSIVE: docked on desktop with an in-header collapse toggle, and an off-canvas drawer with
+a hamburger + top bar on tablet/phone. This is a native-widget restyle — the entire look
+(top bar, sidebar-glyph toggle, blue scrim, drawer slide) is already in the pasted Theme
+(tokens/outsystems-ui-side-responsive.css). You write NO CSS and NO JavaScript.
+
+Context (already done manually — do NOT re-create or edit these):
+- dist/theme.css (incl. tokens/outsystems-ui-side-responsive.css) is already pasted into the
+  ODC Theme editor, below OutSystems UI. It restyles OSUI's native responsive machinery:
+  the .desktop/.tablet/.phone device classes (OSUI sets these at runtime) plus .menu-visible /
+  aside-overlay, and a Loop `.aside-collapsed` modifier for the desktop icon rail. The blue scrim,
+  the top bar, the `sidebar` toggle glyph, the drawer slide and the 84px rail all come from that paste.
+- Do NOT write or edit CSS, do NOT author JavaScript, do NOT edit the Theme or OutSystems UI.
+
+Task — referencing every element by name:
+1. On the Layout Side layout, enable OFF-CANVAS overlay on tablet/phone (aside-overlay) via the
+   OutSystems Layout/Menu settings. On desktop the panel stays docked and COLLAPSES TO AN ICON
+   RAIL (not a hidden/aside-expandable panel) — this is driven by an `.aside-collapsed` class the
+   toggle adds (step 3), so do NOT enable aside-expandable on desktop.
+2. TABLET/PHONE hamburger — use the layout's NATIVE menu toggle (the OutSystems ".menu-icon" /
+   MenuVisibility affordance in the header). The theme restyles it into The Loop `sidebar`-glyph
+   pill automatically, and OSUI's runtime already toggles the drawer open/closed on click —
+   there is NOTHING to wire. Make sure the top bar (the layout header on small screens) also
+   shows the globe logo + "Nav Label" next to the toggle.
+3. DESKTOP collapse (icon rail) — add a Button in the side-nav header row (inside the header-logo
+   Container, after the "Nav Label" expression). Set its Style Classes to EXACTLY "loop-nav-toggle"
+   (this is how the theme styles it into the `sidebar` pill). Give it no icon/caption of its own
+   (the glyph comes from CSS). Wire its OnClick to a Client Action that toggles a boolean screen/
+   block variable, and bind that variable so it adds/removes the class **`aside-collapsed`** on the
+   `.layout` Container (via its Style Classes / a conditional class). When `.aside-collapsed` is
+   present the theme shrinks the panel to the 84px icon rail (icons only) and reflows the content;
+   removing it restores the 320px panel. The menu-item captions must be Expressions (they render as
+   `<span>`) so the theme can hide them in the rail.
+4. COLLAPSED-RAIL SWAP (Figma "is Swaped") — add a Boolean input on the block (e.g. "SwapRailHeader",
+   default False) and bind it so it conditionally adds the class **`is-swapped`** to the same
+   `.layout` Container. When collapsed: default (False) shows the LOGO at the rail top (and the logo
+   is the click target to expand — wire its OnClick to the same expand action), while `is-swapped`
+   (True) shows the `sidebar` TOGGLE icon instead. Both expand on click; the theme handles the
+   visuals — you only toggle the class.
+5. Do NOT hard-set the device classes (.desktop/.tablet/.phone) or .menu-visible yourself —
+   OSUI's runtime manages them. Do NOT set any width/height/color — the theme owns all of it.
+
+Constraints: never edit the OutSystems UI module; add no CSS or hard-coded colors/sizes. After
+generating, list what you configured/placed by name (esp. the "loop-nav-toggle" button and the
+Layout menu-mode settings) and flag anything you could not finish so I can do it manually.
+
+Validate in a REAL browser at desktop / tablet / phone widths: desktop docks the 320px panel and
+the header toggle collapses it to a 84px icon rail (icons only, content reflows); tablet/phone
+show the white top bar whose toggle slides the drawer in over the blue scrim (scrim-click / Esc
+close it).
+```
+
 ## OutSystems install checklist
 - [ ] Confirm the app/screen uses the **Layout Side** layout (this branding targets the side
       menu; Layout Top is branded separately and is unaffected).
+- [ ] Enable off-canvas overlay (tablet/phone) and place the desktop collapse button with Style
+      Classes **`loop-nav-toggle`**, wiring it to toggle **`.aside-collapsed`** on the `.layout`
+      (see the responsive Mentor prompt). The tablet/phone hamburger is the native `.menu-icon`
+      (no wiring). Optionally add the **`is-swapped`** modifier (Figma "is Swaped") to switch the
+      collapsed rail header between the logo (default) and the toggle icon. Validate in a **real
+      browser** at desktop / tablet / phone widths: desktop collapses to an **84px icon rail**
+      (icons only, content reflows; logo or toggle at top per the swap); tablet/phone slide the
+      drawer in over the **blue** scrim; scrim-click and `Esc` close the drawer.
 - [ ] Rebuild `dist/theme.css` (`npm run build:theme`) and paste it into the ODC **Theme
       editor**, below OutSystems UI.
 - [ ] Author each menu entry with a leading **Icon**, the label, and (optionally) a trailing
@@ -396,8 +622,12 @@ The header bar + WBG footer chrome are now styled by the theme. Remaining pieces
   Breadcrumb or a Loop breadcrumb), incl. the leading home icon.
 - **Language selector** — the `EN US ▾` control's menu behaviour (the button styling is the
   existing Loop tertiary text-button).
-- **In-logo collapse/expand toggle** (the framework supports collapse; the in-logo placement
-  is custom).
+
+**Delivered** ✅ **Responsive nav toggle / in-header collapse** — shipped in
+`tokens/outsystems-ui-side-responsive.css` (desktop collapse to an 84px icon rail via
+`.loop-nav-toggle` + `.aside-collapsed`, with the `.is-swapped` logo/toggle rail-header option;
+tablet/phone off-canvas drawer + blue scrim via the native `.menu-icon`
+restyle). See the "responsive nav toggle" `<details>` above and its Mentor prompt.
 
 ## Related findings
 **FND-058** (register-only, low — `design-token`) — the WBG footer surface `#1a1a1a` has **no

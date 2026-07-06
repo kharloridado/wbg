@@ -1,0 +1,234 @@
+/* outsystems-ui-side-responsive.css — Layout Side responsive nav toggle (class-level).
+ * The "Templates" designs (Figma nodes 26740:27385 Desktop / 27212:26063 Tablet /
+ * 27212:26064 Mobile) show the branded Layout Side adapting across breakpoints:
+ *   · DESKTOP  — the 320px panel is docked beside the content; a collapse/expand
+ *                toggle (the "-loop button") sits at the right of the nav header.
+ *   · TABLET/PHONE — the panel collapses off-canvas; a white top-navigation bar
+ *                (toggle at the left + the globe logo) replaces it. Tapping the
+ *                toggle slides the 320px panel in from the left as a drawer over a
+ *                blue "Blocker Overlay" scrim.
+ *
+ * This file only RESTYLES + tunes the native OutSystems UI responsive machinery — it
+ * does not re-implement it. OSUI already ships the device classes (.desktop/.tablet/
+ * .phone, applied by its runtime) and the state classes (.menu-visible / .aside-overlay
+ * / .aside-expandable) that fix the panel off-canvas and slide it in (see the vendored
+ * 02-layout/_menu.scss + _layout.scss + _header.scss). The native .menu-icon is already
+ * wired by the OSUI runtime to toggle .menu-visible, so the tablet/phone hamburger needs
+ * NO custom JS — we just give it The Loop's look. Everything is scoped under .layout-side
+ * so the Layout Top header (outsystems-ui-header.css) is untouched. Token-only. Pairs with
+ * the resting-state styling in outsystems-ui-side.css and the panel width / overlay tokens
+ * in outsystems-ui-overrides.css. */
+
+/* ── Top-bar height (tablet/phone) composed from tokens so the drawer + scrim can be
+ * offset to sit BELOW the bar, as the templates draw them (the native drawer is a
+ * full-height fixed panel; the design starts it under the bar). The bar centres the
+ * 52px Nav/Header row (a 48px logo/button + 2px focus reserve top & bottom) with block
+ * padding: 12px on tablet (→ 76px) and 8px on phone (→ 68px). */
+.layout-side {
+  --loop-side-topbar-h: calc(var(--space-xlarge) + 2 * var(--space-xtiny) + 2 * var(--space-xsmall)); /* 48 + 4 + 24 = 76px */
+  /* Collapsed desktop rail width — an icon-only rail (Figma "panel width compact" = 84px). */
+  --side-menu-collapsed: 84px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Scrim ("Blocker Overlay") — blue-tinted, not the framework's black default.
+ * Figma "Background/Overlay/On Light/Medium" = #00396b3d = --color-neutral-alpha-24.
+ * Scoped to the side menu so modals/popovers keep the global --overlay-background. */
+.layout-side .app-menu-overlay {
+  background-color: var(--color-bg-overlay-on-light-medium);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Toggle button — The Loop pill with a `sidebar` glyph (fidelity-first: the Figma
+ * asset is the sidebar/panel-toggle icon, not a 3-bar hamburger). Two carriers get
+ * the identical look:
+ *   · .menu-icon      — the NATIVE OSUI toggle in the tablet/phone top bar (runtime
+ *                       already toggles .menu-visible on click — no custom JS).
+ *   · .loop-nav-toggle— an ExtendedClass we put on the desktop collapse button that
+ *                       lives inside the docked panel's nav header.
+ * The glyph is a masked inline SVG (the house pattern for native-widget restyles —
+ * cf. loop-search — so it needs no icon webfont and --color-icon-on-light-default
+ * drives its fill). */
+.layout-side .menu-icon,
+.layout-side .loop-nav-toggle {
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;      /* native .menu-icon is a column of 3 bars — reset it */
+  width: var(--space-medium);   /* 32px pill */
+  height: var(--space-medium);
+  min-width: var(--space-medium);
+  margin: 0;                /* native adds margin-right: var(--space-m) */
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background-color: transparent;
+  color: var(--color-icon-on-light-default);   /* #4b5e71 */
+  cursor: pointer;
+}
+/* Hide the native 3-bar presentation — the glyph is drawn via ::before instead. */
+.layout-side .menu-icon .menu-icon-line {
+  display: none;
+}
+.layout-side .menu-icon::before,
+.layout-side .loop-nav-toggle::before {
+  content: "";
+  width: var(--space-small);    /* 16px glyph */
+  height: var(--space-small);
+  background-color: currentColor;
+  -webkit-mask: var(--loop-side-toggle-icon) center / contain no-repeat;
+          mask: var(--loop-side-toggle-icon) center / contain no-repeat;
+}
+/* The `sidebar` glyph: a rounded panel with a divided, filled left column. */
+.layout-side {
+  --loop-side-toggle-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2.5' y='3.5' width='15' height='13' rx='2.5'/%3E%3Cline x1='8' y1='3.5' x2='8' y2='16.5'/%3E%3C/svg%3E");
+}
+/* Hover / focus affordance — a subtle neutral pill (matches the menu-item hover). */
+.layout-side .menu-icon:hover,
+.layout-side .loop-nav-toggle:hover {
+  background-color: var(--color-neutral-2);
+}
+.layout-side .menu-icon:focus-visible,
+.layout-side .loop-nav-toggle:focus-visible,
+.has-accessible-features .layout-side .menu-icon:focus,
+.has-accessible-features .layout-side .loop-nav-toggle:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * DESKTOP — the 320px panel is docked (resting state from outsystems-ui-side.css); the
+ * in-header toggle COLLAPSES it to an icon-only rail (not hidden). Add `.aside-collapsed`
+ * to the .layout element (in ODC: a toggle Client Action bound to a screen flag via
+ * ExtendedClass; the preview flips it in JS). The mobile hamburger stays hidden here. */
+.desktop .layout-side .loop-nav-toggle {
+  display: flex;
+  flex: 0 0 auto;
+}
+.desktop .layout-side .menu-icon {
+  display: none;
+}
+/* Animate the panel width + the content reflow when collapsing/expanding. */
+.desktop .layout-side .app-menu-content { transition: width 220ms ease, max-width 220ms ease; }
+.desktop .layout-side .main { transition: margin-left 220ms ease; }
+
+/* Expanded header (Figma Nav/Header) — line the logo mark + profile avatar up with the menu-item
+ * icons and pin the toggle flush-right. OSUI's header-logo/login-info carry a 24px inline padding
+ * and cap the app name at max-width:120px, which strands the toggle mid-row and pushes the logo
+ * 8px past the menu icons; neutralise both (use the menu items' 16px inset) and pin the toggle. */
+.desktop .layout-side:not(.aside-collapsed) .header-logo,
+.desktop .layout-side:not(.aside-collapsed) .app-login-info { padding-inline: var(--space-small); }
+.desktop .layout-side:not(.aside-collapsed) .header-logo .application-name,
+.desktop .layout-side:not(.aside-collapsed) .header-logo .app-logo { max-width: none; }
+.desktop .layout-side:not(.aside-collapsed) .header-logo .loop-nav-toggle { margin-left: auto; }
+
+/* ── Collapsed rail (Figma Nav/Main-Panel · Compact=True, 84px). Shrinking --side-menu-size
+ * reflows everything for free: the native .app-menu-content width AND the .main margin-left both
+ * resolve it. Then centre the glyphs and hide the text so only icons show. */
+.desktop .layout-side.aside-collapsed { --side-menu-size: var(--side-menu-collapsed); }
+
+/* Header holds ONE glyph, centred, and drops the brand label. The `is Swaped` option
+ * (Figma boolean → the `.is-swapped` modifier) chooses which:
+ *   · default (not swapped) → the LOGO mark (and it is the click target to expand);
+ *   · .is-swapped           → the sidebar TOGGLE icon instead.
+ * Both trigger expand — the developer wires whichever is shown (the preview makes the header
+ * itself the trigger). */
+.desktop .layout-side.aside-collapsed .header-logo { justify-content: center; }
+.desktop .layout-side.aside-collapsed .header-logo .application-name,
+.desktop .layout-side.aside-collapsed .header-logo .app-logo { display: none; }
+/* default: logo shown as the trigger, toggle hidden */
+.desktop .layout-side.aside-collapsed:not(.is-swapped) .loop-nav-toggle { display: none; }
+.desktop .layout-side.aside-collapsed:not(.is-swapped) .header-logo { cursor: pointer; }
+/* swapped: toggle icon shown, logo mark hidden */
+.desktop .layout-side.aside-collapsed.is-swapped .header-logo img,
+.desktop .layout-side.aside-collapsed.is-swapped .header-logo .pv-avatar { display: none; }
+.desktop .layout-side.aside-collapsed.is-swapped .loop-nav-toggle { margin: 0 auto; }
+
+/* Menu items: a 48px pill centred in the rail, its leading icon centred; label + trailing
+ * indicator dropped (the caption is an element — OutSystems Expression → <span>; a bare text
+ * node would need wrapping). */
+.desktop .layout-side.aside-collapsed .app-menu-links a {
+  width: var(--space-xlarge); margin-inline: auto;
+  justify-content: center; gap: 0; padding-inline: 0;
+}
+.desktop .layout-side.aside-collapsed .app-menu-links a > .indicator,
+.desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-indicator,
+.desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-caption,
+.desktop .layout-side.aside-collapsed .app-menu-links a > span:not(.icon) { display: none; }
+/* Profile: avatar only, centred; drop the name/role block. */
+.desktop .layout-side.aside-collapsed .app-login-info { justify-content: center; }
+.desktop .layout-side.aside-collapsed .app-login-info .user-info { display: none; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * TABLET / PHONE — the panel is off-canvas (native); a white top bar carries the
+ * toggle + logo, and the sliding drawer + scrim sit below the bar. */
+.tablet .layout-side .loop-nav-toggle,
+.phone  .layout-side .loop-nav-toggle {
+  display: none;   /* the desktop-only collapse toggle; the top bar uses .menu-icon */
+}
+
+/* Top navigation bar: white surface, low shadow, toggle (left) + logo, centred. */
+.tablet .layout-side .header,
+.phone  .layout-side .header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-tiny);
+  min-height: var(--loop-side-topbar-h);
+  padding: var(--space-xsmall) var(--space-xxsmall);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-low);
+  color: var(--color-text-on-light-emphasis);
+}
+/* Phone bar is shorter (8px block padding → 68px). */
+.phone .layout-side {
+  --loop-side-topbar-h: calc(var(--space-xlarge) + 2 * var(--space-xtiny) + 2 * var(--space-xxsmall)); /* 48 + 4 + 16 = 68px */
+}
+.phone .layout-side .header {
+  padding-block: var(--space-xxsmall);
+}
+/* Logo lockup in the bar: globe mark + brand label (Bold 18 / blue-90), label grows
+ * so nothing else is needed to keep the toggle hard-left. */
+.tablet .layout-side .header .header-logo,
+.phone  .layout-side .header .header-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  flex: 1 1 auto;
+  min-width: 0;
+  border-bottom: 0;   /* the resting-state divider is a docked-panel affordance */
+}
+.tablet .layout-side .header .header-logo img,
+.phone  .layout-side .header .header-logo img {
+  width: var(--space-medium);
+  height: var(--space-medium);
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.tablet .layout-side .header .app-logo,
+.tablet .layout-side .header .application-name,
+.phone  .layout-side .header .app-logo,
+.phone  .layout-side .header .application-name {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-narrow);
+  color: var(--color-text-on-light-emphasis);
+}
+
+/* The logo lives in the top bar on tablet/phone, so the drawer's own header-logo
+ * (a docked-panel affordance) is suppressed to avoid duplicating it (Figma's
+ * overlay "Nav/Main-Panel" hides its inline header). */
+.tablet .layout-side .app-menu-content .header-logo,
+.phone  .layout-side .app-menu-content .header-logo {
+  display: none;
+}
+
+/* Drawer + scrim start BELOW the top bar (Figma "Navigation Overlay" y = bar height).
+ * Native fixes the panel at top:0/height:100%; re-anchor both under the bar. */
+.tablet .layout-side .app-menu-content,
+.phone  .layout-side .app-menu-content,
+.tablet .layout-side .app-menu-overlay,
+.phone  .layout-side .app-menu-overlay {
+  top: var(--loop-side-topbar-h);
+  height: calc(100% - var(--loop-side-topbar-h));
+}

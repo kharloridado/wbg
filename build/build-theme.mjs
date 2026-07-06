@@ -56,6 +56,7 @@ const META = {
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
   "outsystems-ui-header.css":    { group: "OutSystems UI", name: "Layout Top — Header / Menu" },
   "outsystems-ui-side.css":      { group: "OutSystems UI", name: "Layout Side — Sidebar / Menu" },
+  "outsystems-ui-side-responsive.css": { group: "OutSystems UI", name: "Layout Side — Responsive Nav Toggle" },
   "outsystems-ui-alert.css":     { group: "OutSystems UI", name: "Alert (→ Notes look)" },
   "outsystems-ui-feedback-message.css": { group: "OutSystems UI", name: "Feedback Message (→ Alerts look)" },
   "component-button.css":       { group: "Components",       name: "Button (heights)" },
