@@ -38,16 +38,16 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 <summary><code>loop-switch.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
-/* loop-switch.css — Switch: native [data-switch] restyle (self-contained :before track + :after thumb) */
+/* loop-switch.css — Toggle/Switch: native [data-switch] restyle (self-contained :before track + :after thumb)
+   Sizes + geometry per Figma 25862-14729 ("Sizes", Main Library 2): the track/thumb geometry and the
+   label step together, and the ON thumb carries a check glyph. Size resolution order (low → high):
+   :root tokens (Regular) → .loop-field--* wrapper cascade → .loop-toggle-* explicit size class. */
 
-/* ---- Track box — hide the native checkbox; :before/:after draw the switch ---- */
+/* ---- Track box — hide the native checkbox; :before/:after draw the switch ----
+   Geometry comes from the --loop-toggle-* tokens (component-toggle.css; Regular 40×20, 16px thumb,
+   2px padding). NOT re-declared here so a .loop-field--* wrapper or a size class can re-point them. */
 [data-switch],
 .has-accessible-features [data-switch] {
-  /* Size geometry — only these vars change per size; :before/:after derive from them */
-  --loop-toggle-track-w: 40px;
-  --loop-toggle-track-h: 20px;
-  --loop-toggle-circle: 12px;
-  --loop-toggle-padding: 4px;
   appearance: none;
   -webkit-appearance: none;
   position: relative;                                     /* positioning context for track + thumb */
@@ -81,27 +81,27 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   transition: background-color 180ms linear, border-color 180ms linear;
 }
 
-/* ---- Thumb (:after) — 24px white circle, OFF sits +4px from the left ---- */
+/* ---- Thumb (:after) — white circle (= track height − 2×padding), OFF sits at the left padding ---- */
 [data-switch]:empty:after,
 .has-accessible-features [data-switch]:empty:after {
   content: "";
   position: absolute;
   display: block;
   box-sizing: border-box;
-  width: var(--loop-toggle-circle, 24px);
-  height: var(--loop-toggle-circle, 24px);
-  top: var(--loop-toggle-padding, 4px);
+  width: var(--loop-toggle-circle, 16px);
+  height: var(--loop-toggle-circle, 16px);
+  top: var(--loop-toggle-padding, 2px);
   left: 0px;
   margin-left: 0px;
   border: 0px;
   border-radius: 100%;
   box-shadow: none;
   background-color: var(--color-white, #ffffff);
-  transform: translateX(var(--loop-toggle-padding, 4px)) translateZ(0);
+  transform: translateX(var(--loop-toggle-padding, 2px)) translateZ(0);
   transition: transform 180ms linear, background-color 180ms linear;
 }
 
-/* ---- Checked — blue-70 track, thumb slides to the right ---- */
+/* ---- Checked — blue-70 track, thumb slides to the right, check glyph inside the thumb ---- */
 [data-switch]:checked:before,
 .has-accessible-features [data-switch]:checked:before {
   border: 0px;
@@ -110,7 +110,24 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 [data-switch]:checked:after,
 .has-accessible-features [data-switch]:checked:after {
   /* travel = track − circle − padding */
-  transform: translateX(calc(var(--loop-toggle-track-w, 56px) - var(--loop-toggle-circle, 24px) - var(--loop-toggle-padding, 4px))) translateZ(0);
+  transform: translateX(calc(var(--loop-toggle-track-w, 40px) - var(--loop-toggle-circle, 16px) - var(--loop-toggle-padding, 2px))) translateZ(0);
+}
+/* ON check — FA 6 Pro check rendered as a font glyph on the thumb pseudo-element (shadow-free
+   light DOM but [data-switch] is an <input>, so no child markup — codepoint via content).
+   Glyph box = thumb − 2×padding (Figma: 16/14/12/8 across the four sizes). */
+[data-switch]:checked:empty:after,
+.has-accessible-features [data-switch]:checked:empty:after {
+  content: var(--loop-toggle-check-char, "\f00c");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-toggle-check-weight, var(--font-weight-icon-solid, 900));
+  font-size: calc(var(--loop-toggle-circle, 16px) - 2 * var(--loop-toggle-padding, 2px));
+  font-style: normal;
+  line-height: 1;
+  color: var(--loop-toggle-check-color, var(--color-domain-interactive-enabled-primary));
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ---- Hover / pressed (the interactive ON track shifts hue) ---- */
@@ -125,7 +142,7 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   border: 0px;
 }
 
-/* ---- Disabled — muted interactive track, white thumb, inert ---- */
+/* ---- Disabled — muted interactive track, white thumb, muted check, inert ---- */
 [data-switch][disabled],
 [data-switch][aria-disabled="true"] {
   pointer-events: none;
@@ -141,6 +158,40 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
 .has-accessible-features [data-switch][disabled]:empty:after {
   background-color: var(--color-white, #ffffff);
 }
+[data-switch][disabled]:checked:empty:after,
+[data-switch][aria-disabled="true"]:checked:empty:after,
+.has-accessible-features [data-switch][disabled]:checked:empty:after {
+  color: var(--color-domain-interactive-disable);
+}
+
+/* ---- Read-Only — added modifier .is-read-only (+ .loop-field--read-only wrapper cascade).
+   NOT disabled: the control shows its state but can't be toggled, and the LABEL stays fully
+   readable (default color, unlike disabled). Figma 25862-16199 "Read-Only": light
+   Disable/Lowest track (#e7edf3) regardless of on/off, a white thumb ringed with a 2px
+   Blue/90 (Pressed) halo, and — when ON — the Blue/70 check stays. The native checkbox
+   ignores [readonly], so this is class-driven + made inert here (also set aria-readonly). */
+[data-switch].is-read-only,
+.loop-field--read-only [data-switch] {
+  pointer-events: none;
+  cursor: default;
+}
+/* Track — flat light fill in both states (overrides OFF neutral + checked/hover Blue) */
+[data-switch].is-read-only:empty:before,
+.loop-field--read-only [data-switch]:empty:before,
+.has-accessible-features [data-switch].is-read-only:empty:before,
+.has-accessible-features .loop-field--read-only [data-switch]:empty:before {
+  background-color: var(--color-domain-state-disable-lowest);
+  border: 0px;
+}
+/* Thumb — white circle carrying the 2px Blue/90 ring (Figma drop-shadow spread 2, blur 0).
+   Position/travel + the ON check glyph are inherited from the base :checked rules. */
+[data-switch].is-read-only:empty:after,
+.loop-field--read-only [data-switch]:empty:after,
+.has-accessible-features [data-switch].is-read-only:empty:after,
+.has-accessible-features .loop-field--read-only [data-switch]:empty:after {
+  background-color: var(--color-white, #ffffff);
+  box-shadow: 0 0 0 2px var(--color-domain-interactive-pressed);
+}
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own Blue/50 ring ---- */
 [data-switch]:focus-visible {
@@ -148,32 +199,86 @@ OutSystems **Switch** widget; the theme makes it look like The Loop. No Web Comp
   outline-offset: 2px;
 }
 
-/* ---- Sizes — apply via the Switch widget's Extended Class; only the geometry vars change ---- */
-[data-switch].loop-toggle-xlarge {
+/* ============================================================
+   Sizing — Figma 25862-14729: geometry + label step TOGETHER.
+   ============================================================ */
+
+/* Field Wrapper cascade — a .loop-field--* size on the wrapping Field (loop-text-field.css)
+   re-points the toggle tokens by inheritance, so every toggle inside follows the wrapper size.
+   :where() keeps these at zero extra weight so the explicit .loop-toggle-* classes below win. */
+:where(.loop-field--xlarge) {
   --loop-toggle-track-w: 56px;  --loop-toggle-track-h: 32px;  --loop-toggle-circle: 24px;
+  --loop-toggle-padding: var(--space-tiny, 4px);
+  --loop-toggle-label-size: var(--font-size-300, 16px); --loop-toggle-label-leading: 18px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-xxsmall, 8px);   --loop-toggle-row-minh: 40px;
 }
-[data-switch].loop-toggle-large {
-  --loop-toggle-track-w: 48px;  --loop-toggle-track-h: 26px;  --loop-toggle-circle: 18px;
+:where(.loop-field--large) {
+  --loop-toggle-track-w: 48px;  --loop-toggle-track-h: 26px;  --loop-toggle-circle: 20px;
+  --loop-toggle-padding: 3px;                            /* off-grid (Figma 25862-14737) */
+  --loop-toggle-label-size: var(--font-size-200, 14px); --loop-toggle-label-leading: 16px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-xxsmall, 8px);   --loop-toggle-row-minh: 40px;
 }
-[data-switch].loop-toggle-regular {
-  --loop-toggle-track-w: 40px;  --loop-toggle-track-h: 20px;  --loop-toggle-circle: 12px;
+:where(.loop-field--regular) {
+  --loop-toggle-track-w: 40px;  --loop-toggle-track-h: 20px;  --loop-toggle-circle: 16px;
+  --loop-toggle-padding: var(--space-xtiny, 2px);
+  --loop-toggle-label-size: 13px;                        --loop-toggle-label-leading: 15px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-tiny, 4px);      --loop-toggle-row-minh: 32px;
 }
-[data-switch].loop-toggle-small {
-  --loop-toggle-track-w: 32px;  --loop-toggle-track-h: 16px;  --loop-toggle-circle: 8px;
+:where(.loop-field--small) {
+  --loop-toggle-track-w: 32px;  --loop-toggle-track-h: 16px;  --loop-toggle-circle: 12px;
+  --loop-toggle-padding: var(--space-xtiny, 2px);
+  --loop-toggle-label-size: var(--font-size-100, 12px); --loop-toggle-label-leading: 14px;
+  --loop-toggle-label-tracking: 0.25px;
+  --loop-toggle-label-gap: var(--space-tiny, 4px);      --loop-toggle-row-minh: 32px;
+}
+
+/* Explicit size classes — apply via ExtendedClass to the Switch widget, the .loop-toggle label
+   wrapper, or a containing row. Declared after (and heavier than) the wrapper cascade, so a
+   per-instance size always wins inside a differently-sized Field Wrapper. */
+.loop-toggle-xlarge {
+  --loop-toggle-track-w: 56px;  --loop-toggle-track-h: 32px;  --loop-toggle-circle: 24px;
+  --loop-toggle-padding: var(--space-tiny, 4px);
+  --loop-toggle-label-size: var(--font-size-300, 16px); --loop-toggle-label-leading: 18px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-xxsmall, 8px);   --loop-toggle-row-minh: 40px;
+}
+.loop-toggle-large {
+  --loop-toggle-track-w: 48px;  --loop-toggle-track-h: 26px;  --loop-toggle-circle: 20px;
+  --loop-toggle-padding: 3px;                            /* off-grid (Figma 25862-14737) */
+  --loop-toggle-label-size: var(--font-size-200, 14px); --loop-toggle-label-leading: 16px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-xxsmall, 8px);   --loop-toggle-row-minh: 40px;
+}
+.loop-toggle-regular {                                   /* explicit Regular — same as default */
+  --loop-toggle-track-w: 40px;  --loop-toggle-track-h: 20px;  --loop-toggle-circle: 16px;
+  --loop-toggle-padding: var(--space-xtiny, 2px);
+  --loop-toggle-label-size: 13px;                        --loop-toggle-label-leading: 15px;
+  --loop-toggle-label-tracking: 0px;
+  --loop-toggle-label-gap: var(--space-tiny, 4px);      --loop-toggle-row-minh: 32px;
+}
+.loop-toggle-small {
+  --loop-toggle-track-w: 32px;  --loop-toggle-track-h: 16px;  --loop-toggle-circle: 12px;
+  --loop-toggle-padding: var(--space-xtiny, 2px);
+  --loop-toggle-label-size: var(--font-size-100, 12px); --loop-toggle-label-leading: 14px;
+  --loop-toggle-label-tracking: 0.25px;
+  --loop-toggle-label-gap: var(--space-tiny, 4px);      --loop-toggle-row-minh: 32px;
 }
 
 /* ---- Label wrapper — Switch has no bound label, so the label is a sibling laid out here ---- */
 .loop-toggle {
   display: inline-flex;
   align-items: center;
-  gap: var(--loop-toggle-label-gap, 8px);
-  min-height: var(--loop-toggle-row-minh, 40px);
+  gap: var(--loop-toggle-label-gap, 4px);
+  min-height: var(--loop-toggle-row-minh, 32px);
 }
 .loop-toggle__label {
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-toggle-label-size, 16px);
+  font-size: var(--loop-toggle-label-size, 13px);
   font-weight: var(--loop-toggle-label-weight, 400);
-  line-height: var(--loop-toggle-label-leading, 18px);
+  line-height: var(--loop-toggle-label-leading, 15px);
   letter-spacing: var(--loop-toggle-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
@@ -207,11 +312,20 @@ runs with accessibility features on.
 | On (checked) | track `Enabled Primary` #004370 (blue-70), thumb right |
 | On · hover | track `Hover` #169af3 (blue-40) |
 | On · pressed | track `Pressed` #012740 (blue-90) |
-| Disabled | track `Disable` #8a9db1 (neutral-40), inert |
+| Disabled | track `Disable` #8a9db1 (neutral-40), inert, label muted |
+| Read-Only | track `Disable/Lowest` #e7edf3 (neutral-10) both states, thumb ringed 2px `Pressed` #012740, ON check stays #004370, **label NOT muted**, inert |
 | Focus | 2px `Focused` #0071bc (blue-50) ring, offset 2px |
 
 Thumb is always `Background/White`. **Label:** Open Sans 400, 16/18, `Text/On Light/Default`,
 gap 8px (`loop/toggle/label/gap`), row min-height 40px.
+
+### Read-Only (Figma 25862-16199) — not the same as Disabled
+Read-Only shows the current state but **can't be toggled**, while the label stays fully
+readable (Disabled mutes it). Native checkboxes ignore `[readonly]`, so it is class-driven:
+add **`.is-read-only`** on the Switch widget (Extended Class), or drive the whole field with
+**`.loop-field--read-only`** on the wrapping Field. Both make the control inert
+(`pointer-events:none`) — also set `aria-readonly="true"` on the widget for assistive tech.
+The rule keys off `:empty` pseudo-elements, so it needs the same native `[data-switch]` markup.
 
 ## Label layout (BEM wrapper `.loop-toggle`, applied via **Extended Class** on the container)
 The OutSystems Switch has no bound label element (unlike Checkbox/Radio), so the label is

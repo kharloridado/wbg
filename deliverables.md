@@ -67,6 +67,8 @@ verify/finish · **To build** = net-new.
 | Time Picker | **To build** | (Flatpickr time / OSUI Time Picker) |
 | File Uploader | Built | `src/components/loop-file-uploader.js` |
 | Field Wrapper (Text Field) | Needs Review | `handover/loop-field-wrapper.md` · `src/blocks/loop-text-field.css` · `src/components/loop-field-count.js` |
+| Field Wrapper size + state cascade | Needs Review | `.loop-field--*` scales input/textarea/Search/Checkbox/Toggle inside; `--error/--warning/--disabled/--read-only` states · ref `loop/refs/cmp-field-sizing` (Figma 19336-9726 · 19336-17818 · 17191-8819 · 25862-14729) |
+| Text Area (responsive) | Needs Review | `src/blocks/loop-text-field.css` (device steps) · tokens `--loop-textarea-*` · ref `loop/refs/cmp-text-area` (Figma 19336-10332) |
 | Numeric Field | **To build** | (text-field variant) |
 | Radio Button | Built | `src/blocks/loop-radio-button.css` |
 | Search | Built | `src/blocks/loop-search.css` |

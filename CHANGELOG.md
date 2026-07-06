@@ -14,7 +14,37 @@ build.
 
 ## [Unreleased]
 
+### Added
+- **Field Wrapper size + state cascade** (Figma 19336-9726 / 19336-17818 / 17191-8819 /
+  25862-14729, frozen as `loop/refs/cmp-field-sizing/`): one `.loop-field--{xlarge,large,
+  regular,small}` on the wrapper now scales **every control inside** — input/textarea text
+  + leading (16/16 · 14/16 · 13/14 · 12/12), Search glass (20/20/16/12 at 44/44/40/32
+  pad-left), Checkbox (28/24/20/16 box + label + 20/20/16/14 group column gap) and
+  Toggle (56×32/48×26/40×20/32×16) — with an explicit per-control size class
+  (`.input-*`, `.loop-checkbox-*`, `.loop-toggle-*`) still winning inside a
+  differently-sized wrapper. New wrapper **state** modifiers `.loop-field--error/
+  --warning/--disabled/--read-only` recolor control + label row + helper in one class
+  (mirroring `.not-valid`/`.is-warning`/`[disabled]`/`.is-read-only`).
+- **Toggle ON-thumb check glyph** (FND-026 update): the checked thumb now renders the FA 6
+  Pro solid check, glyph box = thumb − 2×padding (16/14/12/8); colour inferred as
+  `Domain/Interactive/Enabled Primary` pending the unpublished token.
+
 ### Fixed
+- **Toggle geometry re-aligned to the Main Library (2) Sizes ref** (25862-14729): per-size
+  thumb/padding are now 24/4 · 20/3 · 16/2 · 12/2 (the old build extrapolated 24/18/12/8
+  at a constant 4px padding from the single-size ref); toggle label + row min-height now
+  step with the size (16/18 · 14/16 · 13/15 · 12/14, row 40/40/32/32) and the family
+  default is **Regular** (was xLarge label metrics on a Regular track).
+- **Search glass icon per size** (17191-8819): Regular is 16px (was 20px) and Small 12px
+  (was 16px), insets 16/16/16/12 — bare `.input-*` classes and the wrapper cascade share
+  one prop set (the `--loop-search-*-small` token pair is superseded).
+- **Small field inline padding** is 12px per Figma 19336-9755 (was 16px) — applies to
+  `.input-small` and `.loop-field--small`, and keeps the Small search pad-left math
+  (12 + 12 + 8 = 32) exact.
+- **Checkbox Regular label tracking** corrected to 0 (was 0.25px — that's the Small step
+  per 19336-17818); horizontal group column gap now steps 20/20/16/14 (was a flat 20px).
+- **Search Field label→input gap** built at the ref's 4px (family default is 6px) — logged
+  as **FND-069** (consistency, register-only).
 - **System Alert — per-element text/icon colors rebuilt faithful to Figma node 17873-7408**,
   reversing the FND-048 "normalize to single-line" disposition (per-layout faithful, the
   FND-062 Alert precedent): multi-line error message/action → white-90, multi-line

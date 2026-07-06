@@ -18,3 +18,15 @@
 | Toggle→label gap | 8px; row min-height 40px | `loop/toggle/label/gap` / `minH` |
 
 Note: two Toggle label variable sets coexist (`loop/toggle/label` lh 18 vs `loop/Toggle/Label` lh 16); the lowercase set is bound to the `.Toggle/Label` type style — treat lh 18 as spec, casing clash is FND-007 territory.
+
+## States ref — node 25862:16199 (file zx8q9nRf8Dbqam1rfquQ2E, "Copy Me")
+
+Screenshot: `figma-states-25862-16199.png` (Enabled · Disabled · Read-Only columns, on/off rows). Pulled 2026-07-05.
+
+| State | Track | Thumb | Check (on) | Label |
+|---|---|---|---|---|
+| Enabled on / off | #004370 (`Enabled Primary`) / #4b5e71 (`Icon/On Light/Default`) | white | Blue/70 | `Text/On Light/Default` |
+| Disabled | #8a9db1 (`Domain/Interactive/On Light/Disable`) | white | muted | muted (`Text/On Light/State/Disabled`) |
+| **Read-Only** | **#e7edf3** (`Domain/States/Disable/Lowest`), same on & off | white + **2px #012740 ring** (`Pressed` shadow, spread 2 blur 0) | Blue/70 | **`Text/On Light/Default` — NOT muted** |
+
+Read-Only = shows state but inert (can't toggle); distinguished from Disabled by the light track + dark thumb ring + fully-readable label. Built as `.is-read-only` on `[data-switch]` (+ `.loop-field--read-only` wrapper cascade).

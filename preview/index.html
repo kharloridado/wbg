@@ -1002,7 +1002,7 @@
   <!-- ============ TEXT FIELD ============ -->
   <section>
     <h2>Text Field — restyle native <code>.form-control[data-input]</code></h2>
-    <p class="pv-figma">handover/loop-text-field.md · Figma node 19336-9606</p>
+    <p class="pv-figma">handover/loop-text-field.md · Figma node 19336-9606 · Textarea responsive 19336-10332</p>
 
     <div class="pv-row pv-row--stack pv-row--narrow">
       <span class="pv-label pv-label--block">Default (Regular — 40px · 13px text, no size class)</span>
@@ -1085,6 +1085,32 @@
         <label data-label for="tf-ta">Multiline</label>
         <textarea class="form-control" data-textarea id="tf-ta" placeholder="Type here…"></textarea>
       </div>
+      <span class="pv-note">Responsive (Figma 19336-10332): spacing + type step per device class — desktop 12/16 pad · 14/18 text · 16 label; tablet 8/12 · 14/18 · 14; phone 8/8 · 12/16 · 14. Toggle <code>.tablet</code>/<code>.phone</code> on <code>&lt;body&gt;</code> to preview. FND-068: phone 12px text is below iOS Safari's 16px focus-zoom threshold — built as designed.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Animated Label (OSUI Interaction pattern — underline-only input)</span>
+      <div class="pv-field">
+        <div class="animated-label">
+          <div class="animated-label-text">First Name</div>
+          <div class="animated-label-input">
+            <span class="input-text">
+              <input data-input class="form-control" type="text" id="tf-al-rest" value="">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="pv-field">
+        <div class="animated-label active">
+          <div class="animated-label-text">First Name</div>
+          <div class="animated-label-input">
+            <span class="input-text">
+              <input data-input class="form-control" type="text" id="tf-al-filled" value="Ada Lovelace">
+            </span>
+          </div>
+        </div>
+      </div>
+      <span class="pv-note">OSUI strips these to <code>border-bottom</code> only; focus recolors just the underline — the Text Field box focus ring is explicitly excluded (<code>.animated-label … :focus { box-shadow: none }</code>). The <code>.active</code> label float is OSUI JS; the second specimen pre-applies it statically.</span>
     </div>
   </section>
 
@@ -1156,6 +1182,91 @@
       <div class="loop-field loop-field--regular loop-field--horizontal pv-field">
         <div class="loop-field__label-row"><label data-label for="fw-horiz">Horizontal</label></div>
         <input class="form-control" data-input id="fw-horiz" type="text" placeholder="Label beside input">
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Size cascade — the wrapper size drives every control inside (search glass, checkbox, toggle)</span>
+      <div class="loop-field loop-field--xlarge pv-field">
+        <div class="loop-field__label-row"><label data-label for="fwc-xl">xLarge cascade</label></div>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="fwc-xl" type="search" placeholder="Search follows">
+        </div></div>
+        <div class="loop-checkbox-field">
+          <input type="checkbox" data-checkbox id="fwc-xl-cb" checked>
+          <label class="loop-checkbox-field__label" for="fwc-xl-cb">Checkbox follows</label>
+        </div>
+        <span class="loop-toggle">
+          <input type="checkbox" data-switch id="fwc-xl-tg" checked>
+          <label class="loop-toggle__label" for="fwc-xl-tg">Toggle follows</label>
+        </span>
+      </div>
+      <div class="loop-field loop-field--large pv-field">
+        <div class="loop-field__label-row"><label data-label for="fwc-lg">Large cascade</label></div>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="fwc-lg" type="search" placeholder="Search follows">
+        </div></div>
+        <div class="loop-checkbox-field">
+          <input type="checkbox" data-checkbox id="fwc-lg-cb" checked>
+          <label class="loop-checkbox-field__label" for="fwc-lg-cb">Checkbox follows</label>
+        </div>
+        <span class="loop-toggle">
+          <input type="checkbox" data-switch id="fwc-lg-tg" checked>
+          <label class="loop-toggle__label" for="fwc-lg-tg">Toggle follows</label>
+        </span>
+      </div>
+      <div class="loop-field loop-field--regular pv-field">
+        <div class="loop-field__label-row"><label data-label for="fwc-rg">Regular cascade</label></div>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="fwc-rg" type="search" placeholder="Search follows">
+        </div></div>
+        <div class="loop-checkbox-field">
+          <input type="checkbox" data-checkbox id="fwc-rg-cb" checked>
+          <label class="loop-checkbox-field__label" for="fwc-rg-cb">Checkbox follows</label>
+        </div>
+        <span class="loop-toggle">
+          <input type="checkbox" data-switch id="fwc-rg-tg" checked>
+          <label class="loop-toggle__label" for="fwc-rg-tg">Toggle follows</label>
+        </span>
+      </div>
+      <div class="loop-field loop-field--small pv-field">
+        <div class="loop-field__label-row"><label data-label for="fwc-sm">Small cascade</label></div>
+        <div class="osui-search"><div class="osui-search__input">
+          <input class="form-control" data-input id="fwc-sm" type="search" placeholder="Search follows">
+        </div></div>
+        <div class="loop-checkbox-field">
+          <input type="checkbox" data-checkbox id="fwc-sm-cb" checked>
+          <label class="loop-checkbox-field__label" for="fwc-sm-cb">Checkbox follows</label>
+        </div>
+        <span class="loop-toggle">
+          <input type="checkbox" data-switch id="fwc-sm-tg" checked>
+          <label class="loop-toggle__label" for="fwc-sm-tg">Toggle follows</label>
+        </span>
+      </div>
+      <span class="pv-note">An explicit per-control size class (<code>.input-*</code>, <code>.loop-checkbox-*</code>, <code>.loop-toggle-*</code>) still wins inside a differently-sized wrapper.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">States — one <code>.loop-field--*</code> modifier recolors control + helper together</span>
+      <div class="loop-field loop-field--regular loop-field--error pv-field">
+        <div class="loop-field__label-row"><label data-label for="fws-err">Error</label></div>
+        <input class="form-control" data-input id="fws-err" type="text" placeholder="Placeholder text">
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--regular loop-field--warning pv-field">
+        <div class="loop-field__label-row"><label data-label for="fws-warn">Warning</label></div>
+        <input class="form-control" data-input id="fws-warn" type="text" placeholder="Placeholder text">
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--regular loop-field--disabled pv-field">
+        <div class="loop-field__label-row"><label data-label for="fws-dis">Disabled</label></div>
+        <input class="form-control" data-input id="fws-dis" type="text" placeholder="Placeholder text" disabled>
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--regular loop-field--read-only pv-field">
+        <div class="loop-field__label-row"><label data-label for="fws-ro">Read-Only</label></div>
+        <input class="form-control is-read-only" data-input id="fws-ro" type="text" value="Read-only value" readonly>
+        <span class="loop-field__helper">(This is a helper text)</span>
       </div>
     </div>
   </section>
@@ -1371,7 +1482,7 @@
   <!-- ============ TOGGLE / SWITCH ============ -->
   <section>
     <h2>Toggle — restyle native <code>[data-switch]</code></h2>
-    <p class="pv-figma">handover/loop-switch.md · Figma node 25344-27822</p>
+    <p class="pv-figma">handover/loop-switch.md · Figma nodes 25344-27822 · 25862-16199 (states)</p>
 
     <div class="pv-row">
       <span class="pv-label">Checked / Unchecked</span>
@@ -1426,7 +1537,20 @@
         <input type="checkbox" data-switch disabled aria-label="Disabled off">
         <span class="loop-toggle__label">Disabled (off)</span>
       </label>
-      <span class="pv-note">FND-026: the ON-thumb check glyph (node 25845-30789) is omitted pending its asset/colour token.</span>
+      <span class="pv-note">FND-026 update: the ON-thumb check glyph (node 25845-30789) now renders as the FA solid check in the track blue (colour inferred — token still unpublished). Geometry per the Sizes ref 25862-14729: thumb = track − 2×padding (24/20/16/12), padding 4/3/2/2.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">Read-Only</span>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch class="is-read-only" checked aria-readonly="true" aria-label="Read-only on">
+        <span class="loop-toggle__label">Read-only (on)</span>
+      </label>
+      <label class="loop-toggle">
+        <input type="checkbox" data-switch class="is-read-only" aria-readonly="true" aria-label="Read-only off">
+        <span class="loop-toggle__label">Read-only (off)</span>
+      </label>
+      <span class="pv-note">Figma 25862-16199: not disabled — the state is shown but can't be toggled and the label stays readable. Light Disable/Lowest track (#e7edf3), white thumb with a 2px Blue/90 ring; the ON check stays Blue/70. Add <code>.is-read-only</code> on the Switch (or drive the whole field with <code>.loop-field--read-only</code>).</span>
     </div>
   </section>
 
