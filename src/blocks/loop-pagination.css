@@ -45,7 +45,7 @@
    and icon both inherit color, so setting it here flips them to white. */
 .loop-pagination__btn:hover:not(.loop-pagination__btn--disabled) {
   background-color: var(--color-bg-link-primary-hover);
-  color: var(--color-white);
+  color: var(--color-text-on-light-link-primary-enabled);
 }
 /* icon-first: |< First, < Prev -- icon padding left, label padding right */
 .loop-pagination__btn--icon-first {
@@ -117,7 +117,7 @@
 }
 .loop-pagination__page:hover {
   background-color: var(--color-bg-link-primary-hover);
-  color: var(--color-white);
+  color: var(--color-text-on-light-link-primary-enabled);
 }
 /* Active/selected page: pill border */
 .loop-pagination__page--active {
