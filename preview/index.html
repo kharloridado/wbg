@@ -1526,9 +1526,11 @@
         <div class="loop-pagination__controls">
           <div class="loop-pagination__items-per-page">
             <span class="loop-pagination__label">items per page</span>
-            <select class="loop-pagination__input" aria-label="Items per page">
-              <option>10</option><option selected>20</option><option>50</option>
-            </select>
+            <div class="dropdown-container dropdown">
+              <select class="dropdown-display loop-pagination__input" aria-label="Items per page">
+                <option>10</option><option selected>20</option><option>50</option>
+              </select>
+            </div>
           </div>
           <span class="loop-pagination__showing">Showing <span class="loop-pagination__showing-count">1-20</span> of <span class="loop-pagination__showing-count">500</span></span>
         </div>
