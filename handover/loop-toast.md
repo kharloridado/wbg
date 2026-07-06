@@ -101,8 +101,10 @@ semantic types, optional title, optional action, optional dismiss.
  * strands keyboard/AT users. × has aria-label; focus rings use currentColor (no colour
  * substitution), per CLAUDE.md. prefers-reduced-motion → fade only, no slide.
  *
- * NOTE: the built-in icons APPROXIMATE the Figma glyphs (filled FontAwesome-style circles);
- * slot an exact asset via slot="icon" if design supplies one (mirrors loop-system-alert).
+ * NOTE: the built-in icons are the exact Figma glyphs — Font Awesome 6 Pro SOLID
+ * (filled disc / triangle, glyph knocked out) rendered from the unicode codepoint.
+ * Figma nodes: circle-info / circle-check / triangle-exclamation / circle-exclamation
+ * (component set 17874:6271). Slot an override via slot="icon" if needed (mirrors loop-system-alert).
  */
 class LoopToast extends HTMLElement {
   static get observedAttributes() {
@@ -232,22 +234,20 @@ class LoopToast extends HTMLElement {
     }
   }
 
-  /* Built-in per-type icon. 24×24, currentColor so it inherits the per-type icon colour. */
+  /* Built-in per-type icon — Font Awesome 6 Pro SOLID glyph (filled disc / triangle,
+   * matching the full-bleed Figma assets); currentColor so it inherits the per-type
+   * icon colour. Rendered from the unicode codepoint against the document-level
+   * @font-face (visible inside shadow DOM, unlike .fa-* classes); the solid face is
+   * selected by font-weight 900 in .lt__icon. */
   _defaultIcon(type) {
-    const svg = (inner) =>
-      `<svg class="lt__icon" viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">${inner}</svg>`;
-    switch (type) {
-      case 'success':
-        return svg('<circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8"/><path d="M7.8 12.3 10.6 15 16.4 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>');
-      case 'warning':
-        return svg('<path d="M12 3.2 21.6 19.8H2.4L12 3.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><line x1="12" y1="9.6" x2="12" y2="14.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.15" fill="currentColor"/>');
-      case 'error':
-        return svg('<circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="6.8" x2="12" y2="12.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.15" fill="currentColor"/>');
-      case 'information':
-      case 'default':
-      default:
-        return svg('<circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7.6" r="1.15" fill="currentColor"/><line x1="12" y1="10.8" x2="12" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>');
-    }
+    const glyph = {
+      success:     '&#xf058;',  /* fa-circle-check (solid) */
+      warning:     '&#xf071;',  /* fa-triangle-exclamation (solid) */
+      error:       '&#xf06a;',  /* fa-circle-exclamation (solid) */
+      information: '&#xf05a;',  /* fa-circle-info (solid) */
+      default:     '&#xf05a;',  /* fa-circle-info (solid) */
+    }[type] || '&#xf05a;';
+    return `<span class="lt__icon" aria-hidden="true">${glyph}</span>`;
   }
 
   _render() {
@@ -272,9 +272,7 @@ class LoopToast extends HTMLElement {
     const dismissHtml = dismissible
       ? `<div class="lt__dismiss-wrap" part="dismiss-wrap">
           <button class="lt__dismiss" type="button" aria-label="Dismiss">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
+            <span class="lt__dismiss-glyph" aria-hidden="true">&#xf00d;</span>
           </button>
         </div>`
       : '';
@@ -377,7 +375,22 @@ class LoopToast extends HTMLElement {
   gap: var(--loop-toast-content-gap, 12px);
 }
 .lt__icon-slot { flex-shrink: 0; display: flex; padding-top: var(--loop-toast-icon-pt, 4px); }
-.lt__icon { display: block; width: var(--loop-toast-icon-size, 24px); height: var(--loop-toast-icon-size, 24px); }
+/* FA 6 Pro SOLID glyph — 24px em fills the 24px icon box to match the full-bleed
+   filled disc / triangle the Figma assets draw (circle-info/-check/-exclamation,
+   triangle-exclamation) */
+.lt__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-toast-icon-size, 24px);
+  height: var(--loop-toast-icon-size, 24px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-toast-icon-glyph, 24px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) { flex-shrink: 0; width: var(--loop-toast-icon-size, 24px); height: var(--loop-toast-icon-size, 24px); }
 
 .lt__text {
@@ -467,6 +480,15 @@ class LoopToast extends HTMLElement {
   padding: 0;
   cursor: pointer;
 }
+/* FA xmark (regular) — 16px em box renders the ~12px × the Figma 24px dismiss box draws */
+.lt__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-toast-dismiss-glyph, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 .lt--default     .lt__dismiss { color: var(--loop-toast-default-icon, #ffffff); }
 .lt--success     .lt__dismiss { color: var(--loop-toast-success-icon, #ffffff); }
 .lt--error       .lt__dismiss { color: var(--loop-toast-error-icon, #ffffff); }
@@ -499,6 +521,9 @@ class LoopToast extends HTMLElement {
   width:  var(--loop-toast-icon-size-mobile, 18px);
   height: var(--loop-toast-icon-size-mobile, 18px);
 }
+/* glyphs scale with the mobile icon box (solid disc stays full-bleed at 18px) */
+:host-context(.phone) .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 18px); }
+:host-context(.phone) .lt__dismiss-glyph { font-size: var(--loop-toast-dismiss-glyph-mobile, 13px); }
 
 @media (prefers-reduced-motion: reduce) {
   :host { transition: opacity .2s ease; transform: translate(var(--loop-toast-tx), 0); }
@@ -614,7 +639,7 @@ element's), exactly like the Modal trigger. You can also pass the DOM element di
 ## API — Slots
 | Slot | Description |
 |---|---|
-| `icon` | Overrides the **built-in** per-type icon (e.g. `<img slot="icon" src="…" alt="">`). Each type ships a default 24×24 icon (info / check / triangle / circle-exclamation). The default SVGs **approximate** the Figma glyphs — swap in the exact assets if design supplies them. |
+| `icon` | Overrides the **built-in** per-type icon (e.g. `<img slot="icon" src="…" alt="">`). Each type ships a default 24×24 icon (info / check / triangle / circle-exclamation). The defaults are **Font Awesome 6 Pro regular glyphs** rendered from unicode against the self-hosted icon font. |
 
 ## Example HTML
 ```html

@@ -93,22 +93,19 @@ class LoopSystemAlert extends HTMLElement {
     }
   }
 
-  // Built-in type icon (Figma renders one per type). 16×16, stroke/fill currentColor so it
-  // inherits the per-type icon color. Overridden by a slotted `slot="icon"` element.
+  // Built-in type icon (Figma renders one per type). Font Awesome 6 Pro SOLID glyph;
+  // currentColor inherits the per-type icon color. Rendered from the unicode codepoint
+  // against the document-level
+  // @font-face (visible inside shadow DOM, unlike .fa-* classes). Overridden by a slotted
+  // `slot="icon"` element.
   _defaultIcon(type) {
-    const svg = (inner) =>
-      `<svg class="lsa__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">${inner}</svg>`;
-    switch (type) {
-      case 'warning':
-        return svg('<path d="M8 2.3 14.4 13.1H1.6L8 2.3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="8" y1="6.4" x2="8" y2="9.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.3" r="0.8" fill="currentColor"/>');
-      case 'informative':
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="5" r="0.85" fill="currentColor"/><line x1="8" y1="7.2" x2="8" y2="11.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>');
-      case 'offline':
-        return svg('<path d="M2.6 6.3C5.6 3.6 10.4 3.6 13.4 6.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M4.9 8.7C6.7 7.1 9.3 7.1 11.1 8.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="1" fill="currentColor"/>');
-      case 'error':
-      default:
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4.5" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.85" fill="currentColor"/>');
-    }
+    const glyph = {
+      warning:     '&#xf071;',  /* fa-triangle-exclamation */
+      informative: '&#xf05a;',  /* fa-circle-info */
+      offline:     '&#xf1eb;',  /* fa-wifi */
+      error:       '&#xf06a;',  /* fa-circle-exclamation */
+    }[type] || '&#xf06a;';
+    return `<span class="lsa__icon" aria-hidden="true">${glyph}</span>`;
   }
 
   _render() {
@@ -127,7 +124,7 @@ class LoopSystemAlert extends HTMLElement {
         : `<button class="lsa__action" type="button">${actionLabel}</button>`
       : '';
 
-    const iconHtml = this._hideIcon
+    const iconHtml = hideIcon
       ? ''
       : `<slot name="icon" class="lsa__icon-slot" part="icon">${this._defaultIcon(t)}</slot>`;
 
@@ -136,19 +133,15 @@ class LoopSystemAlert extends HTMLElement {
 
     const dismissHtml = dismissible
       ? `<button class="lsa__dismiss" type="button" aria-label="Dismiss alert">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <span class="lsa__dismiss-glyph" aria-hidden="true">&#xf00d;</span>
         </button>`
       : '';
-
-    const iconSlot = hideIcon ? '' : `<slot name="icon" class="lsa__icon-slot"></slot>`;
 
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
       <div class="lsa lsa--${t}${multiline ? ' lsa--multiline' : ''}" role="alert" part="alert">
         <div class="lsa__content" part="content">
-          ${iconSlot}
+          ${iconHtml}
           <div class="lsa__text" part="text">
             ${titleHtml}
             ${messageHtml}
@@ -194,9 +187,24 @@ class LoopSystemAlert extends HTMLElement {
 }
 .lsa--multiline .lsa__content { align-items: flex-start; justify-content: flex-start; }
 
-/* slot is transparent to flex so its content (default svg or slotted icon) is the flex item */
+/* slot is transparent to flex so its content (default glyph or slotted icon) is the flex item */
 .lsa__icon-slot { display: contents; }
-.lsa__icon { flex-shrink: 0; display: block; width: var(--loop-sysalert-icon-size, 16px); height: var(--loop-sysalert-icon-size, 16px); }
+/* FA 6 Pro solid glyph — 13px em box reproduces the 13px-diameter circles the
+   Figma assets draw inside the 16px icon box */
+.lsa__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-sysalert-icon-size, 16px);
+  height: var(--loop-sysalert-icon-size, 16px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-sysalert-icon-glyph, 13px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) {
   flex-shrink: 0;
   width: var(--loop-sysalert-icon-size, 16px);
@@ -236,18 +244,20 @@ class LoopSystemAlert extends HTMLElement {
   line-height: 1.25;
 }
 
-/* Per-element colors mirror Figma's distinct title / message / action / icon roles per type. */
+/* Per-element colors follow Figma's distinct title / message / action / icon roles per type,
+   per-layout faithful (multi-line shades differ by design — FND-048). Warning title is the
+   sticker's white-75 (≈1.9:1 on the amber bg — FND-067, flagged not fixed). */
 .lsa--error       .lsa__icon,
-.lsa--error       .lsa__dismiss { color: var(--loop-sysalert-error-icon, rgba(255, 255, 255, 0.75)); }
+.lsa--error       .lsa__dismiss { color: var(--loop-sysalert-error-icon, #ffffff); }
 .lsa--warning     .lsa__icon,
 .lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-icon, #473201); }
 .lsa--informative .lsa__icon,
-.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-icon, rgba(255, 255, 255, 0.75)); }
+.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-icon, #ffffff); }
 .lsa--offline     .lsa__icon,
-.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-offline-icon, rgba(255, 255, 255, 0.75)); }
+.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-offline-icon, #ffffff); }
 
 .lsa--error       .lsa__title { color: var(--loop-sysalert-error-title, rgba(255, 255, 255, 0.75)); }
-.lsa--warning     .lsa__title { color: var(--loop-sysalert-warning-title, #473201); }
+.lsa--warning     .lsa__title { color: var(--loop-sysalert-warning-title, rgba(255, 255, 255, 0.75)); }
 .lsa--informative .lsa__title { color: var(--loop-sysalert-informative-title, rgba(255, 255, 255, 0.75)); }
 .lsa--offline     .lsa__title { color: var(--loop-sysalert-offline-title, rgba(255, 255, 255, 0.75)); }
 
@@ -255,6 +265,9 @@ class LoopSystemAlert extends HTMLElement {
 .lsa--warning     .lsa__message { color: var(--loop-sysalert-warning-message, #473201); }
 .lsa--informative .lsa__message { color: var(--loop-sysalert-informative-message, #f6fcff); }
 .lsa--offline     .lsa__message { color: var(--loop-sysalert-offline-message, rgba(255, 255, 255, 0.9)); }
+
+.lsa--multiline.lsa--error   .lsa__message { color: var(--loop-sysalert-error-message-multi, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--offline .lsa__message { color: var(--loop-sysalert-offline-message-multi, rgba(255, 255, 255, 0.75)); }
 
 .lsa__action {
   font-family:     var(--font-family-body, "Open Sans", system-ui, sans-serif);
@@ -275,6 +288,8 @@ class LoopSystemAlert extends HTMLElement {
 .lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-action, #473201); }
 .lsa--informative .lsa__action { color: var(--loop-sysalert-informative-action, rgba(255, 255, 255, 0.9)); }
 .lsa--offline     .lsa__action { color: var(--loop-sysalert-offline-action, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--error       .lsa__action { color: var(--loop-sysalert-error-action-multi, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-action-multi, #ffffff); }
 .lsa__action:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
 
 .lsa__dismiss {
@@ -288,6 +303,15 @@ class LoopSystemAlert extends HTMLElement {
   border:      0;
   padding:     0;
   cursor:      pointer;
+}
+/* FA xmark (solid) — 14px em box renders the ~10px × the Figma 16px dismiss box draws */
+.lsa__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-sysalert-dismiss-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 .lsa--multiline .lsa__dismiss { align-self: flex-start; margin-top: 2px; }
 .lsa__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }

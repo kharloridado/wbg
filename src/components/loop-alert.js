@@ -1,10 +1,17 @@
 /**
  * <loop-alert> — Contextual inline alert (light, left-accent-border callout).
  *
- * Figma: "Alerts" [node:17868-4165]. Custom Web Component — no native OS widget.
+ * Figma: "Alerts" [node:17868-3944]. Custom Web Component — no native OS widget.
  * Renders a tinted alert with a 4px LEFT accent border (plus 1px top/right/bottom in the
  * same accent color), a type icon, optional title, message, action link/button, and a
  * dismiss (×) button. Four semantic types; single-line and multi-line layouts.
+ *
+ * Colors (per the 2026-07-02 Figma update): title/message/icon are STATE-COLORED per type
+ * (--loop-alert-<type>-title/-message/-icon), not a shared dark text; the warning message
+ * intentionally differs by layout (single-line #896001 vs multi-line #473201 — FND-062,
+ * faithful per-layout); the dismiss × is neutral-60 (--loop-alert-dismiss); the action is
+ * the primary link color for every type/layout. Icons are FILLED glyphs (solid shape in the
+ * per-type icon color with white knockout marks), matching the updated Figma assets.
  *
  * NOT to be confused with <loop-system-alert> (the dark, full-width status banner with an
  * "offline" type). This is the light, in-page contextual alert that lives in the Notes/Alerts
@@ -110,22 +117,22 @@ class LoopAlert extends HTMLElement {
     this.dispatchEvent(new CustomEvent('action', { bubbles: true, composed: true, detail: { type: this._type } }));
   }
 
-  // Built-in type icon (Figma renders one per type). 16×16, stroke/fill currentColor so it
-  // inherits the per-type accent color. Overridden by a slotted `slot="icon"` element.
+  // Built-in type icon (Figma renders one per type). Font Awesome 6 Pro SOLID glyph —
+  // filled shape in currentColor (driven by the per-type --loop-alert-<type>-icon token)
+  // with knockout marks, matching the Figma 17868-3944 assets: triangle-exclamation /
+  // circle-info / circle-exclamation. Success reuses the circle-info "i" glyph — that is
+  // what the Figma set draws for BOTH success layouts (17868-4020), not a check
+  // (see the consistency finding in findings/findings-register.md). Rendered from the
+  // unicode codepoint against the document-level @font-face (visible inside shadow DOM,
+  // unlike .fa-* classes). Overridden by a slotted `slot="icon"` element.
   _defaultIcon(type) {
-    const svg = (inner) =>
-      `<svg class="loop-alert__icon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">${inner}</svg>`;
-    switch (type) {
-      case 'warning':
-        return svg('<path d="M8 2.3 14.4 13.1H1.6L8 2.3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><line x1="8" y1="6.4" x2="8" y2="9.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.3" r="0.8" fill="currentColor"/>');
-      case 'information':
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="5" r="0.85" fill="currentColor"/><line x1="8" y1="7.2" x2="8" y2="11.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>');
-      case 'success':
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.2 7 10.2 11 5.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>');
-      case 'error':
-      default:
-        return svg('<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4.5" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.85" fill="currentColor"/>');
-    }
+    const glyph = {
+      warning:     '&#xf071;',  /* fa-triangle-exclamation */
+      information: '&#xf05a;',  /* fa-circle-info */
+      success:     '&#xf05a;',  /* fa-circle-info — per Figma 17868-4020, not circle-check */
+      error:       '&#xf06a;',  /* fa-circle-exclamation */
+    }[type] || '&#xf06a;';
+    return `<span class="loop-alert__icon" aria-hidden="true">${glyph}</span>`;
   }
 
   _render() {
@@ -152,9 +159,7 @@ class LoopAlert extends HTMLElement {
 
     const dismissHtml = dismissible
       ? `<button class="loop-alert__dismiss" type="button" aria-label="Dismiss alert">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <span class="loop-alert__dismiss-glyph" aria-hidden="true">&#xf00d;</span>
         </button>`
       : '';
 
@@ -198,7 +203,6 @@ class LoopAlert extends HTMLElement {
   border: var(--loop-alert-hairline-width, 1px) solid;
   border-left-width: var(--loop-alert-accent-width, 4px);
   border-radius: var(--loop-alert-corner-radius, 4px);
-  color: var(--loop-alert-text, rgba(0, 13, 26, 0.7));
 }
 .loop-alert--multiline {
   align-items: flex-start;
@@ -224,9 +228,24 @@ class LoopAlert extends HTMLElement {
 }
 .loop-alert--multiline .loop-alert__content { align-items: flex-start; gap: var(--loop-alert-gap-multi, 8px); }
 
-/* slot is transparent to flex so its content (default svg or slotted icon) is the flex item */
+/* slot is transparent to flex so its content (default glyph or slotted icon) is the flex item */
 .loop-alert__icon-slot { display: contents; }
-.loop-alert__icon { flex-shrink: 0; display: block; width: var(--loop-alert-icon-size, 16px); height: var(--loop-alert-icon-size, 16px); }
+/* FA 6 Pro solid glyph — the filled circle/triangle spans the full em box, so
+   font-size = icon-size reproduces the 16px Figma icon */
+.loop-alert__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-alert-icon-size, 16px);
+  height: var(--loop-alert-icon-size, 16px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-alert-icon-size, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) {
   flex-shrink: 0;
   width: var(--loop-alert-icon-size, 16px);
@@ -235,11 +254,25 @@ class LoopAlert extends HTMLElement {
 .loop-alert--multiline .loop-alert__icon,
 .loop-alert--multiline ::slotted([slot="icon"]) { margin-top: 2px; }
 
-/* icon color = per-type accent (keyed on the native OSUI alert type modifiers) */
-.alert-error   .loop-alert__icon { color: var(--loop-alert-error-accent, #9d161d); }
-.alert-warning .loop-alert__icon { color: var(--loop-alert-warning-accent, #896001); }
-.alert-info    .loop-alert__icon { color: var(--loop-alert-information-accent, #00538a); }
-.alert-success .loop-alert__icon { color: var(--loop-alert-success-accent, #388004); }
+/* icon color = per-type icon role — decoupled from the border accent (warning icon is
+ * yellow-50 on a yellow-base border; info icon is blue-70 on a blue-60 border) */
+.alert-error   .loop-alert__icon { color: var(--loop-alert-error-icon, #9d161d); }
+.alert-warning .loop-alert__icon { color: var(--loop-alert-warning-icon, #e19d00); }
+.alert-info    .loop-alert__icon { color: var(--loop-alert-information-icon, #004370); }
+.alert-success .loop-alert__icon { color: var(--loop-alert-success-icon, #388004); }
+
+/* title (emphasis) + message = per-type state text roles */
+.alert-error   .loop-alert__title { color: var(--loop-alert-error-title, #861319); }
+.alert-warning .loop-alert__title { color: var(--loop-alert-warning-title, #473201); }
+.alert-info    .loop-alert__title { color: var(--loop-alert-information-title, #004370); }
+.alert-success .loop-alert__title { color: var(--loop-alert-success-title, #234f03); }
+
+.alert-error   .loop-alert__message { color: var(--loop-alert-error-message, #9d161d); }
+.alert-warning .loop-alert__message { color: var(--loop-alert-warning-message, #896001); }
+.alert-info    .loop-alert__message { color: var(--loop-alert-information-message, #00538a); }
+.alert-success .loop-alert__message { color: var(--loop-alert-success-message, #388004); }
+/* Figma splits the warning message shade by layout (single #896001 / multi #473201) — FND-062 */
+.alert-warning.loop-alert--multiline .loop-alert__message { color: var(--loop-alert-warning-message-multi, #473201); }
 
 /* single-line: promote title + message into the content flex row; multi-line: real column */
 .loop-alert__text { display: contents; }
@@ -305,7 +338,16 @@ class LoopAlert extends HTMLElement {
   border:      0;
   padding:     0;
   cursor:      pointer;
-  color:       var(--loop-alert-text, rgba(0, 13, 26, 0.7));
+  color:       var(--loop-alert-dismiss, #4b5e71);
+}
+/* FA xmark (regular) — 14px em box renders the ~10px × the Figma 16px dismiss box draws */
+.loop-alert__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-alert-dismiss-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 .loop-alert--multiline .loop-alert__dismiss { align-self: flex-start; margin-top: 2px; }
 .loop-alert__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }

@@ -7,6 +7,14 @@
   --loop-field-gap:             var(--space-xxsmall);          /* 8px — icon ↔ content */
   --loop-field-placeholder-pad: var(--space-xtiny);            /* 2px */
 
+  /* ---- Text Area (multi-line) — responsive (Figma 19336-10332): spacing + type step down
+     per OutSystems device class; device overrides live in loop-text-field.css. Desktop values here. ---- */
+  --loop-textarea-min-h:          80px;
+  --loop-textarea-padding-block:  var(--space-xsmall);          /* 12px desktop · 8px tablet · 8px phone */
+  --loop-textarea-padding-inline: var(--space-small);           /* 16px desktop · 12px tablet · 8px phone */
+  --loop-textarea-text-size:      var(--font-size-200);         /* 14px desktop/tablet · 12px phone */
+  --loop-textarea-text-leading:   18px;                         /* 18px desktop/tablet · 16px phone */
+
   /* ---- Label (vertical / horizontal) ---- */
   --loop-field-label-gap:       6px;                           /* off-grid */
   --loop-field-label-size:      var(--font-size-300);          /* 16px */
@@ -15,14 +23,30 @@
   --loop-field-label-tracking:  0px;
 
   /* ---- Placeholder / value text ---- */
-  --loop-field-text-size:       var(--font-size-300);          /* 16px */
+  --loop-field-text-size:       13px;                          /* Regular is the family default (FND-021), so the unmodified input reads Regular's 13px (off-scale literal, like the Select's — FND-031 family). xLarge 16 via .input-xlarge / .loop-field--xlarge. */
   --loop-field-text-weight:     var(--font-weight-regular);    /* 400 */
-  --loop-field-text-leading:    16px;
+  --loop-field-text-leading:    14px;                          /* Regular step; sizes re-point it 16/16/14/12 (Figma 19336-9729) */
   --loop-field-text-tracking:   0.5px;
 
   /* ---- Helper text ---- */
   --loop-field-helper-size:     var(--font-size-100);          /* 12px */
   --loop-field-helper-gap:      var(--space-tiny);             /* 4px — icon ↔ helper text */
+  /* Helper status icon (Figma 17188-6977) — 12px FA 6 Pro SOLID glyph leading the message,
+     rendered as a ::before font glyph (loop-text-field.css). The glyph + its colour swap per
+     state via the modifiers below; the icon colour is INDEPENDENT of the text colour (e.g.
+     warning = amber icon #e19d00 over brown text #473201). Default state = circle-info. */
+  --loop-field-helper-icon-char:   "\f05a";                    /* fa-circle-info — default */
+  --loop-field-helper-icon-color:  var(--color-icon-on-light-default);   /* #4b5e71 */
+  --loop-field-helper-icon-weight: var(--font-weight-icon-solid, 900);
+  --loop-field-helper-icon-glyph:  12px;
+
+  /* ---- Field label row (FieldLabel: required * + label + (optional) + word count) ---- */
+  --loop-field-label-row-gap:   var(--space-tiny);             /* 4px — between asterisk / label / optional / count */
+  --loop-field-optional-size:   var(--font-size-100);          /* 12px — "(optional)" tag */
+  --loop-field-count-size:      var(--font-size-100);          /* 12px — "NN/max" badge text */
+  --loop-field-count-bg:        var(--color-bg-container-on-light-regular);  /* #e7edf3 (neutral-10) */
+  --loop-field-count-radius:    var(--radius-xs);              /* 2px */
+  --loop-field-count-padding:   var(--space-xtiny) var(--space-tiny);        /* 2px 4px */
 
   /* =========================================================================
      Select / Dropdown — restyle of the native Dropdown + VirtualSelect provider.
@@ -41,9 +65,12 @@
   --loop-select-text-tracking:    0.5px;
   --loop-select-list-radius:      var(--radius-medium);        /* 8px — popup list */
   --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px */
-  /* search-box magnifier (Dropdown Search open state) — drawn as a mask, self-contained
-     so it renders identically in preview and ODC. */
-  --loop-select-search-icon:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Ccircle cx='7' cy='7' r='4.5'/%3E%3Cpath d='M10.5 10.5L14 14' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* search-box magnifier (Dropdown Search open state) — FA 6 Pro magnifying-glass,
+     rendered as a font glyph (loop-dropdown.css ::before); regular weight matches the
+     Figma stroke */
+  --loop-select-search-icon-char:   "\f002";                     /* fa-magnifying-glass */
+  --loop-select-search-icon-weight: var(--font-weight-icon-regular, 400);
+  --loop-select-search-icon-glyph:  14px;                        /* em box inside the 16px icon box */
 
   /* ---- Multi-select (DropdownTags) ---- */
   --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */

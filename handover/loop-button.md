@@ -59,8 +59,12 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      .btn-primary  → filled:   bg/border 'primary', text neutral-0
      .btn-small    → h32 ·  .btn-large → h48 · [disabled] → neutral
    The Loop overrides that baseline to: 8px default radius (--radius-medium; 32px pill
-   via .btn-rounded), Open Sans 700, label tracking -0.5, icon gap 6, padding 16/16, and
-   the WB blue-70 primary fill.
+   via .btn-rounded), Open Sans 700, label tracking -0.5, padding 16/0, the WB blue-70
+   primary fill, and a per-size type/icon scale (Figma node 15597:847 size modes):
+     xLarge 56 → label 16/24, icon 18, gap 6
+     Large  48 → label 14/24, icon 16, gap 6
+     Regular 40 → label 12/24, icon 14, gap 6   (default .btn)
+     Small  32 → label 11/20, icon 12, gap 4
 
    Variant mapping (OutSystems Button "Style" → The Loop "Type"):
      (none / base .btn)  → Secondary (outlined blue-70)
@@ -70,7 +74,9 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      .btn.btn-rounded    → any variant with 32px pill radius (opt-in).
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
-     --font-family-label, --font-weight-bold, --font-size-300, --letter-spacing-button,
+     --loop-btn-h-*, --loop-btn-font-*, --loop-btn-lh(-small), --loop-btn-icon-*,
+     --loop-btn-gap-small, --loop-btn-adjacent-gap (component-button.css),
+     --font-family-label, --font-weight-bold, --letter-spacing-button,
      --color-bg-link-primary-{enabled,hover,pressed,disabled}, --color-white,
      --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
      --color-bg-link-secondary-{hover,pressed,disabled},
@@ -81,9 +87,16 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
    ============================================ */
 
-/* ---- Base .btn → The Loop identity + Secondary (outlined) look ---- */
+/* ---- Base .btn → The Loop identity + Secondary (outlined) look ----
+   Size-scoped custom props (label font / line height / icon glyph / gap) default to
+   Regular here; the .btn-* size modifiers re-point them so label AND icon scale together. */
 .btn {
-  gap: var(--space-button-gap, 6px);
+  --loop-btn-font: var(--loop-btn-font-regular, 12px);
+  --loop-btn-line-height: var(--loop-btn-lh, 24px);
+  --loop-btn-icon: var(--loop-btn-icon-regular, 14px);
+  --loop-btn-gap: var(--space-button-gap, 6px);
+
+  gap: var(--loop-btn-gap);
   height: var(--loop-btn-h-regular, 40px);             /* pinned height so the border never grows the box */
   padding-block: 0;
   padding-inline: var(--space-small, 16px);
@@ -92,8 +105,8 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 
   font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
   font-weight: var(--font-weight-bold, 700);
-  font-size: var(--font-size-300, 16px);
-  line-height: var(--line-height-base, 1.5);
+  font-size: var(--loop-btn-font);
+  line-height: var(--loop-btn-line-height);
   letter-spacing: var(--letter-spacing-button, -0.5px);
 
   /* Secondary / outlined (base, no variant class) */
@@ -155,11 +168,46 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
   color: var(--color-text-on-light-state-disabled);
 }
 
-/* ---- Sizes — native .btn-small/.btn-large + added .btn-xlarge/.btn-regular ---- */
-.btn-xlarge  { height: var(--loop-btn-h-xlarge, 56px);  font-size: var(--font-size-300, 16px); }
-.btn-large   { height: var(--loop-btn-h-large, 48px);   font-size: var(--font-size-300, 16px); }
-.btn-regular { height: var(--loop-btn-h-regular, 40px); font-size: var(--font-size-300, 16px); }
-.btn-small   { height: var(--loop-btn-h-small, 32px);   font-size: var(--font-size-200, 14px); }
+/* ---- Sizes — native .btn-small/.btn-large + added .btn-xlarge/.btn-regular ----
+   Each size re-points the size-scoped props: label 16/14/12/11, line height 24 (20 on
+   Small), icon glyph 18/16/14/12, gap 6 (4 on Small) — Figma node 15597:847 size modes. */
+.btn-xlarge {
+  height: var(--loop-btn-h-xlarge, 56px);
+  --loop-btn-font: var(--loop-btn-font-xlarge, 16px);
+  --loop-btn-icon: var(--loop-btn-icon-xlarge, 18px);
+}
+.btn-large {
+  height: var(--loop-btn-h-large, 48px);
+  --loop-btn-font: var(--loop-btn-font-large, 14px);
+  --loop-btn-icon: var(--loop-btn-icon-large, 16px);
+}
+.btn-regular {
+  height: var(--loop-btn-h-regular, 40px);
+  --loop-btn-font: var(--loop-btn-font-regular, 12px);
+  --loop-btn-icon: var(--loop-btn-icon-regular, 14px);
+}
+.btn-small {
+  height: var(--loop-btn-h-small, 32px);
+  --loop-btn-font: var(--loop-btn-font-small, 11px);
+  --loop-btn-line-height: var(--loop-btn-lh-small, 20px);
+  --loop-btn-icon: var(--loop-btn-icon-small, 12px);
+  --loop-btn-gap: var(--loop-btn-gap-small, 4px);
+}
+
+/* ---- Icon glyphs (Font Awesome via the native Icon widget) scale with the button size ---- */
+.btn [class*="fa-"] {
+  font-size: var(--loop-btn-icon);
+  line-height: 1;
+}
+
+/* ---- Adjacent buttons — The Loop spacing is 8px (OSUI baseline: --space-m / 16px);
+   the phone layout stacks buttons full-width, same 8px between them ---- */
+.btn + .btn {
+  margin-left: var(--loop-btn-adjacent-gap, 8px);
+}
+.phone .layout:not(.layout-native) .btn + .btn {
+  margin-top: var(--loop-btn-adjacent-gap, 8px);
+}
 
 /* ---- .btn.btn-rounded → 32px pill corners (opt-in variant; confirmed: kharloridado 2026-06-30) ---- */
 .btn.btn-rounded {
@@ -196,10 +244,12 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
 | **Small** (32px) | `.btn-small` | native size class |
 
 ## What the override changes vs OutSystems UI baseline
-- **Default radius 8px** (`--radius-medium`), Open Sans **700**, label tracking **-0.5px**, icon gap **6px**. Add `.btn-rounded` Extended Class for the 32px pill variant (`--radius-pill`). Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px with 16px block padding.
+- **Default radius 8px** (`--radius-medium`), Open Sans **700**, label tracking **-0.5px**. Add `.btn-rounded` Extended Class for the 32px pill variant (`--radius-pill`). Default `.btn` is **Regular (40px)** per FND-043; `btn-xlarge` raises it to 56px.
 - **Primary fill = blue-70 (#004370)** — overridden directly because `.btn-primary` otherwise resolves through `--color-primary` (blue-50), which other components share.
 - Explicit Loop hover/pressed hues (replaces OutSystems' `filter: brightness()` darkening).
 - Sizes: default `.btn` → 40px (Regular), native `.btn-large` → 48px, `.btn-small` → 32px, added `.btn-xlarge` → 56px (xLarge), `.btn-regular` → 40px (explicit alias of the default).
+- **Label, icon and gap scale with the size** (Figma node 15597:847 size modes): label **16/14/12/11px** (line height 24, 20 on Small), Font Awesome icon glyph **18/16/14/12px**, icon↔label gap **6px** (4px on Small) for xLarge/Large/Regular/Small. Icons placed with the native Icon widget inside the Button pick this up automatically (`.btn [class*="fa-"]`).
+- **Adjacent buttons sit 8px apart** (`.btn + .btn` margin via `--loop-btn-adjacent-gap`, replacing the OutSystems UI 16px `--space-m` default; the phone stacked layout gets the same 8px vertical gap). No extra classes needed — place Buttons side by side as usual.
 
 ## Radius variant mapping
 | The Loop | OutSystems | How |

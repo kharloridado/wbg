@@ -41,24 +41,6 @@
   color: var(--color-text-on-light-subdued);
 }
 
-/* ---- Down-chevron — re-enable the container's suppressed ::after ---- */
-.dropdown-container.dropdown > div.dropdown-display::after,
-.dropdown-container.dropdown > select.dropdown-display::after {
-  content: "";
-  flex-shrink: 0;
-  margin-left: auto;
-  width: 8px;
-  height: 8px;
-  margin-top: -3px;                                               /* optical centre of the rotated glyph */
-  border-right: 1.5px solid var(--color-icon-on-light-default);
-  border-bottom: 1.5px solid var(--color-icon-on-light-default);
-  transform: rotate(45deg);
-}
-.dropdown-container.dropdown.dropdown-expanded > div.dropdown-display::after {
-  margin-top: 1px;
-  transform: rotate(-135deg);                                     /* flips up when open */
-}
-
 /* ---- Hover ---- */
 .dropdown-container.dropdown > div.dropdown-display:hover,
 .dropdown-container.dropdown > select.dropdown-display:hover {
@@ -257,17 +239,24 @@
   border-bottom: 1px solid var(--color-outline-on-light-subdued);
   padding: var(--space-xtiny, 4px) var(--loop-select-padding-inline, 16px);
 }
-/* leading magnifier glyph (provider ships none in this build) */
+/* leading magnifier glyph (provider ships none in this build) — FA 6 Pro font glyph */
 .osui-dropdown-search .vscomp-search-container::before,
 .osui-dropdown-tags .vscomp-search-container::before {
-  content: "";
+  content: var(--loop-select-search-icon-char, "\f002");
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
   height: 16px;
   margin-right: var(--space-xxsmall, 8px);
-  background-color: var(--color-icon-on-light-subdued);
-  -webkit-mask: var(--loop-select-search-icon) center / contain no-repeat;
-  mask: var(--loop-select-search-icon) center / contain no-repeat;
+  color: var(--color-icon-on-light-subdued);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-select-search-icon-weight, 400);
+  font-size: var(--loop-select-search-icon-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
 .osui-dropdown-search .vscomp-search-input,
 .osui-dropdown-tags .vscomp-search-input {

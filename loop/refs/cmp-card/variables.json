@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "item": "cmp-card",
+    "figma_file_key": "zx8q9nRf8Dbqam1rfquQ2E",
+    "nodes": ["20315:6129", "20315:6189", "20376:15012"],
+    "tool": "get_design_context",
+    "pulled": "2026-07-04",
+    "note": "Simple card re-scope (supersedes node 20315:6122 / file aHtnwyPhI8WRbiGHZ8E5Gb family restyle). Shadow is a styles-collection switch: classic/mixed = 0 8 20 0, modern = none. Outline transparent in all styles. effects/shadow/default #00396b29 here is KNOWN Figma drift (FND-065); canonical shadow color = #21262d29 per FND-003 sign-off — do not re-flag."
+  },
+  "variables": {
+    "card/corner-radius": "8",
+    "card/outline": "transparent",
+    "-loop shadows/cards": "Effect(type: DROP_SHADOW, color: effects/shadow/default, offset: (card/shadow/x-position, card/shadow/y-position), radius: card/shadow/blur, spread: card/shadow/spead)",
+    "card/shadow/x-position (classic, mixed)": "0",
+    "card/shadow/y-position (classic, mixed)": "8",
+    "card/shadow/blur (classic, mixed)": "20",
+    "card/shadow/spead (classic, mixed)": "0",
+    "card/shadow/x-position (modern)": "0",
+    "card/shadow/y-position (modern)": "0",
+    "card/shadow/blur (modern)": "0",
+    "card/shadow/spead (modern)": "0",
+    "effects/shadow/default": "#00396b29",
+    "loop/card/container-color": "#ffffff",
+    "Spacing/none": "0",
+    "Spacing/xxsmall": "8",
+    "Spacing/regular": "24",
+    "Spacing/medium": "32",
+    "Neutral/Solid/05 S": "#f5f7f9",
+    "Neutral/Solid/10 S": "#e7edf3",
+    "Neutral/Solid/15 S": "#dae3eb",
+    "Text/On Light/Subdued": "#00294d91",
+    "Text/On Light/State/Disabled": "#00294d6b",
+    "Body/Text/Small/Regular": "Font(family: \"IBM Plex Sans\", style: Regular, size: 13, weight: 400, letterSpacing: 1)",
+    "Body/Text/Base/Regular": "Font(family: \"IBM Plex Sans\", style: Regular, size: 14, weight: 400, letterSpacing: 1)"
+  }
+}

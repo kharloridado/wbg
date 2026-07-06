@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "item": "cmp-button-group",
+    "figma_file_key": "aHtnwyPhI8WRbiGHZ8E5Gb",
+    "node": "15597:2978",
+    "tool": "get_variable_defs",
+    "pulled": "2026-07-04",
+    "note": "Frozen Figma variable defs for the Button Group page node (Button Switch companion is 15597-4070, not separately snapshotted)."
+  },
+  "variables": {
+    ".UI Component/Button/Label": "Font(family: \"Global/Font Family\", style: Bold, size: loop/button/label/font size, weight: loop/button/label/font weight, lineHeight: loop/button/label/line height, letterSpacing: loop/button/label/letter spacing)",
+    "loop/button/label/font size": "16",
+    "loop/button/label/line height": "24",
+    "loop/button/label/font weight": "700",
+    "loop/button/label/letter spacing": "-0.5",
+    "loop/button/label/v-padding": "0",
+    "loop/button/gap": "6",
+    "loop/button/h-padding": "32",
+    "loop/button/v-padding": "16",
+    "loop/button/border radius": "32",
+    "Button/Border Raduis/Top Right": "2",
+    "Button/Border Raduis/Bottom Right": "2",
+    "Border Radius/Small": "16",
+    "lift/border radius/raduis-05": "2",
+    "lift/border radius/none": "0",
+    "Background/Container/On Light/Link/Primary/Enabled": "#004370",
+    "Background/Container/On Light/Link/Secondary/Enabled": "#ffffff00",
+    "Outline/On Light/Link/Enabled": "#004370",
+    "Outline/Transparent": "#ffffff00",
+    "Text/On Light/Link/Primary Enabled": "#004370",
+    "Global/Font Family": "Open Sans",
+    "Spacing/none": "0",
+    "Spacing/regular": "24",
+    "Spacing/large": "40",
+    "Spacing/xlarge": "48",
+    "Spacing/xxlarge": "64",
+    "Neutral/On Light/Solid/02S": "#fafafa",
+    "Neutral/On Light/Solid/04S": "#f5f5f5",
+    "Neutral/Solid/05 S": "#f5f7f9",
+    "lift/outline/on light/high": "#4b5e71",
+    "lift/text/on light/state/disabled": "#bdc9d6"
+  }
+}

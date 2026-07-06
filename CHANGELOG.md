@@ -14,7 +14,156 @@ build.
 
 ## [Unreleased]
 
-_Nothing yet — work merged to `main` since v0.6.0 lands here until the next release is cut._
+### Added
+- **Field Wrapper size + state cascade** (Figma 19336-9726 / 19336-17818 / 17191-8819 /
+  25862-14729, frozen as `loop/refs/cmp-field-sizing/`): one `.loop-field--{xlarge,large,
+  regular,small}` on the wrapper now scales **every control inside** — input/textarea text
+  + leading (16/16 · 14/16 · 13/14 · 12/12), Search glass (20/20/16/12 at 44/44/40/32
+  pad-left), Checkbox (28/24/20/16 box + label + 20/20/16/14 group column gap) and
+  Toggle (56×32/48×26/40×20/32×16) — with an explicit per-control size class
+  (`.input-*`, `.loop-checkbox-*`, `.loop-toggle-*`) still winning inside a
+  differently-sized wrapper. New wrapper **state** modifiers `.loop-field--error/
+  --warning/--disabled/--read-only` recolor control + label row + helper in one class
+  (mirroring `.not-valid`/`.is-warning`/`[disabled]`/`.is-read-only`).
+- **Toggle ON-thumb check glyph** (FND-026 update): the checked thumb now renders the FA 6
+  Pro solid check, glyph box = thumb − 2×padding (16/14/12/8); colour inferred as
+  `Domain/Interactive/Enabled Primary` pending the unpublished token.
+
+### Fixed
+- **Toggle geometry re-aligned to the Main Library (2) Sizes ref** (25862-14729): per-size
+  thumb/padding are now 24/4 · 20/3 · 16/2 · 12/2 (the old build extrapolated 24/18/12/8
+  at a constant 4px padding from the single-size ref); toggle label + row min-height now
+  step with the size (16/18 · 14/16 · 13/15 · 12/14, row 40/40/32/32) and the family
+  default is **Regular** (was xLarge label metrics on a Regular track).
+- **Search glass icon per size** (17191-8819): Regular is 16px (was 20px) and Small 12px
+  (was 16px), insets 16/16/16/12 — bare `.input-*` classes and the wrapper cascade share
+  one prop set (the `--loop-search-*-small` token pair is superseded).
+- **Small field inline padding** is 12px per Figma 19336-9755 (was 16px) — applies to
+  `.input-small` and `.loop-field--small`, and keeps the Small search pad-left math
+  (12 + 12 + 8 = 32) exact.
+- **Checkbox Regular label tracking** corrected to 0 (was 0.25px — that's the Small step
+  per 19336-17818); horizontal group column gap now steps 20/20/16/14 (was a flat 20px).
+- **Search Field label→input gap** built at the ref's 4px (family default is 6px) — logged
+  as **FND-069** (consistency, register-only).
+- **System Alert — per-element text/icon colors rebuilt faithful to Figma node 17873-7408**,
+  reversing the FND-048 "normalize to single-line" disposition (per-layout faithful, the
+  FND-062 Alert precedent): multi-line error message/action → white-90, multi-line
+  informative action → pure white, multi-line offline message → white-75 (new
+  `--loop-sysalert-*-multi` tokens in `tokens/component-system-alert.css` + `.lsa--multiline`
+  overrides in `loop-system-alert.js`/`.css`); left/dismiss icons on the dark types
+  (error/informative/offline) → pure white (`Icon/On Dark/Emphasis`); System Alert icons now
+  render **Solid** (was Regular). The **warning title** is now the sticker's white-75 —
+  ≈1.9:1 on the amber bg, **filed as FND-067** (GitHub Bug
+  [#141](https://github.com/kharloridado/wbg/issues/141), awaiting designer) per the
+  fidelity-first rule. The stale `--loop-sysalert-*-text` rules in the light-DOM mirror
+  `loop-system-alert.css` were resynced to the shadow CSS in the same pass.
+- **Button — label, icon and gap now scale with the size modifier** (they were frozen at
+  16px label / unscaled icons for every size except a 14px Small). Deep-pull of Figma node
+  15597-847 ("Main Library (2)") showed the `loop/button/*` variables are **mode-based per
+  size**: label 16/14/12/11px (line height 24; 20 on Small), Font Awesome icon glyph
+  18/16/14/12px, icon↔label gap 6px (4px on Small) for xLarge/Large/Regular/Small. New
+  per-size tokens in `tokens/component-button.css` (`--loop-btn-font-*`, `--loop-btn-lh*`,
+  `--loop-btn-icon-*`, `--loop-btn-gap-small`); `.btn` size modifiers re-point size-scoped
+  custom props so label and icon scale together, and `.btn [class*="fa-"]` sizes native
+  Icon-widget glyphs. Inline padding stays at the user-approved 16px (PR #124) — the
+  per-size Figma paddings (32/28/20/14) are recorded in `loop/refs/cmp-button/spec.md`
+  but deliberately not applied. Frozen ref updated with the per-size mode table.
+  Same pass: **spacing between adjacent buttons is now 8px** (`.btn + .btn` margin via new
+  `--loop-btn-adjacent-gap` → `--space-xxsmall`; user-specified) replacing the OSUI 16px
+  `--space-m` default, incl. the phone stacked-buttons layout.
+
+### Changed
+- **Card now overrides the native `.card` directly** (reverses the 2026-07-04 opt-in
+  re-scope, per user ruling): the Loop card look — white, 8px radius, no border,
+  `--shadow-medium` (0 8px 20px), 24px padding — is now the **default for every native
+  OutSystems UI Card widget**, no Extended Class required. The two treatments are renamed to
+  BEM-consistent opt-out modifiers: `.loop-card--no-shadow` → `.card--no-shadow` (Modern /
+  external web, flat) and `.loop-card--flush` → `.card--flush` (no padding); the dev
+  placeholder element is `.card__placeholder`. Design values and the FND-003/FND-065 shadow-
+  colour ruling are unchanged (`src/blocks/loop-card.css`, `tokens/component-card.css`,
+  `handover/loop-card.md`, preview, `loop/refs/cmp-card/`).
+- **Icons — all component icons now render as Font Awesome 6 Pro glyphs, no more inline
+  SVGs** — every shipped icon is a unicode glyph against the self-hosted
+  `'Font Awesome 6 Pro'` face (new `--font-family-icon` / `--font-weight-icon-solid|regular|light`
+  tokens in `tokens/typography.css`; glyphs render inside shadow DOM because the document
+  `@font-face` pierces it — `.fa-*` classes don't). Converted: **loop-alert** (solid
+  triangle-exclamation / circle-info / circle-exclamation + regular xmark; success uses the
+  circle-info "i" glyph — that's what the Figma sticker draws for both success layouts,
+  node 17868-4020 — logged as FND-066),
+  **loop-system-alert** (solid set + wifi for offline), **loop-toast** (regular set, incl.
+  phone-breakpoint glyph sizes), **loop-modal** (regular circle-info + xmark),
+  **loop-button-dropdown** (solid chevron-down), **loop-file-uploader** (regular
+  file-arrow-up / arrow-up, light circle-info, regular xmark), **DatePicker**
+  (solid chevron-left/right nav — replacing the border-drawn chevrons — and the year-grid
+  caret-down via `.loop-dp-yeartoggle__glyph`), **Search** (regular magnifying-glass glyph
+  replaces the data-URI mask; token split into `--loop-search-icon-char|weight|glyph`),
+  **Dropdown search** (same, `--loop-select-search-icon-char|weight|glyph`), and
+  **loop-badge-status** Icon type (solid state glyphs; not-started/in-progress use the
+  regular face — preview instances converted). One documented exception: the Search
+  clear (×) sits on `::-webkit-search-cancel-button`, a native pseudo-element that can't
+  render font glyphs — it stays a mask but the shape is now the genuine FA 6 Pro xmark
+  path from `metadata/icons.json`. Shadow-CSS mirrors (`loop-system-alert.css`,
+  `loop-toast.css`, `loop-button-dropdown.css`) kept in sync; handovers re-embedded.
+- **Icons — Font Awesome 6 upgraded Free → Pro 6.7.2, Light style added, Brands dropped** —
+  the designer-provided Pro desktop package (OTFs + metadata; no webfonts/CSS ship in it)
+  replaces the Free build: `build/convert-fa-otf.mjs` (new, `wawoff2`) converts the Pro OTFs →
+  the 3 vendored woff2 (solid 900 · regular 400 · **light 300, new**), and
+  `build/gen-fa-pro-css.mjs` (new) generates `vendor/fontawesome-6/css/all.css` from
+  `css/core-template.css` + `metadata/icons.json` (gitignored). Family renamed
+  `'Font Awesome 6 Free'` → `'Font Awesome 6 Pro'`; `.fal`/`.fa-light` rules added; **brands
+  removed** (no brand-logo icons in the designs — `fa-brands-400.woff2`, the
+  `'Font Awesome 6 Brands'` face and all `.fab`/`.fa-brands` rules are gone); legacy
+  `'FontAwesome'`/v5 faces still excluded (OSUI Icon-widget guard). Icon set: **3,323 names ×
+  3 styles = 9,969 tiles**; `<loop-icon-reference>` gains a Light filter + 300-weight glyphs,
+  drops the Brands filter, and `loop-icon-data.js` regenerates (~415 KB). ODC takes **3** woff2
+  Resources (`fa-light-300.woff2` new; solid/regular names unchanged, faces replaced; delete the
+  old `fa-brands-400.woff2`) and a re-paste of `dist/fontawesome.css`. Pro is a licensed asset —
+  private repo/app hosting only, do not redistribute (handovers #137/#138 updated).
+- **Text Field — bare `.input-*` size classes now step the input/placeholder text** —
+  `16 / 14 / 13 / 12px` across `.input-xlarge` / `.input-large` / `.input-regular` /
+  `.input-small` (Figma 19336-9729) by setting `--loop-field-text-size`, matching the
+  `.loop-field--*` wrapper modifiers so bare and wrapped fields render identically
+  (previously only `.input-small` changed the font, to 14px). Padding-block reconciled to
+  the wrapper values (regular `11px`, small `8px`); heights stay pinned 56/48/40/32.
+  Applies to every `.input-*` consumer (Search, plain Text Field, DatePicker field).
+- **Text Field — Regular (13px) is now the default text size, no modifier needed** — the
+  `--loop-field-text-size` token defaults to `13px` (was 16px/`--font-size-300`), so an
+  unsized input/textarea renders the full Regular spec (40px + 13px text/placeholder) instead
+  of Regular height with xLarge text — per the Regular-as-family-default direction (FND-021).
+  Explicit sizes are unaffected; the label token stays 16px (the Upload label consumes it).
+- **Modal `<loop-modal>` — all boolean attributes value-aware** — `open`, `no-icon`, `no-close`,
+  `no-backdrop-close` and `static` now treat `="false"` the same as absent, so each binds
+  directly to an ODC Boolean Block input via `If(Flag, "true", "false")` (e.g. `NoIcon` →
+  `no-icon`) — no OnReady JS attribute wiring needed. Previously only `no-icon` was value-aware
+  and `no-close`/`static` would mis-fire when bound `"false"`. Handover Block-wiring section
+  updated to direct attribute bindings; verified in-browser (icon/close toggle, `open="false"`
+  stays hidden with no scroll lock, `static="false"` keeps ESC dismiss).
+- **Alert `<loop-alert>` — per-type state colors** (Figma node 17868-3944, 2026-07-02 update) —
+  title/message/icon are now state-colored per type instead of the shared dark text: titles use
+  the `Text/On State/*/Emphasis` roles (error `#861319` · warning `#473201` · info `#004370` ·
+  success `#234f03`), messages the per-type state text roles, and icons the `Icon/On Light/State/*`
+  roles — decoupled from the border accents (warning icon yellow-50 `#e19d00`, info icon blue-70
+  `#004370`). Dismiss × is now neutral-60 (`--loop-alert-dismiss`). Type icons switched to the
+  updated FILLED glyphs (solid shape + white knockout). The warning message keeps Figma's
+  per-layout split (single `#896001` / multi `#473201`) — FND-062. The design update also
+  resolves FND-054 (Information multi-line Action is now the primary link color).
+
+### Added
+- **Icons — Font Awesome 6 (full set)** — the entire FA6 Free icon library (~2,000 icons:
+  solid · regular · brands) is now available app-wide, self-hosted like the brand Open Sans
+  faces. New: vendored source `vendor/fontawesome-6/` (FA 6.7.2), build `build-fontawesome.mjs`
+  (`npm run build:fontawesome`) → `dist/fontawesome.css` / `.min.css` + `dist/fontawesome-webfonts/`,
+  a preview Icons section, and `handover/loop-fontawesome.md`. The build drops the legacy
+  `'FontAwesome'` / v4 / v5 `@font-face` names so it never clobbers the native OutSystems UI
+  Icon widget — only the three v6 families ship. Use `<i class="fa-solid fa-user"></i>`.
+- **Icons — searchable reference `<loop-icon-reference>`** — Live Style Guide doc for the full
+  FA6 set, like `<loop-typography-reference>`: a searchable, style-filterable grid where every
+  icon is a click-to-copy tile carrying the name to paste into the CustomIcon block
+  (`copy-format` = `class` / `prefixed` / `name`). New: `vendor/fontawesome-6/icon-manifest.json`,
+  generator `build/gen-icon-data.mjs` (`npm run gen:icon-data`) → `src/components/loop-icon-data.js`
+  (1,895 icons), component `src/components/loop-icon-reference.js`, preview section, and
+  `handover/loop-icon-reference.md`. Glyphs render from unicode inside shadow DOM (no dependence
+  on the page `.fa-*` classes — only the document `@font-face`).
 
 ## [0.6.0] — 2026-06-30
 

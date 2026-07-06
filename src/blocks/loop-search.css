@@ -1,4 +1,6 @@
-/* loop-search.css — Search: native Search widget restyle; inherits the Text Field identity, adds glass + clear */
+/* loop-search.css — Search: native Search widget restyle; inherits the Text Field identity, adds glass + clear.
+   Sizes per Figma 17191-8819: the glass icon and text inset step with the field size — via the bare
+   .input-* classes on the Search Input, or cascaded from a .loop-field--* size on the Field Wrapper. */
 
 /* ---- Leading search-glass icon ---- */
 .osui-search__input {
@@ -8,26 +10,36 @@
 /* Make room for the glass: text starts after hpadding + icon + gap. The focus ring is an inset
    box-shadow (loop-text-field.css), so focus never resets this padding-left and the value never slides under the glass. */
 .osui-search .form-control[data-input] {
-  padding-left: var(--loop-search-pad-left, 44px);
+  padding-left: var(--loop-search-pad-left, 40px);
 }
 
+/* FA 6 Pro magnifying-glass rendered as a font glyph (codepoint + weight from tokens) */
 .osui-search__input::after {
-  content: "";
+  content: var(--loop-search-icon-char, "\f002");
   position: absolute;
   left: var(--loop-search-icon-inset, 16px);
   top: 50%;
   transform: translateY(-50%);
-  width: var(--loop-search-icon-size, 20px);
-  height: var(--loop-search-icon-size, 20px);
-  background-color: var(--loop-search-icon-color);
-  -webkit-mask: var(--loop-search-icon) center / contain no-repeat;
-  mask: var(--loop-search-icon) center / contain no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-search-icon-size, 16px);
+  height: var(--loop-search-icon-size, 16px);
+  color: var(--loop-search-icon-color);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-search-icon-weight, 400);
+  font-size: var(--loop-search-icon-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
   pointer-events: none;                                          /* glyph never eats clicks/focus */
 }
 
 /* ---- Clear (×) — Filled state ----
    WebKit/Blink show the cancel button on <input type="search"> only while it holds a value
-   (matches the Filled state); set the Search Input's type to Search to surface it. Firefox draws none. */
+   (matches the Filled state); set the Search Input's type to Search to surface it. Firefox draws none.
+   Stays a MASK (native pseudo-element can't render font glyphs) but the shape is the genuine
+   FA 6 Pro xmark path — see --loop-search-clear-icon in tokens/component-search.css. */
 .osui-search input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
           appearance: none;
@@ -45,24 +57,33 @@
           appearance: none;
 }
 
-/* ---- Size variants — mirrors Text Field .input-* classes ---- */
-/* xlarge / large / regular inherit the default 44px pad-left (20px glass at 16px inset).
-   Apply the size class via OutSystems ExtendedClass on the Search widget. */
+/* ---- Size steps — Figma 17191-8819. Regular (the default, tokens above) = 16px glass at 16px
+   inset. The prop overrides sit on the .osui-search root (bare .input-* classes, via :has) or on
+   the .loop-field--* wrapper (cascade), and the input + ::after glyph consume them by inheritance.
+   An explicit .input-* class wins over the wrapper cascade (element-level beats inherited). ---- */
 
-/* Small (32px field) — 16px glass icon at 12px inset; 36px pad-left to clear the glass. */
-.osui-search .form-control[data-input].input-small {
-  padding-left: var(--loop-search-pad-left-small, 36px);
+/* xLarge / Large (56px / 48px field) — 20px glass at 16px inset; 44px pad-left. */
+.loop-field--xlarge,
+.loop-field--large,
+.osui-search:has(.form-control[data-input].input-xlarge),
+.osui-search:has(.form-control[data-input].input-large) {
+  --loop-search-icon-size:  20px;
+  --loop-search-icon-glyph: 18px;
+  --loop-search-pad-left:   44px;   /* 16 inset + 20 icon + 8 gap */
 }
 
-/* Resize the glass pseudo-element when the input carries .input-small.
-   :has() selects the wrapper whose child is the small input. */
-.osui-search__input:has(.form-control[data-input].input-small)::after {
-  width:  var(--loop-search-icon-size-small, 16px);
-  height: var(--loop-search-icon-size-small, 16px);
-  left:   var(--loop-search-icon-inset-small, 12px);
+/* Small (32px field) — 12px glass at 12px inset; 32px pad-left; 14px clear. */
+.loop-field--small,
+.osui-search:has(.form-control[data-input].input-small) {
+  --loop-search-icon-size:  12px;
+  --loop-search-icon-glyph: 10px;
+  --loop-search-icon-inset: var(--space-xsmall, 12px);
+  --loop-search-pad-left:   32px;   /* 12 inset + 12 icon + 8 gap */
+  --loop-search-clear-glyph: 14px;
 }
 
-.osui-search .form-control[data-input].input-small::-webkit-search-cancel-button {
-  width:  var(--loop-search-clear-glyph-small, 14px);
-  height: var(--loop-search-clear-glyph-small, 14px);
+/* ---- Search label gap — the Search Field composes the label 4px above the input (Figma
+   17191-8819) where the Text Field uses 6px; flagged as a consistency finding, built faithfully. ---- */
+.loop-field:has(.osui-search) {
+  --loop-field-label-gap: var(--space-tiny, 4px);
 }

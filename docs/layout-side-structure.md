@@ -10,6 +10,11 @@
 > follow-up task can build it the same way the **Layout Top header** was branded
 > (`tokens/outsystems-ui-overrides.css` + `tokens/outsystems-ui-header.css` →
 > `dist/theme.css` → `handover/loop-layout-top-header.md`).
+>
+> **Update (2026-07-04):** the Layout Top header branding referenced above was **removed** by
+> user ruling — Layout Top now uses the default OutSystems header (`outsystems-ui-header.css`,
+> `--header-color` and `handover/loop-layout-top-header.md` no longer exist). References to it
+> below are historical context only.
 
 **Source:** Figma *The Loop — OutSystems Library* · file `NEt0c68hVzZh8DTld9ySKt` · frame
 **"Form page"** node `30132:139314`

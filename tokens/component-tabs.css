@@ -18,9 +18,18 @@
   --loop-tabs-label-size:         var(--font-size-500);    /* 20px (desktop) */
   --loop-tabs-label-size-compact: var(--font-size-400);    /* 18px — tablet/mobile */
   --loop-tabs-label-leading:      20px;
+  --loop-tabs-label-leading-compact: 18px;                 /* tablet/mobile — matches the 18px label step */
   --loop-tabs-label-weight:       var(--font-weight-bold); /* 700 */
   --loop-tabs-label-tracking:     -0.13px;                 /* off-scale */
   --loop-tabs-label-family:       var(--font-family-label);/* Open Sans */
+
+  /* ---- Content-panel typography — body-medium, stepped per device
+     (Figma body copy in the Tabs Examples frame = Font-size/500 → 20/18/16 by device).
+     Scoped to the tabs content panel only; references the FIXED scale steps (500/400/300)
+     so switching step per device changes tabs alone — no other component is affected. ---- */
+  --loop-tabs-content-size:         var(--font-size-500);  /* 20px — desktop */
+  --loop-tabs-content-size-tablet:  var(--font-size-400);  /* 18px — tablet */
+  --loop-tabs-content-size-compact: var(--font-size-300);  /* 16px — mobile */
 
   /* ---- Label color (by state) ---- */
   --loop-tabs-label-color:          var(--color-text-on-light-link-primary-enabled); /* #004370 (inactive) */

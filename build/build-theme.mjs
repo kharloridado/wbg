@@ -54,7 +54,6 @@ const META = {
   "shadows.css":         { group: "Shadows",       name: "Elevation" },
   "shadow-utilities.css": { group: "Shadows",      name: "Utilities" },
   "outsystems-ui-overrides.css": { group: "OutSystems UI", name: "Brand Overrides" },
-  "outsystems-ui-header.css":    { group: "OutSystems UI", name: "Layout Top — Header / Menu" },
   "outsystems-ui-side.css":      { group: "OutSystems UI", name: "Layout Side — Sidebar / Menu" },
   "outsystems-ui-side-responsive.css": { group: "OutSystems UI", name: "Layout Side — Responsive Nav Toggle" },
   "outsystems-ui-alert.css":     { group: "OutSystems UI", name: "Alert (→ Notes look)" },

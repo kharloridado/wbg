@@ -37,6 +37,21 @@
 .lsa__icon-slot {
   display: contents;
 }
+/* Built-in type icon — FA 6 Pro solid glyph (13px em box ≈ the Figma 13px circles) */
+.lsa__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-sysalert-icon-size, 16px);
+  height: var(--loop-sysalert-icon-size, 16px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-sysalert-icon-glyph, 13px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) {
   flex-shrink: 0;
   width: var(--loop-sysalert-icon-size, 16px);
@@ -80,21 +95,30 @@
   line-height: 1.25;
 }
 
-/* Type text colors */
-.lsa--error       .lsa__title,
-.lsa--error       .lsa__message,
-.lsa--offline     .lsa__title,
-.lsa--offline     .lsa__message {
-  color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75));
-}
-.lsa--warning     .lsa__title,
-.lsa--warning     .lsa__message {
-  color: var(--loop-sysalert-warning-text, #473201);
-}
-.lsa--informative .lsa__title,
-.lsa--informative .lsa__message {
-  color: var(--loop-sysalert-informative-text, #f6fcff);
-}
+/* Per-element colors follow Figma's distinct title / message / action / icon roles per type,
+   per-layout faithful (multi-line shades differ by design — FND-048). Warning title is the
+   sticker's white-75 (≈1.9:1 on the amber bg — FND-067, flagged not fixed). */
+.lsa--error       .lsa__icon,
+.lsa--error       .lsa__dismiss { color: var(--loop-sysalert-error-icon, #ffffff); }
+.lsa--warning     .lsa__icon,
+.lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-icon, #473201); }
+.lsa--informative .lsa__icon,
+.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-icon, #ffffff); }
+.lsa--offline     .lsa__icon,
+.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-offline-icon, #ffffff); }
+
+.lsa--error       .lsa__title { color: var(--loop-sysalert-error-title, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__title { color: var(--loop-sysalert-warning-title, rgba(255, 255, 255, 0.75)); }
+.lsa--informative .lsa__title { color: var(--loop-sysalert-informative-title, rgba(255, 255, 255, 0.75)); }
+.lsa--offline     .lsa__title { color: var(--loop-sysalert-offline-title, rgba(255, 255, 255, 0.75)); }
+
+.lsa--error       .lsa__message { color: var(--loop-sysalert-error-message, rgba(255, 255, 255, 0.75)); }
+.lsa--warning     .lsa__message { color: var(--loop-sysalert-warning-message, #473201); }
+.lsa--informative .lsa__message { color: var(--loop-sysalert-informative-message, #f6fcff); }
+.lsa--offline     .lsa__message { color: var(--loop-sysalert-offline-message, rgba(255, 255, 255, 0.9)); }
+
+.lsa--multiline.lsa--error   .lsa__message { color: var(--loop-sysalert-error-message-multi, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--offline .lsa__message { color: var(--loop-sysalert-offline-message-multi, rgba(255, 255, 255, 0.75)); }
 
 /* Action link / button */
 .lsa__action {
@@ -112,10 +136,12 @@
 }
 .lsa--multiline .lsa__action { margin-top: var(--loop-sysalert-action-pt, 12px); }
 
-.lsa--error       .lsa__action,
-.lsa--offline     .lsa__action { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
-.lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-text, #473201); }
-.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-text, #f6fcff); }
+.lsa--error       .lsa__action { color: var(--loop-sysalert-error-action, #f5f7f9); }
+.lsa--warning     .lsa__action { color: var(--loop-sysalert-warning-action, #473201); }
+.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-action, rgba(255, 255, 255, 0.9)); }
+.lsa--offline     .lsa__action { color: var(--loop-sysalert-offline-action, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--error       .lsa__action { color: var(--loop-sysalert-error-action-multi, rgba(255, 255, 255, 0.9)); }
+.lsa--multiline.lsa--informative .lsa__action { color: var(--loop-sysalert-informative-action-multi, #ffffff); }
 
 .lsa__action:focus-visible {
   outline:        2px solid currentColor;
@@ -138,10 +164,16 @@
 }
 .lsa--multiline .lsa__dismiss { align-self: flex-start; margin-top: 2px; }
 
-.lsa--error       .lsa__dismiss,
-.lsa--offline     .lsa__dismiss { color: var(--loop-sysalert-error-text, rgba(255, 255, 255, 0.75)); }
-.lsa--warning     .lsa__dismiss { color: var(--loop-sysalert-warning-text, #473201); }
-.lsa--informative .lsa__dismiss { color: var(--loop-sysalert-informative-text, #f6fcff); }
+/* FA xmark (solid) — 14px em box renders the ~10px × the Figma 16px dismiss box draws */
+.lsa__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-sysalert-dismiss-glyph, 14px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
 
 .lsa__dismiss:focus-visible {
   outline:        2px solid currentColor;

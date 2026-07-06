@@ -70,7 +70,22 @@
   gap: var(--loop-toast-content-gap, 12px);
 }
 .lt__icon-slot { flex-shrink: 0; display: flex; padding-top: var(--loop-toast-icon-pt, 4px); }
-.lt__icon { display: block; width: var(--loop-toast-icon-size, 24px); height: var(--loop-toast-icon-size, 24px); }
+/* FA 6 Pro SOLID glyph — 24px em fills the 24px icon box to match the full-bleed
+   filled disc / triangle the Figma assets draw (circle-info/-check/-exclamation,
+   triangle-exclamation) */
+.lt__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-toast-icon-size, 24px);
+  height: var(--loop-toast-icon-size, 24px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-toast-icon-glyph, 24px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 ::slotted([slot="icon"]) { flex-shrink: 0; width: var(--loop-toast-icon-size, 24px); height: var(--loop-toast-icon-size, 24px); }
 
 .lt__text {
@@ -159,6 +174,15 @@
   padding: 0;
   cursor: pointer;
 }
+/* FA xmark (regular) — 16px em box renders the ~12px × the Figma 24px dismiss box draws */
+.lt__dismiss-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-regular, 400);
+  font-size: var(--loop-toast-dismiss-glyph, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 .lt--default     .lt__dismiss { color: var(--loop-toast-default-icon, #ffffff); }
 .lt--success     .lt__dismiss { color: var(--loop-toast-success-icon, #ffffff); }
 .lt--error       .lt__dismiss { color: var(--loop-toast-error-icon, #ffffff); }
@@ -189,6 +213,9 @@
     width:  var(--loop-toast-icon-size-mobile, 18px);
     height: var(--loop-toast-icon-size-mobile, 18px);
   }
+  /* glyphs scale with the mobile icon box (solid disc stays full-bleed at 18px) */
+  .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 18px); }
+  .lt__dismiss-glyph { font-size: var(--loop-toast-dismiss-glyph-mobile, 13px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

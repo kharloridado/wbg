@@ -1,7 +1,7 @@
 # Handover — Text Field (restyle native OutSystems UI Input)
 
 The Loop **Text Field** styling, ready to add into OutSystems.
-Figma: `-The Loop- Main Library` · "Text Field" [node 19336-9606].
+Figma: `-The Loop- Main Library` · "Text Field" [node 19336-9606] · Text Area responsive [node 19336-10332].
 
 **Approach:** This does NOT introduce a custom input class. It **restyles the native
 OutSystems UI Input widget** (`.form-control[data-input]` / `[data-textarea]`) to The Loop
@@ -9,6 +9,10 @@ design — same pattern as the Button/Button Group. Developers keep using the st
 OutSystems **Input** widget; native form **validation** drives the Error state. The
 Label + helper-text arrangement is a thin BEM wrapper (`loop-field`) applied via Extended
 Class on the field Container.
+
+> **For new fields, prefer the Field Wrapper Block** (`handover/loop-field-wrapper.md`) —
+> it packages this restyle with the FieldLabel row (required `*` / `(optional)` / character
+> count) and `Size` / `Layout` parameters. This page is the bare restyle it builds on.
 
 ## When to use / How to use
 
@@ -25,6 +29,7 @@ Class on the field Container.
 
 **How to use**
 - Use the native **Input** widget; wrap the field Container with Extended Class `loop-field`. Native form validation drives the Error state. Sizes available via the size classes.
+- **Text Area is responsive out of the box** (Figma 19336-10332): spacing and type step per OutSystems device class — desktop `12/16` padding · `14/18` text · `16` label; tablet `8/12` · `14/18` · `14`; phone `8/8` · `12/16` · `14`. Nothing to configure — the CSS keys off the platform's `.tablet`/`.phone` body classes. An explicit size (`.loop-field--*`) still overrides the device default. The label step needs either the wrapper to contain the textarea (`:has()`, automatic) or the Extended Class `loop-field--textarea` on the wrapper.
 
 ## Files
 | File | OutSystems destination |
@@ -55,7 +60,7 @@ Class on the field Container.
   color: var(--color-text-on-light-default);
 
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--loop-field-text-size, 16px);
+  font-size: var(--loop-field-text-size, 13px);   /* Regular text — the family default (token: component-field.css) */
   font-weight: var(--loop-field-text-weight, 400);
   line-height: var(--loop-field-text-leading, 16px);
   letter-spacing: var(--loop-field-text-tracking, 0.5px);
@@ -66,7 +71,41 @@ Class on the field Container.
 /* Regular (default) — overrides the shared rule's 18px (xLarge) padding-block to make a 40px single-line input. */
 .form-control[data-input] {
   height: 40px;                  /* pinned height; border-box keeps it deterministic */
-  padding-block: 10px;
+  padding-block: 11px;
+}
+
+/* ---- Text Area — responsive (Figma 19336-10332: "spacing and font adjusted based on breakpoint").
+   Desktop values come from the --loop-textarea-* tokens (component-field.css); .tablet/.phone
+   re-point them at the smaller steps. font-size is re-declared inside the device rules because
+   OutSystems UI sets it directly on .tablet/.phone .form-control[data-textarea] at (0,3,0),
+   which outranks the (0,2,0) base rule that consumes the custom prop. ---- */
+.form-control[data-textarea] {
+  min-height: var(--loop-textarea-min-h, 80px);
+  padding: var(--loop-textarea-padding-block, 12px) var(--loop-textarea-padding-inline, 16px);
+  font-size: var(--loop-textarea-text-size, 14px);
+  line-height: var(--loop-textarea-text-leading, 18px);
+}
+.tablet .form-control[data-textarea] {
+  --loop-textarea-padding-block:  var(--space-xxsmall);   /* 8px */
+  --loop-textarea-padding-inline: var(--space-xsmall);    /* 12px */
+  font-size: var(--loop-textarea-text-size, 14px);
+}
+.phone .form-control[data-textarea] {
+  --loop-textarea-padding-block:  var(--space-xxsmall);   /* 8px */
+  --loop-textarea-padding-inline: var(--space-xxsmall);   /* 8px */
+  --loop-textarea-text-size:      var(--font-size-100);   /* 12px */
+  --loop-textarea-text-leading:   16px;
+  font-size: var(--loop-textarea-text-size, 12px);
+}
+/* Wrapper size → Text Area: an explicit .loop-field--* size re-points the textarea type at the
+   shared field step (text 16/14/13/12, leading 16/16/14/12) on EVERY device — placed after the
+   device rules at the same (0,3,0) specificity so the size step wins over the responsive default. */
+.loop-field--xlarge  .form-control[data-textarea],
+.loop-field--large   .form-control[data-textarea],
+.loop-field--regular .form-control[data-textarea],
+.loop-field--small   .form-control[data-textarea] {
+  font-size: var(--loop-field-text-size);
+  line-height: var(--loop-field-text-leading, 16px);
 }
 
 /* Placeholder colour */
@@ -91,6 +130,17 @@ Class on the field Container.
   outline: none;
   border-color: var(--color-outline-on-light-link-focused);
   box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused);
+}
+
+/* Animated Label — OSUI strips these inputs to underline-only (border: none + 1px bottom
+   border, _animated-label.scss). The box focus ring doesn't apply here: focus shows on the
+   bottom border alone, in the same Loop focus colour. */
+.animated-label .form-control[data-input]:focus,
+.animated-label .form-control[data-input]:focus-visible,
+.animated-label .form-control[data-textarea]:focus,
+.animated-label .form-control[data-textarea]:focus-visible {
+  box-shadow: none;
+  border-bottom-color: var(--color-outline-on-light-link-focused);
 }
 
 /* ---- Error — native .not-valid (set by OutSystems form validation) ---- */
@@ -135,24 +185,47 @@ Class on the field Container.
   padding-inline: 0px;
 }
 
-/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular ---- */
+/* ---- Sizes — native .input-large / .input-small + added .input-xlarge / .input-regular.
+   Text/placeholder steps 16 / 14 / 13 / 12 with leading 16 / 16 / 14 / 12 (Figma 19336-9729)
+   via --loop-field-text-size/-leading, mirroring the .loop-field--* wrapper modifiers so bare
+   and wrapped fields render identically. font-size is declared here (not only on the base rule)
+   because OutSystems UI sets font-size directly on .input-large/.input-small at the same
+   (0,3,0) specificity, which outranks the (0,2,0) base rule that consumes the custom prop. ---- */
 .form-control[data-input].input-xlarge {
+  --loop-field-text-size: 16px;
+  --loop-field-text-leading: 16px;
+  font-size: var(--loop-field-text-size);
   height: 56px;
   padding-block: var(--loop-field-padding-block, 18px);
 }
 .form-control[data-input].input-large {
+  --loop-field-text-size: 14px;
+  --loop-field-text-leading: 16px;
+  font-size: var(--loop-field-text-size);
   height: 48px;
   padding-block: 14px;
 }
 .form-control[data-input].input-regular {
+  --loop-field-text-size: 13px;
+  --loop-field-text-leading: 14px;
+  font-size: var(--loop-field-text-size);
   height: 40px;
-  padding-block: 10px;
+  padding-block: 11px;
 }
 .form-control[data-input].input-small {
+  --loop-field-text-size: 12px;
+  --loop-field-text-leading: 12px;
+  --loop-field-padding-inline: var(--space-xsmall, 12px);   /* Small pulls the side padding in (Figma 19336-9755) */
+  font-size: var(--loop-field-text-size);
   height: 32px;
-  padding-block: 6px;
-  font-size: var(--font-size-200, 14px);
-  line-height: 14px;
+  padding-block: 8px;
+}
+/* Tablet/phone — OutSystems UI re-asserts font-size on .input-small at (0,4,0)
+   (.tablet .form-control[data-input].input-small { font-size: var(--font-size-xs) }),
+   which would override the 12px step; match its specificity to keep the Loop size. */
+.tablet .form-control[data-input].input-small,
+.phone .form-control[data-input].input-small {
+  font-size: var(--loop-field-text-size);
 }
 /* No per-size focus padding compensation: the focus ring is an inset box-shadow, so padding stays constant. */
 
@@ -180,6 +253,36 @@ Class on the field Container.
   --loop-select-radius: var(--radius-pill);  /* 32px */
 }
 
+/* Field Wrapper size — one modifier on the wrapper scales the WHOLE field: the label row and
+   the input/placeholder text both step 16 / 14 / 13 / 12 across xLarge / Large / Regular /
+   Small (Figma 19336-9729), plus the pinned input height. It works by setting the same custom
+   props the label rule (--loop-field-label-*) and the field-box rule (--loop-field-text-*)
+   already read, so the label scales "including the label" without extra markup. The bare
+   .input-* size classes stay for standalone inputs (Search, plain Text Field).
+   The same modifier also cascades into every sizeable control placed in the Input placeholder —
+   Text Area (rule above), Search glass (loop-search.css), Checkbox (loop-checkbox.css) and
+   Toggle/Switch (loop-switch.css) each listen to .loop-field--* and step their own tokens. */
+.loop-field--xlarge  { --loop-field-label-size: 16px; --loop-field-label-tracking: 0px;    --loop-field-text-size: 16px; --loop-field-text-leading: 16px; --loop-textarea-text-size: 16px; }
+.loop-field--large   { --loop-field-label-size: 14px; --loop-field-label-tracking: 0px;    --loop-field-text-size: 14px; --loop-field-text-leading: 16px; --loop-textarea-text-size: 14px; }
+.loop-field--regular { --loop-field-label-size: 13px; --loop-field-label-tracking: 0.25px; --loop-field-text-size: 13px; --loop-field-text-leading: 14px; --loop-textarea-text-size: 13px; }
+.loop-field--small   { --loop-field-label-size: 12px; --loop-field-label-tracking: 0.5px;  --loop-field-text-size: 12px; --loop-field-text-leading: 12px; --loop-textarea-text-size: 12px;
+                       --loop-field-padding-inline: var(--space-xsmall, 12px); }           /* Small pulls the side padding in (Figma 19336-9755) */
+.loop-field--xlarge  .form-control[data-input] { height: 56px; padding-block: var(--loop-field-padding-block, 18px); }
+.loop-field--large   .form-control[data-input] { height: 48px; padding-block: 14px; }
+.loop-field--regular .form-control[data-input] { height: 40px; padding-block: 11px; }
+.loop-field--small   .form-control[data-input] { height: 32px; padding-block: 8px; }
+
+/* Device: the Text Area wrapper's label steps 16 → 14 on tablet/phone (Figma 19336-10332).
+   :where() keeps these at zero specificity so an explicit .loop-field--* size modifier still
+   wins. Two rules, not one list: the :has() rule stays independent of the explicit
+   .loop-field--textarea modifier (the ExtendedClass hook for markup that can't rely on :has()). */
+:where(.tablet, .phone) :where(.loop-field--textarea) {
+  --loop-field-label-size: var(--font-size-200);   /* 14px */
+}
+:where(.tablet, .phone) :where(.loop-field:has(.form-control[data-textarea])) {
+  --loop-field-label-size: var(--font-size-200);   /* 14px */
+}
+
 /* Styles the native label ([data-label]); the plain `label` selector is the fallback when the widget renders without it. */
 .loop-field [data-label],
 .loop-field label {
@@ -198,6 +301,70 @@ Class on the field Container.
   margin-left: var(--space-xtiny, 2px);
 }
 
+/* ============================================================
+   FieldLabel row — leading required asterisk + label + (optional) + word-count badge.
+   The Field Wrapper Block renders this row above (or, in horizontal layout, beside) the
+   input. It composes the existing label typography rule above; the row chrome (asterisk /
+   optional / count) is driven by the Block's IsRequired / IsOptional / ShowCharCount params.
+   Figma node 19336-10226 (FieldLabel 15695:5723).
+   ============================================================ */
+.loop-field__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-field-label-row-gap, 4px);
+}
+
+/* Inside the FieldLabel row the leading .loop-field__required carries the required marker,
+   so suppress the legacy trailing .mandatory::after — the native Label can still be Mandatory
+   (for the accessibility hook) without rendering a second asterisk. */
+.loop-field__label-row [data-label].mandatory::after,
+.loop-field__label-row label.mandatory::after {
+  content: none;
+}
+
+/* Leading required asterisk — Figma places it BEFORE the label (vs the legacy
+   .mandatory::after trailing " *"). Solid red, top-aligned to the cap height. */
+.loop-field__required {
+  align-self: flex-start;
+  color: var(--color-text-on-light-state-error);
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-label-size, 16px);
+  line-height: var(--loop-field-label-leading, 16px);
+}
+
+/* "(optional)" tag — sits after the label, subdued 12px regular */
+.loop-field__optional {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-optional-size, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-subdued);
+}
+
+/* Word-count badge — pinned to the right end of the row; "NN/max", live-updated by
+   loop-field-count.js (degrades to its static text when JS is off). */
+[data-block*="CharacterCount"] {
+    display: contents;
+}
+
+.loop-field__count {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--loop-field-count-padding, 2px 4px);
+  background-color: var(--loop-field-count-bg);
+  border-radius: var(--loop-field-count-radius, 2px);
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-count-size, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1;
+  letter-spacing: 0.5px;
+  color: var(--color-text-on-light-subdued);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Helper text — 12px, icon + message; colour follows the field state */
 .loop-field__helper {
   display: flex;
@@ -209,19 +376,132 @@ Class on the field Container.
   letter-spacing: 0.5px;
   color: var(--color-text-on-light-subdued);
 }
-.loop-field__helper--error    { color: var(--color-text-on-light-state-error); }
-.loop-field__helper--warning  { color: var(--color-text-on-light-state-warning); }
+/* Leading status glyph (Figma 17188-6977). FA 6 Pro SOLID codepoint against the document
+   @font-face; decorative (the message text carries the meaning, so it stays out of the a11y
+   tree — no ARIA needed). Colour is its OWN token, NOT currentColor, because several states
+   paint the icon differently from the text (warning amber vs brown, disabled/default). */
+.loop-field__helper::before {
+  content: var(--loop-field-helper-icon-char, "\f05a");
+  flex: 0 0 auto;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-field-helper-icon-weight, 900);
+  font-size: var(--loop-field-helper-icon-glyph, 12px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--loop-field-helper-icon-color, var(--color-icon-on-light-default));
+}
+.loop-field__helper--error {
+  color: var(--color-text-on-light-state-error);
+  --loop-field-helper-icon-char:  "\f06a";                      /* fa-circle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-error);
+}
+.loop-field__helper--warning {
+  color: var(--color-text-on-light-state-warning);
+  --loop-field-helper-icon-char:  "\f071";                      /* fa-triangle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-warning-regular);
+}
 .loop-field__helper--success  { color: var(--color-text-on-light-state-success); }
-.loop-field__helper--disabled { color: var(--color-text-on-light-state-disabled); }
+.loop-field__helper--disabled {
+  color: var(--color-text-on-light-state-disabled);
+  --loop-field-helper-icon-char:  "\f05a";                      /* fa-circle-info */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-disabled);
+}
 
 /* ---- Native validation message — restyle the platform's <span class="validation-message">
    to match the helper--error treatment (typography + colour only; native positioning untouched). ---- */
 span.validation-message {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-field-helper-gap, 4px);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-field-helper-size, 12px);
   line-height: 1;
   letter-spacing: 0.5px;
   color: var(--color-text-on-light-state-error);     /* Red/70, not the brighter Red/50 default */
+}
+/* Lead the native error message with the same circle-exclamation as the Error helper. */
+span.validation-message::before {
+  content: "\f06a";                                  /* fa-circle-exclamation */
+  flex: 0 0 auto;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-field-helper-icon-weight, 900);
+  font-size: var(--loop-field-helper-icon-glyph, 12px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--color-icon-on-light-state-error);
+}
+
+/* ============================================================
+   Field Wrapper states — one modifier on .loop-field recolors the control + helper together,
+   mirroring the per-widget mechanisms (.not-valid from native validation, .is-warning,
+   [disabled], .is-read-only) so the Block can drive the whole field off a single State param.
+   Explicit helper modifiers (.loop-field__helper--*) still win over the wrapper state.
+   ============================================================ */
+
+/* Error — mirrors native .not-valid */
+.loop-field--error .form-control[data-input],
+.loop-field--error .form-control[data-textarea] {
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
+}
+.loop-field--error .form-control[data-input]::placeholder,
+.loop-field--error .form-control[data-textarea]::placeholder {
+  color: var(--color-text-on-state-error-emphasis);
+}
+.loop-field--error .loop-field__helper {
+  color: var(--color-text-on-light-state-error);
+  --loop-field-helper-icon-char:  "\f06a";                      /* fa-circle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-error);
+}
+
+/* Warning — mirrors the added .is-warning modifier */
+.loop-field--warning .form-control[data-input],
+.loop-field--warning .form-control[data-textarea] {
+  background-color: var(--color-domain-state-warning-low);
+  border-color: var(--color-outline-on-light-state-warning-high);
+  color: var(--color-text-on-state-warning-emphasis);
+}
+.loop-field--warning .form-control[data-input]::placeholder,
+.loop-field--warning .form-control[data-textarea]::placeholder {
+  color: var(--color-text-on-state-warning-emphasis);
+}
+.loop-field--warning .loop-field__helper {
+  color: var(--color-text-on-light-state-warning);
+  --loop-field-helper-icon-char:  "\f071";                      /* fa-triangle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-warning-regular);
+}
+
+/* Disabled — visual mirror of [disabled]; the label row + helper mute with the control.
+   ALSO set Enabled=False on the widget itself: the class alone neither blocks input nor
+   announces disabled to assistive tech. */
+.loop-field--disabled .form-control[data-input],
+.loop-field--disabled .form-control[data-textarea] {
+  background-color: var(--color-domain-state-disable-low);
+  border-color: var(--color-domain-state-disable-low);
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled [data-label],
+.loop-field--disabled label,
+.loop-field--disabled .loop-field__required,
+.loop-field--disabled .loop-field__optional,
+.loop-field--disabled .loop-field__count,
+.loop-field--disabled .loop-field__helper,
+.loop-field--disabled .loop-toggle__label,
+.loop-field--disabled .loop-checkbox-field__label {
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled .loop-field__helper {
+  --loop-field-helper-icon-char:  "\f05a";                      /* fa-circle-info */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-disabled);
+}
+
+/* Read-Only — mirrors the added .is-read-only modifier (borderless plain text) */
+.loop-field--read-only .form-control[data-input],
+.loop-field--read-only .form-control[data-textarea] {
+  background-color: transparent;
+  border-color: transparent;
+  padding-inline: 0px;
 }
 
 /* ---- Reduced motion ---- */

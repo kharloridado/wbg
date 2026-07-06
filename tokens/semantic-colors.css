@@ -36,6 +36,7 @@
   --color-domain-state-suggestion-low:     var(--color-purple-10);
   --color-domain-state-suggestion-regular: var(--color-purple-40);
   --color-domain-state-suggestion-high:    var(--color-purple-80);
+  --color-domain-state-disable-lowest:  var(--color-neutral-10);   /* #e7edf3 — Figma Domain/States/Disable/Lowest (read-only toggle track) */
   --color-domain-state-disable-low:     var(--color-neutral-15);
   --color-domain-state-disable-regular: var(--color-neutral-20);
   --color-domain-state-disable-medium:  var(--color-neutral-30);

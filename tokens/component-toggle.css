@@ -1,16 +1,24 @@
 /* component-toggle.css — Toggle (switch) component tokens (track + thumb + label; native-switch restyle) */
 :root {
-  /* ---- Track + thumb geometry (xLarge default) ---- */
-  --loop-toggle-track-w:    56px;
-  --loop-toggle-track-h:    32px;
-  --loop-toggle-circle:     24px;
-  --loop-toggle-padding:    var(--space-tiny);    /* 4px */
+  /* ---- Track + thumb geometry — Regular default (Figma 25862-14729 "Sizes").
+     Steps: xLarge 56×32 pad 4 thumb 24 · Large 48×26 pad 3 thumb 20 ·
+            Regular 40×20 pad 2 thumb 16 · Small 32×16 pad 2 thumb 12.
+     Size classes / the .loop-field--* wrapper cascade re-point these (loop-switch.css). ---- */
+  --loop-toggle-track-w:    40px;
+  --loop-toggle-track-h:    20px;
+  --loop-toggle-circle:     16px;
+  --loop-toggle-padding:    var(--space-xtiny);   /* 2px — track edge ↔ thumb */
 
-  /* ---- Label ---- */
-  --loop-toggle-label-size:    var(--font-size-300);      /* 16px */
+  /* ---- ON check — FA 6 Pro check glyph inside the thumb (Figma 25862-14729; solid) ---- */
+  --loop-toggle-check-char:   "\f00c";                              /* fa-check */
+  --loop-toggle-check-weight: var(--font-weight-icon-solid, 900);
+  --loop-toggle-check-color:  var(--color-domain-interactive-enabled-primary);
+
+  /* ---- Label — Regular default; steps 16/18 · 14/16 · 13/15 · 12/14 (loop-switch.css) ---- */
+  --loop-toggle-label-size:    13px;                      /* off-scale literal — Regular step (FND-031 family) */
   --loop-toggle-label-weight:  var(--font-weight-regular);/* 400 */
-  --loop-toggle-label-leading: 18px;                      /* published as 16 vs 18; built on 18 */
+  --loop-toggle-label-leading: 15px;
   --loop-toggle-label-tracking: var(--letter-spacing-none);/* 0 */
-  --loop-toggle-label-gap:     var(--space-xxsmall);      /* 8px  — input ↔ label */
-  --loop-toggle-row-minh:      var(--space-large);        /* 40px — row height */
+  --loop-toggle-label-gap:     var(--space-tiny);         /* 4px  — input ↔ label (8px at Large/xLarge) */
+  --loop-toggle-row-minh:      32px;                      /* row height (40px at Large/xLarge) */
 }

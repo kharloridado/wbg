@@ -133,7 +133,18 @@ class LoopButtonDropdown extends HTMLElement {
           padding: var(--lbd-icon-pad-v) var(--lbd-icon-pad-h);
           border-radius: 0 var(--lbd-radius) var(--lbd-radius) 0;
         }
-        .lbd__icon { width: 18px; height: 18px; flex: 0 0 auto; }
+        /* FA chevron-down (solid) — 11px em box ≈ the 9px-wide, 1.8px-stroke chevron the
+           Figma toggle draws inside its 18px icon box */
+        .lbd__icon {
+          width: 18px; height: 18px; flex: 0 0 auto;
+          display: flex; align-items: center; justify-content: center;
+          font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+          font-weight: var(--font-weight-icon-solid, 900);
+          font-size: var(--lbd-icon-glyph, 11px);
+          font-style: normal;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+        }
 
         /* Primary+Primary (default) */
         .lbd__action, .lbd__toggle {
@@ -198,10 +209,7 @@ class LoopButtonDropdown extends HTMLElement {
               class="lbd__toggle${type === 'primary-secondary' ? ' lbd__toggle--secondary' : type === 'secondary' ? ' lbd__toggle--secondary-full' : type === 'ghost' ? ' lbd__toggle--ghost' : ''}"
               aria-label="${toggleLabel}"
               ${toggleDis ? 'disabled' : ''}>
-        <svg class="lbd__icon" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-          <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <span class="lbd__icon" aria-hidden="true">&#xf078;</span>
       </button>
     `;
   }

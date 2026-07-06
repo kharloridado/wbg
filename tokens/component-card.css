@@ -1,33 +1,14 @@
-/* component-card.css — Card component tokens (restyle of the native OutSystems UI Card family) */
+/* component-card.css — card tokens (bare .card override on the native Card widget) */
 :root {
-  /* ---- Base card (Type = With Padding / No Padding) ---- */
-  --loop-card-container-color: var(--color-white);       /* #ffffff */
-  --loop-card-radius:          var(--radius-medium);     /* 8px */
-  --loop-card-padding:         var(--space-regular);     /* 24px (With Padding) */
-  --loop-card-gap:             var(--space-regular);     /* 24px content gap */
-  --loop-card-shadow:          none;                     /* Loop card is flat */
-  --loop-card-shadow-elevated: var(--shadow-low);        /* optional Classic/Dashboard elevation */
+  --loop-card-container-color: var(--color-white);       /* Figma loop/card/container-color #ffffff */
+  --loop-card-radius:          var(--radius-medium);     /* Figma card/corner-radius — medium 8px (all styles) */
+  --loop-card-padding:         var(--space-regular);     /* Figma spacing/regular 24px */
+  /* Figma card/shadow — classic/mixed: x=0 y=8 blur=20 spread=0, color effects/shadow/default.
+   * Geometry = --shadow-medium exactly; color follows the FND-003 ruling (--shadow-color
+   * #21262d29 canonical — the Figma #00396b29 is drift, tracked FND-065, no code change). */
+  --loop-card-shadow:          var(--shadow-medium);
 
-  /* ---- Sectioned card ---- */
-  --loop-card-divider: var(--color-divider-on-light-default);
-
-  /* ---- Content placeholder (dev affordance; brand font) ---- */
-  --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* #e7edf3 */
+  /* ---- Content placeholder (dev affordance) ---- */
+  --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* Figma neutral/solid/10-s #e7edf3 */
   --loop-card-placeholder-text: var(--color-text-on-light-state-disabled);
-
-  /* ---- Multimedia card (image hero) ---- */
-  --loop-card-multimedia-width:   464px;
-  --loop-card-multimedia-pad:     var(--space-xlarge);   /* 48px */
-  --loop-card-multimedia-gap:     var(--space-regular);  /* 24px */
-  /* bottom-up scrim: blue-90 from 0 → full alpha */
-  --loop-card-multimedia-scrim: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-blue-90) 0%, transparent) 31%,
-      var(--color-blue-90) 67%);
-  --loop-card-multimedia-eyebrow:      var(--color-text-on-dark-default);  /* = gray-alpha-white-75 #ffffffbf */
-  --loop-card-multimedia-eyebrow-size: 13px;             /* no foundation step */
-  --loop-card-multimedia-title:        var(--color-text-on-dark-emphasis); /* = gray-alpha-white-90 #ffffffe5 */
-  --loop-card-multimedia-title-tracking: -0.25px;        /* off-scale tracking */
-  --loop-card-multimedia-icon-bg:      var(--color-gray-alpha-white-60); /* #ffffff99 */
-  --loop-card-multimedia-icon-size:    64px;             /* play/microphone affordance */
 }

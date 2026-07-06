@@ -11,7 +11,7 @@
   --loop-checkbox-gap: var(--space-tiny, 4px);
   --loop-checkbox-label-size: 13px;
   --loop-checkbox-label-leading: 15px;
-  --loop-checkbox-label-tracking: 0.25px;
+  --loop-checkbox-label-tracking: 0px;              /* Regular step is 0 (Figma 19336-17818); 0.25 is the Small step */
   --loop-checkbox-group-row: 10px;
 }
 
@@ -141,7 +141,9 @@
   background: var(--color-icon-on-light-state-disabled);
 }
 
-/* ---- Error / Required → red-70 outline (unchecked) + fill (checked/multi); via .loop-checkbox--error or [aria-invalid] ---- */
+/* ---- Error / Required → red-70 outline (unchecked) + fill (checked/multi); via .loop-checkbox--error or [aria-invalid].
+   Deliberately NOT cascaded from .loop-field--error: the group-level error state renders as a red
+   helper line with default boxes (Figma 19336-17818) — mark individual boxes invalid explicitly. ---- */
 [data-checkbox].loop-checkbox--error::before,
 [data-checkbox].loop-checkbox--required::before,
 [data-checkbox][aria-invalid="true"]::before {
@@ -160,7 +162,55 @@
   border-color: var(--color-bg-container-state-error-high);
 }
 
-/* ---- Size modifiers — class on the widget (scales box) or on .loop-checkbox-field (scales label too) ---- */
+/* ============================================================
+   Sizing — Figma 19336-17818: box + label + gaps step TOGETHER.
+   ============================================================ */
+
+/* Field Wrapper cascade — a .loop-field--* size on the wrapping Field (loop-text-field.css)
+   re-points the checkbox tokens for everything inside, so a Checkbox (or group) dropped into a
+   sized Field Wrapper follows the wrapper. The base [data-checkbox]/.loop-checkbox-field rule
+   above declares Regular directly on the elements, so this cascade must target them too —
+   :where() keeps it at base weight and the explicit .loop-checkbox-* classes below still win. */
+:where(.loop-field--xlarge) :is([data-checkbox], .loop-checkbox-field, .loop-checkbox-group) {
+  --loop-checkbox-control-size: 28px;
+  --loop-checkbox-gap: var(--space-checkbox-gap, 8px);
+  --loop-checkbox-label-size: var(--font-size-300, 16px);
+  --loop-checkbox-label-leading: 18px;
+  --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
+  --loop-checkbox-group-row: 14px;
+  --loop-checkbox-group-col: 20px;
+}
+:where(.loop-field--large) :is([data-checkbox], .loop-checkbox-field, .loop-checkbox-group) {
+  --loop-checkbox-control-size: 24px;
+  --loop-checkbox-gap: var(--space-checkbox-gap, 8px);
+  --loop-checkbox-label-size: var(--font-size-200, 14px);
+  --loop-checkbox-label-leading: 16px;
+  --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
+  --loop-checkbox-group-row: 12px;
+  --loop-checkbox-group-col: 20px;
+}
+:where(.loop-field--regular) :is([data-checkbox], .loop-checkbox-field, .loop-checkbox-group) {
+  --loop-checkbox-control-size: 20px;
+  --loop-checkbox-gap: var(--space-tiny, 4px);
+  --loop-checkbox-label-size: 13px;
+  --loop-checkbox-label-leading: 15px;
+  --loop-checkbox-label-tracking: 0px;
+  --loop-checkbox-group-row: 10px;
+  --loop-checkbox-group-col: 16px;
+}
+:where(.loop-field--small) :is([data-checkbox], .loop-checkbox-field, .loop-checkbox-group) {
+  --loop-checkbox-control-size: 16px;
+  --loop-checkbox-gap: var(--space-tiny, 4px);
+  --loop-checkbox-label-size: var(--font-size-100, 12px);
+  --loop-checkbox-label-leading: 14px;
+  --loop-checkbox-label-tracking: 0.25px;
+  --loop-checkbox-group-row: 8px;
+  --loop-checkbox-group-col: 14px;
+}
+
+/* ---- Size modifiers — class on the widget (scales box), on .loop-checkbox-field (scales
+   label too) or on .loop-checkbox-group (scales the group gaps). Declared after the wrapper
+   cascade, so a per-instance size always wins inside a differently-sized Field Wrapper. ---- */
 .loop-checkbox-xlarge {
   --loop-checkbox-control-size: 28px;
   --loop-checkbox-gap: var(--space-checkbox-gap, 8px);
@@ -168,6 +218,7 @@
   --loop-checkbox-label-leading: 18px;
   --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
   --loop-checkbox-group-row: 14px;
+  --loop-checkbox-group-col: 20px;
 }
 .loop-checkbox-large {
   --loop-checkbox-control-size: 24px;
@@ -176,14 +227,16 @@
   --loop-checkbox-label-leading: 16px;
   --loop-checkbox-label-tracking: var(--letter-spacing-none, 0px);
   --loop-checkbox-group-row: 12px;
+  --loop-checkbox-group-col: 20px;
 }
 .loop-checkbox-regular {                              /* explicit Regular — same as default */
   --loop-checkbox-control-size: 20px;
   --loop-checkbox-gap: var(--space-tiny, 4px);
   --loop-checkbox-label-size: 13px;
   --loop-checkbox-label-leading: 15px;
-  --loop-checkbox-label-tracking: 0.25px;
+  --loop-checkbox-label-tracking: 0px;
   --loop-checkbox-group-row: 10px;
+  --loop-checkbox-group-col: 16px;
 }
 .loop-checkbox-small {
   --loop-checkbox-control-size: 16px;
@@ -192,6 +245,7 @@
   --loop-checkbox-label-leading: 14px;
   --loop-checkbox-label-tracking: 0.25px;
   --loop-checkbox-group-row: 8px;
+  --loop-checkbox-group-col: 14px;
 }
 
 /* ---- Optional field wrapper — box + label laid out with the size's gap ---- */
@@ -231,7 +285,8 @@
 .loop-checkbox-group.is-horizontal {
   flex-direction: row;
   align-items: center;
-  gap: var(--space-checkbox-group-column, 20px);
+  /* column gap steps with the size: 20/20/16/14 (Figma 19336-17818); Regular 16 is the default */
+  gap: var(--loop-checkbox-group-col, var(--space-small, 16px));
 }
 
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */

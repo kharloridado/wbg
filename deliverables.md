@@ -45,7 +45,7 @@ verify/finish · **To build** = net-new.
 | Spacing | Built | `tokens/spacing*.css` |
 | Borders | Built | `tokens/border.css`, `radius*.css` |
 | Shadows | Built | `tokens/shadows*.css` |
-| WBG Icons | **To build** | — (no icon system yet) |
+| WBG Icons | Built | `vendor/fontawesome-6/` + `build/build-fontawesome.mjs` → `dist/fontawesome.css` (self-hosted **FA6 Pro** — solid · regular · light, ~3,323 icons, no brands, handover #137) · searchable reference `src/components/loop-icon-reference.js` + `loop-icon-data.js`, `handover/loop-icon-reference.md` (handover #138) |
 
 ## Layouts
 | Deliverable | Status | Source |
@@ -66,6 +66,9 @@ verify/finish · **To build** = net-new.
 | Date Range Picker | **To build** | (Flatpickr range mode) |
 | Time Picker | **To build** | (Flatpickr time / OSUI Time Picker) |
 | File Uploader | Built | `src/components/loop-file-uploader.js` |
+| Field Wrapper (Text Field) | Needs Review | `handover/loop-field-wrapper.md` · `src/blocks/loop-text-field.css` · `src/components/loop-field-count.js` |
+| Field Wrapper size + state cascade | Needs Review | `.loop-field--*` scales input/textarea/Search/Checkbox/Toggle inside; `--error/--warning/--disabled/--read-only` states · ref `loop/refs/cmp-field-sizing` (Figma 19336-9726 · 19336-17818 · 17191-8819 · 25862-14729) |
+| Text Area (responsive) | Needs Review | `src/blocks/loop-text-field.css` (device steps) · tokens `--loop-textarea-*` · ref `loop/refs/cmp-text-area` (Figma 19336-10332) |
 | Numeric Field | **To build** | (text-field variant) |
 | Radio Button | Built | `src/blocks/loop-radio-button.css` |
 | Search | Built | `src/blocks/loop-search.css` |
@@ -95,8 +98,13 @@ verify/finish · **To build** = net-new.
 
 ## Built but NOT on the canonical list — awaiting keep/archive ruling
 These exist in the repo but are not on the list above. Default disposition = **Archive** unless you say keep.
-- **Card** (`src/blocks/loop-card.css`, handover, in preview) — keep or archive?
-- **Layout Top** (`tokens/outsystems-ui-header.css`, handover #68) — only Layout Side is listed. Archive?
+- **Card** — **Kept; bare `.card` override adopted 2026-07-05** (user ruling, reversing the
+  2026-07-04 opt-in re-scope): the Loop card look (white, 8px radius, no border, shadow, 24px
+  padding) is now the **default for every native Card** via a bare `.card` override, with
+  `.card--no-shadow` (modern) / `.card--flush` (no padding) as opt-out modifiers (renamed from
+  `loop-card--*`) per Figma 20315-6129 / 20315-6189 / 20376-15012. `src/blocks/loop-card.css`,
+  `handover/loop-card.md`, in preview; issue #48.
+- **Layout Top** — **Archived 2026-07-04** (user ruling: no header override; default OutSystems header). `tokens/outsystems-ui-header.css`, `--header-color`, the preview section and `handover/loop-layout-top-header.md` removed; handover #68 to close.
 - **rnt-segmented** — example/reference only → archive (not a WBG deliverable).
 - **Reference renderers** (color / type / spacing / shadow / border reference + class-inspector) — kept
   as internal Live Style Guide tooling under Foundation (not separate board items).
