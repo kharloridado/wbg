@@ -6,7 +6,7 @@
   "status": "composites-in-progress",
   "mode": "library",
   "phase": "composites",
-  "pause_reason": "2026-07-04: frozen-ref process adopted (loop/refs/<id>/ snapshots backfilled for all built items with node ids; see loop/refs/README.md). The queue's node-id blocker is largely LIFTED — design/figma-links.md now carries nodes for Search 17191-8728, DatePicker 17897-12293 (+range 19338-21849, time 19340-28355), Upload 18306-3832, Alert 17868-4165, Toast 17874-6524, Badge Status 18153-7159, Badge Label 22966-4806, Progress Bar 20144-167950, Card 20315-6122, Tabs 18686-5559, Modal 22049-35100, Pagination 23714-3722. Still missing: Accordion, Breadcrumbs, Avatar, and rendered OutSystems HTML for provider/JS patterns. cmp-segmented lacks a durable node id.",
+  "pause_reason": "Dropdown/Select (#38) now BUILT (checker PASS) from Figma nodes 18787-4817 (Select) + 18830-17312 (Multiselect) + rendered DOM the user supplied 2026-06-18. Still BLOCKED on design input for the REST of the to-build queue (#39-54: Search, Date Picker, Upload, Alert, Toast, Badge, Progress Bar, Card, Tabs, Accordion, Modal, Breadcrumbs, Pagination, Avatar) — none carry Figma node ids yet. Provide node ids + (for provider/JS patterns) rendered OutSystems HTML to advance further.",
   "project": {
     "owner": "kharloridado",
     "number": 1,
@@ -27,6 +27,10 @@
     "after_composites": "continue"
   },
   "iteration": 3,
+  "review_schema": {
+    "note": "Agentic-review fields (see .claude/agents/checker.md). Per built item: risk_tier (trivial|standard|core = checker depth applied), det_gate (pass|fail = npm run build:theme + schema/contrast), confidence (high|medium|low), rounds (checker rounds to PASS), decision_log (maker + checker reasoning / alternatives ruled out / assumptions). Per finding: disposition (filed = real, opened/register; not-reproduced = refuted by the checker's adversarial challenge, register-only with usage evidence, never a bug) + challenged_by (round it was refuted in).",
+    "metrics_source": "REPORT.md '## Review metrics' is computed from these fields each run."
+  },
   "tiers": [
     "foundations",
     "primitives",
@@ -60,7 +64,6 @@
       "level": "L1",
       "node": "11122-2143",
       "artifact": "tokens/colors.css",
-      "ref": "loop/refs/tok-colors-primitives/",
       "status": "built"
     },
     {
@@ -69,7 +72,6 @@
       "level": "L1",
       "node": "11122-2879",
       "artifact": "tokens/semantic-colors.css",
-      "ref": "loop/refs/tok-semantic-colors/",
       "status": "built",
       "scope": "light"
     },
@@ -89,7 +91,6 @@
       "level": "L1",
       "node": "10994-5086",
       "artifact": "tokens/spacing.css",
-      "ref": "loop/refs/tok-spacing/",
       "status": "built"
     },
     {
@@ -98,7 +99,6 @@
       "level": "L1",
       "node": "10995-7259",
       "artifact": "tokens/typography.css",
-      "ref": "loop/refs/tok-typography/",
       "status": "built"
     },
     {
@@ -107,7 +107,6 @@
       "level": "L1",
       "node": "19737-9489",
       "artifact": "tokens/radius.css",
-      "ref": "loop/refs/tok-radius-shadows/",
       "status": "built"
     },
     {
@@ -116,7 +115,6 @@
       "level": "L1",
       "node": "19737-9489",
       "artifact": "tokens/shadows.css",
-      "ref": "loop/refs/tok-radius-shadows/",
       "status": "built"
     },
     {
@@ -126,7 +124,6 @@
       "node": "15597-766",
       "artifact": "src/blocks/loop-button.css",
       "approach": "restyle native .btn",
-      "ref": "loop/refs/cmp-button/",
       "status": "built"
     },
     {
@@ -136,7 +133,6 @@
       "node": "15597-4652",
       "artifact": "src/blocks/loop-button-text.css",
       "approach": "native button-link",
-      "ref": "loop/refs/cmp-button-text/",
       "status": "built"
     },
     {
@@ -146,7 +142,6 @@
       "node": "15597-2978",
       "artifact": "src/blocks/loop-button-group.css",
       "approach": "restyle native button-group (+Button Switch 15597-4070)",
-      "ref": "loop/refs/cmp-button-group/",
       "status": "built"
     },
     {
@@ -156,7 +151,6 @@
       "node": "15597-766",
       "artifact": "src/components/loop-button-dropdown.js",
       "approach": "vanilla JS Web Component",
-      "ref": "loop/refs/cmp-button/",
       "status": "built"
     },
     {
@@ -166,7 +160,6 @@
       "node": "19336-17679",
       "artifact": "src/blocks/loop-checkbox.css",
       "approach": "restyle native checkbox",
-      "ref": "loop/refs/cmp-checkbox/",
       "status": "built"
     },
     {
@@ -176,7 +169,6 @@
       "node": "19336-18637",
       "artifact": "src/blocks/loop-radio-button.css",
       "approach": "restyle native .radio-button",
-      "ref": "loop/refs/cmp-radio-button/",
       "status": "built"
     },
     {
@@ -186,7 +178,6 @@
       "node": "19336-9606",
       "artifact": "src/blocks/loop-text-field.css",
       "approach": "restyle native .form-control[data-input]",
-      "ref": "loop/refs/cmp-text-field/",
       "status": "built"
     },
     {
@@ -196,17 +187,15 @@
       "node": "25344-27822",
       "artifact": "src/blocks/loop-switch.css",
       "approach": "restyle native [data-switch]",
-      "ref": "loop/refs/cmp-toggle/",
       "status": "built"
     },
     {
       "id": "cmp-tag",
       "tier": "composites",
       "level": "L3",
-      "node": "17313-5502",
+      "node": "live-select",
       "artifact": "src/blocks/loop-tag.css",
       "approach": "custom Tag block, color-configurable",
-      "ref": "loop/refs/cmp-tag/",
       "status": "built",
       "handover": [
         64,
@@ -217,10 +206,9 @@
       "id": "cmp-tooltip",
       "tier": "composites",
       "level": "L3",
-      "node": "17874-7113",
+      "node": "live-select",
       "artifact": "src/blocks/loop-tooltip.css",
       "approach": "restyle native Tooltip pattern",
-      "ref": "loop/refs/cmp-tooltip/",
       "status": "built",
       "handover": [
         58,
@@ -231,10 +219,9 @@
       "id": "cmp-note",
       "tier": "composites",
       "level": "L3",
-      "node": "26642-61530",
+      "node": "live-select",
       "artifact": "src/blocks/loop-note.css",
       "approach": "CSS block (Notes)",
-      "ref": "loop/refs/cmp-note/",
       "status": "built",
       "handover": [
         61
@@ -244,10 +231,9 @@
       "id": "cmp-system-alert",
       "tier": "composites",
       "level": "L5",
-      "node": "17873-7603",
+      "node": "live-select",
       "artifact": "src/components/loop-system-alert.js",
       "approach": "vanilla JS Web Component",
-      "ref": "loop/refs/cmp-system-alert/",
       "status": "built",
       "handover": [
         62
@@ -257,10 +243,9 @@
       "id": "cmp-popover",
       "tier": "composites",
       "level": "L5",
-      "node": "26345-2762",
+      "node": "live-select",
       "artifact": "src/components/loop-popover.js",
       "approach": "vanilla JS Web Component",
-      "ref": "loop/refs/cmp-popover/",
       "status": "built",
       "handover": [
         63
@@ -273,7 +258,6 @@
       "node": "live-select",
       "artifact": "src/components/rnt-segmented.js",
       "approach": "vanilla JS Web Component",
-      "ref_status": "needs-ref-id (no durable Figma node recorded; supply in design/figma-links.md)",
       "status": "built"
     },
     {
@@ -283,7 +267,6 @@
       "node": "11122-2143",
       "artifact": "tokens/*.css (gen:color-utilities)",
       "approach": "generated .background-/.text- utilities + loop-color-reference.js",
-      "ref": "loop/refs/tok-colors-primitives/",
       "status": "built"
     },
     {
@@ -293,7 +276,6 @@
       "node": "10995-7259",
       "artifact": "tokens/typography*.css (gen:type-utilities)",
       "approach": "generated .font-size-/.font-weight- utilities + loop-type-reference.js",
-      "ref": "loop/refs/tok-typography/",
       "status": "built"
     },
     {
@@ -306,9 +288,11 @@
       "approach": "restyle native Dropdown pattern (.dropdown) + VirtualSelect provider (.osui-dropdown-search/-tags)",
       "status": "built",
       "checker": "PASS (round 2 — finding-ID hygiene)",
-      "ref": "loop/refs/cmp-dropdown-select/",
-      "reaudit_2026_07_04": "Frozen-ref checker pilot returned FAIL: popup row hpadding 16 vs ref 12 (FND-063) + native row text 13 vs ref 14 (FND-064) + Figma shadow-color drift (FND-065, follow-up to FND-003). All low/register-only; code unchanged pending call.",
-      "visual": "fail (pilot 2026-07-04): closed states (error/warning/disabled/focused) match refs/figma.png; open popup list is painted OVER by the next section's datepicker input — loop-dropdown.css sets no position/z-index on the list (relies on native OSUI stacking). May be preview-demo markup missing OSUI's open-state class; verify on published ODC DOM (restyle-verify-against-live-runtime-dom) or add an explicit z-index in a maker round. Multi-select tag chips also rendered with box glyphs locally (FA font load in preview — environment, not CSS).",
+      "risk_tier": "standard",
+      "det_gate": "pass",
+      "confidence": "high",
+      "rounds": 2,
+      "decision_log": "Restyled the native Dropdown pattern + VirtualSelect provider rather than building a parallel component (restyle-native-outsystems-widgets). Ruled out a custom Web Component: native pattern carries the a11y/keyboard behaviour for free. Assumed Select node 18787-4817 metrics over Text Field's where they diverged (flagged as FND-031, not silently reconciled).",
       "handover_doc": "handover/loop-dropdown.md",
       "findings": [
         "FND-031",
@@ -323,22 +307,19 @@
       "id": "cmp-card",
       "tier": "composites",
       "level": "L1/L2",
-      "figma_file": "zx8q9nRf8Dbqam1rfquQ2E",
-      "node": "20315-6129",
-      "node_examples": "20315-6189",
-      "node_examples_2": "20376-15012",
+      "node": "20315-6122",
+      "node_base": "19547-47101",
+      "node_multimedia": "20315-7404",
       "artifact": "src/blocks/loop-card.css",
       "tokens": "tokens/component-card.css",
-      "ref": "loop/refs/cmp-card/",
-      "approach": "bare .card override — every native Card widget restyled by default (white, radius-medium 8px, no border, shadow-medium, 24px padding); opt out with .card--no-shadow (modern) / .card--flush (no padding)",
+      "approach": "restyle native OutSystems UI Card family (.card / .card-background / .card-sectioned + list cards)",
       "status": "built",
       "handover_doc": "handover/loop-card.md",
       "findings": [
-        "FND-034",
-        "FND-035",
-        "FND-065"
+        "FND-033",
+        "FND-034"
       ],
-      "note": "Bare .card override adopted 2026-07-05 (user ruling) — REVERSES the 2026-07-04 opt-in re-scope: the Loop card look is now the default for every native Card widget (bare .card selector), with .card--no-shadow (modern/external web) and .card--flush (no padding) as opt-out modifiers (renamed from loop-card--*). Design values unchanged: white, radius-medium 8px, no border, shadow-medium by default (Figma classic 0 8 20; color per FND-003 ruling — Figma effects/shadow/default is FND-065 drift). Multimedia/sectioned/card-background family restyle remains out of scope (FND-035 superseded); those widgets inherit the base .card look but keep their own structure. FND-034 resolved (shadow specced). Specificity edge: native .layout-native .card out-specifies bare .card on padding — no-op for ODC web, revisit if native layouts ship. Companion fix retained: --text-color-neutral-10 -> --color-neutral-95 in outsystems-ui-overrides.css keeps native card-detail-title contrast against the Loop LIGHT --color-neutral-10."
+      "note": "Restyle only (user decision 2026-06-20): no custom component. Built one variant at a time. Loop card = flat container shell (white, 8px, shadow zeroed, 24px padding) + multimedia hero. Featured-item & chart are bespoke compositions, deferred to a later custom-block pass. OS UI not vendored — inner card-background/card-sectioned classes to confirm on published DOM."
     }
   ],
   "items_note": "Phase 0 tokens + primitives + composites (button-dropdown, Tag, Tooltip, Notes, System Alert, Popover, segmented) + utilities tier (color/type generators) all built, committed (through eb83379) and pushed; handover tasks #24-65 on Project board #1. Built faithfully; conflicts flagged as findings (FND-001..012), never silently changed. BLOCKED advancing: the remaining to-build queue (#38-54) carries no Figma node ids — Dropdown/Select (#38) needs node id + rendered pattern HTML before it can be restyled to spec.",
@@ -481,6 +462,7 @@
       "sev": "low",
       "node": "18787-4817",
       "status": "register-only",
+      "disposition": "filed",
       "summary": "Select field metrics diverge from Text Field & scale: pill --radius-pill 32px vs Text Field --radius-medium 8px; vpadding 11px off-grid; 13px text vs 16px"
     },
     {
@@ -489,6 +471,7 @@
       "sev": "low",
       "node": "18787-4817",
       "status": "register-only",
+      "disposition": "filed",
       "summary": "Dropdown popup-list border #dae1e8 (foreign lift token, no WBG primitive) substituted to --color-outline-on-light-subdued"
     },
     {

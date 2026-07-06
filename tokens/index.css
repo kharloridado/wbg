@@ -33,12 +33,17 @@
 @import "./component-tabs.css";
 @import "./component-toast.css";
 @import "./component-upload.css";
+@import "./component-pagination.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";
 /* Layout Side sidebar class overrides (light sidebar / dark text) — depend on the
  * brand tokens above AND --side-menu-size from outsystems-ui-overrides.css. */
 @import "./outsystems-ui-side.css";
+/* Layout Side responsive nav toggle (hamburger → off-canvas drawer + scrim, desktop
+ * collapse) — restyles OSUI's native .desktop/.tablet/.phone + .menu-visible machinery;
+ * depends on outsystems-ui-side.css (resting state) AND --side-menu-size. */
+@import "./outsystems-ui-side-responsive.css";
 /* Native Alert restyled to The Loop "Notes" look — depends on the brand tokens
  * above AND the --loop-note-* tokens from component-note.css. */
 @import "./outsystems-ui-alert.css";

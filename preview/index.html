@@ -63,6 +63,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-tooltip.css">
 <link rel="stylesheet" href="../src/blocks/loop-popover.css">
 <link rel="stylesheet" href="../src/blocks/loop-tabs.css">
+<link rel="stylesheet" href="../src/blocks/loop-pagination.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
 
 <!-- 3b) Font Awesome 6 Free — the FULL icon set, self-hosted. In ODC this is the
@@ -275,6 +276,14 @@
   /* preview-only: let the open native Dropdown list flow statically instead of JS-positioned absolute */
   .pv-dd-static .dropdown-list { position: static; width: 100%; margin-top: var(--space-tiny); }
 
+  /* preview-only: let the open submenu panel flow statically instead of JS-positioned absolute */
+  .pv-submenu-static .osui-submenu__items { position: static; margin-top: var(--space-tiny); }
+
+  /* preview-only: the side submenu disclosure chevron uses the OSUI icon-font ::after
+     glyph in production; that font isn't loaded here, so suppress it and let the inline
+     SVG in .osui-submenu__header__icon stand in (the shipped rotate() still drives it). */
+  .pv-side .osui-submenu__header__icon::after { content: ""; }
+  .pv-side .osui-submenu__header__icon { display: inline-flex; }
   /* file-uploader demo: lay the dropzone state variants out in a responsive grid */
   .pv-up-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-regular); width: 100%; }
 
@@ -322,18 +331,52 @@
      real loop-content__* chrome classes from tokens/outsystems-ui-side.css). */
   .pv-side-placeholder { margin: var(--space-medium); border: var(--border-size-m) dashed var(--color-outline-on-light-dimmed); border-radius: var(--radius-medium); display: flex; align-items: center; justify-content: center; color: var(--color-text-on-light-subdued); background: var(--color-white); min-height: 120px; }
 
-  /* --- full-page Layout Side app shell — the WHOLE preview runs inside Layout Side ---
-     The sidebar is the real native .app-menu-content (position:fixed via .layout-side); the
-     content column is offset by --side-menu-size. No widget JS needed: this IS the desktop
-     resting state of a Layout Side page. */
+  /* --- full-page Layout Side app shell — the WHOLE preview runs inside Layout Side, and its
+     nav is RESPONSIVE like a real app. A preview-only script (bottom of file) sets the real
+     OSUI device class (.desktop/.tablet/.phone) on <html> by viewport width — exactly how the
+     OSUI runtime does it — and toggles .menu-visible; the shipped
+     tokens/outsystems-ui-side-responsive.css does all the styling. So resizing the window (or
+     the toggle) collapses the whole preview's sidebar, not just a demo box. None of this JS
+     ships — ODC has the real runtime.
+       · DESKTOP  — 320px sidebar docked (position:fixed via native .layout-side), content
+                    offset by --side-menu-size; the in-header toggle collapses it.
+       · TABLET/PHONE — sidebar off-canvas; a white top bar's hamburger slides it in over the
+                    blue scrim. */
   html { scroll-behavior: smooth; }
-  .pv-app .app-menu-content { display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+  .pv-app .app-menu-content { display: flex; flex-direction: column; overflow-y: auto; z-index: 10; transition: transform 240ms ease; }
   .pv-app-main { margin-left: var(--side-menu-size); min-width: 0; }
   .pv-app-nav .header-logo { display: flex; align-items: center; gap: var(--space-xxsmall); min-height: var(--space-xlarge); margin-bottom: var(--space-xxsmall); }
   .pv-app-nav .app-login-info { display: flex; align-items: center; gap: var(--space-xxsmall); margin-top: var(--space-xxsmall); border-top: var(--border-size-s) solid var(--color-divider-on-light-default); }
   .pv-app-nav .user-info { display: flex; flex-direction: column; }
   /* keep section tops clear of the primary header when jumped-to via the sidebar */
   .pv-app [id^="sec-"] { scroll-margin-top: var(--space-small); }
+  .pv-swap { display: inline-flex; align-items: center; gap: var(--space-xxsmall); cursor: pointer; }
+  .pv-swap input { accent-color: var(--color-primary); }
+
+  /* Responsive top bar (hamburger + logo) — hidden while the desktop sidebar is docked; the
+     scrim sits under the fixed sidebar. The `sidebar`-glyph toggle + white bar come from the
+     shipped restyle; these bits give the bar its shared look wherever it appears. */
+  .pv-topbar { display: none; align-items: center; gap: var(--space-tiny); min-height: 64px; padding: var(--space-xsmall) var(--space-small); background: var(--color-white); box-shadow: var(--shadow-low); }
+  .pv-topbar .header-logo { display: flex; align-items: center; gap: var(--space-xxsmall); flex: 1 1 auto; min-width: 0; }
+  .pv-topbar .pv-avatar { flex: 0 0 auto; }
+  .pv-topbar .app-logo, .pv-topbar .application-name { color: var(--color-text-on-light-emphasis); font-family: var(--font-family-heading); font-size: var(--font-size-400); font-weight: var(--font-weight-bold); }
+  .pv-app > .app-menu-overlay { z-index: 9; }
+
+  /* DESKTOP — the in-header toggle collapses the docked sidebar to an ICON RAIL (not hidden):
+     the shipped .aside-collapsed styling (tokens/outsystems-ui-side-responsive.css) shrinks
+     --side-menu-size to the rail width, so the fixed panel AND the content margin reflow for
+     free. No top bar on desktop — the rail keeps the toggle visible to re-expand. */
+  .desktop .pv-app .main { transition: margin-left 240ms ease; }
+
+  /* TABLET / PHONE — sticky top bar always visible; the sidebar is the native off-canvas drawer. */
+  .tablet .pv-app > .pv-topbar,
+  .phone  .pv-app > .pv-topbar { display: flex; position: sticky; top: 0; z-index: 20; }
+
+  /* Keep the other Layout-section specimens static under the global device class (they are
+     fixed reference renders of Layout Top / Layout Side, not responsive shells). */
+  .pv-app .layout-top .header-navigation { position: static !important; height: auto !important; }
+  .pv-side .app-menu-content { position: static !important; }
+  .pv-side .app-menu-content .header-logo { display: flex !important; }
 </style>
 </head>
 <body>
@@ -341,11 +384,26 @@
 <!-- The whole preview runs inside a real OutSystems Layout Side shell: a persistent
      branded sidebar (native .app-menu-content, restyled by tokens/outsystems-ui-side.css)
      with the component sections rendered in the content placeholder. -->
-<div class="layout layout-side pv-app">
-  <aside class="app-menu-content pv-app-nav">
+<div class="layout layout-side pv-app" id="pv-app">
+  <!-- Responsive top bar — shown on .tablet/.phone (and when the desktop sidebar is collapsed);
+       carries the hamburger + logo. Styled by the shipped restyle (sidebar glyph, white bar). -->
+  <header class="header pv-topbar">
+    <button type="button" class="menu-icon" aria-label="Open navigation" aria-expanded="false" aria-controls="pv-app-nav" data-pv-nav-toggle>
+      <span class="menu-icon-line"></span><span class="menu-icon-line"></span><span class="menu-icon-line"></span>
+    </button>
     <div class="header-logo">
       <span class="pv-avatar" aria-hidden="true"></span>
       <span class="app-logo application-name">The Loop</span>
+    </div>
+  </header>
+  <!-- Scrim behind the off-canvas drawer (blue-tinted by the restyle); click to close -->
+  <div class="app-menu-overlay" data-pv-nav-close aria-hidden="true"></div>
+
+  <aside class="app-menu-content pv-app-nav" id="pv-app-nav">
+    <div class="header-logo">
+      <span class="pv-avatar" aria-hidden="true"></span>
+      <span class="app-logo application-name">The Loop</span>
+      <button type="button" class="loop-nav-toggle" aria-label="Collapse navigation" aria-expanded="true" aria-controls="pv-app-nav" data-pv-nav-toggle></button>
     </div>
     <nav class="app-menu-links">
       <a href="#sec-layout" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Layout</span><span class="indicator" aria-hidden="true">›</span></a>
@@ -406,6 +464,29 @@
           <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 5h11M6 10h11M6 15h11M3 5h.01M3 10h.01M3 15h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>List</span><span class="indicator" aria-hidden="true">›</span></a>
           <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Detail</span><span class="indicator" aria-hidden="true">›</span></a>
           <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v9H8l-4 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>AI Chat</span><span class="indicator" aria-hidden="true">›</span></a>
+          <!-- Submenu (native OSUI .osui-submenu) — OPEN + selected parent with L2 children -->
+          <div class="osui-submenu active osui-submenu--is-open">
+            <div class="osui-submenu__header">
+              <span class="osui-submenu__header__item"><a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Reports</span></a></span>
+              <span class="osui-submenu__header__icon" aria-hidden="true"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="osui-submenu__items">
+              <a href="#0" class="active">Annual Report</a>
+              <a href="#0">Regional Briefs</a>
+              <a href="#0">Data &amp; Statistics</a>
+            </div>
+          </div>
+          <!-- Submenu — CLOSED parent (chevron points right, children hidden) -->
+          <div class="osui-submenu">
+            <div class="osui-submenu__header">
+              <span class="osui-submenu__header__item"><a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v3M10 14v3M3 10h3M14 10h3M10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Settings</span></a></span>
+              <span class="osui-submenu__header__icon" aria-hidden="true"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="osui-submenu__items">
+              <a href="#0">Preferences</a>
+              <a href="#0">Members</a>
+            </div>
+          </div>
         </nav>
         <div class="app-login-info">
           <span class="pv-avatar" aria-hidden="true"></span>
@@ -443,7 +524,16 @@
         </div>
       </div>
     </div>
-    <span class="pv-note">Light sidebar / dark text: white panel, <code>neutral-9</code> menu items as 32px pills, brand-emphasis logo + profile. The content chrome uses the real <code>loop-content__*</code> classes — a header bar (<code>__breadcrumbs</code> / <code>__title</code> / <code>__actions</code>) over the <code>__body</code> Content Placeholder, with the dark WBG <code>__footer</code> pinned to the foot. Hover/selected pill states are <strong>provisional</strong> — the design frame ships only the resting state (FND-057). Footer surface <code>#1a1a1a</code> has no primitive token (FND-058).</span>
+    <span class="pv-note">Light sidebar / dark text: white panel, <code>neutral-9</code> menu items as 32px pills, brand-emphasis logo + profile. The content chrome uses the real <code>loop-content__*</code> classes — a header bar (<code>__breadcrumbs</code> / <code>__title</code> / <code>__actions</code>) over the <code>__body</code> Content Placeholder, with the dark WBG <code>__footer</code> pinned to the foot. Menu items and the <code>.osui-submenu</code> parent share one 32px pill; the submenu's disclosure chevron points right when closed / down when open, and its L2 children are an indented plain-text list. Interaction states are now <strong>confirmed</strong> by the "Nav/Menu-Actions" frame (hover Blue/20, pressed Blue/30, selected 5% neutral pill + Blue/40 indicator bar) — resolving FND-057. Footer surface <code>#1a1a1a</code> has no primitive token (FND-058).</span>
+  </section>
+
+  <!-- ============ LAYOUT SIDE — RESPONSIVE NAV TOGGLE ============ -->
+  <section>
+    <h2>Layout Side — responsive nav toggle (<code>.desktop</code> / <code>.tablet</code> / <code>.phone</code>)</h2>
+    <p class="pv-figma">tokens/outsystems-ui-side-responsive.css · Figma templates 26740-27385 (Desktop) / 27212-26063 (Tablet) / 27212-26064 (Mobile) · docked 320px panel → off-canvas drawer + blue scrim; <code>sidebar</code> toggle glyph</p>
+    <span class="pv-note"><strong>This whole preview page is the demo.</strong> Its own Layout Side sidebar is responsive: a preview script sets the real OSUI <code>.desktop</code>/<code>.tablet</code>/<code>.phone</code> class on <code>&lt;html&gt;</code> by viewport width (as the runtime does), and the shipped <code>tokens/outsystems-ui-side-responsive.css</code> does the rest — no parallel system. <strong>Resize the browser</strong> (or use the toggle): on desktop the 320px panel is docked and the in-header <code>sidebar</code>-glyph toggle collapses it to an <strong>84px icon-only rail</strong> (Figma "panel width compact"; menu icons and avatar only) with the content reflowing to meet it; narrow it to tablet/phone and the sidebar becomes a white top bar whose hamburger slides the panel in over the blue scrim. Scrim-click and <kbd>Esc</kbd> close it; tapping a menu item closes it too. In ODC the native <code>.menu-icon</code> is already runtime-wired — no custom JS ships.</span>
+    <p class="pv-note pv-note--spaced"><strong>Collapsed-rail header swap</strong> (Figma <code>is&nbsp;Swaped</code>) — a static option that chooses what the 84px rail shows at the top; either state expands on click:
+      <label class="pv-swap"><input type="checkbox" data-pv-swap> show the <code>sidebar</code> toggle icon instead of the logo</label></p>
   </section>
 
   <!-- ============ TYPOGRAPHY ============ -->
@@ -1747,6 +1837,150 @@
     </div>
   </section>
 
+  <!-- ============ PAGINATION ============ -->
+  <section>
+    <h2>Pagination — custom CSS block <code>.loop-pagination</code> (<code>ExtendedClass</code> on the native Pagination)</h2>
+    <p class="pv-figma">tokens/component-pagination.css · src/blocks/loop-pagination.css · Figma nodes 23714-3726 / 23714-3840 · Regular size (Small also specced; Large/xLarge not in use) · 40px controls, pill active page, blue link chips</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">With labels + items per page &amp; showing</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav">
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">First</span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">Prev</span>
+          </a>
+          <a class="loop-pagination__page" href="#">1</a>
+          <a class="loop-pagination__page loop-pagination__page--active" href="#" aria-current="page">2</a>
+          <a class="loop-pagination__page" href="#">3</a>
+          <a class="loop-pagination__page" href="#">4</a>
+          <a class="loop-pagination__page" href="#">5</a>
+          <a class="loop-pagination__page" href="#">6</a>
+          <a class="loop-pagination__page" href="#">7</a>
+          <a class="loop-pagination__page" href="#">8</a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Next</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Last</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+        <div class="loop-pagination__controls">
+          <div class="loop-pagination__items-per-page">
+            <span class="loop-pagination__label">items per page</span>
+            <div class="dropdown-container dropdown">
+              <select class="dropdown-display loop-pagination__input" aria-label="Items per page">
+                <option>10</option><option selected>20</option><option>50</option>
+              </select>
+            </div>
+          </div>
+          <span class="loop-pagination__showing">Showing <span class="loop-pagination__showing-count">1-20</span> of <span class="loop-pagination__showing-count">500</span></span>
+        </div>
+      </div>
+      <span class="pv-note">Left nav (First / Prev / page chips / Next / Last) plus a right rail (items-per-page dropdown + Showing summary). Active page <strong>2</strong> carries the pill outline; numeric ranges in the summary are bold 14px per Figma. Hovering any control fills it bright blue (#169af3) with a white label.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Without labels (icon-only + ellipsis)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--simple">
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="First page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Previous page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__page" href="#">1</a>
+          <a class="loop-pagination__page loop-pagination__page--active" href="#" aria-current="page">2</a>
+          <a class="loop-pagination__page" href="#">3</a>
+          <span class="loop-pagination__ellipsis" aria-hidden="true">…</span>
+          <a class="loop-pagination__page" href="#">48</a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Next page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Last page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">The <code>--simple</code> nav tightens the gap to 4px and drops the labels; each control becomes a 40×40 <code>--icon-only</code> hit target. An <code>__ellipsis</code> collapses the skipped range.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump to (with labels)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--jump">
+          <span class="loop-pagination__btn loop-pagination__btn--icon-first loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">First</span>
+          </span>
+          <span class="loop-pagination__btn loop-pagination__btn--icon-first loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">Prev</span>
+          </span>
+          <div class="loop-pagination__goto">
+            <input type="text" class="loop-pagination__input" size="3" value="20" aria-label="Page number">
+            <span class="loop-pagination__label">of 500 pages</span>
+          </div>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Next</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Last</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">A page-number <code>__input</code> replaces the chip strip; First / Prev shown <code>--disabled</code> (on the first reachable page). The <code>--jump</code> nav centres the group.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump to (without labels)</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__nav loop-pagination__nav--jump">
+          <span class="loop-pagination__btn loop-pagination__btn--icon-only loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </span>
+          <span class="loop-pagination__btn loop-pagination__btn--icon-only loop-pagination__btn--disabled" aria-disabled="true">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </span>
+          <div class="loop-pagination__goto">
+            <input type="text" class="loop-pagination__input" size="3" value="20" aria-label="Page number">
+            <span class="loop-pagination__label">of 500 pages</span>
+          </div>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Next page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-only" href="#" aria-label="Last page">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <span class="pv-note">Same jump-to layout with icon-only controls.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Go to</span>
+      <div class="loop-pagination">
+        <div class="loop-pagination__goto">
+          <span class="loop-pagination__label">Go to</span>
+          <select class="loop-pagination__input" aria-label="Go to page">
+            <option>10</option><option selected>20</option><option>50</option>
+          </select>
+          <span class="loop-pagination__label">page</span>
+        </div>
+      </div>
+      <span class="pv-note">Compact dropdown jump — <code>Go to [n] page</code>.</span>
+    </div>
+  </section>
+
   <!-- ============ TAG ============ -->
   <section>
     <h2>Tag — custom CSS block <code>.loop-tag</code></h2>
@@ -2495,6 +2729,91 @@
 
   // Range, pinned open — shows startRange / inRange / endRange styling.
   flatpickr('#dp-range', { ...dpBase, inline: true, mode: 'range', defaultDate: [dpAddDays(-3), dpAddDays(3)] });
+</script>
+
+<!-- Preview-only: emulate the OSUI runtime for the WHOLE preview shell (.pv-app). It sets the
+     real .desktop/.tablet/.phone device class on <html> by viewport width and toggles
+     .menu-visible on the layout — exactly what the OSUI runtime + the native .menu-icon do in
+     ODC, so none of this JS is handed over. The shipped restyle
+     (tokens/outsystems-ui-side-responsive.css) does all the styling. -->
+<script>
+(function () {
+  var root = document.documentElement;
+  var app  = document.getElementById('pv-app');
+  if (!app) return;
+  var nav       = document.getElementById('pv-app-nav');
+  var toggles   = app.querySelectorAll('[data-pv-nav-toggle]');
+  var scrim     = app.querySelector('[data-pv-nav-close]');
+  var firstLink = nav ? nav.querySelector('.app-menu-links a') : null;
+  var DEVICES   = ['desktop', 'tablet', 'phone'];
+  var lastDevice = null;
+
+  function device() {
+    var w = window.innerWidth;
+    return w >= 1024 ? 'desktop' : w >= 768 ? 'tablet' : 'phone';
+  }
+  // Two states: tablet/phone use .menu-visible (off-canvas drawer); desktop uses
+  // .aside-collapsed (icon rail). "expanded/open" for aria means: drawer open, or rail NOT collapsed.
+  function isOpen() {
+    return device() === 'desktop' ? !app.classList.contains('aside-collapsed')
+                                  : app.classList.contains('menu-visible');
+  }
+  function reflectAria() {
+    var open = isOpen();
+    toggles.forEach(function (b) { b.setAttribute('aria-expanded', String(open)); });
+  }
+  function setOpen(open, moveFocus) {
+    if (device() === 'desktop') {
+      app.classList.toggle('aside-collapsed', !open);
+    } else {
+      app.classList.toggle('menu-visible', open);
+      if (open && moveFocus && firstLink) firstLink.focus();
+    }
+    reflectAria();
+  }
+  function applyDevice() {
+    var d = device();
+    DEVICES.forEach(function (c) { root.classList.toggle(c, c === d); });
+    // On a breakpoint change reset the resting state: desktop docks expanded (no rail),
+    // tablet/phone close the drawer. Within a breakpoint, keep the user's toggle state.
+    if (d !== lastDevice) {
+      app.classList.remove('aside-collapsed', 'menu-visible');
+      reflectAria();
+      lastDevice = d;
+    }
+  }
+
+  toggles.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var open = !isOpen();
+      setOpen(open, true);
+      if (!open && device() !== 'desktop') b.focus();
+    });
+  });
+  if (scrim) scrim.addEventListener('click', function () { setOpen(false, false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && device() !== 'desktop' && isOpen()) setOpen(false, false);
+  });
+  // Tapping a nav item on tablet/phone closes the drawer (it stays a jump-link).
+  if (nav) nav.querySelectorAll('.app-menu-links a').forEach(function (a) {
+    a.addEventListener('click', function () { if (device() !== 'desktop') setOpen(false, false); });
+  });
+
+  // Swap option (Figma "is Swaped"): show the toggle icon instead of the logo in the collapsed rail.
+  var swap = document.querySelector('[data-pv-swap]');
+  if (swap) swap.addEventListener('change', function () { app.classList.toggle('is-swapped', swap.checked); });
+  // Collapsed rail: the visible header glyph (the logo, when swap is off) is the click-to-expand
+  // target. Ignore clicks on the toggle button (it self-handles) and only act while collapsed.
+  var sideHeader = nav ? nav.querySelector('.header-logo') : null;
+  if (sideHeader) sideHeader.addEventListener('click', function (e) {
+    if (e.target.closest('.loop-nav-toggle')) return;
+    if (device() === 'desktop' && app.classList.contains('aside-collapsed')) setOpen(true, false);
+  });
+
+  var t;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(applyDevice, 150); });
+  applyDevice();
+})();
 </script>
 </body>
 </html>
