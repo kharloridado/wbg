@@ -312,3 +312,173 @@
   line-height: var(--line-height-narrow);
   color: var(--color-gray-alpha-white-75);
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Sidebar expand/collapse toggle (PROVISIONAL -- Figma node 20692:2282
+ * inaccessible; implemented from OSUI Layout Side patterns + Loop tokens).
+ * OSUI collapses the sidebar by toggling .is-menu-collapsed on .layout-side.
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-side .menu-expand-toggle,
+.layout-side .sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--space-medium);
+  height: var(--space-medium);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-icon-on-light-alpha-emphasis);
+}
+.layout-side .menu-expand-toggle:hover,
+.layout-side .sidebar-toggle:hover {
+  background-color: var(--color-neutral-2);
+}
+.layout-side .menu-expand-toggle:focus-visible,
+.layout-side .sidebar-toggle:focus-visible,
+.has-accessible-features .layout-side .menu-expand-toggle:focus,
+.has-accessible-features .layout-side .sidebar-toggle:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+}
+/* Chevron rotates when collapsed */
+.layout-side .menu-expand-toggle .icon,
+.layout-side .menu-expand-toggle .loop-icon,
+.layout-side .sidebar-toggle .icon,
+.layout-side .sidebar-toggle .loop-icon {
+  transition: transform 200ms ease;
+}
+.layout-side.is-menu-collapsed .menu-expand-toggle .icon,
+.layout-side.is-menu-collapsed .menu-expand-toggle .loop-icon,
+.layout-side.is-menu-collapsed .sidebar-toggle .icon,
+.layout-side.is-menu-collapsed .sidebar-toggle .loop-icon {
+  transform: rotate(180deg);
+}
+/* Collapsed panel: icon rail only (64px), text labels hidden */
+.layout-side.is-menu-collapsed .app-menu-content {
+  max-width: var(--space-xxlarge);
+  overflow: hidden;
+}
+.layout-side.is-menu-collapsed .app-menu-links a {
+  justify-content: center;
+  padding: var(--space-xxsmall);
+}
+.layout-side.is-menu-collapsed .header-logo .application-name,
+.layout-side.is-menu-collapsed .app-login-info .user-info {
+  display: none;
+}
+.layout-side.is-menu-collapsed .header-logo {
+  justify-content: center;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Submenu items (PROVISIONAL -- derived from OSUI Layout Side submenu
+ * pattern; Figma node 20692:2282 inaccessible).
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+/* Chevron indicator rotates when the sub-list is open */
+.layout-side .app-menu-links .has-submenu > a > .indicator,
+.layout-side .app-menu-links .has-submenu > a > .menu-item-indicator {
+  transition: transform 200ms ease;
+}
+.layout-side .app-menu-links .has-submenu.is-open > a > .indicator,
+.layout-side .app-menu-links .has-submenu.is-open > a > .menu-item-indicator {
+  transform: rotate(180deg);
+}
+/* Sub-items list: hidden by default, 32px indent when open */
+.layout-side .app-menu-links .sub-items {
+  display: none;
+  padding-left: var(--space-medium);
+  gap: var(--space-tiny);
+}
+.layout-side .app-menu-links .has-submenu.is-open .sub-items {
+  display: flex;
+  flex-direction: column;
+}
+/* Submenu links: 14px regular weight; active -> semibold */
+.layout-side .app-menu-links .sub-items a {
+  min-height: 28px;
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-regular);
+}
+.layout-side .app-menu-links .sub-items a.active {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Enhanced active state: explicit icon + indicator colour (Figma node
+ * 20692:2282 -- active menu item).
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+.layout-side .app-menu-links a.active .osui-icon,
+.layout-side .app-menu-links a.active .icon,
+.layout-side .app-menu-links a.active .loop-icon,
+.layout-side .app-menu-links a.active > .indicator,
+.layout-side .app-menu-links a.active > .menu-item-indicator {
+  color: var(--color-primary);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Responsive: tablet -> icon rail; phone -> off-canvas slide-in.
+ * OSUI stamps body.tablet / body.phone; the slide toggle uses
+ * .is-menu-visible on .app-menu-content (phone only).
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+/* Tablet: collapse to icon rail (64px) */
+body.tablet .layout-side .app-menu-content {
+  max-width: var(--space-xxlarge);
+  overflow: hidden;
+  transition: max-width 250ms ease;
+}
+body.tablet .layout-side .app-menu-links a {
+  justify-content: center;
+  padding: var(--space-xxsmall);
+}
+body.tablet .layout-side .header-logo .application-name,
+body.tablet .layout-side .app-login-info .user-info {
+  display: none;
+}
+body.tablet .layout-side .header-logo {
+  justify-content: center;
+}
+/* Phone: off-canvas, slides in when .is-menu-visible */
+body.phone .layout-side .app-menu-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: var(--layer-overlay, 400);
+  transform: translateX(-100%);
+  transition: transform 250ms ease;
+}
+body.phone .layout-side .app-menu-content.is-menu-visible {
+  transform: translateX(0);
+}
+/* Overlay scrim behind the open menu */
+body.phone .layout-side .content::before {
+  content: '';
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--layer-overlay, 400) - 1);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+body.phone .layout-side .content.is-menu-visible::before {
+  display: block;
+}
+/* Reduced motion: suppress chevron + slide transitions */
+@media (prefers-reduced-motion: reduce) {
+  .layout-side .menu-expand-toggle .icon,
+  .layout-side .menu-expand-toggle .loop-icon,
+  .layout-side .sidebar-toggle .icon,
+  .layout-side .sidebar-toggle .loop-icon,
+  .layout-side .app-menu-links .has-submenu > a > .indicator,
+  .layout-side .app-menu-links .has-submenu > a > .menu-item-indicator,
+  body.tablet .layout-side .app-menu-content,
+  body.phone .layout-side .app-menu-content {
+    transition: none;
+  }
+}
