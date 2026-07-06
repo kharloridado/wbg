@@ -244,28 +244,56 @@
 /* --- toolbar --- */
 .lir__toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 0 0 12px; }
 .lir__search { position: relative; flex: 1 1 280px; display: flex; align-items: center; }
-.lir__search-icon { position: absolute; left: 12px; width: 14px; height: 14px; pointer-events: none;
-  font-family: 'Font Awesome 6 Pro'; font-weight: 900; color: var(--color-text-on-light-subdued, #586e84); }
-.lir__search-icon::before { content: '\\f002'; font-size: 14px; }
-.lir__search-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px;
-  padding: 10px 12px 10px 34px; color: var(--color-text-on-light-default, #00263e);
-  background: var(--color-white, #fff);
-  border: 1px solid var(--color-neutral-20, #c5d0da);
-  border-radius: var(--border-radius-soft, 8px); }
-.lir__search-input::placeholder { color: var(--color-text-on-light-subdued, #586e84); }
-.lir__search-input:focus-visible { outline: 2px solid var(--color-domain-interactive-focused, #0071bc);
-  outline-offset: 1px; border-color: var(--color-domain-interactive-focused, #0071bc); }
+/* Search glass — loop Search field glyph: FA 6 Pro regular weight, neutral-60, 16px box at 16px inset (loop-search.css) */
+.lir__search-icon { position: absolute; left: var(--loop-search-icon-inset, 16px); top: 50%; transform: translateY(-50%);
+  width: var(--loop-search-icon-size, 16px); height: var(--loop-search-icon-size, 16px);
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  font-family: var(--font-family-icon, 'Font Awesome 6 Pro');
+  font-weight: var(--loop-search-icon-weight, 400);
+  color: var(--loop-search-icon-color, var(--color-icon-on-light-default, #4b5e71)); }
+.lir__search-icon::before { content: '\\f002'; font-size: var(--loop-search-icon-glyph, 14px); line-height: 1; }
+/* Search input — loop Text Field identity, Regular size (40px, 8px radius, inset-shadow focus ring) */
+.lir__search-input { width: 100%; box-sizing: border-box; height: 40px;
+  padding: 11px 16px 11px var(--loop-search-pad-left, 40px);
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-field-text-size, 13px);
+  font-weight: var(--loop-field-text-weight, 400);
+  line-height: var(--loop-field-text-leading, 14px);
+  letter-spacing: var(--loop-field-text-tracking, 0.5px);
+  color: var(--color-text-on-light-default, #00263e);
+  background: var(--color-bg-container-on-light-lowest, #fff);
+  border: 1px solid var(--color-outline-on-light-default, #00396b3d);
+  border-radius: var(--loop-field-radius, 8px); }
+.lir__search-input::placeholder { color: var(--color-neutral-alpha-57, #00294d91); opacity: 1; }
+.lir__search-input:hover { border-color: var(--color-outline-on-light-emphasis, #00294d6b); }
+.lir__search-input:focus, .lir__search-input:focus-visible { outline: none;
+  border-color: var(--color-outline-on-light-link-focused, #0071bc);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused, #0071bc); }
 
-.lir__filters { display: flex; flex-wrap: wrap; gap: 6px; }
-.lir__filter { font: inherit; font-size: 13px; cursor: pointer;
-  padding: 8px 12px; border-radius: var(--border-radius-pill, 999px);
-  border: 1px solid var(--color-neutral-20, #c5d0da);
-  background: var(--color-white, #fff); color: var(--color-text-on-light-default, #00263e); }
-.lir__filter:hover { background: var(--color-neutral-05, #f5f7f9); }
-.lir__filter.is-active { background: var(--color-blue-60, #004370); color: var(--color-white, #fff);
-  border-color: var(--color-blue-60, #004370); }
-.lir__filter:focus-visible { outline: 2px solid var(--color-domain-interactive-focused, #0071bc); outline-offset: 1px; }
-.lir__filter-n { opacity: .65; font-size: 12px; }
+/* Style filters — loop Tag pills (blue): default = info-low fill + info-regular border + blue-70 text;
+   active = selected Tag (blue-70 fill, white bold label). See loop-tag.css. */
+.lir__filters { display: flex; flex-wrap: wrap; gap: var(--space-xxsmall, 8px); }
+.lir__filter { display: inline-flex; align-items: center; box-sizing: border-box; cursor: pointer;
+  gap: var(--loop-tag-gap, 4px); white-space: nowrap;
+  height: var(--loop-tag-h-regular, 32px);
+  padding: 0 var(--loop-tag-padding-h, 12px);
+  border: 1px solid var(--loop-tag-blue-border, #169af3);
+  border-radius: var(--loop-tag-radius, 48px);
+  background: var(--loop-tag-blue-bg, #f6fcff);
+  color: var(--loop-tag-blue-text, #004370);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-tag-label-size, 16px);
+  line-height: var(--loop-tag-label-leading, 16px);
+  letter-spacing: var(--loop-tag-label-tracking, 0.25px);
+  font-weight: var(--loop-tag-label-weight, 400);
+  transition: filter .12s; }
+.lir__filter:hover { filter: brightness(0.97); }
+.lir__filter.is-active { background: var(--loop-tag-blue-selected-bg, #004370);
+  border-color: var(--loop-tag-blue-selected-bg, #004370);
+  color: var(--loop-tag-selected-text, #fff);
+  font-weight: var(--loop-tag-label-weight-selected, 700); }
+.lir__filter:focus-visible { outline: 2px solid var(--loop-tag-focus, #0071bc); outline-offset: 2px; }
+.lir__filter-n { opacity: .7; font-size: .8em; font-weight: 400; }
 .lir__filter.is-active .lir__filter-n { opacity: .85; }
 
 .lir__hint { margin: 0 0 8px; font-size: 12px; color: var(--color-text-on-light-subdued, #586e84); }
@@ -307,14 +335,32 @@
   color: var(--color-text-on-light-subdued, #586e84); }
 
 .lir__more { margin: 16px 0 0; text-align: center; }
-.lir__more-btn { font: inherit; font-size: 14px; cursor: pointer; padding: 10px 20px;
-  border-radius: var(--border-radius-soft, 8px);
-  border: 1px solid var(--color-neutral-20, #c5d0da);
-  background: var(--color-white, #fff); color: var(--color-text-on-light-default, #00263e); }
-.lir__more-btn:hover { background: var(--color-neutral-05, #f5f7f9); }
-.lir__more-btn:focus-visible { outline: 2px solid var(--color-domain-interactive-focused, #0071bc); outline-offset: 1px; }
+/* Show more — loop Button, Secondary/outlined (2px blue-70 border, transparent fill, 8px radius,
+   Open Sans 700 12/24, -0.5 tracking; hover fills blue-40). See loop-button.css. */
+.lir__more-btn { display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  height: var(--loop-btn-h-regular, 40px);
+  padding: 0 var(--space-small, 16px);
+  border: 2px solid var(--color-outline-on-light-link-enabled, #004370);
+  border-radius: var(--radius-medium, 8px);
+  background: transparent;
+  color: var(--color-text-on-light-link-primary-enabled, #004370);
+  font-family: var(--font-family-label, "Open Sans", system-ui, sans-serif);
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--loop-btn-font-regular, 12px);
+  line-height: var(--loop-btn-lh, 24px);
+  letter-spacing: var(--letter-spacing-button, -0.5px);
+  transition: background-color .12s, border-color .12s, color .12s; }
+.lir__more-btn:hover { background: var(--color-bg-link-secondary-hover, #169af3);
+  border-color: var(--color-bg-link-secondary-hover, #169af3);
+  color: var(--color-text-on-light-emphasis, #012740); }
+.lir__more-btn:active { background: var(--color-bg-link-secondary-pressed, #a3daff);
+  border-color: var(--color-text-on-light-link-primary-enabled, #004370);
+  color: var(--color-text-on-light-link-primary-enabled, #004370); }
+.lir__more-btn:focus-visible { outline: 2px solid var(--color-outline-on-light-link-enabled, #004370); outline-offset: 2px; }
 
-@media (prefers-reduced-motion: reduce) { .lir__tile { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .lir__tile, .lir__filter, .lir__more-btn { transition: none; }
+}
 `;
     }
   }
