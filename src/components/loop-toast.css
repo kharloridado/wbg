@@ -70,8 +70,9 @@
   gap: var(--loop-toast-content-gap, 12px);
 }
 .lt__icon-slot { flex-shrink: 0; display: flex; padding-top: var(--loop-toast-icon-pt, 4px); }
-/* FA 6 Pro regular glyph — 20px em box ≈ the 19px outline circles the Figma assets draw
-   inside the 24px icon box */
+/* FA 6 Pro SOLID glyph — 24px em fills the 24px icon box to match the full-bleed
+   filled disc / triangle the Figma assets draw (circle-info/-check/-exclamation,
+   triangle-exclamation) */
 .lt__icon {
   display: flex;
   align-items: center;
@@ -79,8 +80,8 @@
   width: var(--loop-toast-icon-size, 24px);
   height: var(--loop-toast-icon-size, 24px);
   font-family: var(--font-family-icon, "Font Awesome 6 Pro");
-  font-weight: var(--font-weight-icon-regular, 400);
-  font-size: var(--loop-toast-icon-glyph, 20px);
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-toast-icon-glyph, 24px);
   font-style: normal;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
@@ -212,8 +213,8 @@
     width:  var(--loop-toast-icon-size-mobile, 18px);
     height: var(--loop-toast-icon-size-mobile, 18px);
   }
-  /* glyphs scale with the mobile icon box (24→18 keeps the same 5:6 optical ratio) */
-  .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 15px); }
+  /* glyphs scale with the mobile icon box (solid disc stays full-bleed at 18px) */
+  .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 18px); }
   .lt__dismiss-glyph { font-size: var(--loop-toast-dismiss-glyph-mobile, 13px); }
 }
 

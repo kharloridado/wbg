@@ -101,8 +101,10 @@ semantic types, optional title, optional action, optional dismiss.
  * strands keyboard/AT users. × has aria-label; focus rings use currentColor (no colour
  * substitution), per CLAUDE.md. prefers-reduced-motion → fade only, no slide.
  *
- * NOTE: the built-in icons APPROXIMATE the Figma glyphs (filled FontAwesome-style circles);
- * slot an exact asset via slot="icon" if design supplies one (mirrors loop-system-alert).
+ * NOTE: the built-in icons are the exact Figma glyphs — Font Awesome 6 Pro SOLID
+ * (filled disc / triangle, glyph knocked out) rendered from the unicode codepoint.
+ * Figma nodes: circle-info / circle-check / triangle-exclamation / circle-exclamation
+ * (component set 17874:6271). Slot an override via slot="icon" if needed (mirrors loop-system-alert).
  */
 class LoopToast extends HTMLElement {
   static get observedAttributes() {
@@ -232,17 +234,18 @@ class LoopToast extends HTMLElement {
     }
   }
 
-  /* Built-in per-type icon — Font Awesome 6 Pro REGULAR glyph (outline weight matches the
-   * Figma 1.8px-stroke assets); currentColor so it inherits the per-type icon colour.
-   * Rendered from the unicode codepoint against the document-level @font-face (visible
-   * inside shadow DOM, unlike .fa-* classes). */
+  /* Built-in per-type icon — Font Awesome 6 Pro SOLID glyph (filled disc / triangle,
+   * matching the full-bleed Figma assets); currentColor so it inherits the per-type
+   * icon colour. Rendered from the unicode codepoint against the document-level
+   * @font-face (visible inside shadow DOM, unlike .fa-* classes); the solid face is
+   * selected by font-weight 900 in .lt__icon. */
   _defaultIcon(type) {
     const glyph = {
-      success:     '&#xf058;',  /* fa-circle-check */
-      warning:     '&#xf071;',  /* fa-triangle-exclamation */
-      error:       '&#xf06a;',  /* fa-circle-exclamation */
-      information: '&#xf05a;',  /* fa-circle-info */
-      default:     '&#xf05a;',  /* fa-circle-info */
+      success:     '&#xf058;',  /* fa-circle-check (solid) */
+      warning:     '&#xf071;',  /* fa-triangle-exclamation (solid) */
+      error:       '&#xf06a;',  /* fa-circle-exclamation (solid) */
+      information: '&#xf05a;',  /* fa-circle-info (solid) */
+      default:     '&#xf05a;',  /* fa-circle-info (solid) */
     }[type] || '&#xf05a;';
     return `<span class="lt__icon" aria-hidden="true">${glyph}</span>`;
   }
@@ -372,8 +375,9 @@ class LoopToast extends HTMLElement {
   gap: var(--loop-toast-content-gap, 12px);
 }
 .lt__icon-slot { flex-shrink: 0; display: flex; padding-top: var(--loop-toast-icon-pt, 4px); }
-/* FA 6 Pro regular glyph — 20px em box ≈ the 19px outline circles the Figma assets draw
-   inside the 24px icon box */
+/* FA 6 Pro SOLID glyph — 24px em fills the 24px icon box to match the full-bleed
+   filled disc / triangle the Figma assets draw (circle-info/-check/-exclamation,
+   triangle-exclamation) */
 .lt__icon {
   display: flex;
   align-items: center;
@@ -381,8 +385,8 @@ class LoopToast extends HTMLElement {
   width: var(--loop-toast-icon-size, 24px);
   height: var(--loop-toast-icon-size, 24px);
   font-family: var(--font-family-icon, "Font Awesome 6 Pro");
-  font-weight: var(--font-weight-icon-regular, 400);
-  font-size: var(--loop-toast-icon-glyph, 20px);
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-toast-icon-glyph, 24px);
   font-style: normal;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
@@ -517,8 +521,8 @@ class LoopToast extends HTMLElement {
   width:  var(--loop-toast-icon-size-mobile, 18px);
   height: var(--loop-toast-icon-size-mobile, 18px);
 }
-/* glyphs scale with the mobile icon box (24→18 keeps the same 5:6 optical ratio) */
-:host-context(.phone) .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 15px); }
+/* glyphs scale with the mobile icon box (solid disc stays full-bleed at 18px) */
+:host-context(.phone) .lt__icon          { font-size: var(--loop-toast-icon-glyph-mobile, 18px); }
 :host-context(.phone) .lt__dismiss-glyph { font-size: var(--loop-toast-dismiss-glyph-mobile, 13px); }
 
 @media (prefers-reduced-motion: reduce) {

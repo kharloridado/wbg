@@ -95,24 +95,6 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   color: var(--color-text-on-light-subdued);
 }
 
-/* ---- Down-chevron — re-enable the container's suppressed ::after ---- */
-.dropdown-container.dropdown > div.dropdown-display::after,
-.dropdown-container.dropdown > select.dropdown-display::after {
-  content: "";
-  flex-shrink: 0;
-  margin-left: auto;
-  width: 8px;
-  height: 8px;
-  margin-top: -3px;                                               /* optical centre of the rotated glyph */
-  border-right: 1.5px solid var(--color-icon-on-light-default);
-  border-bottom: 1.5px solid var(--color-icon-on-light-default);
-  transform: rotate(45deg);
-}
-.dropdown-container.dropdown.dropdown-expanded > div.dropdown-display::after {
-  margin-top: 1px;
-  transform: rotate(-135deg);                                     /* flips up when open */
-}
-
 /* ---- Hover ---- */
 .dropdown-container.dropdown > div.dropdown-display:hover,
 .dropdown-container.dropdown > select.dropdown-display:hover {
