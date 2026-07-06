@@ -30,9 +30,10 @@ the active label darkens to emphasis; hover darkens and shows a 2px underline.
 - Use the native **Tabs** widget (horizontal). Put each tab's label in its header item and
   the panel content in the matching content item. The theme styles the header row, divider,
   and active bar; the widget owns selection, keyboard nav, and the moving indicator.
-- Sizing: standard is **x-large** (desktop). On tablet/mobile the theme drops to the **large**
-  label size automatically — keyed on OutSystems' runtime body classes `.tablet` (≤1024px) /
-  `.phone` (≤700px), in lockstep with the rest of the library.
+- Sizing: header labels are **x-large** (20px desktop) → **large** (18px) on tablet+mobile.
+  The content-panel body text steps **20 → 18 → 16px** (desktop → tablet → mobile). Both are
+  keyed on OutSystems' runtime body classes `.tablet` (≤1024px) / `.phone` (≤700px). Note the
+  header holds 18px on mobile while the content drops to 16px — separate sizes by design.
 
 ## Files
 | File | OutSystems destination |
@@ -96,9 +97,12 @@ the active label darkens to emphasis; hover darkens and shows a 2px underline.
   background-color: var(--loop-tabs-indicator-color, #169af3);
 }
 
-/* ---- Divider beneath the header (the native content border-top) ---- */
+/* ---- Divider beneath the header (the native content border-top) + content body text.
+   The content panel renders body-medium copy that steps down per device (20/18/16),
+   scoped here so it doesn't touch any other component (see per-device overrides below). ---- */
 .osui-tabs--is-horizontal .osui-tabs__content {
   border-top: var(--loop-tabs-divider-size, 2px) solid var(--loop-tabs-divider-color, #00396b14);
+  font-size: var(--loop-tabs-content-size, 20px);   /* desktop body-medium; tablet/phone step down below */
 }
 
 /* ---- Focus ring — brand blue ---- */
@@ -123,6 +127,14 @@ the active label darkens to emphasis; hover darkens and shows a 2px underline.
   gap: var(--loop-tabs-h-padding-compact, 10px);
   padding-block: var(--loop-tabs-v-padding-compact, 10px);
 }
+/* Content body text steps down per device (tablet 18 / phone 16) — differs from the
+   header label (which holds 18 on both), so tablet & phone get separate rules. */
+.tablet .osui-tabs--is-horizontal .osui-tabs__content {
+  font-size: var(--loop-tabs-content-size-tablet, 18px);
+}
+.phone .osui-tabs--is-horizontal .osui-tabs__content {
+  font-size: var(--loop-tabs-content-size-compact, 16px);
+}
 
 /* ---- Reduced motion: kill the sliding-bar animation ---- */
 @media (prefers-reduced-motion: reduce) {
@@ -141,7 +153,13 @@ the active label darkens to emphasis; hover darkens and shows a 2px underline.
 
 **Active bar (`.osui-tabs__header__indicator`):** 4px, blue-40 `#169af3` (native default is 2px). The widget sizes and slides it under the selected tab.
 
-**Divider (`.osui-tabs__content` border-top):** 2px, `Divider/On Light/Subdued` `#00396b14`.
+**Content panel (`.osui-tabs__content`):**
+- Divider: 2px top border, `Divider/On Light/Subdued` `#00396b14`.
+- Body text steps down per device — **20px desktop / 18px tablet / 16px mobile** (Figma body
+  `Font-size/500` device axis). Scoped to the tabs content panel only, referencing the fixed
+  scale steps `--font-size-500/400/300`, so no other component is affected. Note the header
+  label holds **18px** on both tablet+mobile while the content drops to **16px** on mobile —
+  they're separate sizes by design.
 
 **Accessibility (free, no design change required):**
 - Hover underline drawn with **inset box-shadow** — zero layout shift ([[border-no-height-shift]])

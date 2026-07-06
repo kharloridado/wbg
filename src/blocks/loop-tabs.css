@@ -46,9 +46,12 @@
   background-color: var(--loop-tabs-indicator-color, #169af3);
 }
 
-/* ---- Divider beneath the header (the native content border-top) ---- */
+/* ---- Divider beneath the header (the native content border-top) + content body text.
+   The content panel renders body-medium copy that steps down per device (20/18/16),
+   scoped here so it doesn't touch any other component (see per-device overrides below). ---- */
 .osui-tabs--is-horizontal .osui-tabs__content {
   border-top: var(--loop-tabs-divider-size, 2px) solid var(--loop-tabs-divider-color, #00396b14);
+  font-size: var(--loop-tabs-content-size, 20px);   /* desktop body-medium; tablet/phone step down below */
 }
 
 /* ---- Focus ring — brand blue ---- */
@@ -72,6 +75,14 @@
   line-height: var(--loop-tabs-label-leading-compact, 18px);
   gap: var(--loop-tabs-h-padding-compact, 10px);
   padding-block: var(--loop-tabs-v-padding-compact, 10px);
+}
+/* Content body text steps down per device (tablet 18 / phone 16) — differs from the
+   header label (which holds 18 on both), so tablet & phone get separate rules. */
+.tablet .osui-tabs--is-horizontal .osui-tabs__content {
+  font-size: var(--loop-tabs-content-size-tablet, 18px);
+}
+.phone .osui-tabs--is-horizontal .osui-tabs__content {
+  font-size: var(--loop-tabs-content-size-compact, 16px);
 }
 
 /* ---- Reduced motion: kill the sliding-bar animation ---- */

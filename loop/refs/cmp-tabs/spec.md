@@ -33,15 +33,21 @@ Implementation maps: base (desktop, no device class) = the 20/20/24/12 set; comp
 Both device thresholds match Figma's three frames (`DeviceDetection.ts`: phoneMax 700,
 tabletMax 1024). Implemented in `src/blocks/loop-tabs.css` + `tokens/component-tabs.css`.
 
-## Device-responsive BODY type scale (context — NOT part of the tab component)
+## Content-panel body text (implemented tab-scoped)
 
-The body copy in the same Examples frame uses `Font-size/500`, whose resolved value is
+The content copy in the same Examples frame uses `Font-size/500`, whose resolved value is
 **device-varying**: Desktop **20** (`18686:5834`) / Tablet **18** (`18686:5838`) / Mobile
-**16** (`18686:5842`) — Open Sans 400, line-height 1.5, tracking −0.25. This is direct
-evidence of a Desktop/Tablet/Mobile axis on the `Font-size/NNN` ramp, which **contradicts
-the premise of FND-059** (that the Figma type page exposes no breakpoint axis). Recorded
-here as the spec of record; the body ramp remains held fixed in `tokens/typography.css`
-pending design confirmation (see the refreshed FND-059).
+**16** (`18686:5842`) — Open Sans 400, line-height 1.5, tracking −0.25.
 
-Note the intentional divergence on Mobile: tab **header = 18px** (its own pinned token)
-while **body = 16px** — different tokens, by design; the tab does not shrink to 16.
+This is implemented **scoped to the tabs content panel** (`.osui-tabs__content`):
+`--loop-tabs-content-size` = `var(--font-size-500)` 20 / tablet `var(--font-size-400)` 18 /
+mobile `var(--font-size-300)` 16 — referencing the FIXED scale steps so the per-device
+switch touches tabs alone (no global `--font-size-*` change; other components unaffected).
+
+Intentional divergence on Mobile: tab **header = 18px** (its own token, held on both
+tablet+mobile) while **content body = 16px** — separate sizes by design.
+
+Broader note: this same `Font-size/500` device axis (20/18/16) is evidence that the WBG
+type ramp is responsive globally, which **contradicts the premise of FND-059**. The global
+body ramp is still held fixed in `tokens/typography.css` pending design sign-off — only the
+tabs content panel implements the axis locally here.
