@@ -1,0 +1,15 @@
+/* component-pagination.css -- Pagination component tokens
+ * Figma: -The-Loop--Main-Library--2-, node 23714:3726 */
+:root {
+  --loop-pagination-font-size:        var(--font-size-200);   /* 14px -- page numbers and nav labels */
+  --loop-pagination-pages-font-size:  var(--font-size-200);   /* 14px -- right-side helper text */
+  --loop-pagination-btn-height:       var(--space-large);     /* 40px -- button and page-number height */
+  --loop-pagination-gap-labeled:      var(--space-xxsmall);   /* 8px -- nav gap (labeled variant) */
+  --loop-pagination-gap-simple:       var(--space-tiny);      /* 4px -- nav gap (icon-only variant) */
+  --loop-pagination-gap-items:        var(--space-xxsmall);   /* 8px -- items/go-to section gap */
+  --loop-pagination-gap-right:        14px;                   /* 14px -- right-side gap; off 4pt scale */
+  --loop-pagination-padding-icon:     6px;                    /* 6px -- btn padding on icon side; off-scale */
+  --loop-pagination-padding-label:    var(--space-xsmall);    /* 12px -- btn padding on text side */
+  --loop-pagination-input-radius:     var(--radius-base);     /* 4px -- input/dropdown corner */
+  --loop-pagination-page-radius:      var(--radius-base);     /* 4px -- inactive page chip corner */
+}

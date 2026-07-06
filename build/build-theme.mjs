@@ -90,6 +90,7 @@ const META = {
   "loop-tag.css":           { group: "Custom Components", name: "Tag" },
   "loop-badge.css":         { group: "Custom Components", name: "Badge / Label (+ native Tag)" },
   "loop-badge-status.css":  { group: "Custom Components", name: "Badge Status" },
+  "loop-pagination.css":    { group: "Custom Components", name: "Pagination" },
   "loop-card.css":          { group: "Widget Overrides", name: "Card" },
   "component-card.css":     { group: "Components",       name: "Card" },
   "component-modal.css":    { group: "Components",       name: "Modal" },
@@ -97,6 +98,7 @@ const META = {
   "component-badge-label.css":  { group: "Components",   name: "Badge / Label" },
   "component-toast.css":        { group: "Components",   name: "Toast" },
   "component-upload.css":       { group: "Components",   name: "File Uploader" },
+  "component-pagination.css":  { group: "Components",   name: "Pagination" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)
