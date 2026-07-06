@@ -1,0 +1,224 @@
+/* loop-pagination.css -- Pagination component (BEM block: .loop-pagination).
+ * Implements the Figma -loop pagination design (node 23714:3726).
+ * Applied via ExtendedClass on the OutSystems Pagination widget. */
+
+/* ---- Outer wrapper: left nav + right controls ---- */
+.loop-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xxsmall);
+  font-family: var(--font-family-body);
+}
+
+/* ---- Left-side nav strip ---- */
+.loop-pagination__nav {
+  display: flex;
+  flex: 1 0 0;
+  align-items: center;
+  gap: var(--loop-pagination-gap-labeled);
+  min-width: 0;
+}
+.loop-pagination__nav--simple {
+  gap: var(--loop-pagination-gap-simple);
+}
+.loop-pagination__nav--jump {
+  justify-content: center;
+}
+
+/* ---- Prev/Next/First/Last control buttons ---- */
+.loop-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  height: var(--loop-pagination-btn-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-on-light-link-primary-enabled);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.loop-pagination__btn:hover:not(.loop-pagination__btn--disabled) {
+  background-color: var(--color-bg-container-on-light-low);
+}
+/* icon-first: |< First, < Prev -- icon padding left, label padding right */
+.loop-pagination__btn--icon-first {
+  padding-left: var(--loop-pagination-padding-icon);
+  padding-right: var(--loop-pagination-padding-label);
+}
+/* icon-last: Next >, Last >| -- label padding left, icon padding right */
+.loop-pagination__btn--icon-last {
+  padding-left: var(--loop-pagination-padding-label);
+  padding-right: var(--loop-pagination-padding-icon);
+}
+/* icon-only: simple variant, 40x40 centred */
+.loop-pagination__btn--icon-only {
+  width: var(--loop-pagination-btn-height);
+  justify-content: center;
+}
+.loop-pagination__btn--disabled,
+.loop-pagination__btn[disabled] {
+  color: var(--color-text-on-light-state-disabled);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ---- Icon slot (28x22 container, 20x20 icon) ---- */
+.loop-pagination__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 22px;
+  padding: 2px;
+  color: inherit;
+}
+.loop-pagination__icon .icon,
+.loop-pagination__icon .loop-icon,
+.loop-pagination__icon svg {
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}
+.loop-pagination__btn--disabled .loop-pagination__icon {
+  color: var(--color-icon-on-light-alpha-disable);
+}
+
+/* ---- Button text label ---- */
+.loop-pagination__btn-label {
+  font-size: var(--loop-pagination-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: inherit;
+}
+
+/* ---- Page number chips ---- */
+.loop-pagination__page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--loop-pagination-btn-height);
+  height: var(--loop-pagination-btn-height);
+  border: 0;
+  border-radius: var(--loop-pagination-page-radius);
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--loop-pagination-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-light-link-primary-enabled);
+  text-decoration: none;
+}
+.loop-pagination__page:hover {
+  background-color: var(--color-bg-container-on-light-low);
+}
+/* Active/selected page: pill border */
+.loop-pagination__page--active {
+  border: 2px solid var(--color-outline-on-light-link-enabled);
+  border-radius: var(--radius-pill);
+}
+
+/* ---- Ellipsis between page ranges ---- */
+.loop-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--loop-pagination-btn-height);
+  height: var(--loop-pagination-btn-height);
+  pointer-events: none;
+  font-size: var(--loop-pagination-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-light-link-primary-enabled);
+}
+
+/* ---- Right-side controls rail ---- */
+.loop-pagination__controls {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--loop-pagination-gap-right);
+}
+
+/* ---- Items-per-page row ---- */
+.loop-pagination__items-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-pagination-gap-items);
+}
+
+/* ---- Go-to-page row ---- */
+.loop-pagination__goto {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-pagination-gap-items);
+}
+
+/* ---- Input / select (items per page, go-to) ---- */
+.loop-pagination__input {
+  display: flex;
+  align-items: center;
+  height: var(--loop-pagination-btn-height);
+  padding: 0 var(--space-xxsmall);
+  border: var(--border-size-s) solid var(--color-outline-on-light-subdued);
+  border-radius: var(--loop-pagination-input-radius);
+  background-color: var(--color-bg-container-on-light-low);
+  font-family: var(--font-family-body);
+  font-size: var(--loop-pagination-font-size);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-light-default);
+}
+.loop-pagination__input:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+}
+
+/* ---- Helper text (items per page, go-to, of X pages) ---- */
+.loop-pagination__label {
+  font-size: var(--loop-pagination-pages-font-size);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-on-light-default);
+  white-space: nowrap;
+}
+
+/* ---- Showing X-Y of Z (right-rail summary) ---- */
+.loop-pagination__showing {
+  font-size: var(--loop-pagination-pages-font-size);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-on-light-default);
+  white-space: nowrap;
+}
+/* Numeric ranges (1-20) and total (500): Bold 18px per Figma */
+.loop-pagination__showing-count {
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-on-light-default);
+}
+
+/* ---- Vertical hairline divider between right-rail sections ---- */
+.loop-pagination__divider {
+  flex: 0 0 auto;
+  width: var(--border-size-s);
+  height: var(--space-regular);
+  background-color: var(--color-outline-on-light-subdued);
+}
+
+/* ---- Focus rings ---- */
+.loop-pagination__btn:focus-visible,
+.loop-pagination__page:focus-visible,
+.has-accessible-features .loop-pagination__btn:focus,
+.has-accessible-features .loop-pagination__page:focus {
+  outline: 2px solid var(--color-outline-on-light-link-focused, var(--color-blue-50));
+  outline-offset: 2px;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .loop-pagination__btn,
+  .loop-pagination__page,
+  .loop-pagination__input {
+    transition: none;
+  }
+}
