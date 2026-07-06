@@ -40,8 +40,12 @@
   text-decoration: none;
   white-space: nowrap;
 }
+/* Hover = filled bright-blue pill + white label/icon (Figma 23714-1496:
+   Background/Container/On Light/Link/Primary/Hover = blue-40 #169af3). The label
+   and icon both inherit color, so setting it here flips them to white. */
 .loop-pagination__btn:hover:not(.loop-pagination__btn--disabled) {
-  background-color: var(--color-bg-container-on-light-low);
+  background-color: var(--color-bg-link-primary-hover);
+  color: var(--color-white);
 }
 /* icon-first: |< First, < Prev -- icon padding left, label padding right */
 .loop-pagination__btn--icon-first {
@@ -112,7 +116,8 @@
   text-decoration: none;
 }
 .loop-pagination__page:hover {
-  background-color: var(--color-bg-container-on-light-low);
+  background-color: var(--color-bg-link-primary-hover);
+  color: var(--color-white);
 }
 /* Active/selected page: pill border */
 .loop-pagination__page--active {
@@ -190,9 +195,9 @@
   color: var(--color-text-on-light-default);
   white-space: nowrap;
 }
-/* Numeric ranges (1-20) and total (500): Bold 18px per Figma */
+/* Numeric ranges (1-20) and total (500): Bold 14px per Figma (23714-1496) */
 .loop-pagination__showing-count {
-  font-size: var(--font-size-400);
+  font-size: var(--font-size-200);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-on-light-default);
 }
