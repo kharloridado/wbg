@@ -105,10 +105,17 @@ html, body {
    OutSystems UI sets `body.phone` / `body.tablet` on the page at runtime
    (desktop = default, no class), so we redefine the DISPLAY scale steps
    (700–1200 + huge-72) under those classes. Body steps (100–600) stay
-   fixed — body copy should not shrink on small screens. Every value below
-   is an existing step on the Figma `Font-size/NNN` scale (no new sizes
-   invented); only the breakpoint→step assignment is a build proposal, since
-   the Figma type page exposes no breakpoint axis. See finding FND-059.
+   fixed here. Every value below is an existing step on the Figma
+   `Font-size/NNN` scale (no new sizes invented); only the breakpoint→step
+   assignment is a build proposal. See finding FND-059.
+
+   NOTE (2026-07-06): FND-059's original premise ("Figma type page exposes no
+   breakpoint axis") is CONTRADICTED by the Tabs Examples frame
+   (node:18686-5828) — body `Font-size/500` there resolves 20/18/16 by device,
+   so the body ramp SHOULD step down per device too. Held fixed for now
+   pending design sign-off on the body step ladder (flag-don't-fix). When
+   confirmed, add --font-size-300/400/500(/600) steps below and pin the Tabs
+   label tokens to literal 18px. Frozen ref: loop/refs/cmp-tabs/.
    Custom properties set on <body> inherit into descendants (incl. shadow
    DOM), so the heading roles + native h1–h3 respond automatically. ================================================================ */
 body.tablet {

@@ -5,8 +5,11 @@
   column-gap: var(--loop-tabs-gap, 24px);
 }
 
-/* ---- Tab button — The Loop label identity + per-state color ---- */
-.osui-tabs--is-horizontal .osui-tabs__header-item {
+/* ---- Tab button — The Loop label identity + per-state color.
+   Selector mirrors native OSUI's own `... > .osui-tabs__header .osui-tabs__header-item`
+   (0,3,0) so The Loop geometry wins over native's `padding: var(--space-s) var(--space-base)`
+   by source order — otherwise native forces 8px/16px padding and the tokens never apply. ---- */
+.osui-tabs--is-horizontal > .osui-tabs__header .osui-tabs__header-item {
   gap: var(--loop-tabs-h-padding, 12px);                 /* icon ↔ label */
   padding-block: var(--loop-tabs-v-padding, 12px);       /* label ↔ active bar */
   padding-inline: 0;                                     /* the header column-gap handles tab separation */
@@ -55,16 +58,20 @@
   border-radius: 2px;
 }
 
-/* ---- Compact (tablet / mobile): smaller label, tighter gap & padding ---- */
-@media (max-width: 768px) {
-  .osui-tabs--is-horizontal > .osui-tabs__header {
-    column-gap: var(--loop-tabs-gap-compact, 20px);
-  }
-  .osui-tabs--is-horizontal .osui-tabs__header-item {
-    font-size: var(--loop-tabs-label-size-compact, 18px);
-    gap: var(--loop-tabs-h-padding-compact, 10px);
-    padding-block: var(--loop-tabs-v-padding-compact, 10px);
-  }
+/* ---- Compact (tablet / mobile): smaller label, tighter gap & padding.
+   Keyed on OSUI's runtime body device classes (.tablet ≤1024px, .phone ≤700px) so Tabs
+   steps down in lockstep with the rest of the library — not a standalone @media breakpoint.
+   Explicit .tablet/.phone prefixes make each rule (0,3,0) so it beats the (0,2,0) base. ---- */
+.tablet .osui-tabs--is-horizontal > .osui-tabs__header,
+.phone  .osui-tabs--is-horizontal > .osui-tabs__header {
+  column-gap: var(--loop-tabs-gap-compact, 20px);
+}
+.tablet .osui-tabs--is-horizontal .osui-tabs__header-item,
+.phone  .osui-tabs--is-horizontal .osui-tabs__header-item {
+  font-size: var(--loop-tabs-label-size-compact, 18px);
+  line-height: var(--loop-tabs-label-leading-compact, 18px);
+  gap: var(--loop-tabs-h-padding-compact, 10px);
+  padding-block: var(--loop-tabs-v-padding-compact, 10px);
 }
 
 /* ---- Reduced motion: kill the sliding-bar animation ---- */
