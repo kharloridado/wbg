@@ -329,19 +329,59 @@
   letter-spacing: 0.5px;
   color: var(--color-text-on-light-subdued);
 }
-.loop-field__helper--error    { color: var(--color-text-on-light-state-error); }
-.loop-field__helper--warning  { color: var(--color-text-on-light-state-warning); }
+/* Leading status glyph (Figma 17188-6977). FA 6 Pro SOLID codepoint against the document
+   @font-face; decorative (the message text carries the meaning, so it stays out of the a11y
+   tree — no ARIA needed). Colour is its OWN token, NOT currentColor, because several states
+   paint the icon differently from the text (warning amber vs brown, disabled/default). */
+.loop-field__helper::before {
+  content: var(--loop-field-helper-icon-char, "\f05a");
+  flex: 0 0 auto;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-field-helper-icon-weight, 900);
+  font-size: var(--loop-field-helper-icon-glyph, 12px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--loop-field-helper-icon-color, var(--color-icon-on-light-default));
+}
+.loop-field__helper--error {
+  color: var(--color-text-on-light-state-error);
+  --loop-field-helper-icon-char:  "\f06a";                      /* fa-circle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-error);
+}
+.loop-field__helper--warning {
+  color: var(--color-text-on-light-state-warning);
+  --loop-field-helper-icon-char:  "\f071";                      /* fa-triangle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-warning-regular);
+}
 .loop-field__helper--success  { color: var(--color-text-on-light-state-success); }
-.loop-field__helper--disabled { color: var(--color-text-on-light-state-disabled); }
+.loop-field__helper--disabled {
+  color: var(--color-text-on-light-state-disabled);
+  --loop-field-helper-icon-char:  "\f05a";                      /* fa-circle-info */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-disabled);
+}
 
 /* ---- Native validation message — restyle the platform's <span class="validation-message">
    to match the helper--error treatment (typography + colour only; native positioning untouched). ---- */
 span.validation-message {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-field-helper-gap, 4px);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-field-helper-size, 12px);
   line-height: 1;
   letter-spacing: 0.5px;
   color: var(--color-text-on-light-state-error);     /* Red/70, not the brighter Red/50 default */
+}
+/* Lead the native error message with the same circle-exclamation as the Error helper. */
+span.validation-message::before {
+  content: "\f06a";                                  /* fa-circle-exclamation */
+  flex: 0 0 auto;
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--loop-field-helper-icon-weight, 900);
+  font-size: var(--loop-field-helper-icon-glyph, 12px);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--color-icon-on-light-state-error);
 }
 
 /* ============================================================
@@ -364,6 +404,8 @@ span.validation-message {
 }
 .loop-field--error .loop-field__helper {
   color: var(--color-text-on-light-state-error);
+  --loop-field-helper-icon-char:  "\f06a";                      /* fa-circle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-error);
 }
 
 /* Warning — mirrors the added .is-warning modifier */
@@ -379,6 +421,8 @@ span.validation-message {
 }
 .loop-field--warning .loop-field__helper {
   color: var(--color-text-on-light-state-warning);
+  --loop-field-helper-icon-char:  "\f071";                      /* fa-triangle-exclamation */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-warning-regular);
 }
 
 /* Disabled — visual mirror of [disabled]; the label row + helper mute with the control.
@@ -399,6 +443,10 @@ span.validation-message {
 .loop-field--disabled .loop-toggle__label,
 .loop-field--disabled .loop-checkbox-field__label {
   color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled .loop-field__helper {
+  --loop-field-helper-icon-char:  "\f05a";                      /* fa-circle-info */
+  --loop-field-helper-icon-color: var(--color-icon-on-light-state-disabled);
 }
 
 /* Read-Only — mirrors the added .is-read-only modifier (borderless plain text) */

@@ -31,6 +31,14 @@
   /* ---- Helper text ---- */
   --loop-field-helper-size:     var(--font-size-100);          /* 12px */
   --loop-field-helper-gap:      var(--space-tiny);             /* 4px — icon ↔ helper text */
+  /* Helper status icon (Figma 17188-6977) — 12px FA 6 Pro SOLID glyph leading the message,
+     rendered as a ::before font glyph (loop-text-field.css). The glyph + its colour swap per
+     state via the modifiers below; the icon colour is INDEPENDENT of the text colour (e.g.
+     warning = amber icon #e19d00 over brown text #473201). Default state = circle-info. */
+  --loop-field-helper-icon-char:   "\f05a";                    /* fa-circle-info — default */
+  --loop-field-helper-icon-color:  var(--color-icon-on-light-default);   /* #4b5e71 */
+  --loop-field-helper-icon-weight: var(--font-weight-icon-solid, 900);
+  --loop-field-helper-icon-glyph:  12px;
 
   /* ---- Field label row (FieldLabel: required * + label + (optional) + word count) ---- */
   --loop-field-label-row-gap:   var(--space-tiny);             /* 4px — between asterisk / label / optional / count */
