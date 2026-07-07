@@ -146,15 +146,22 @@
   padding: var(--loop-multiselect-padding-block, 12px) var(--loop-select-padding-inline, 16px);
   min-height: var(--loop-multiselect-min-content, 28px);
 }
+/* Tags-specific: extra right gutter so chips never run under the [×][chevron] icon cluster */
+.osui-dropdown-tags .vscomp-toggle-button {
+  padding-right: calc(var(--loop-select-padding-inline, 16px) + 36px) !important;
+}
 
 /* value / placeholder text */
 .osui-dropdown-search .vscomp-value,
 .osui-dropdown-tags .vscomp-value {
   color: var(--color-text-on-light-default);
 }
-.osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value,
-.osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
+.osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value {
   color: var(--color-text-on-light-subdued);
+}
+/* FND-020: tags placeholder aligned to Text Field ref value #00294d91 */
+.osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
+  color: var(--color-text-on-light-subdued, #00294d91);
 }
 
 /* chevron arrow — provider draws it with borders; recolour to the icon token */
@@ -164,18 +171,54 @@
 .osui-dropdown-tags .vscomp-arrow {
   border-color: var(--color-icon-on-light-default) !important;
 }
+/* Restore OSUI-hidden chevron when tags are selected — keeps [×][chevron] cluster visible */
+.osui-dropdown-tags .vscomp-ele-wrapper.has-value .vscomp-arrow,
+.osui-dropdown-tags .vscomp-wrapper.has-value .vscomp-arrow {
+  display: flex !important;
+}
+.osui-dropdown-tags .vscomp-ele-wrapper.has-value .vscomp-arrow::after,
+.osui-dropdown-tags .vscomp-wrapper.has-value .vscomp-arrow::after {
+  border-color: var(--color-icon-on-light-default) !important;
+}
 
-/* focused state */
-.osui-dropdown-search .vscomp-ele-wrapper.focused,
-.osui-dropdown-tags .vscomp-ele-wrapper.focused {
+/* focused state — zero layout shift: use outline (doesn't affect layout) for tags */
+.osui-dropdown-search .vscomp-ele-wrapper.focused {
   border: 2px solid var(--color-outline-on-light-link-focused) !important;
   box-shadow: none !important;
 }
+.osui-dropdown-tags .vscomp-ele-wrapper.focused {
+  outline: 2px solid var(--color-outline-on-light-link-focused) !important;
+  outline-offset: -2px !important;
+  border-color: var(--color-outline-on-light-link-focused) !important;
+  box-shadow: none !important;
+}
 
-/* clear button */
+/* global clear-all icon (not the per-chip ×) */
 .osui-dropdown-search .vscomp-clear-icon,
 .osui-dropdown-tags .vscomp-clear-icon {
   background-color: var(--color-icon-on-light-default);
+}
+
+/* ---- Error state (VirtualSelect provider classes) ---- */
+.osui-dropdown-tags .vscomp-ele-wrapper.has-error,
+.osui-dropdown-tags .has-error .vscomp-ele-wrapper {
+  background-color: var(--color-bg-container-state-error-low, #fdf2f2) !important;
+  border-color: var(--color-outline-on-light-state-error-high, #9d161d) !important;
+}
+
+/* ---- Warning state ---- */
+.osui-dropdown-tags .vscomp-ele-wrapper.has-warning,
+.osui-dropdown-tags .has-warning .vscomp-ele-wrapper {
+  background-color: var(--color-domain-state-warning-low, #fef3d7) !important;
+  border-color: var(--color-outline-on-light-state-warning-high, #896001) !important;
+}
+
+/* ---- Disabled state ---- */
+.osui-dropdown-tags .vscomp-ele-wrapper.disabled,
+.osui-dropdown-tags [disabled] .vscomp-ele-wrapper,
+.osui-dropdown-tags .vscomp-ele-wrapper[disabled] {
+  background-color: var(--color-domain-state-disable-low, #dae3eb) !important;
+  border-color: var(--color-domain-state-disable-low, #dae3eb) !important;
 }
 
 /* ---- Tag chips (multi-select) — neutral chip, NOT the blue loop-tag block ---- */
@@ -183,23 +226,43 @@
   display: inline-flex;
   align-items: center;
   gap: var(--loop-select-tag-gap, 4px);
-  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px);
+  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px) !important; /* !important: provider forces 6px 35px */
   border-radius: var(--loop-select-tag-radius, 48px) !important;
   background-color: var(--loop-select-tag-bg) !important;
   color: var(--color-text-on-light-default);
   font-size: var(--font-size-300, 16px);
+  font-weight: var(--font-weight-regular, 400); /* 400 — provider may force 600 */
   line-height: var(--font-size-300, 16px);
   letter-spacing: 0.25px;
 }
 .osui-dropdown-tags .vscomp-value-tag-content {
   color: var(--color-text-on-light-default);
 }
+/* Per-chip clear cross — clean inline 14px "×"; replaces the provider's dark circle icon */
 .osui-dropdown-tags .vscomp-value-tag-clear-button {
   width: var(--loop-select-tag-cross-size, 14px);
   height: var(--loop-select-tag-cross-size, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-icon-on-light-default);
+  font-size: var(--loop-select-tag-cross-size, 14px);
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 .osui-dropdown-tags .vscomp-value-tag-clear-button .vscomp-clear-icon {
-  background-color: var(--color-icon-on-light-default);
+  /* Hide the provider's background-masked circle icon */
+  display: none !important;
+}
+.osui-dropdown-tags .vscomp-value-tag-clear-button::before {
+  content: "\00d7"; /* × — U+00D7 MULTIPLICATION SIGN, 14px, no separate icon needed */
+  display: block;
+  font-size: var(--loop-select-tag-cross-size, 14px);
+  line-height: 1;
+  color: var(--color-icon-on-light-default);
 }
 .osui-dropdown-tags .vscomp-value-tag-clear-button:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-focused);
@@ -250,7 +313,8 @@
   width: 16px;
   height: 16px;
   margin-right: var(--space-xxsmall, 8px);
-  color: var(--color-icon-on-light-subdued);
+  /* FND-071: --color-icon-on-light-subdued may be undefined; fallback to the default icon token */
+  color: var(--color-icon-on-light-subdued, var(--color-icon-on-light-default, #4b5e71));
   font-family: var(--font-family-icon, "Font Awesome 6 Pro");
   font-weight: var(--loop-select-search-icon-weight, 400);
   font-size: var(--loop-select-search-icon-glyph, 14px);
@@ -293,8 +357,9 @@
   transform: rotate(45deg) translate(-1px, -2px);
 }
 
-/* "+N" overflow alias (.more-value-count) — a compact, non-removable neutral pill */
+/* "+N" overflow alias (.more-value-count) — compact non-removable neutral pill */
 .osui-dropdown-tags .vscomp-value-tag.more-value-count {
+  padding-inline: 6px !important; /* compact — provider forces wider padding */
   font-weight: var(--font-weight-semibold, 600);
 }
 
