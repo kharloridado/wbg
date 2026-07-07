@@ -76,7 +76,8 @@
   --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */
   --loop-multiselect-min-content:   28px;
 
-  --loop-select-icon-size:          20px;                      /* loop/field/icon size — right icons (clear-all xmark + chevron) */
+  --loop-select-icon-size:          20px;                      /* loop/field/icon size — MULTI-select (Dropdown Tags) right icons (clear-all xmark + chevron); single Select is 16px below */
+  --loop-select-icon-size-single:   16px;                      /* loop/field/icon size — SINGLE Select (Dropdown Search) chevron (Figma 18770:10424 = 16px, not the tags' 20px) */
   --loop-select-tags-padding-right:  72px;                     /* tags box right gutter — reserves room for the two absolutely-positioned right icons (16px gutter + 20px chevron + 8px gap + 20px clear-all) so the tag row never runs under them */
 
   /* ---- Tag chip inside the multi-select (neutral chip, ≠ the blue loop-tag block) ---- */

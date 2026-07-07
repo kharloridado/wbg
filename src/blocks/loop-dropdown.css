@@ -124,16 +124,35 @@
       A few field-box props use !important to beat the provider's own injected CSS.
    ===================================================================== */
 
+/* ---- Single vs multi proportions ----
+   The two providers share the field-box rules below, but the single Select
+   (Dropdown Search, Figma 18770:10424) and the multi-select (Dropdown Tags,
+   18830:17333) differ in text size, vertical padding, content floor, and right-
+   icon size. Resolve those four through scoped alias vars so the grouped
+   selectors stay DRY while each surface renders its own spec. */
+.osui-dropdown-search {
+  --loop-vs-text-size:     var(--loop-select-text-size, 13px);          /* 13px single Select */
+  --loop-vs-padding-block: var(--loop-select-padding-block, 11px);      /* 11px */
+  --loop-vs-min-content:   0px;                                         /* single line — no tag-row floor */
+  --loop-vs-icon-size:     var(--loop-select-icon-size-single, 16px);   /* 16px chevron */
+}
+.osui-dropdown-tags {
+  --loop-vs-text-size:     var(--font-size-300, 16px);                  /* 16px multi-select */
+  --loop-vs-padding-block: var(--loop-multiselect-padding-block, 12px); /* 12px */
+  --loop-vs-min-content:   var(--loop-multiselect-min-content, 28px);   /* 28px placeholder floor */
+  --loop-vs-icon-size:     var(--loop-select-icon-size, 20px);          /* 20px xmark + chevron */
+}
+
 /* ---- Field box (the wrapper is the visible pill) ---- */
 .osui-dropdown-search .vscomp-ele-wrapper,
 .osui-dropdown-tags .vscomp-ele-wrapper {
-  min-height: 40px;
+  min-height: var(--loop-select-h, 40px);   /* pinned floor; follows the .loop-field--* size cascade below */
   background-color: var(--color-bg-container-on-light-lowest) !important;
   border: 1px solid var(--color-outline-on-light-default) !important;
   border-radius: var(--loop-select-radius) !important;
   color: var(--color-text-on-light-default);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-300, 16px);
+  font-size: var(--loop-vs-text-size, 16px);   /* 13px single Select · 16px tags (scoped alias above) */
 }
 .osui-dropdown-tags .vscomp-ele-wrapper.multiple {
   border-radius: var(--loop-select-radius, 8px) !important;
@@ -143,8 +162,9 @@
 .osui-dropdown-search .vscomp-toggle-button,
 .osui-dropdown-tags .vscomp-toggle-button {
   gap: var(--loop-select-gap, 8px);
-  padding: var(--loop-multiselect-padding-block, 12px) var(--loop-select-padding-inline, 16px);
-  min-height: var(--loop-multiselect-min-content, 28px);
+  padding: var(--loop-vs-padding-block, 12px) var(--loop-select-padding-inline, 16px);   /* 11px single · 12px tags */
+  min-height: var(--loop-vs-min-content, 28px);                                           /* 0 single · 28px tags */
+  border: none;   /* provider ships a 1px #ddd toggle border → a double box inside the wrapper; Figma field has ONE border (the wrapper's) */
 }
 /* Tags box inset — the provider ships several higher-specificity toggle-padding rules
    (`.vscomp-wrapper.has-clear-button …` 0,3,0, `.has-value.show-value-as-tags …` 0,4,0)
@@ -164,6 +184,12 @@
 .osui-dropdown-search .vscomp-value,
 .osui-dropdown-tags .vscomp-value {
   color: var(--color-text-on-light-default);
+  font-size: var(--loop-vs-text-size, 16px);   /* provider hard-sets 14px; re-assert the scoped size (13px single · 16px tags) */
+}
+/* single Select value/placeholder tracking + leading (Figma .UI Component/Input/Placeholder/Text Field: 13/14, ls 0.5) */
+.osui-dropdown-search .vscomp-value {
+  line-height: var(--loop-select-text-leading, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
 }
 .osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value,
 .osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
@@ -179,14 +205,15 @@
   border-color: transparent var(--color-icon-on-light-default) var(--color-icon-on-light-default) transparent !important;
 }
 
-/* right-icon boxes sized to spec (loop/field/icon size = 20px): the chevron box
-   and the clear-all xmark box. Per-tag clear crosses stay 14px (below). */
+/* right-icon boxes sized to spec (loop/field/icon size): single Select chevron = 16px,
+   multi-select xmark + chevron = 20px — via the scoped --loop-vs-icon-size alias.
+   Per-tag clear crosses stay 14px (below). */
 .osui-dropdown-search .vscomp-arrow,
 .osui-dropdown-tags .vscomp-arrow,
 .osui-dropdown-search .vscomp-clear-button,
 .osui-dropdown-tags .vscomp-clear-button {
-  width: var(--loop-select-icon-size, 20px);
-  height: var(--loop-select-icon-size, 20px);
+  width: var(--loop-vs-icon-size, 20px);
+  height: var(--loop-vs-icon-size, 20px);
 }
 
 /* ---- Tags field right-icon cluster: keep BOTH icons visible + vertically centred ----
@@ -220,18 +247,53 @@
   box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused) !important;
 }
 
-/* ---- Field states (Error / Warning / Disabled) — driven by the loop-field wrapper
-   modifiers, mirroring loop-text-field.css. The provider has no native warning/error
-   surface, so the state lives on the .loop-field ancestor. ---- */
+/* ---- Field states (Error / Warning / Disabled / Read-Only) — driven by the loop-field
+   wrapper modifiers, mirroring loop-text-field.css so a single State param on the Field
+   Wrapper Block recolours the whole field. Covers BOTH delivery shapes: the native
+   `.dropdown` pattern (which otherwise only carries element-level .not-valid / .is-warning /
+   .dropdown-disabled) AND the VirtualSelect provider (which ships no native warning/error
+   surface, so the state must live on the .loop-field ancestor). Explicit element-level
+   states above still apply on their own. ---- */
+
+/* Error */
+.loop-field--error .dropdown-container.dropdown > div.dropdown-display,
+.loop-field--error .dropdown-container.dropdown > select.dropdown-display {
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
+}
+.loop-field--error .dropdown-container.dropdown > div.dropdown-display::after {
+  border-color: var(--color-icon-on-light-state-error);
+}
 .loop-field--error .osui-dropdown-tags .vscomp-ele-wrapper,
 .loop-field--error .osui-dropdown-search .vscomp-ele-wrapper {
   background-color: var(--color-bg-container-state-error-low) !important;
   border: 1px solid var(--color-outline-on-light-state-error-high) !important;
 }
+
+/* Warning */
+.loop-field--warning .dropdown-container.dropdown > div.dropdown-display,
+.loop-field--warning .dropdown-container.dropdown > select.dropdown-display {
+  background-color: var(--color-domain-state-warning-low);
+  border-color: var(--color-outline-on-light-state-warning-high);
+  color: var(--color-text-on-state-warning-emphasis);
+}
 .loop-field--warning .osui-dropdown-tags .vscomp-ele-wrapper,
 .loop-field--warning .osui-dropdown-search .vscomp-ele-wrapper {
   background-color: var(--color-domain-state-warning-low) !important;
   border: 1px solid var(--color-outline-on-light-state-warning-high) !important;
+}
+
+/* Disabled — ALSO set Enabled=False on the widget itself: the class alone neither blocks
+   interaction nor announces disabled to assistive tech. */
+.loop-field--disabled .dropdown-container.dropdown > div.dropdown-display,
+.loop-field--disabled .dropdown-container.dropdown > select.dropdown-display {
+  background-color: var(--color-domain-state-disable-low);
+  border-color: var(--color-domain-state-disable-low);
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled .dropdown-container.dropdown > div.dropdown-display::after {
+  border-color: var(--color-icon-on-light-state-disabled);
 }
 .loop-field--disabled .osui-dropdown-tags .vscomp-ele-wrapper,
 .loop-field--disabled .osui-dropdown-search .vscomp-ele-wrapper {
@@ -247,6 +309,23 @@
 .loop-field--disabled .osui-dropdown-tags .vscomp-value-tag {
   color: var(--color-text-on-light-state-disabled);
   opacity: 0.7;
+}
+
+/* Read-Only — borderless plain text (mirrors the Text Field .is-read-only / --read-only) */
+.loop-field--read-only .dropdown-container.dropdown > div.dropdown-display,
+.loop-field--read-only .dropdown-container.dropdown > select.dropdown-display {
+  background-color: transparent;
+  border-color: transparent;
+  padding-inline: 0px;
+}
+.loop-field--read-only .dropdown-container.dropdown > div.dropdown-display::after {
+  display: none;   /* no chevron affordance when the value can't change */
+}
+.loop-field--read-only .osui-dropdown-search .vscomp-ele-wrapper,
+.loop-field--read-only .osui-dropdown-tags .vscomp-ele-wrapper {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 /* clear icons (clear-all xmark + per-tag cross) — draw a clean thin "×" in the icon
@@ -333,7 +412,7 @@
 }
 .osui-dropdown-search .vscomp-option,
 .osui-dropdown-tags .vscomp-option {
-  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  padding: var(--space-xxsmall, 8px) var(--space-xsmall, 12px);   /* Figma -loop dropdown/item: 8px v · 12px h */
   color: var(--color-text-on-light-default);
   font-size: var(--font-size-200, 14px);
 }
@@ -415,6 +494,50 @@
   padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-count-padding-inline, 6px) !important;
   font-weight: var(--font-weight-semibold, 600) !important;   /* beat the base tag's 400 !important */
 }
+
+/* =====================================================================
+   4) Field Wrapper size cascade — Select follows the .loop-field--* size
+   =====================================================================
+   Mirrors the Text Field / Search size ramp (cmp-field-sizing ref: "every sizeable control
+   inside a sized Field Wrapper follows the wrapper"). The select has no documented standalone
+   size ramp in Figma — its component set publishes only the Regular 40px surface — so it adopts
+   the shared field ramp: height 56/48/40/32, vpadding 18/14/11/8, text 16/14/13/12, label
+   16/14/13/12. One modifier on the wrapper re-points the --loop-select-* custom props that the
+   field-box, native dropdown-display, VirtualSelect wrapper, value text, and label rules already
+   read — so both delivery shapes (native .dropdown + VS single Search) scale together with the
+   label, exactly like the sibling controls. The multi-select Tags keeps its own 16px text / 12px
+   vpadding spec (scoped --loop-vs-* above); only its box floor (--loop-select-h) follows.
+   Regular is the token default but is re-declared so a select nested under an outer sized wrapper
+   still resolves to its own size. */
+.loop-field--xlarge {
+  --loop-select-h: 56px;
+  --loop-select-padding-block: var(--loop-field-padding-block, 18px);
+  --loop-select-text-size: 16px;    --loop-select-text-leading: 16px;
+  --loop-select-label-size: 16px;   --loop-select-label-tracking: 0px;
+}
+.loop-field--large {
+  --loop-select-h: 48px;
+  --loop-select-padding-block: 14px;
+  --loop-select-text-size: 14px;    --loop-select-text-leading: 16px;
+  --loop-select-label-size: 14px;   --loop-select-label-tracking: 0px;
+}
+.loop-field--regular {
+  --loop-select-h: 40px;
+  --loop-select-padding-block: 11px;
+  --loop-select-text-size: 13px;    --loop-select-text-leading: 14px;
+  --loop-select-label-size: 13px;   --loop-select-label-tracking: 0.25px;
+}
+.loop-field--small {
+  --loop-select-h: 32px;
+  --loop-select-padding-block: 8px;
+  --loop-select-padding-inline: var(--space-xsmall, 12px);   /* Small pulls the side padding in (Figma 19336-9755) */
+  --loop-select-text-size: 12px;    --loop-select-text-leading: 12px;
+  --loop-select-label-size: 12px;   --loop-select-label-tracking: 0.5px;
+}
+/* The VS single-Search value text is re-declared by the provider at (0,1,0) reading the scoped
+   --loop-vs-text-size (→ --loop-select-text-size); re-pointing the select token above flows into
+   it. The provider hard-sets font-size on .vscomp-value, so nothing extra is needed here — the
+   alias already consumes the size token. */
 
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {

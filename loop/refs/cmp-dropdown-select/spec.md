@@ -1,8 +1,17 @@
 # Frozen Figma ref — cmp-dropdown-select
 
-- **Figma file:** aHtnwyPhI8WRbiGHZ8E5Gb (The Loop — Main Library)
+- **Figma file:** zx8q9nRf8Dbqam1rfquQ2E (The Loop — Main Library (2), the NEW file key) — re-pulled 2026-07-06 for the Dropdown Search goal (node 18770:10424 exists in both the old `aHtnwyPhI8WRbiGHZ8E5Gb` and this new file; the new file is now the spec of record).
 - **Page node:** 18787:4817 (Select — full documentation page; too large for one design-context pull, see figma.png for the rendered page)
-- **Spec node:** 18770:10424 — the `-loop select` component set (State × Action symbols), pulled via `get_design_context` 2026-07-04
+- **Spec node:** 18770:10424 — the `-loop select` component set (State × Action symbols), re-pulled via `get_design_context` + `get_variable_defs` 2026-07-06
+
+> **2026-07-06 update (Dropdown Search goal).** The single Select field radius is now
+> **8px** (`input fields`=8), NOT the 32px pill this ref originally recorded — the field
+> box was migrated to an 8px soft-rounded rectangle (32px pill is opt-in via
+> `.loop-field--rounded`). The single-Select scale (13px text · 11px vpadding · **16px**
+> chevron) is DISTINCT from the Dropdown Tags multi-select (16px text · 12px vpadding ·
+> 20px icons); `loop-dropdown.css` resolves the difference via the scoped `--loop-vs-*`
+> alias vars. The `Key values` table below still reads "32px" from the pre-migration pull —
+> treat the 8px note here as authoritative.
 - **Multiselect companion node:** 18830:17312 (not yet snapshotted; pull if the multiselect surface is re-reviewed)
 - **How to read this:** the code below is Figma-generated React/Tailwind REFERENCE — never target code. The values that matter are the CSS custom properties and their fallbacks, e.g. `var(--loop\/field\/vpadding,11px)`. Cross-check exact token values in `variables.json`.
 
@@ -14,7 +23,8 @@ Default/Closed, Filled/Closed, Selected/Closed, Error/Closed, Warning/Closed, Di
 
 | Property | Value | Figma variable |
 |---|---|---|
-| Field radius (pill) | 32px | `Input Fields` |
+| Field radius | **8px** (`input fields`=8, new file; was 32px pill pre-2026-07-06) | `Input Fields` |
+| Right icon size | **16px** (single Select chevron; Tags multi-select is 20px) | `loop/field/icon size` |
 | Field vpadding | 11px | `loop/field/vpadding` |
 | Field hpadding left/right | 16px | `loop/field/hpadding left` / `right` |
 | Field internal gap | 8px | `loop/Field/hGap` |

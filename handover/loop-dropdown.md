@@ -178,6 +178,25 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
       A few field-box props use !important to beat the provider's own injected CSS.
    ===================================================================== */
 
+/* ---- Single vs multi proportions ----
+   The two providers share the field-box rules below, but the single Select
+   (Dropdown Search, Figma 18770:10424) and the multi-select (Dropdown Tags,
+   18830:17333) differ in text size, vertical padding, content floor, and right-
+   icon size. Resolve those four through scoped alias vars so the grouped
+   selectors stay DRY while each surface renders its own spec. */
+.osui-dropdown-search {
+  --loop-vs-text-size:     var(--loop-select-text-size, 13px);          /* 13px single Select */
+  --loop-vs-padding-block: var(--loop-select-padding-block, 11px);      /* 11px */
+  --loop-vs-min-content:   0px;                                         /* single line — no tag-row floor */
+  --loop-vs-icon-size:     var(--loop-select-icon-size-single, 16px);   /* 16px chevron */
+}
+.osui-dropdown-tags {
+  --loop-vs-text-size:     var(--font-size-300, 16px);                  /* 16px multi-select */
+  --loop-vs-padding-block: var(--loop-multiselect-padding-block, 12px); /* 12px */
+  --loop-vs-min-content:   var(--loop-multiselect-min-content, 28px);   /* 28px placeholder floor */
+  --loop-vs-icon-size:     var(--loop-select-icon-size, 20px);          /* 20px xmark + chevron */
+}
+
 /* ---- Field box (the wrapper is the visible pill) ---- */
 .osui-dropdown-search .vscomp-ele-wrapper,
 .osui-dropdown-tags .vscomp-ele-wrapper {
@@ -187,7 +206,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   border-radius: var(--loop-select-radius) !important;
   color: var(--color-text-on-light-default);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-300, 16px);
+  font-size: var(--loop-vs-text-size, 16px);   /* 13px single Select · 16px tags (scoped alias above) */
 }
 .osui-dropdown-tags .vscomp-ele-wrapper.multiple {
   border-radius: var(--loop-select-radius, 8px) !important;
@@ -197,8 +216,9 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 .osui-dropdown-search .vscomp-toggle-button,
 .osui-dropdown-tags .vscomp-toggle-button {
   gap: var(--loop-select-gap, 8px);
-  padding: var(--loop-multiselect-padding-block, 12px) var(--loop-select-padding-inline, 16px);
-  min-height: var(--loop-multiselect-min-content, 28px);
+  padding: var(--loop-vs-padding-block, 12px) var(--loop-select-padding-inline, 16px);   /* 11px single · 12px tags */
+  min-height: var(--loop-vs-min-content, 28px);                                           /* 0 single · 28px tags */
+  border: none;   /* provider ships a 1px #ddd toggle border → a double box inside the wrapper; Figma field has ONE border (the wrapper's) */
 }
 /* Tags box inset — the provider ships several higher-specificity toggle-padding rules
    (`.vscomp-wrapper.has-clear-button …` 0,3,0, `.has-value.show-value-as-tags …` 0,4,0)
@@ -218,6 +238,12 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 .osui-dropdown-search .vscomp-value,
 .osui-dropdown-tags .vscomp-value {
   color: var(--color-text-on-light-default);
+  font-size: var(--loop-vs-text-size, 16px);   /* provider hard-sets 14px; re-assert the scoped size (13px single · 16px tags) */
+}
+/* single Select value/placeholder tracking + leading (Figma .UI Component/Input/Placeholder/Text Field: 13/14, ls 0.5) */
+.osui-dropdown-search .vscomp-value {
+  line-height: var(--loop-select-text-leading, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
 }
 .osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value,
 .osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
@@ -233,14 +259,15 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   border-color: transparent var(--color-icon-on-light-default) var(--color-icon-on-light-default) transparent !important;
 }
 
-/* right-icon boxes sized to spec (loop/field/icon size = 20px): the chevron box
-   and the clear-all xmark box. Per-tag clear crosses stay 14px (below). */
+/* right-icon boxes sized to spec (loop/field/icon size): single Select chevron = 16px,
+   multi-select xmark + chevron = 20px — via the scoped --loop-vs-icon-size alias.
+   Per-tag clear crosses stay 14px (below). */
 .osui-dropdown-search .vscomp-arrow,
 .osui-dropdown-tags .vscomp-arrow,
 .osui-dropdown-search .vscomp-clear-button,
 .osui-dropdown-tags .vscomp-clear-button {
-  width: var(--loop-select-icon-size, 20px);
-  height: var(--loop-select-icon-size, 20px);
+  width: var(--loop-vs-icon-size, 20px);
+  height: var(--loop-vs-icon-size, 20px);
 }
 
 /* ---- Tags field right-icon cluster: keep BOTH icons visible + vertically centred ----
@@ -387,7 +414,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 }
 .osui-dropdown-search .vscomp-option,
 .osui-dropdown-tags .vscomp-option {
-  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  padding: var(--space-xxsmall, 8px) var(--space-xsmall, 12px);   /* Figma -loop dropdown/item: 8px v · 12px h */
   color: var(--color-text-on-light-default);
   font-size: var(--font-size-200, 14px);
 }
