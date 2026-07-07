@@ -200,6 +200,19 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   padding: var(--loop-multiselect-padding-block, 12px) var(--loop-select-padding-inline, 16px);
   min-height: var(--loop-multiselect-min-content, 28px);
 }
+/* Tags box inset — the provider ships several higher-specificity toggle-padding rules
+   (`.vscomp-wrapper.has-clear-button …` 0,3,0, `.has-value.show-value-as-tags …` 0,4,0)
+   that squash our left/vertical padding to ~10px/4px-0. Re-assert Figma's 16px hpadding
+   left + 12px vpadding with !important (beats the provider's non-important rules), while
+   RESERVING the right gutter so the tag row never slides under the absolutely-positioned
+   clear-all (xmark) + chevron on the right edge. */
+.osui-dropdown-tags .vscomp-ele-wrapper .vscomp-toggle-button {
+  padding-top: var(--loop-multiselect-padding-block, 12px) !important;
+  padding-bottom: var(--loop-multiselect-padding-block, 12px) !important;
+  padding-left: var(--loop-select-padding-inline, 16px) !important;
+  padding-right: var(--loop-select-tags-padding-right, 72px) !important;
+  gap: var(--loop-select-gap, 8px) !important;
+}
 
 /* value / placeholder text */
 .osui-dropdown-search .vscomp-value,
@@ -208,52 +221,155 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 }
 .osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value,
 .osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
-  color: var(--color-text-on-light-subdued);
+  color: var(--color-neutral-alpha-57);   /* Figma placeholder = Text/On Light/Subdued #00294d91 (frozen ref) — matches the sibling Text Field; NOT the #000d1a91 orphan --color-text-on-light-subdued (FND-020) */
 }
 
-/* chevron arrow — provider draws it with borders; recolour to the icon token */
+/* chevron arrow — the provider draws the ⌄ as a 45°-rotated box showing only its
+   bottom+right borders (`border-color: transparent #111 #111 transparent`). Recolour
+   ONLY those two edges to the icon token — colouring all four (the old rule) turns the
+   chevron into a full square outline. */
 .osui-dropdown-search .vscomp-arrow::after,
-.osui-dropdown-tags .vscomp-arrow::after,
-.osui-dropdown-search .vscomp-arrow,
-.osui-dropdown-tags .vscomp-arrow {
-  border-color: var(--color-icon-on-light-default) !important;
+.osui-dropdown-tags .vscomp-arrow::after {
+  border-color: transparent var(--color-icon-on-light-default) var(--color-icon-on-light-default) transparent !important;
 }
 
-/* focused state */
+/* right-icon boxes sized to spec (loop/field/icon size = 20px): the chevron box
+   and the clear-all xmark box. Per-tag clear crosses stay 14px (below). */
+.osui-dropdown-search .vscomp-arrow,
+.osui-dropdown-tags .vscomp-arrow,
+.osui-dropdown-search .vscomp-clear-button,
+.osui-dropdown-tags .vscomp-clear-button {
+  width: var(--loop-select-icon-size, 20px);
+  height: var(--loop-select-icon-size, 20px);
+}
+
+/* ---- Tags field right-icon cluster: keep BOTH icons visible + vertically centred ----
+   The provider HIDES the chevron once tags carry a value
+   (`.show-value-as-tags.has-value .vscomp-arrow{display:none}`) and pins the clear-all to
+   the top-right (`top:5px`). Figma shows the clear-all (xmark) AND the chevron in EVERY
+   state as a right-edge cluster [xmark][chevron], both centred. Re-show the chevron, centre
+   both, and place the xmark just left of the rightmost chevron. Space is reserved by the
+   toggle's --loop-select-tags-padding-right so the tag row never runs under them. */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags.has-value .vscomp-arrow {
+  display: flex !important;
+}
+.osui-dropdown-tags .vscomp-ele-wrapper .vscomp-arrow {
+  top: 50% !important;
+  right: var(--loop-select-padding-inline, 16px) !important;   /* rightmost — 16px gutter */
+  height: var(--loop-select-icon-size, 20px) !important;
+  transform: translateY(-50%);
+}
+.osui-dropdown-tags .vscomp-ele-wrapper .vscomp-clear-button {
+  top: 50% !important;
+  right: calc(var(--loop-select-padding-inline, 16px) + var(--loop-select-icon-size, 20px) + var(--loop-select-gap, 8px)) !important;  /* left of the chevron */
+  transform: translateY(-50%);
+}
+
+/* focused state — 2px brand ring with ZERO layout shift: keep the border at 1px and
+   recolour it, then stack a 1px INSET shadow so it reads as 2px without growing the box
+   (a real 1→2px border would jump the field 2px on focus). */
 .osui-dropdown-search .vscomp-ele-wrapper.focused,
 .osui-dropdown-tags .vscomp-ele-wrapper.focused {
-  border: 2px solid var(--color-outline-on-light-link-focused) !important;
-  box-shadow: none !important;
+  border: 1px solid var(--color-outline-on-light-link-focused) !important;
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused) !important;
 }
 
-/* clear button */
+/* ---- Field states (Error / Warning / Disabled) — driven by the loop-field wrapper
+   modifiers, mirroring loop-text-field.css. The provider has no native warning/error
+   surface, so the state lives on the .loop-field ancestor. ---- */
+.loop-field--error .osui-dropdown-tags .vscomp-ele-wrapper,
+.loop-field--error .osui-dropdown-search .vscomp-ele-wrapper {
+  background-color: var(--color-bg-container-state-error-low) !important;
+  border: 1px solid var(--color-outline-on-light-state-error-high) !important;
+}
+.loop-field--warning .osui-dropdown-tags .vscomp-ele-wrapper,
+.loop-field--warning .osui-dropdown-search .vscomp-ele-wrapper {
+  background-color: var(--color-domain-state-warning-low) !important;
+  border: 1px solid var(--color-outline-on-light-state-warning-high) !important;
+}
+.loop-field--disabled .osui-dropdown-tags .vscomp-ele-wrapper,
+.loop-field--disabled .osui-dropdown-search .vscomp-ele-wrapper {
+  background-color: var(--color-domain-state-disable-low) !important;
+  border: 1px solid var(--color-domain-state-disable-low) !important;
+  color: var(--color-text-on-light-state-disabled);
+}
+/* disabled placeholder / value text + chips mute with the box */
+.loop-field--disabled .osui-dropdown-tags .vscomp-value,
+.loop-field--disabled .osui-dropdown-search .vscomp-value {
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled .osui-dropdown-tags .vscomp-value-tag {
+  color: var(--color-text-on-light-state-disabled);
+  opacity: 0.7;
+}
+
+/* clear icons (clear-all xmark + per-tag cross) — draw a clean thin "×" in the icon
+   token colour. The provider ships a MIXED mechanism: `.vscomp-clear-icon::before/::after`
+   as two rotated 2px bars (#999), an OSUI override that turns `::after` into an icon-FONT
+   glyph, and our old rule painted the icon element a SOLID block. Reset all three to a
+   crisp two-bar cross so it reads as the Figma xmark, not a filled blob. */
 .osui-dropdown-search .vscomp-clear-icon,
 .osui-dropdown-tags .vscomp-clear-icon {
-  background-color: var(--color-icon-on-light-default);
+  background-color: transparent !important;   /* was a solid square */
+  position: relative;
 }
+.osui-dropdown-search .vscomp-clear-icon::before,
+.osui-dropdown-search .vscomp-clear-icon::after,
+.osui-dropdown-tags .vscomp-clear-icon::before,
+.osui-dropdown-tags .vscomp-clear-icon::after {
+  content: "" !important;                      /* kill the osui icon-font glyph on ::after */
+  font-family: inherit !important;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: var(--color-icon-on-light-default) !important;
+}
+.osui-dropdown-search .vscomp-clear-icon::before,
+.osui-dropdown-tags .vscomp-clear-icon::before { transform: translateX(-50%) rotate(45deg); }
+.osui-dropdown-search .vscomp-clear-icon::after,
+.osui-dropdown-tags .vscomp-clear-icon::after { transform: translateX(-50%) rotate(-45deg); }
 
-/* ---- Tag chips (multi-select) — neutral chip, NOT the blue loop-tag block ---- */
+/* ---- Tag chips (multi-select) — neutral chip, NOT the blue loop-tag block ----
+   The provider (outsystems-ui.css) ships `.vscomp-wrapper.show-value-as-tags
+   .vscomp-value-tag` (specificity 0,3,0) which beats our 0,2,0 selector and forces
+   font-size 12px, font-weight 600, and `padding: 6px 35px 6px 10px` (the 35px right
+   reserves room for an ABSOLUTELY-positioned clear cross). So the chip's type/padding
+   overrides need `!important`, and the cross must be pulled back into normal flow
+   (position:static) or it overlaps the label. */
 .osui-dropdown-tags .vscomp-value-tag {
   display: inline-flex;
   align-items: center;
   gap: var(--loop-select-tag-gap, 4px);
-  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px);
+  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px) !important;
+  border: 1px solid var(--loop-select-tag-border-color) !important;   /* Figma -loop tag stroke (Outline/On Light/Default) */
   border-radius: var(--loop-select-tag-radius, 48px) !important;
   background-color: var(--loop-select-tag-bg) !important;
   color: var(--color-text-on-light-default);
-  font-size: var(--font-size-300, 16px);
-  line-height: var(--font-size-300, 16px);
-  letter-spacing: 0.25px;
+  font-size: var(--font-size-300, 16px) !important;
+  line-height: var(--font-size-300, 16px) !important;
+  font-weight: var(--font-weight-regular, 400) !important;   /* provider bolds tags to 600; Figma tag label is 400 */
+  letter-spacing: var(--loop-select-tag-tracking, 0.25px) !important;
 }
 .osui-dropdown-tags .vscomp-value-tag-content {
   color: var(--color-text-on-light-default);
+  font-size: inherit !important;   /* provider re-declares 12px on the content span */
+  max-width: var(--loop-select-tag-text-max, 200px);   /* Figma tag text wrapper max-w */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+/* Pull the cross back into inline flow — provider pins it `position:absolute; right:10px`,
+   which lands it on TOP of the label. Static + the chip's 4px gap places it after the text. */
 .osui-dropdown-tags .vscomp-value-tag-clear-button {
-  width: var(--loop-select-tag-cross-size, 14px);
-  height: var(--loop-select-tag-cross-size, 14px);
-}
-.osui-dropdown-tags .vscomp-value-tag-clear-button .vscomp-clear-icon {
-  background-color: var(--color-icon-on-light-default);
+  position: static !important;
+  width: var(--loop-select-tag-cross-size, 14px) !important;
+  height: var(--loop-select-tag-cross-size, 14px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 0 0 auto;
+  background-color: transparent !important;   /* provider fills it neutral-7 + border-radius:100% (a dark circle); Figma is a bare × */
+  border-radius: 0 !important;
 }
 .osui-dropdown-tags .vscomp-value-tag-clear-button:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-focused);
@@ -304,7 +420,7 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   width: 16px;
   height: 16px;
   margin-right: var(--space-xxsmall, 8px);
-  color: var(--color-icon-on-light-subdued);
+  color: var(--color-icon-on-light-subdued, var(--color-icon-on-light-default));   /* subdued icon token is not defined in the schema — fall back to the standard icon colour so the glyph never inherits body text */
   font-family: var(--font-family-icon, "Font Awesome 6 Pro");
   font-weight: var(--loop-select-search-icon-weight, 400);
   font-size: var(--loop-select-search-icon-glyph, 14px);
@@ -347,9 +463,11 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
   transform: rotate(45deg) translate(-1px, -2px);
 }
 
-/* "+N" overflow alias (.more-value-count) — a compact, non-removable neutral pill */
+/* "+N" overflow alias (.more-value-count) — a compact, non-removable neutral pill.
+   Figma's +N pill uses a narrower 6px inline padding than the 12px real-chip padding. */
 .osui-dropdown-tags .vscomp-value-tag.more-value-count {
-  font-weight: var(--font-weight-semibold, 600);
+  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-count-padding-inline, 6px) !important;
+  font-weight: var(--font-weight-semibold, 600) !important;   /* beat the base tag's 400 !important */
 }
 
 /* ---- Reduced motion ---- */
@@ -390,7 +508,9 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 - **2px Blue/50** focus/expanded ring (padding shrinks 1px so the box doesn't jump).
 - Tinted **Error** (red) / **Warning** (yellow) / **Disabled** (neutral) fills + borders.
 - Popup **list**: white, 8px radius, low shadow, subtle border.
-- Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48), 14px clear icon.
+- Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48, 1px `--color-outline-on-light-default` border), **16px / weight 400** label, 12px/8px padding, and a clean inline **14px** clear-cross. The provider (`outsystems-ui.css`) beats us on specificity (`.vscomp-wrapper.show-value-as-tags .vscomp-value-tag` 0,3,0 → 12px/600/`6px 35px`), absolutely-positions the cross over the label, and gives it a dark `neutral-7` circle — all reset via `!important` + `position:static` + a two-bar "×".
+- Multi-select **right icons**: OSUI hides the chevron once tags are selected (`.show-value-as-tags.has-value .vscomp-arrow{display:none}`) and top-pins the clear-all. The Loop restores BOTH as a vertically-centred right-edge cluster **[× clear-all][⌄ chevron]** (20px each), matching Figma's filled state; the toggle reserves `--loop-select-tags-padding-right` so tags never run under them.
+- Multi-select **"+N" overflow**: styled as a compact 6px-padding neutral pill. The badge **text** ("+ N more…") is provider-generated, NOT CSS — set the Dropdown Tags block's `moreText` (VirtualSelect option) to `""` for the Figma-style compact **"+N"**.
 
 ## Build in ODC with Mentor Studio
 
@@ -425,6 +545,7 @@ generating, list what you created by name and flag anything you could not finish
 - [ ] Single Select → native **Dropdown** widget; Search → **Dropdown Search**; Multi → **Dropdown Tags**.
 - [ ] Error → bind an OutSystems **Validation** (sets `.not-valid`); Warning → Extended Class `is-warning`; empty single Select → `is-placeholder`.
 - [ ] Wrap Label + field + helper in a Container with `loop-field loop-field--select` (single) or `loop-field` (multi).
+- [ ] **Dropdown Tags** overflow badge — set the block's `moreText` VirtualSelect option to `""` for the compact Figma **"+N"** (default renders "+ N more…").
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview). The VirtualSelect DOM is provider-generated — confirm the `.vscomp-*` overrides land on the published markup.
 
 ## Open findings linked to this work (register-only — low, no GitHub Bug auto-filed)

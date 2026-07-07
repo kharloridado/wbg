@@ -76,11 +76,18 @@
   --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */
   --loop-multiselect-min-content:   28px;
 
+  --loop-select-icon-size:          20px;                      /* loop/field/icon size — right icons (clear-all xmark + chevron) */
+  --loop-select-tags-padding-right:  72px;                     /* tags box right gutter — reserves room for the two absolutely-positioned right icons (16px gutter + 20px chevron + 8px gap + 20px clear-all) so the tag row never runs under them */
+
   /* ---- Tag chip inside the multi-select (neutral chip, ≠ the blue loop-tag block) ---- */
   --loop-select-tag-radius:         48px;
-  --loop-select-tag-padding-block:  var(--space-xxsmall);      /* 8px */
-  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px */
-  --loop-select-tag-gap:            var(--space-tiny);         /* 4px */
+  --loop-select-tag-padding-block:  var(--space-xxsmall);      /* 8px — loop/tag/vpadding */
+  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px — loop/tag/hpadding */
+  --loop-select-tag-count-padding-inline: 6px;                 /* Figma +N pill inline padding (px-6, narrower than the 12px real-chip padding) */
+  --loop-select-tag-gap:            var(--space-tiny);         /* 4px — loop/tag/hgap */
+  --loop-select-tag-tracking:       0.25px;                    /* loop/Tag/Label/Letter Space */
+  --loop-select-tag-text-max:       200px;                     /* Figma tag text-wrapper max-width */
   --loop-select-tag-bg:             var(--color-bg-container-on-light-low);   /* #f5f7f9 */
-  --loop-select-tag-cross-size:     14px;
+  --loop-select-tag-border-color:   var(--color-outline-on-light-default);   /* rgba(0,57,107,0.24) — chip stroke per Figma -loop tag */
+  --loop-select-tag-cross-size:     14px;                      /* loop/tag/icon/cross-size */
 }

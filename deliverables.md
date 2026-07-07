@@ -74,7 +74,7 @@ verify/finish · **To build** = net-new.
 | Search | Built | `src/blocks/loop-search.css` |
 | Search Typeahead (= Dropdown Search) | Partial | dropdown search variant — verify against Figma |
 | Select / Dropdown Native | Built | `src/blocks/loop-dropdown.css` |
-| Multi-select (= Dropdown Tags) | Partial | dropdown tags variant — verify |
+| Multi-select (= Dropdown Tags) | Built | `src/blocks/loop-dropdown.css` §2–3 — verified vs frozen ref `loop/refs/cmp-dropdown-tags/` (2026-07-06) |
 | Tag & Meta Tag | Partial | Tag built (`loop-tag.css`); Meta Tag to build/verify |
 
 ## Messaging, Alerts, Notification
