@@ -27,7 +27,15 @@ const TYPES = {
 const server = createServer(async (req, res) => {
   try {
     let urlPath = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    if (urlPath === '/') urlPath = ENTRY;
+    // Redirect the bare root to the entry so the browser's document URL becomes
+    // `/preview/index.html`. Serving the entry's content at `/` (without changing the
+    // URL) leaves the page's `vendor/*` relative links resolving to `/vendor/*`, which
+    // 404s — silently dropping the real OSUI base + provider CSS (breaks the responsive
+    // nav drawer, virtual-select, flatpickr, fontawesome). A 302 keeps paths correct.
+    if (urlPath === '/') {
+      res.writeHead(302, { Location: ENTRY }).end();
+      return;
+    }
 
     // Resolve safely inside ROOT (block path traversal).
     const filePath = normalize(join(ROOT, urlPath));

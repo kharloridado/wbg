@@ -187,3 +187,19 @@
   outline-offset: 2px;
   box-shadow: none;
 }
+
+/* ====== Custom Pattern blocks — transparent wrapper ======
+ * OutSystems wraps every Block instance in a `[data-block="<Module>.<Block>"]`
+ * element. When a Custom Pattern block is used purely as a content grouper (e.g.
+ * the `loop-menu-item__holder` wrapping a menu item's icon + label inside the
+ * flex `.app-menu-links a`), that generated wrapper inserts an extra box that
+ * breaks the parent's flex/grid chain — the holder's children stop participating
+ * in the anchor's layout. `display: contents` removes the wrapper from the box
+ * tree so its children lay out as direct children of the parent, exactly as they
+ * do in the local preview (which has no Block wrapper). This mirrors OutSystems
+ * UI's own use of the pattern (e.g. `[data-block*=SectionIndex] { display: contents }`).
+ * Custom Pattern blocks live in the `CustomPatterns` module, so the wrapper's
+ * data-block value contains that name. */
+[data-block*="CustomPatterns"] {
+    display: contents;
+}

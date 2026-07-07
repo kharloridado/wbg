@@ -62,7 +62,7 @@
   border: none;
   border-radius: var(--radius-pill);
   background-color: transparent;
-  color: var(--color-icon-on-light-default);   /* #4b5e71 */
+  color: var(--color-neutral-9);   /* match the menu-item icon/text (neutral-80) — not the lighter neutral-60 */
   cursor: pointer;
 }
 /* Hide the native 3-bar presentation — the glyph is drawn via ::before instead. */
@@ -72,14 +72,15 @@
 .layout-side .menu-icon::before,
 .layout-side .loop-nav-toggle::before {
   content: "";
-  width: var(--space-small);    /* 16px glyph */
-  height: var(--space-small);
+  width: var(--loop-side-toggle-icon-size);    /* 20px — match the menu-item icon */
+  height: var(--loop-side-toggle-icon-size);
   background-color: currentColor;
   -webkit-mask: var(--loop-side-toggle-icon) center / contain no-repeat;
           mask: var(--loop-side-toggle-icon) center / contain no-repeat;
 }
 /* The `sidebar` glyph: a rounded panel with a divided, filled left column. */
 .layout-side {
+  --loop-side-toggle-icon-size: 20px;   /* parity with the menu-item leading icon */
   --loop-side-toggle-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2.5' y='3.5' width='15' height='13' rx='2.5'/%3E%3Cline x1='8' y1='3.5' x2='8' y2='16.5'/%3E%3C/svg%3E");
 }
 /* Hover / focus affordance — a subtle neutral pill (matches the menu-item hover). */
@@ -108,6 +109,14 @@
 .desktop .layout-side .menu-icon {
   display: none;
 }
+/* No top bar on desktop — the docked sidebar already carries the logo + profile. OSUI's
+ * native Layout Side header (a direct child of .layout-side) only exists to be the
+ * tablet/phone hamburger bar; on desktop it renders as a stray 56px bar duplicating the
+ * logo, so hide the whole container (the .menu-icon rule above only hid the toggle).
+ * The tablet/phone rules below re-show it as the white top bar. */
+.desktop .layout-side > .header {
+  display: none;
+}
 /* Animate the panel width + the content reflow when collapsing/expanding. */
 .desktop .layout-side .app-menu-content { transition: width 220ms ease, max-width 220ms ease; }
 .desktop .layout-side .main { transition: margin-left 220ms ease; }
@@ -134,8 +143,7 @@
  * Both trigger expand — the developer wires whichever is shown (the preview makes the header
  * itself the trigger). */
 .desktop .layout-side.aside-collapsed .header-logo { justify-content: center; }
-.desktop .layout-side.aside-collapsed .header-logo .application-name,
-.desktop .layout-side.aside-collapsed .header-logo .app-logo { display: none; }
+.desktop .layout-side.aside-collapsed .header-logo .application-name { display: none; }
 /* default: logo shown as the trigger, toggle hidden */
 .desktop .layout-side.aside-collapsed:not(.is-swapped) .loop-nav-toggle { display: none; }
 .desktop .layout-side.aside-collapsed:not(.is-swapped) .header-logo { cursor: pointer; }
@@ -154,7 +162,28 @@
 .desktop .layout-side.aside-collapsed .app-menu-links a > .indicator,
 .desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-indicator,
 .desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-caption,
-.desktop .layout-side.aside-collapsed .app-menu-links a > span:not(.icon) { display: none; }
+.desktop .layout-side.aside-collapsed .app-menu-links a > span:not(.icon):not(.loop-menu-item__holder),
+.desktop .layout-side.aside-collapsed .app-menu-links a .loop-menu-item__label { display: none; }
+/* When the icon + label are wrapped in a `.loop-menu-item__holder`, the blanket
+ * `span:not(.icon)` above must NOT eat the holder (that would take the icon with it):
+ * exclude it, hide only its label (rule above), and collapse its gap so the surviving
+ * leading icon centres in the rail. */
+.desktop .layout-side.aside-collapsed .app-menu-links a .loop-menu-item__holder {
+  gap: 0;
+  justify-content: center;
+}
+/* Selected indicator in the rail — Figma "Nav/Menu-Item · Compact" (node 29848:94946)
+ * moves the Blue/40 bar from a left vertical strip to a short HORIZONTAL bar centred
+ * BELOW the icon. Re-point the same ::before (colour/radius/position:absolute inherited
+ * from outsystems-ui-side.css a.active::before); higher specificity so it wins. */
+.desktop .layout-side.aside-collapsed .app-menu-links a.active::before {
+  left: 50%;
+  top: auto;
+  bottom: var(--space-tiny);        /* 4px up from the pill's bottom edge */
+  transform: translateX(-50%);
+  width: 10px;                      /* Figma compact indicator length — no matching size token */
+  height: var(--space-tiny);        /* 4px thick */
+}
 /* Profile: avatar only, centred; drop the name/role block. */
 .desktop .layout-side.aside-collapsed .app-login-info { justify-content: center; }
 .desktop .layout-side.aside-collapsed .app-login-info .user-info { display: none; }

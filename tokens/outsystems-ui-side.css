@@ -58,6 +58,13 @@
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-narrow);
 }
+/* Drop the native OSUI `.layout-side .app-logo { margin-right: var(--space-s) }`
+ * (outsystems-ui.css) — the logo now sits in a flex `.header-logo` row that owns
+ * the spacing via `gap`, so the inherited margin adds an unwanted extra gap after
+ * the mark. Equal specificity, and this file loads after outsystems-ui.css, so 0 wins. */
+.layout-side .app-logo {
+  margin-right: 0;
+}
 
 /* ── Menu items: 32px pills, Open Sans SemiBold 16/24, neutral-9 (#252e37) text +
  * icon (currentColor). Replaces the native left-border active indicator. */
@@ -84,6 +91,41 @@
 .layout-side .app-menu-links a > .indicator,
 .layout-side .app-menu-links a > .menu-item-indicator {
   margin-left: auto;
+}
+
+/* ── Menu-item content holder — groups a menu item's leading ICON + LABEL into one
+ * flex unit so a trailing element (chevron / badge / count) sits apart from them and
+ * the label truncates instead of wrapping the pill to two lines. In ODC: wrap the
+ * Menu Item's Icon + caption Expression in a Container class `loop-menu-item__holder`
+ * (the Icon gets `loop-menu-item__icon`, the caption `loop-menu-item__label`); any
+ * trailing Icon keeps the native `.indicator` / `.menu-item-indicator`. The holder is
+ * OPTIONAL — a bare icon+label link (direct children of the anchor) still lays out via
+ * the base rule above — but it is REQUIRED when the row also carries a trailing element
+ * (so the leading pair stays grouped while the trailing item is pushed to the edge),
+ * and it is the unit the collapsed/tablet rail reduces to a lone icon (see the collapse
+ * rules in outsystems-ui-side-responsive.css). Works for both a flat `.app-menu-links a`
+ * and an `.osui-submenu` parent-row label link.
+ * NOTE: descendant combinator (NOT `a > .holder`) is deliberate — in ODC the holder
+ * Block renders inside a `[data-block*="CustomPatterns"]` wrapper (display:contents, see
+ * outsystems-ui-overrides.css). That wrapper leaves the box tree but stays in the DOM, so
+ * the holder is a grandchild of the anchor; a direct-child selector would miss it. */
+.layout-side .app-menu-links a .loop-menu-item__holder,
+.layout-side .app-menu-links .osui-submenu__header__item a .loop-menu-item__holder {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxsmall);
+  flex: 1 1 auto;
+  min-width: 0;   /* let the label shrink so its ellipsis, not the pill, absorbs overflow */
+}
+/* Leading icon holds its intrinsic size; the label takes the slack and truncates. */
+.layout-side .app-menu-links .loop-menu-item__icon {
+  flex: 0 0 auto;
+}
+.layout-side .app-menu-links .loop-menu-item__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Hover / pressed / selected states — CONFIRMED by the "Nav/Menu-Actions" side-
@@ -593,63 +635,31 @@
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
- * Responsive: tablet -> icon rail; phone -> off-canvas slide-in.
- * OSUI stamps body.tablet / body.phone; the slide toggle uses
- * .is-menu-visible on .app-menu-content (phone only).
+ * Responsive behaviour (desktop collapse-to-rail, tablet/phone off-canvas drawer)
+ * lives ENTIRELY in outsystems-ui-side-responsive.css — the single source of truth,
+ * matching the Figma Templates frames (Desktop 26740:27385 / Tablet 27212:26063 /
+ * Mobile 27212:26064: both tablet AND phone are a top-bar + full off-canvas drawer,
+ * NOT an icon rail).
+ *
+ * A duplicate responsive block used to live here (body.tablet -> 64px icon rail;
+ * body.phone off-canvas, opened via a `.is-menu-visible` trigger). It was REMOVED:
+ *   1. its tablet icon-rail contradicted the Figma tablet drawer, and
+ *   2. nothing ever sets `.is-menu-visible` — the native OSUI runtime toggles
+ *      `.menu-visible` — so in ODC its higher-specificity `translateX(-100%)` pinned
+ *      the drawer permanently off-canvas and the hamburger could never open it.
+ * The off-canvas slide is driven by native OSUI (`.menu-visible .app-menu-content`),
+ * re-anchored + restyled by outsystems-ui-side-responsive.css.
  * ════════════════════════════════════════════════════════════════════════════ */
 
-/* Tablet: collapse to icon rail (64px) */
-body.tablet .layout-side .app-menu-content {
-  max-width: var(--space-xxlarge);
-  overflow: hidden;
-  transition: max-width 250ms ease;
-}
-body.tablet .layout-side .app-menu-links a {
-  justify-content: center;
-  padding: var(--space-xxsmall);
-}
-body.tablet .layout-side .header-logo .application-name,
-body.tablet .layout-side .app-login-info .user-info {
-  display: none;
-}
-body.tablet .layout-side .header-logo {
-  justify-content: center;
-}
-/* Phone: off-canvas, slides in when .is-menu-visible */
-body.phone .layout-side .app-menu-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  z-index: var(--layer-overlay, 400);
-  transform: translateX(-100%);
-  transition: transform 250ms ease;
-}
-body.phone .layout-side .app-menu-content.is-menu-visible {
-  transform: translateX(0);
-}
-/* Overlay scrim behind the open menu */
-body.phone .layout-side .content::before {
-  content: '';
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--layer-overlay, 400) - 1);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-body.phone .layout-side .content.is-menu-visible::before {
-  display: block;
-}
-/* Reduced motion: suppress chevron + slide transitions */
+/* Reduced motion: suppress the submenu/expand chevron transitions defined above
+ * (the drawer-slide reduced-motion is owned by the native OSUI menu machinery). */
 @media (prefers-reduced-motion: reduce) {
   .layout-side .menu-expand-toggle .icon,
   .layout-side .menu-expand-toggle .loop-icon,
   .layout-side .sidebar-toggle .icon,
   .layout-side .sidebar-toggle .loop-icon,
   .layout-side .app-menu-links .has-submenu > a > .indicator,
-  .layout-side .app-menu-links .has-submenu > a > .menu-item-indicator,
-  body.tablet .layout-side .app-menu-content,
-  body.phone .layout-side .app-menu-content {
+  .layout-side .app-menu-links .has-submenu > a > .menu-item-indicator {
     transition: none;
   }
 }
