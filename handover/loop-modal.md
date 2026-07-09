@@ -591,12 +591,10 @@ than the `heading` text or a custom icon.
    | `no-close` | `If(NoClose, "true", "false")` |
    | `no-backdrop-close` | `If(NoBackdropClose, "true", "false")` |
    | `static` | `If(Static, "true", "false")` |
-5. Wire `open`/`close` CustomEvents to `OnOpen`/`OnClose` actions:
-   ```javascript
-   var el = document.getElementById($parameters.WidgetId);
-   el.addEventListener('close', function(e) { $actions.OnClose(e.detail.reason); });
-   el.addEventListener('open',  function()  { $actions.OnOpen(); });
-   ```
+5. Wire `open`/`close` CustomEvents to `OnOpen`/`OnClose` in the Block's **OnReady**, and remove
+   the listeners in **OnDestroy** — see the copy-paste code in **[## Event wiring (OnReady /
+   OnDestroy)](#event-wiring-onready--ondestroy)** below. The listeners are stored on `$public`
+   so OnDestroy can remove them by reference (do not use the declarative "Handle Events" path).
 6. Toggle visibility from a trigger button's OnClick — call the reusable **ToggleModal**
    client action below, passing the **Block** id (it resolves the modal nested inside).
 
@@ -642,6 +640,47 @@ Notes:
 focus returns to the trigger on close; **body scroll locked** while open; ESC and backdrop
 dismiss (suppressible); focus ring uses `--loop-modal-close-focus` (#0071bc).
 
+## Event wiring (OnReady / OnDestroy)
+
+> The component's CustomEvents are wired in the Block's **OnReady** and cleaned up in
+> **OnDestroy** — the declarative "Handle Events" path is unreliable for custom elements.
+> Give the `<loop-modal>` element (or its wrapping Block) a **Name** and pass its
+> platform-generated `.Id` to each "Run JavaScript" node as `WidgetId`. Paste these two
+> blocks verbatim — they store each handler on `$public` so OnDestroy removes it by
+> reference. (If your ODC version doesn't persist `$public` across OnReady/OnDestroy,
+> stash the handlers on the element instead — `el._loopHandlers = { … }`.)
+
+| CustomEvent | raises Block event |
+|---|---|
+| `open` | `OnOpen()` |
+| `close` | `OnClose(e.detail.reason)` |
+
+**OnReady** — resolve the element, attach listeners, stash for cleanup:
+
+```js
+// Block OnReady — "Run JavaScript" node. Input: WidgetId = <ElementName>.Id
+var root = document.getElementById($parameters.WidgetId);
+var el = (root && root.tagName && root.tagName.toLowerCase() === 'loop-modal')
+  ? root : (root ? root.querySelector('loop-modal') : null);
+if (el) {
+  $public.el = el;                       // stash for OnDestroy cleanup
+  $public.handleOpen = function (e) { $actions.OnOpen(); };
+  $public.handleClose = function (e) { $actions.OnClose(e.detail.reason); };
+  el.addEventListener('open' , $public.handleOpen);
+  el.addEventListener('close', $public.handleClose);
+}
+```
+
+**OnDestroy** — remove the listeners:
+
+```js
+// Block OnDestroy — "Run JavaScript" node. Uses the reference stashed in OnReady.
+if ($public.el) {
+  $public.el.removeEventListener('open' , $public.handleOpen);
+  $public.el.removeEventListener('close', $public.handleClose);
+}
+```
+
 ## Build in ODC with Mentor Studio
 
 > Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
@@ -675,8 +714,12 @@ Events" tables (paste the relevant table into the chat so I work from real names
    (ODC requires one on every attribute). Static-Entity inputs bind directly (e.g.
    type = Type) since their Value attribute is the identifier; Booleans use
    If(Flag, "true", "false") — not presence.
-3. Wire each CustomEvent to its Block event via a "Run JavaScript" handler that
-   addEventListener's the event on the <loop-modal> element and raises the Block event.
+3. Wire each CustomEvent to its Block event in the Block's OnReady (attach) and OnDestroy
+   (remove) — not via the declarative "Handle Events" path, which is unreliable for custom
+   elements. Add a "Run JavaScript" node in OnReady that resolves the <loop-modal>,
+   addEventListener's each event (storing each handler on $public), and raises the Block
+   event; add a second in OnDestroy that removeEventListener's them. Paste the verbatim
+   OnReady + OnDestroy code from this handover's "## Event wiring (OnReady / OnDestroy)" section.
 4. If the component exposes a global helper (see its API section), give the element/Block
    a Name and pass its platform-generated runtime .Id, e.g.
    window.LoopX.show($parameters.WidgetId) where the WidgetId input = <WidgetName>.Id.
@@ -692,7 +735,8 @@ Work iteratively: create the Block interface in step 1 and show it to me before 
 - [ ] Import `loop-modal.js` as Script resource, Include = **When invoked**.
 - [ ] Rebuild `dist/theme.css` and paste into ODC Theme editor (includes `--loop-modal-*` tokens).
 - [ ] Create Block `Modal` with inputs, events, a `Content` Placeholder (default slot) and a `Footer` Placeholder wrapped in a Container carrying the HTML attribute `slot="footer"` (see slot rules).
-- [ ] Bind inputs directly on the element's attributes (booleans via `If(Flag, "true", "false")`, e.g. `no-icon` = `If(NoIcon, "true", "false")`); wire close/open CustomEvent listeners in a JS node.
+- [ ] Bind inputs directly on the element's attributes (booleans via `If(Flag, "true", "false")`, e.g. `no-icon` = `If(NoIcon, "true", "false")`).
+- [ ] Wire `close`/`open` CustomEvents in the Block's **OnReady** and remove them in **OnDestroy** — paste the code from the **Event wiring (OnReady / OnDestroy)** section.
 - [ ] Create the reusable `ToggleModal` client action (resolves modal from a Block id) and call it from triggers.
 - [ ] Test Medium + Small; test ESC, close button, backdrop click; test `static` + `no-backdrop-close`.
 - [ ] Test with all slots populated and all slots empty (placeholder fallbacks).

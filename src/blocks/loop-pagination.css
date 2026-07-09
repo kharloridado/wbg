@@ -11,6 +11,22 @@
   font-family: var(--font-family-body);
 }
 
+/* ---- Small size (Figma 23714-3840 "Small", node 26629:59237) ----
+   Used in AG-grid dashboard apps. Re-declares the size custom properties;
+   every rule below reads them via var(), so the whole block scales down
+   (mirrors Figma's Component-Sizes mode axis). 13px / 10px have no primitive
+   token — same raw-px convention as .loop-field--small in loop-text-field.css. */
+.loop-pagination--small {
+  --loop-pagination-btn-height:      var(--space-medium);  /* 40 -> 32 */
+  --loop-pagination-font-size:       13px;                 /* 14 -> 13 (no token) */
+  --loop-pagination-pages-font-size: 13px;                 /* 14 -> 13 (no token) */
+  --loop-pagination-gap-labeled:     var(--space-tiny);    /* 8 -> 4 */
+  --loop-pagination-gap-items:       var(--space-tiny);    /* 8 -> 4 */
+  --loop-pagination-gap-right:       var(--space-xsmall);  /* 14 -> 12 */
+  --loop-pagination-padding-icon:    var(--space-tiny);    /* 6 -> 4 */
+  --loop-pagination-padding-label:   10px;                 /* 12 -> 10 (no token) */
+}
+
 /* ---- Left-side nav strip ---- */
 .loop-pagination__nav {
   display: flex;

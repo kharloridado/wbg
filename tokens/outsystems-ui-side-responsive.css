@@ -38,6 +38,16 @@
   background-color: var(--color-bg-overlay-on-light-medium);
 }
 
+/* Default-hidden everywhere: `.loop-nav-toggle` is the Layout Side collapse control
+ * and is ONLY revealed inside `.layout-side` (the `.desktop .layout-side …` rules
+ * below). The same shared header Block also renders on non-sidebar layouts (Layout
+ * Top / Blank), where the toggle has no sidebar to act on — without this base rule it
+ * fell through to the raw native button (a stray 16×6px dark rectangle, no glyph, since
+ * the `::before` art is `.layout-side`-scoped). Hide it unless a scoped rule re-shows it. */
+.loop-nav-toggle {
+  display: none;
+}
+
 /* ════════════════════════════════════════════════════════════════════════════
  * Toggle button — The Loop pill with a `sidebar` glyph (fidelity-first: the Figma
  * asset is the sidebar/panel-toggle icon, not a 3-bar hamburger). Two carriers get
@@ -117,6 +127,8 @@
 .desktop .layout-side > .header {
   display: none;
 }
+
+ .desktop .layout-side.aside-collapsed .header-logo { padding-right: var(--space-base); }
 /* Animate the panel width + the content reflow when collapsing/expanding. */
 .desktop .layout-side .app-menu-content { transition: width 220ms ease, max-width 220ms ease; }
 .desktop .layout-side .main { transition: margin-left 220ms ease; }
@@ -159,11 +171,14 @@
   width: var(--space-xlarge); margin-inline: auto;
   justify-content: center; gap: 0; padding-inline: 0;
 }
+.layout-side .app-menu-links [data-block*="Submenu"] {
+    display: contents;
+}
 .desktop .layout-side.aside-collapsed .app-menu-links a > .indicator,
 .desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-indicator,
 .desktop .layout-side.aside-collapsed .app-menu-links a > .menu-item-caption,
 .desktop .layout-side.aside-collapsed .app-menu-links a > span:not(.icon):not(.loop-menu-item__holder),
-.desktop .layout-side.aside-collapsed .app-menu-links a .loop-menu-item__label { display: none; }
+.desktop .layout-side.aside-collapsed .app-menu-links .loop-menu-item__label { display: none; }
 /* When the icon + label are wrapped in a `.loop-menu-item__holder`, the blanket
  * `span:not(.icon)` above must NOT eat the holder (that would take the icon with it):
  * exclude it, hide only its label (rule above), and collapse its gap so the surviving
@@ -188,6 +203,70 @@
 .desktop .layout-side.aside-collapsed .app-login-info { justify-content: center; }
 .desktop .layout-side.aside-collapsed .app-login-info .user-info { display: none; }
 
+/* ── Submenu parent row in the rail — collapse the `.osui-submenu` header to the SAME
+ * lone-icon 48px pill as a flat link, so an expandable item is indistinguishable from a
+ * regular link when the panel is an icon rail (Figma "Nav/Menu-Item · Compact"). Without
+ * this the header keeps its full-width pill, text label and disclosure chevron while every
+ * neighbouring flat link has shrunk to a centred icon — the mismatch the collapsed rail shows.
+ * Centre the whole submenu block, drop the chevron, and hide the entire L2 child list (there
+ * is no room for children in an 84px rail — the group re-expands when the panel does). The
+ * leading icon survives centred; its label is already dropped by the flat-link
+ * `span:not(.icon)` / `.loop-menu-item__label` rules above, whether or not the header link
+ * wraps its icon+label in a `.loop-menu-item__holder`. Selectors carry `.osui-submenu` so they
+ * beat the vendor's own `.app-menu-links .osui-submenu …` rules (this file loads after OSUI). */
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu {
+  width: var(--space-xlarge);
+  margin-inline: auto;
+}
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header {
+  width: 100%;
+  justify-content: center;
+  gap: 0;
+  padding: var(--space-xxsmall);
+}
+/* Header item — and its optional inner anchor — shrink to the lone leading icon and centre
+ * it. The header content may be a plain Icon+label dropped STRAIGHT into
+ * `.osui-submenu__header__item` (no wrapping <a>), so the flat-link `.app-menu-links a` rail
+ * rule never reaches it and the item's native `flex: 1 1 auto` would strand the icon off to
+ * the left. `flex: 0 0 auto` collapses the item to its icon so the header's
+ * `justify-content: center` lands it dead-centre — for the anchored and no-anchor shapes alike. */
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__item,
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 0;
+  width: auto;
+  min-width: 0;
+  margin-inline: 0;
+  padding: 0;
+}
+/* Drop the text label so it stops pushing the icon off-centre — cover the caption whether it
+ * sits directly in the header item or inside its anchor, plus the holder-wrapped label. The
+ * leading icon is preserved by the same identification the flat links use (the OSUI Icon
+ * `.icon` / the `.loop-menu-item__holder`); every other span is text. */
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__item > span:not(.icon):not(.loop-menu-item__holder),
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__item a > span:not(.icon):not(.loop-menu-item__holder),
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__item .loop-menu-item__label {
+  display: none;
+}
+/* Chevron + L2 list have no place in the rail (hide the list even while `--is-open`). */
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__header__icon,
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu .osui-submenu__items {
+  display: none;
+}
+/* Selected parent → move the Blue/40 indicator from the left vertical strip to the short
+ * HORIZONTAL bar centred below the icon, exactly like a selected flat link in the rail. */
+.desktop .layout-side.aside-collapsed .app-menu-links .osui-submenu.active .osui-submenu__header::before {
+  left: 50%;
+  top: auto;
+  bottom: var(--space-tiny);
+  transform: translateX(-50%);
+  width: 10px;                      /* Figma compact indicator length — no matching size token */
+  height: var(--space-tiny);
+}
+
 /* ════════════════════════════════════════════════════════════════════════════
  * TABLET / PHONE — the panel is off-canvas (native); a white top bar carries the
  * toggle + logo, and the sliding drawer + scrim sit below the bar. */
@@ -202,7 +281,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-tiny);
-  min-height: var(--loop-side-topbar-h);
+  height: var(--loop-side-topbar-h);
   padding: var(--space-xsmall) var(--space-xxsmall);
   background-color: var(--color-white);
   box-shadow: var(--shadow-low);
@@ -260,4 +339,64 @@
 .phone  .layout-side .app-menu-overlay {
   top: var(--loop-side-topbar-h);
   height: calc(100% - var(--loop-side-topbar-h));
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+ * Content-chrome insets — shrink the header / body / footer gutter on PHONE. The
+ * desktop chrome (outsystems-ui-side.css) insets all three regions by --space-xlarge
+ * (48px) horizontally so their left edges line up with the content gutter. The Figma
+ * "Templates" frames KEEP that 48px gutter on tablet (node 27288:26108 · ① Content
+ * x=48, both edges) but TIGHTEN it on phone to ~28px sides + 16px top (nodes
+ * 28101:31461 / 28101:31561 · ① Content x=28 y=16). Without an override the phone
+ * inherited the desktop 48px — far too wide on a 375–412px screen. 28px is off the
+ * token scale, so map to the nearest step --space-regular (24px); hold all three
+ * regions on that same inset so header, body and footer stay edge-aligned. Tablet
+ * already matches the 48px desktop gutter, so it needs no override. Scoped under
+ * `.phone .layout-side` (0,3,0 / 0,4,0) to beat the desktop base rules. */
+.phone .layout-side .content > .loop-content__body {
+  padding: var(--space-small) var(--space-regular) var(--space-regular);
+}
+.phone .layout-side .loop-content__header {
+  padding: var(--space-small) var(--space-regular) var(--space-xxsmall);
+}
+.phone .layout-side .loop-content__footer {
+  padding: var(--space-small) var(--space-regular);
+}
+
+/* Break the chrome's two-column rows onto separate lines on phone. At 375–412px the
+ * header's breadcrumb ↔ utility-actions row and the footer's institutions ↔ copyright
+ * row (both `justify-content: space-between`) squeeze and collide. Drop each to a
+ * column so its items stack, left-aligned — "break to the next line by default". */
+.phone .layout-side .loop-content__header-top {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xxsmall);
+}
+/* The actions cluster is normally pushed right by `margin-left: auto`; once stacked it
+ * should sit at the left edge under the breadcrumb, not float away. */
+.phone .layout-side .loop-content__actions {
+  margin-left: 0;
+}
+/* The page-title row is frequently used as a title ↔ page-actions row: screens add the
+ * OSUI `display-flex justify-content-space-between` utilities to `.loop-content__title`
+ * and drop a page-actions cluster (search field + one or more buttons) beside the H1
+ * (e.g. LoopDashboard: "Request Overview" + Search + Secondary + Create Request). On a
+ * 375–412px phone that row overflows hard (the cluster alone is ~316px). Stack the title
+ * so the actions break onto the next line, and let the cluster itself wrap its controls
+ * instead of running off-screen (OSUI pins it with a `white-space-nowrap` utility — relax
+ * it here so the inline-block search + buttons flow onto multiple lines). Guarded by
+ * `.loop-content__title` so it only applies when the title carries page actions; a bare
+ * H1 title has no flex context and is unaffected. */
+.phone .layout-side .loop-content__title {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-small);
+}
+.phone .layout-side .loop-content__title .white-space-nowrap {
+  white-space: normal;
+}
+.phone .layout-side .loop-content__footer {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }

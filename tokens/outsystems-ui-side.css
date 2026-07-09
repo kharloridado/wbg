@@ -109,8 +109,7 @@
  * Block renders inside a `[data-block*="CustomPatterns"]` wrapper (display:contents, see
  * outsystems-ui-overrides.css). That wrapper leaves the box tree but stays in the DOM, so
  * the holder is a grandchild of the anchor; a direct-child selector would miss it. */
-.layout-side .app-menu-links a .loop-menu-item__holder,
-.layout-side .app-menu-links .osui-submenu__header__item a .loop-menu-item__holder {
+.loop-menu-item__holder {
   display: flex;
   align-items: center;
   gap: var(--space-xxsmall);
@@ -118,10 +117,10 @@
   min-width: 0;   /* let the label shrink so its ellipsis, not the pill, absorbs overflow */
 }
 /* Leading icon holds its intrinsic size; the label takes the slack and truncates. */
-.layout-side .app-menu-links .loop-menu-item__icon {
+.loop-menu-item__icon {
   flex: 0 0 auto;
 }
-.layout-side .app-menu-links .loop-menu-item__label {
+.loop-menu-item__label {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -310,8 +309,9 @@
 .layout-side .app-menu-links .osui-submenu .osui-submenu__items {
   display: none; /* collapsed by default; the pattern JS toggles --is-open */
   flex-direction: column;
-  gap: 0;
-  padding: 0 0 var(--space-xxsmall) var(--space-tiny);
+  padding: 0;
+  margin-top: var(--space-s);
+  gap: var(--space-tiny)
 }
 .layout-side .app-menu-links .osui-submenu--is-open > .osui-submenu__items {
   display: flex;
@@ -406,7 +406,7 @@
 .loop-content__header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-tiny);
+  gap: var(--space-base);
   padding: var(--space-small) var(--space-xlarge) var(--space-xxsmall);
 }
 .loop-content__header-top {
@@ -454,9 +454,6 @@
   content: "|";
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-regular);
-}
-.loop-content__breadcrumbs .breadcrumbs-item:last-child > :not(.title) {
-  display: none;
 }
 /* Leading home / custom crumb icon (a filled icon slot, not the separator) → dark. */
 .loop-content__breadcrumbs .loop-icon,

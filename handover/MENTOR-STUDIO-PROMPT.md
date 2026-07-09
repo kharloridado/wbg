@@ -82,8 +82,12 @@ Task — create these elements, referencing every element by the exact name give
 3. Wire the component's CustomEvents to the Block events:
    <<  "action"  CustomEvent  -> trigger OnAction
        "dismiss" CustomEvent  -> trigger OnDismiss  >>
-   Add a small "Run JavaScript" handler on the element (or in the Block's OnReady) that
-   addEventListener's each CustomEvent and triggers the matching Block event.
+   Do NOT use the declarative "Handle Events" path (unreliable for custom elements). Instead add
+   a "Run JavaScript" node in the Block's **OnReady** that addEventListener's each CustomEvent
+   (storing each handler on `$public` so it can be removed) and triggers the matching Block event,
+   and a second "Run JavaScript" node in **OnDestroy** that removeEventListener's them. Each
+   handover ships the exact OnReady + OnDestroy code in its "## Event wiring (OnReady / OnDestroy)"
+   section — paste it verbatim (placement, not authoring).
 
 4. To address a specific instance, give the <<loop-COMPONENT>> element (or its Block) a
    **Name**, then create a client action "<<Show COMPONENT>>" with a "Run JavaScript" node
@@ -162,8 +166,12 @@ Task — create these elements, referencing each by the exact name given:
    is the identifier. Use the If(flag,"true","false") form for the Boolean (values, not presence).
 
 3. Wire CustomEvents to Block events: the element's "action" CustomEvent triggers OnAction,
-   and its "dismiss" CustomEvent triggers OnDismiss. Implement with a "Run JavaScript" that
-   addEventListener's both events on the <loop-toast> element and raises the Block events.
+   and its "dismiss" CustomEvent triggers OnDismiss. Do this in the Block's **OnReady** (a
+   "Run JavaScript" node that addEventListener's both events on the <loop-toast> element,
+   storing each handler on `$public`, and raises the Block events) and clean up in **OnDestroy**
+   (a second "Run JavaScript" node that removeEventListener's them) — not via the declarative
+   "Handle Events" path. Paste the verbatim code from the handover's "## Event wiring
+   (OnReady / OnDestroy)" section.
 
 4. OutSystems generates element ids at runtime, so address a specific toast by its widget's
    platform .Id — not a hand-typed string. Give the <loop-toast> element (or its Block) a

@@ -11,13 +11,19 @@
  * the pasted ODC theme an unreadable wall of variables. This build keeps the
  * source provenance/finding notes AND adds the navigable index.
  *
+ * `--ship` (customer deliverable): strips the ordinary `/* … *\/` provenance and
+ * finding notes but KEEPS the `/*!` important comments — the head, the Section
+ * Index, and the per-section banners. The pasted ODC theme stays navigable
+ * (TOC + sectioning) without the internal working notes. NOT flat/comment-stripped
+ * (see CLAUDE.md rule): the sectioning + table of contents always survive.
+ *
  * SINGLE :root — every token file declares its own `:root { … }`; concatenating
  * them verbatim would emit many `:root` blocks. Instead we lift each file's
  * declarations into ONE consolidated `:root { … }` (section banners kept as inner
  * comments). Files with no `:root` (e.g. the color utility CLASSES) are emitted
  * after the consolidated block, each under its own banner.
  *
- * Usage:  node build/build-theme.mjs [--watch]
+ * Usage:  node build/build-theme.mjs [--watch] [--ship]
  * Order of sections follows the @import order in tokens/index.css. */
 import { readFileSync, writeFileSync, mkdirSync, watch } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -139,6 +145,34 @@ function blocksOrder() {
 
 function banner(title) {
   return `/*! ${RULE}\n${title}\n${RULE} */`;
+}
+
+/* `--ship` post-process: drop every ordinary `/* … *\/` note, KEEP the `/*!`
+ * important comments (head, Section Index, section banners), then tidy the blank
+ * lines and trailing whitespace those notes leave behind.
+ *
+ * A comment-aware scanner, NOT a regex: a `/*!` comment's own BODY may contain the
+ * literal `/*` (e.g. the head's "tokens/*.css"), and since CSS comments don't nest,
+ * a comment runs from `/*` to the NEXT `*\/`. Scanning for `*\/` from the opener —
+ * never re-scanning the body for `/*` — keeps such comments whole; a regex that
+ * hunts for `/*` mid-body would slice the keep-comment apart. */
+function stripNotes(css) {
+  let out = "";
+  for (let i = 0; i < css.length; ) {
+    if (css[i] === "/" && css[i + 1] === "*") {
+      const keep = css[i + 2] === "!";
+      const end = css.indexOf("*/", i + 2);
+      const stop = end === -1 ? css.length : end + 2;
+      if (keep) out += css.slice(i, stop);
+      i = stop; // ordinary comment: skip it entirely
+    } else {
+      out += css[i++];
+    }
+  }
+  return out
+    .replace(/[ \t]+$/gm, "") // trim trailing whitespace
+    .replace(/\n{3,}/g, "\n\n") // collapse blank-line runs to one
+    .replace(/^\n+/, ""); // no leading blank lines
 }
 
 /* Group files by their META.group, preserving first-seen order. Returns the
@@ -310,10 +344,14 @@ function build() {
   const importBlock = [...new Set(hoisted)].join("\n");
   const docHead = importBlock ? `${importBlock}\n\n\n${head}` : head;
 
+  const ship = process.argv.includes("--ship");
+  let out = [docHead, ...preRootSections, rootBlock, ...tailSections].join("\n\n\n") + "\n";
+  if (ship) out = stripNotes(out);
+
   mkdirSync(dirname(outFile), { recursive: true });
-  writeFileSync(outFile, [docHead, ...preRootSections, rootBlock, ...tailSections].join("\n\n\n") + "\n");
+  writeFileSync(outFile, out);
   console.log(
-    `build:theme → dist/theme.css (${hoisted.length ? "1 @import, " : ""}${preRootSections.length ? `${preRootSections.length} pre-root, ` : ""}1 :root, ${rootSections.length} token sections, ${tailSections.length} class sections)`
+    `build:theme${ship ? ":ship" : ""} → dist/theme.css (${hoisted.length ? "1 @import, " : ""}${preRootSections.length ? `${preRootSections.length} pre-root, ` : ""}1 :root, ${rootSections.length} token sections, ${tailSections.length} class sections${ship ? "; notes stripped, TOC + banners kept" : ""})`
   );
 }
 

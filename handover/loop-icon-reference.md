@@ -72,15 +72,22 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
  * Every tile is a click-to-copy button — copy the exact icon name to paste into your
  * CustomIcon block.
  *
- * DATA: reads the window.LoopIconData global from loop-icon-data.js (GENERATED — load it as
- * a <script> Resource BEFORE this file). Each row is { n:name, l:label, s:styleFlags, u:unicode,
- * t?:terms }. This component flattens it to one tile per (name × style).
+ * DATA (three sources, tried in order — all reduce to the same internal rows):
+ *   1. `src` attribute — comma-separated IcoMoon selection.json URLs (dist/icomoon/loop-fa-*).
+ *      Fetched at runtime; carries the actual SVG PATH per glyph → true inline-SVG rendering,
+ *      independent of the woff2 font. This is the preview path (ODC blocks fetch/CORS).
+ *   2. window.LoopIcoMoonData — the merged global from gen:icomoon-data.js (also carries paths
+ *      → inline SVG). The ODC path: load it as a <script> Resource BEFORE this file.
+ *   3. window.LoopIconData — the legacy metadata global from loop-icon-data.js (no paths →
+ *      renders from the FA @font-face). The backward-compatible fallback.
+ * Every source flattens to one tile per (name × style).
  *
- * RENDERING (shadow DOM): the page's `.fa-*` class rules do NOT pierce shadow DOM, so tiles do
- * NOT depend on fontawesome.css's classes — each glyph is drawn from its unicode via
- * `content: var(--g)` against the document-scoped @font-face (which IS visible inside shadow
- * DOM). So the only runtime dependency is the FA @font-face being present (the fontawesome.css
- * paste / the 4 woff2 Resources).
+ * RENDERING (shadow DOM): the page's `.fa-*` class rules do NOT pierce shadow DOM. When a tile
+ * has path data (sources 1–2) it is drawn as an inline `<svg viewBox="0 0 width 512">` filled
+ * with currentColor — no font needed, a faithful preview of the IcoMoon export. Otherwise the
+ * glyph is drawn from its unicode via `content: var(--g)` against the document-scoped
+ * @font-face (which IS visible inside shadow DOM), so the only runtime dependency in that mode
+ * is the FA @font-face being present (the fontawesome.css paste / the woff2 Resources).
  *
  * COPY FORMAT (attribute `copy-format`) — what each tile copies:
  *   "class"    (default) → "fa-solid fa-user"   — paste-ready full class token
@@ -89,6 +96,8 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
  * Pick the one your CustomIcon block expects.
  *
  * Attributes:
+ *   src            Comma-separated IcoMoon selection.json URLs to fetch (optional; enables
+ *                  inline-SVG rendering in fetch-capable hosts like the local preview)
  *   heading        Section heading (default: "Icons")
  *   intro          Optional intro line under the heading
  *   copy-format    class | prefixed | name      (default: class)
@@ -115,7 +124,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
   }
 
   class LoopIconReference extends HTMLElement {
-    static get observedAttributes() { return ["heading", "intro", "copy-format", "default-style", "page-size"]; }
+    static get observedAttributes() { return ["src", "heading", "intro", "copy-format", "default-style", "page-size"]; }
 
     constructor() {
       super();
@@ -124,6 +133,7 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
       this._style = null;        // active style filter flag (s/r/l) or null = all
       this._shown = 0;           // how many filtered tiles are currently rendered
       this._filtered = [];
+      this._rows = [];           // normalized source rows (any of the 3 data sources)
       this._tiles = [];
       this._onInput = this._onInput.bind(this);
       this._onGridClick = this._onGridClick.bind(this);
@@ -131,12 +141,18 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
     }
 
     connectedCallback() {
+      // Render immediately from whatever global is present (instant, font-capable), then —
+      // if a `src` is given — fetch the selection.json and upgrade to inline-SVG rendering.
+      this._rows = this._rowsFromGlobals();
       this._tiles = this._buildTiles();
       this._style = this._defaultStyle;
       this._render();
+      const src = this.getAttribute("src");
+      if (src) this._loadFromSrc(src);
     }
     attributeChangedCallback(n, o, v) {
       if (o === v || !this.shadowRoot.childElementCount) return;
+      if (n === "src") { if (v) this._loadFromSrc(v); return; }
       if (n === "default-style") this._style = this._defaultStyle;
       this._render();
     }
@@ -156,15 +172,97 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
       return Number.isNaN(p) ? 300 : Math.max(0, p);
     }
 
-    /* Flatten the data global into one entry per (name × style). */
-    _buildTiles() {
-      const data = (typeof window !== "undefined" && window.LoopIconData) || [];
-      const tiles = [];
-      for (const row of data) {
-        const haystack = (row.n + " " + (row.l || "") + " " + (row.t ? row.t.join(" ") : "")).toLowerCase();
+    /* --- data sources (each normalizes to internal rows: { n, label, search, s?/r?/l?:{u,w?,p?} }) --- */
+
+    /* Sync source, preferred order: merged IcoMoon global (paths) → legacy metadata global (font). */
+    _rowsFromGlobals() {
+      const g = typeof window !== "undefined" ? window : {};
+      if (g.LoopIcoMoonData && Array.isArray(g.LoopIcoMoonData.icons)) return this._rowsFromMerged(g.LoopIcoMoonData.icons);
+      if (Array.isArray(g.LoopIconData)) return this._rowsFromLegacy(g.LoopIconData);
+      return [];
+    }
+
+    /* window.LoopIconData rows { n, l, s:"srl", u, t } — metadata only, no paths (font render). */
+    _rowsFromLegacy(data) {
+      return data.map((row) => {
+        const search = (row.n + " " + (row.l || "") + " " + (row.t ? row.t.join(" ") : "")).toLowerCase();
+        const r = { n: row.n, label: row.l || row.n, search };
+        for (const flag of ORDER) if (row.s.includes(flag)) r[flag] = { u: row.u };
+        return r;
+      });
+    }
+
+    /* window.LoopIcoMoonData.icons { n, tags, s:{c,w,p}, r, l } — carries paths (SVG render). */
+    _rowsFromMerged(icons) {
+      return icons.map((ic) => {
+        const tags = ic.tags || [ic.n];
+        const r = { n: ic.n, label: ic.n, search: (ic.n + " " + tags.join(" ")).toLowerCase() };
         for (const flag of ORDER) {
-          if (!row.s.includes(flag)) continue;
-          tiles.push({ name: row.n, label: row.l || row.n, flag, unicode: row.u, search: haystack });
+          const st = ic[flag];
+          if (st) r[flag] = { u: st.c != null ? st.c.toString(16) : "", w: st.w, p: st.p };
+        }
+        return r;
+      });
+    }
+
+    /* Merge N parsed IcoMoon selection.json docs (one per style) into rows, keyed by icon name.
+       The style is read from each doc's metadata.name suffix (loop-fa-solid|regular|light). */
+    _rowsFromSelection(docs) {
+      const styleOf = (doc) => {
+        const nm = ((doc.metadata && doc.metadata.name) || "").toLowerCase();
+        return nm.includes("solid") ? "s" : nm.includes("regular") ? "r" : nm.includes("light") ? "l" : null;
+      };
+      const map = new Map();
+      for (const doc of docs) {
+        const flag = styleOf(doc);
+        if (!flag || !Array.isArray(doc.icons)) continue;
+        for (const entry of doc.icons) {
+          const name = entry.properties && entry.properties.name;
+          if (!name) continue;
+          let r = map.get(name);
+          if (!r) {
+            const tags = (entry.icon && entry.icon.tags) || [name];
+            r = { n: name, label: name, search: (name + " " + tags.join(" ")).toLowerCase() };
+            map.set(name, r);
+          }
+          const code = entry.properties.code;
+          r[flag] = {
+            u: code != null ? code.toString(16) : "",
+            w: entry.icon && entry.icon.width,
+            p: (entry.icon && entry.icon.paths && entry.icon.paths[0]) || "",
+          };
+        }
+      }
+      return [...map.values()];
+    }
+
+    /* Fetch the selection.json URL(s) and, on success, upgrade to inline-SVG rendering.
+       On any failure the existing globals-based render (font fallback) is kept. */
+    async _loadFromSrc(src) {
+      const urls = src.split(",").map((s) => s.trim()).filter(Boolean);
+      if (!urls.length) return;
+      try {
+        const docs = await Promise.all(
+          urls.map((u) => fetch(u).then((res) => { if (!res.ok) throw new Error(String(res.status)); return res.json(); }))
+        );
+        const rows = this._rowsFromSelection(docs);
+        if (!rows.length) return;
+        this._rows = rows;
+        this._tiles = this._buildTiles();
+        this._render(); // preserves this._query / this._style (instance fields)
+      } catch (_) {
+        /* keep the globals-based render */
+      }
+    }
+
+    /* Flatten normalized rows into one entry per (name × style). */
+    _buildTiles() {
+      const tiles = [];
+      for (const row of this._rows || []) {
+        for (const flag of ORDER) {
+          const st = row[flag];
+          if (!st) continue;
+          tiles.push({ name: row.n, label: row.label || row.n, flag, unicode: st.u, width: st.w, path: st.p, search: row.search });
         }
       }
       return tiles;
@@ -232,10 +330,13 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 
     _tileHtml(t, i) {
       const val = this._copyValue(t);
-      const glyph = `'\\${t.unicode}'`;
+      // Path data present (IcoMoon sources) → faithful inline SVG; else the FA @font-face glyph.
+      const glyph = t.path
+        ? `<svg class="lir__glyph lir__glyph--svg" viewBox="0 0 ${t.width || 512} 512" aria-hidden="true" focusable="false"><path d="${esc(t.path)}"/></svg>`
+        : `<i class="lir__glyph ${t.flag}" style="--g:'\\${t.unicode}'" aria-hidden="true"></i>`;
       return `<button type="button" class="lir__tile" role="listitem" data-i="${i}"
         aria-label="Copy ${esc(val)}" title="${esc(val)}">
-        <i class="lir__glyph ${t.flag}" style="--g:${glyph}" aria-hidden="true"></i>
+        ${glyph}
         <span class="lir__name">${esc(t.name)}</span>
         <span class="lir__style">${esc(STYLE_META[t.flag].label)}</span>
       </button>`;
@@ -389,6 +490,10 @@ Each tile copies a value; the `copy-format` attribute picks which, so it lands r
 .lir__glyph.r { font-weight: 400; }
 .lir__glyph.l { font-weight: 300; }
 .lir__glyph::before { content: var(--g); }
+/* Inline-SVG glyph (IcoMoon path data) — aspect from the viewBox, height matched to the font box,
+   painted in the same header color via currentColor. Font-independent. */
+.lir__glyph--svg { width: auto; max-width: 30px; }
+.lir__glyph--svg path { fill: currentColor; }
 
 .lir__name { font-size: 12px; line-height: 1.3; color: var(--color-text-on-light-default, #00263e);
   word-break: break-word; max-width: 100%; }

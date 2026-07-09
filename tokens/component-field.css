@@ -49,10 +49,13 @@
   --loop-field-count-padding:   var(--space-xtiny) var(--space-tiny);        /* 2px 4px */
 
   /* =========================================================================
-     Select / Dropdown — restyle of the native Dropdown + VirtualSelect provider.
+     Select / Dropdown — restyle of the native single-Select Dropdown.
      Reuses the Text Field state colours but has its own pill box (40px tall, 13px text).
+     NOTE: the VirtualSelect provider variants (Dropdown Search + Dropdown Tags) are NOT
+     shipping (removed 2026-07-07); their Search/Tags-only tokens were removed with them.
+     Restore from git (commits 149022f / 51969e8) if the variants return.
      ========================================================================= */
-  --loop-select-h:                40px;                        /* pinned height, shared by the field box + VirtualSelect wrapper */
+  --loop-select-h:                40px;                        /* pinned height of the field box */
   --loop-select-radius:           var(--radius-medium);        /* 8px soft-rounded — default, shared with the Text Field. Rounded (32px pill) variant via .loop-field--rounded. */
   --loop-select-padding-block:    11px;                        /* off-grid */
   --loop-select-padding-inline:   var(--space-small);          /* 16px */
@@ -65,30 +68,4 @@
   --loop-select-text-tracking:    0.5px;
   --loop-select-list-radius:      var(--radius-medium);        /* 8px — popup list */
   --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px */
-  /* search-box magnifier (Dropdown Search open state) — FA 6 Pro magnifying-glass,
-     rendered as a font glyph (loop-dropdown.css ::before); regular weight matches the
-     Figma stroke */
-  --loop-select-search-icon-char:   "\f002";                     /* fa-magnifying-glass */
-  --loop-select-search-icon-weight: var(--font-weight-icon-regular, 400);
-  --loop-select-search-icon-glyph:  14px;                        /* em box inside the 16px icon box */
-
-  /* ---- Multi-select (DropdownTags) ---- */
-  --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */
-  --loop-multiselect-min-content:   28px;
-
-  --loop-select-icon-size:          20px;                      /* loop/field/icon size — MULTI-select (Dropdown Tags) right icons (clear-all xmark + chevron); single Select is 16px below */
-  --loop-select-icon-size-single:   16px;                      /* loop/field/icon size — SINGLE Select (Dropdown Search) chevron (Figma 18770:10424 = 16px, not the tags' 20px) */
-  --loop-select-tags-padding-right:  72px;                     /* tags box right gutter — reserves room for the two absolutely-positioned right icons (16px gutter + 20px chevron + 8px gap + 20px clear-all) so the tag row never runs under them */
-
-  /* ---- Tag chip inside the multi-select (neutral chip, ≠ the blue loop-tag block) ---- */
-  --loop-select-tag-radius:         48px;
-  --loop-select-tag-padding-block:  var(--space-xxsmall);      /* 8px — loop/tag/vpadding */
-  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px — loop/tag/hpadding */
-  --loop-select-tag-count-padding-inline: 6px;                 /* Figma +N pill inline padding (px-6, narrower than the 12px real-chip padding) */
-  --loop-select-tag-gap:            var(--space-tiny);         /* 4px — loop/tag/hgap */
-  --loop-select-tag-tracking:       0.25px;                    /* loop/Tag/Label/Letter Space */
-  --loop-select-tag-text-max:       200px;                     /* Figma tag text-wrapper max-width */
-  --loop-select-tag-bg:             var(--color-bg-container-on-light-low);   /* #f5f7f9 */
-  --loop-select-tag-border-color:   var(--color-outline-on-light-default);   /* rgba(0,57,107,0.24) — chip stroke per Figma -loop tag */
-  --loop-select-tag-cross-size:     14px;                      /* loop/tag/icon/cross-size */
 }

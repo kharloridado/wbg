@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const handoverDir = join(root, "handover");
 const MARKER = "## Code to paste into ODC";
+const WIRING_MARKER = "## Event wiring (OnReady / OnDestroy)";
 const MENTOR_MARKER = "## Build in ODC with Mentor Studio";
 
 /* md file → the artifact(s) a developer hand-places into ODC, plus an optional `mentor`
@@ -91,12 +92,30 @@ const MAP = {
   "loop-tag.md":             [["src/blocks/loop-tag.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-badge.md":           [["src/blocks/loop-badge.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-card.md":            [["src/blocks/loop-card.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
-  "loop-button-dropdown.md": [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
+  "loop-button-dropdown.md": {
+    files: [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
+    wiring: {
+      tag: "loop-button-dropdown",
+      customEvents: [["action", "OnAction"], ["toggle", "OnToggle"]],
+    },
+  },
   "loop-split-btn.md":       [["src/blocks/loop-split-btn.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tabs.md":            [["src/blocks/loop-tabs.css", "css", "Theme CSS — paste below OutSystems UI"]],
-  "loop-modal.md":           [["src/components/loop-modal.js",   "js", "Script resource (Theme/Library), Include = When invoked"]],
-  "loop-system-alert.md":    [["src/components/loop-system-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+  "loop-modal.md": {
+    files: [["src/components/loop-modal.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
+    wiring: {
+      tag: "loop-modal",
+      customEvents: [["open", "OnOpen"], ["close", "OnClose", "e.detail.reason"]],
+    },
+  },
+  "loop-system-alert.md": {
+    files: [["src/components/loop-system-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+    wiring: {
+      tag: "loop-system-alert",
+      customEvents: [["dismiss", "OnDismiss", "e.detail.type"], ["action", "OnAction", "e.detail.type"]],
+    },
+  },
   "loop-toast.md": {
     files: [["src/components/loop-toast.js", "js", "Script resource (Theme/Library), Include = Always"]],
     mentor: {
@@ -169,11 +188,21 @@ const MAP = {
         ["status-text", "StatusText"], ["accept", "Accept"],
         ["multiple", 'If(Multiple, "true", "false")'], ["disabled", 'If(Disabled, "true", "false")'],
       ],
-      customEvents: [["change", "OnChange"], ["remove", "OnRemove"], ["browse", "OnBrowse"]],
+      customEvents: [
+        ["change", "OnChange", "JSON.stringify(e.detail.files)"],
+        ["remove", "OnRemove", "e.detail.name"],
+        ["browse", "OnBrowse"],
+      ],
       methods: ["open", "addFiles", "setProgress", "removeFile", "clear"],
     },
   },
-  "loop-alert.md":           [["src/components/loop-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+  "loop-alert.md": {
+    files: [["src/components/loop-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
+    wiring: {
+      tag: "loop-alert",
+      customEvents: [["dismiss", "OnDismiss", "e.detail.type"], ["action", "OnAction", "e.detail.type"]],
+    },
+  },
   "loop-badge-status.md":    [["src/blocks/loop-badge-status.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-color-reference.md": [["src/components/loop-color-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
   "loop-type-reference.md":  [["src/components/loop-typography-reference.js", "js", "Add to Resources — load on the Style-Guide screen"]],
@@ -184,7 +213,13 @@ const MAP = {
   /* Icon reference: embed only the component logic — the generated loop-icon-data.js (~205 KB)
      is its OWN Resource paste (like dist/theme.css), documented in the ticket, not inlined. */
   "loop-icon-reference.md": [["src/components/loop-icon-reference.js", "js", "Add to Resources — load on the Style-Guide screen, AFTER loop-icon-data.js"]],
-  "EXAMPLE-rnt-segmented.md":[["src/components/rnt-segmented.js", "js", "Script resource (Theme Library), Include = When invoked"]],
+  "EXAMPLE-rnt-segmented.md": {
+    files: [["src/components/rnt-segmented.js", "js", "Script resource (Theme Library), Include = When invoked"]],
+    wiring: {
+      tag: "rnt-segmented",
+      customEvents: [["change", "OnChange", "e.detail.value"]],
+    },
+  },
 };
 
 /* ── "## Code to paste into ODC" ─────────────────────────────────────────────── */
@@ -213,6 +248,91 @@ function section(artifacts) {
       ` so re-run after editing the source to keep the ticket in sync.`,
     ``,
     ...blocks,
+  ].join("\n");
+}
+
+/* ── "## Event wiring (OnReady / OnDestroy)" ─────────────────────────────────── */
+/* Resolve { tag, customEvents } for a component that dispatches CustomEvents. Source is the
+ * full `mentor` spec (when it carries tag + customEvents) or a lightweight `wiring` field;
+ * null for components that emit nothing (references, restyles) so no section is generated. */
+function wiringOf(entry) {
+  const m = entry.mentor;
+  if (m && m.tag && m.customEvents) return { tag: m.tag, customEvents: m.customEvents };
+  if (entry.wiring && entry.wiring.tag && entry.wiring.customEvents) return entry.wiring;
+  return null;
+}
+
+// "close" → "handleClose"; dash-joined events camel-case ("action-done" → "handleActionDone").
+function handlerName(event) {
+  return "handle" + event.split("-").map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join("");
+}
+
+/* The two "Run JavaScript" bodies: OnReady attaches (storing each handler on $public so it can
+ * be removed by reference) and OnDestroy removes. The resolver mirrors the shipped
+ * window.LoopToast resolve() — the id may point at the element itself OR the wrapping
+ * Block/Container. customEvents entries are [event, BlockEvent, detailArg?]. */
+function eventWiring(tag, customEvents) {
+  // pad the quoted event token so the handler column lines up
+  const qW = Math.max(...customEvents.map(([ev]) => ev.length + 2));
+  const q = (ev) => `'${ev}'`.padEnd(qW);
+
+  const onReady = [
+    `// Block OnReady — "Run JavaScript" node. Input: WidgetId = <ElementName>.Id`,
+    `var root = document.getElementById($parameters.WidgetId);`,
+    `var el = (root && root.tagName && root.tagName.toLowerCase() === '${tag}')`,
+    `  ? root : (root ? root.querySelector('${tag}') : null);`,
+    `if (el) {`,
+    `  $public.el = el;                       // stash for OnDestroy cleanup`,
+    ...customEvents.map(([ev, blockEv, detail]) =>
+      `  $public.${handlerName(ev)} = function (e) { $actions.${blockEv}(${detail || ""}); };`),
+    ...customEvents.map(([ev]) =>
+      `  el.addEventListener(${q(ev)}, $public.${handlerName(ev)});`),
+    `}`,
+  ].join("\n");
+
+  const onDestroy = [
+    `// Block OnDestroy — "Run JavaScript" node. Uses the reference stashed in OnReady.`,
+    `if ($public.el) {`,
+    ...customEvents.map(([ev]) =>
+      `  $public.el.removeEventListener(${q(ev)}, $public.${handlerName(ev)});`),
+    `}`,
+  ].join("\n");
+
+  return { onReady, onDestroy };
+}
+
+function wiringSection(entry) {
+  const w = wiringOf(entry);
+  if (!w) return null;
+  const { onReady, onDestroy } = eventWiring(w.tag, w.customEvents);
+  const rows = w.customEvents.map(([ev, blockEv, detail]) =>
+    `| \`${ev}\` | \`${blockEv}(${detail || ""})\` |`);
+  return [
+    WIRING_MARKER,
+    ``,
+    `> The component's CustomEvents are wired in the Block's **OnReady** and cleaned up in`,
+    `> **OnDestroy** — the declarative "Handle Events" path is unreliable for custom elements.`,
+    `> Give the \`<${w.tag}>\` element (or its wrapping Block) a **Name** and pass its`,
+    `> platform-generated \`.Id\` to each "Run JavaScript" node as \`WidgetId\`. Paste these two`,
+    `> blocks verbatim — they store each handler on \`$public\` so OnDestroy removes it by`,
+    `> reference. (If your ODC version doesn't persist \`$public\` across OnReady/OnDestroy,`,
+    `> stash the handlers on the element instead — \`el._loopHandlers = { … }\`.)`,
+    ``,
+    `| CustomEvent | raises Block event |`,
+    `|---|---|`,
+    ...rows,
+    ``,
+    `**OnReady** — resolve the element, attach listeners, stash for cleanup:`,
+    ``,
+    "```js",
+    onReady,
+    "```",
+    ``,
+    `**OnDestroy** — remove the listeners:`,
+    ``,
+    "```js",
+    onDestroy,
+    "```",
   ].join("\n");
 }
 
@@ -293,8 +413,13 @@ function wcFilled(m) {
     `   Static-Entity inputs bind directly (e.g. type = Type) — the Value attribute is the`,
     `   record Identifier. Use If(flag,"true","false") for every Boolean (values, not presence).`,
     ``,
-    `3. Wire CustomEvents to Block events: ${ce}. Implement with a "Run JavaScript" that`,
-    `   addEventListener's each event on the <${tag}> element and raises the Block event.`,
+    `3. Wire CustomEvents to Block events: ${ce}. Do NOT use the declarative "Handle Events"`,
+    `   path (unreliable for custom elements). Instead add a "Run JavaScript" node in the Block's`,
+    `   OnReady that resolves the <${tag}>, addEventListener's each event (storing each handler on`,
+    `   $public so it can be removed), and raises the matching Block event; add a second`,
+    `   "Run JavaScript" node in OnDestroy that removeEventListener's them. The exact OnReady +`,
+    `   OnDestroy code is in this handover's "## Event wiring (OnReady / OnDestroy)" section —`,
+    `   paste it verbatim (you are placing provided JS, not authoring it).`,
     ...helperStep,
     ``,
     `Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values (styling`,
@@ -409,8 +534,12 @@ function wcGeneric(block, tag, jsFile, dest) {
     `   (ODC requires one on every attribute). Static-Entity inputs bind directly (e.g.`,
     `   type = Type) since their Value attribute is the identifier; Booleans use`,
     `   If(Flag, "true", "false") — not presence.`,
-    `3. Wire each CustomEvent to its Block event via a "Run JavaScript" handler that`,
-    `   addEventListener's the event on the <${tag}> element and raises the Block event.`,
+    `3. Wire each CustomEvent to its Block event in the Block's OnReady (attach) and OnDestroy`,
+    `   (remove) — not via the declarative "Handle Events" path, which is unreliable for custom`,
+    `   elements. Add a "Run JavaScript" node in OnReady that resolves the <${tag}>,`,
+    `   addEventListener's each event (storing each handler on $public), and raises the Block`,
+    `   event; add a second in OnDestroy that removeEventListener's them. Paste the verbatim`,
+    `   OnReady + OnDestroy code from this handover's "## Event wiring (OnReady / OnDestroy)" section.`,
     `4. If the component exposes a global helper (see its API section), give the element/Block`,
     `   a Name and pass its platform-generated runtime .Id, e.g.`,
     `   window.LoopX.show($parameters.WidgetId) where the WidgetId input = <WidgetName>.Id.`,
@@ -543,7 +672,19 @@ for (const [md, raw] of Object.entries(MAP)) {
     return nextIdx === -1 ? lines.length : nextIdx;
   });
 
-  // 2) "## Build in ODC with Mentor Studio" — just before "## Checklist" (else at EOF)
+  // 2) "## Event wiring (OnReady / OnDestroy)" — just before the Mentor section (only for
+  //    components that dispatch CustomEvents)
+  const wiring = wiringSection(entry);
+  if (wiring) {
+    text = upsert(text, WIRING_MARKER, wiring, (lines) => {
+      const mi = lines.findIndex((l) => l.trimEnd() === MENTOR_MARKER);
+      if (mi !== -1) return mi;
+      const ci = lines.findIndex((l) => /^##\s+Checklist\b/.test(l));
+      return ci === -1 ? lines.length : ci;
+    });
+  }
+
+  // 3) "## Build in ODC with Mentor Studio" — just before "## Checklist" (else at EOF)
   text = upsert(text, MENTOR_MARKER, mentorSection(md, entry), (lines) => {
     const ci = lines.findIndex((l) => /^##\s+Checklist\b/.test(l));
     return ci === -1 ? lines.length : ci;

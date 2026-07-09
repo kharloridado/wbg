@@ -51,6 +51,10 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
    .input-* classes on the Search Input, or cascaded from a .loop-field--* size on the Field Wrapper. */
 
 /* ---- Leading search-glass icon ---- */
+.input-search:after {
+  display: none;
+}
+
 .osui-search__input {
   position: relative;                                            /* anchor for the glass */
 }

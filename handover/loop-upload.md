@@ -631,7 +631,10 @@ el.setProgress('report.pdf', 60);   // update a row
 2. Create a Block **FileUploader** that renders `<loop-file-uploader>` with the attributes
    above bound to input parameters (booleans via `If(Flag,"true","false")` — the component is
    value-aware).
-3. Handle `OnChange` to receive files; upload them in your server logic.
+3. Wire the `change`/`remove`/`browse` CustomEvents in the Block's **OnReady** and remove them
+   in **OnDestroy** — paste the code from the **Event wiring (OnReady / OnDestroy)** section.
+   Handle `OnChange` to receive files (its arg is the file list as JSON) and upload them in your
+   server logic.
 4. Report progress with a **Run JavaScript** node calling `setProgress(name, pct)`; set
    `State` + `StatusText` for the success/error line.
 5. Publish to a real browser and verify drag-drop, the file rows, states, and keyboard use.
@@ -641,6 +644,51 @@ el.setProgress('report.pdf', 60);   // update a row
 | ID | Severity | Issue |
 |---|---|---|
 | — | low | Dropzone label gap `6px` is off the (unconfirmed) 4pt grid — shared with the Text Field (FND-018). Carried verbatim as a component token; not normalised. No other deviations: state colours, the dashed info-blue idle border, and the disabled outline (`#bdccdb` = `--color-neutral-30`) all map to exact primitives. |
+
+## Event wiring (OnReady / OnDestroy)
+
+> The component's CustomEvents are wired in the Block's **OnReady** and cleaned up in
+> **OnDestroy** — the declarative "Handle Events" path is unreliable for custom elements.
+> Give the `<loop-file-uploader>` element (or its wrapping Block) a **Name** and pass its
+> platform-generated `.Id` to each "Run JavaScript" node as `WidgetId`. Paste these two
+> blocks verbatim — they store each handler on `$public` so OnDestroy removes it by
+> reference. (If your ODC version doesn't persist `$public` across OnReady/OnDestroy,
+> stash the handlers on the element instead — `el._loopHandlers = { … }`.)
+
+| CustomEvent | raises Block event |
+|---|---|
+| `change` | `OnChange(JSON.stringify(e.detail.files))` |
+| `remove` | `OnRemove(e.detail.name)` |
+| `browse` | `OnBrowse()` |
+
+**OnReady** — resolve the element, attach listeners, stash for cleanup:
+
+```js
+// Block OnReady — "Run JavaScript" node. Input: WidgetId = <ElementName>.Id
+var root = document.getElementById($parameters.WidgetId);
+var el = (root && root.tagName && root.tagName.toLowerCase() === 'loop-file-uploader')
+  ? root : (root ? root.querySelector('loop-file-uploader') : null);
+if (el) {
+  $public.el = el;                       // stash for OnDestroy cleanup
+  $public.handleChange = function (e) { $actions.OnChange(JSON.stringify(e.detail.files)); };
+  $public.handleRemove = function (e) { $actions.OnRemove(e.detail.name); };
+  $public.handleBrowse = function (e) { $actions.OnBrowse(); };
+  el.addEventListener('change', $public.handleChange);
+  el.addEventListener('remove', $public.handleRemove);
+  el.addEventListener('browse', $public.handleBrowse);
+}
+```
+
+**OnDestroy** — remove the listeners:
+
+```js
+// Block OnDestroy — "Run JavaScript" node. Uses the reference stashed in OnReady.
+if ($public.el) {
+  $public.el.removeEventListener('change', $public.handleChange);
+  $public.el.removeEventListener('remove', $public.handleRemove);
+  $public.el.removeEventListener('browse', $public.handleBrowse);
+}
+```
 
 ## Build in ODC with Mentor Studio
 
@@ -702,8 +750,13 @@ Task — create these elements, referencing each by the exact name given:
    Static-Entity inputs bind directly (e.g. type = Type) — the Value attribute is the
    record Identifier. Use If(flag,"true","false") for every Boolean (values, not presence).
 
-3. Wire CustomEvents to Block events: the "change" CustomEvent triggers OnChange, and the "remove" CustomEvent triggers OnRemove, and the "browse" CustomEvent triggers OnBrowse. Implement with a "Run JavaScript" that
-   addEventListener's each event on the <loop-file-uploader> element and raises the Block event.
+3. Wire CustomEvents to Block events: the "change" CustomEvent triggers OnChange, and the "remove" CustomEvent triggers OnRemove, and the "browse" CustomEvent triggers OnBrowse. Do NOT use the declarative "Handle Events"
+   path (unreliable for custom elements). Instead add a "Run JavaScript" node in the Block's
+   OnReady that resolves the <loop-file-uploader>, addEventListener's each event (storing each handler on
+   $public so it can be removed), and raises the matching Block event; add a second
+   "Run JavaScript" node in OnDestroy that removeEventListener's them. The exact OnReady +
+   OnDestroy code is in this handover's "## Event wiring (OnReady / OnDestroy)" section —
+   paste it verbatim (you are placing provided JS, not authoring it).
 
 4. This component exposes no global helper — drive it entirely through the Block inputs
    and events above; there is no id to pass.

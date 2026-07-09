@@ -1,0 +1,47 @@
+/* loop-breadcrumb.css — Breadcrumbs: native OutSystems UI Breadcrumbs pattern,
+ * COLOR override to The Loop "-loop breadcrumb" (Figma node 30367:747).
+ *
+ * Native rendered DOM (outsystems-widgets-reference / _breadcrumbs.scss):
+ *   nav.breadcrumbs > .breadcrumbs-content > .breadcrumbs-item
+ *       .title                            → <a> for a linked crumb, plain text for the current page
+ *       .placeholder-empty > i.icon.fa    → the between-crumb separator glyph (default fa-angle-right)
+ *   OSUI defaults these to .breadcrumbs-item = neutral-8 and .breadcrumbs-item .icon = neutral-7.
+ *
+ * Figma colors (file zx8q9nRf8Dbqam1rfquQ2E, node 30367:747):
+ *   • linked crumb   Text/On Light/Link/Primary Enabled  #004370
+ *   • current page   Text/On Light/Subdued               rgba(0,41,77,0.57)
+ *   • separator      Text/On Light/State/Disabled        rgba(0,41,77,0.42)
+ *   • leading icon   Icon/On Light/Primary               #004370
+ *
+ * Colors ONLY — geometry, typography and the native chevron separator glyph are left
+ * untouched (the goal is a colour override). Targets the native widget classes directly
+ * so it applies to every OSUI Breadcrumbs instance; paste BELOW the theme + OSUI base so
+ * source order carries these over the framework defaults. */
+
+/* ── Linked crumbs → The Loop primary link blue (#004370). */
+.breadcrumbs .breadcrumbs-item .title,
+.breadcrumbs .breadcrumbs-item .title a {
+  color: var(--color-text-on-light-link-primary-enabled);
+}
+/* Affordance only — no colour change on hover. */
+.breadcrumbs .breadcrumbs-item .title a:hover {
+  text-decoration: underline;
+}
+
+/* ── Current page (last crumb, unlinked plain text) → subdued. */
+.breadcrumbs .breadcrumbs-item:last-child .title,
+.breadcrumbs .breadcrumbs-item[aria-current] .title {
+  color: var(--color-text-on-light-subdued);
+}
+
+/* ── Separator glyph → disabled grey. Targeted structurally via `> :not(.title) .icon`
+ *    (the separator lives in a sibling wrapper of `.title`), NEVER via the runtime
+ *    `.placeholder-empty` utility — selecting on that hook wiped the separators before. */
+.breadcrumbs .breadcrumbs-item > :not(.title) .icon {
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* ── Leading crumb icon (e.g. a home glyph rendered inside a crumb's title) → primary. */
+.breadcrumbs .breadcrumbs-item .title .icon {
+  color: var(--color-icon-on-light-primary);
+}

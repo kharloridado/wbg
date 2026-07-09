@@ -69,7 +69,8 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
 .flatpickr-calendar {
   width: var(--loop-datepicker-width);
   background-color: var(--loop-datepicker-bg);
-  border: 1px solid var(--loop-datepicker-border);
+  /* Figma card is shadow-only — no stroke (the low-lift drop shadow defines the edge). */
+  border: 0;
   border-radius: var(--loop-datepicker-radius);
   box-shadow: var(--loop-datepicker-shadow);
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
@@ -96,7 +97,7 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   display: flex;
   align-items: center;
   height: auto;
-  padding: var(--loop-datepicker-pad-block) var(--loop-datepicker-pad-inline) 0;
+  padding: var(--loop-datepicker-pad-top) var(--loop-datepicker-pad-inline) 0;
 }
 /* month/year label takes the left, growing to push the nav right */
 .flatpickr-calendar .flatpickr-month {
@@ -155,6 +156,17 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
 .flatpickr-calendar .numInputWrapper span.arrowDown { display: none; }
 .flatpickr-calendar .flatpickr-current-month .numInputWrapper { width: auto; }
 .flatpickr-calendar .flatpickr-current-month input.cur-year { width: 4.5ch; padding: 0; }
+/* also drop the browser's NATIVE number-input spinner (a stray filled ▾ next to the caret) */
+.flatpickr-calendar .flatpickr-current-month input.cur-year {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.flatpickr-calendar .flatpickr-current-month input.cur-year::-webkit-outer-spin-button,
+.flatpickr-calendar .flatpickr-current-month input.cur-year::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
 
 /* month/year caret — opens the scrollable year grid (plugin-driven) */
 .flatpickr-calendar .loop-dp-yeartoggle {
@@ -171,16 +183,23 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   cursor: pointer;
   border-radius: var(--radius-base, 4px);
 }
-/* FA caret-down (solid) — the filled triangle the Figma header draws */
+/* FA chevron-down — the thin caret the Figma header draws beside the month/year label.
+   The glyph is painted ONLY by ::before; the span itself is font-size:0 so any stray text
+   node the runtime injects into it (a legacy caret-down \f0d7 shows up here) stays invisible
+   and never doubles up with the chevron. */
 .flatpickr-calendar .loop-dp-yeartoggle__glyph {
   font-family: var(--font-family-icon, "Font Awesome 6 Pro");
   font-weight: var(--font-weight-icon-solid, 900);
-  font-size: var(--loop-datepicker-caret-glyph, 12px);
+  font-size: 0;
   font-style: normal;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
 }
-.flatpickr-calendar .loop-dp-yeartoggle__glyph::before { content: "\f0d7"; }
+.flatpickr-calendar .loop-dp-yeartoggle__glyph::before {
+  content: "\f078";                                  /* fa-chevron-down */
+  font-size: var(--loop-datepicker-caret-glyph, 14px);
+  line-height: 1;
+}
 .flatpickr-calendar .loop-dp-yeartoggle:hover { background-color: var(--loop-datepicker-nav-hover-bg); }
 /* caret flips when the year grid is open */
 .flatpickr-calendar.loop-dp--yearview .loop-dp-yeartoggle__glyph { transform: rotate(180deg); }
@@ -223,14 +242,19 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
 /* =====================================================================
    3) Weekday header row
    ===================================================================== */
+/* weekday row sits inside .flatpickr-innerContainer (which now owns the 24px gutter),
+   so no own horizontal padding — that keeps the weekday heads flush over the day columns */
 .flatpickr-calendar .flatpickr-weekdays {
-  padding: var(--space-xxsmall, 8px) var(--loop-datepicker-pad-inline) 0;
+  padding: 0;
 }
+.flatpickr-calendar .flatpickr-weekdaycontainer { width: 100%; }
 /* align weekday heads over the day columns (same 36px tracks, space-between) */
 .flatpickr-calendar .flatpickr-weekdaycontainer { justify-content: space-between; }
 .flatpickr-calendar span.flatpickr-weekday {
   flex: 0 0 var(--loop-datepicker-day-size);
   max-width: var(--loop-datepicker-day-size);
+  height: var(--loop-datepicker-day-size);          /* 36px cell — matches the Figma weekday track */
+  line-height: var(--loop-datepicker-day-size);
   color: var(--loop-datepicker-weekday-color);
   font-size: var(--loop-datepicker-weekday-size);
   font-weight: var(--loop-datepicker-weekday-weight);
@@ -240,7 +264,7 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
    4) Day grid
    ===================================================================== */
 .flatpickr-calendar .flatpickr-innerContainer {
-  padding: var(--space-tiny, 4px) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-block);
+  padding: var(--loop-datepicker-pad-top) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-bottom);
 }
 .flatpickr-calendar .flatpickr-rContainer,
 .flatpickr-calendar .flatpickr-days,
@@ -257,9 +281,9 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   width: var(--loop-datepicker-day-size);
   max-width: var(--loop-datepicker-day-size);
   height: var(--loop-datepicker-day-size);
-  line-height: calc(var(--loop-datepicker-day-size) - 2px);
-  margin: var(--space-tiny, 4px) 0 0;
-  border: 1px solid transparent;           /* reserve the 1px so "today"/selected never shift the grid */
+  line-height: calc(var(--loop-datepicker-day-size) - 4px);   /* centre inside the 2px ring */
+  margin: 0;                                /* flush 36px rows — Figma has no inter-row gap */
+  border: 2px solid transparent;           /* reserve the 2px so "today"/selected never shift the grid */
   border-radius: var(--loop-datepicker-day-radius);
   color: var(--loop-datepicker-day-color);
   font-size: var(--loop-datepicker-day-size-text);
@@ -304,16 +328,10 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   background-color: var(--loop-datepicker-selected-bg);
   border-color: var(--loop-datepicker-selected-bg);
   color: var(--loop-datepicker-selected-text);
+  font-weight: var(--font-weight-semibold, 600);   /* Figma: selected date label is SemiBold */
 }
 
 /* in-range fill between endpoints */
-.flatpickr-calendar .flatpickr-day.inRange,
-.flatpickr-calendar .flatpickr-day.inRange:hover {
-  background-color: var(--loop-datepicker-range-bg);
-  border-color: var(--loop-datepicker-range-bg);
-  color: var(--loop-datepicker-day-color);
-  box-shadow: -5px 0 0 var(--loop-datepicker-range-bg), 5px 0 0 var(--loop-datepicker-range-bg);
-}
 
 /* disabled days */
 .flatpickr-calendar .flatpickr-day.flatpickr-disabled,
@@ -356,7 +374,7 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   gap: var(--loop-datepicker-year-gap);
   max-height: var(--loop-datepicker-year-view-max);
   overflow-y: auto;
-  padding: var(--space-tiny, 4px) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-block);
+  padding: var(--loop-datepicker-pad-top) var(--loop-datepicker-pad-inline) var(--loop-datepicker-pad-bottom);
 }
 
 .flatpickr-calendar .loop-dp-yeargrid__year {
@@ -376,8 +394,12 @@ content-sized label (Figma "October 2024") rather than a widest-option `<select>
   background-color: var(--loop-datepicker-year-hover-bg);
   border-color: var(--loop-datepicker-year-hover-bg);
 }
-.flatpickr-calendar .loop-dp-yeargrid__year--selected {
-  border-color: var(--loop-datepicker-year-selected-border);
+/* selected year — navy fill + white SemiBold, matching the selected day (Figma states 17897:7144) */
+.flatpickr-calendar .loop-dp-yeargrid__year--selected,
+.flatpickr-calendar .loop-dp-yeargrid__year--selected:hover {
+  background-color: var(--loop-datepicker-selected-bg);
+  border-color: var(--loop-datepicker-selected-bg);
+  color: var(--loop-datepicker-selected-text);
   font-weight: var(--font-weight-semibold, 600);
 }
 .flatpickr-calendar .loop-dp-yeargrid__year:focus-visible {
