@@ -27,8 +27,7 @@
       "Bash(cat *)",
       "Bash(echo *)",
       "Bash(ls *)",
-      "Bash(rm *)",
-      "Read(//c/Users/kha/Downloads/outsystems-project-template/outsystems-project-template/.claude/commands/**)"
+      "Bash(rm *)"
     ],
     "deny": [
       "Bash(rm -rf *)",

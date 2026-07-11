@@ -6,7 +6,7 @@ A reusable scaffold for every new OutSystems frontend engagement. Copy this fold
 
 ## Quick start
 
-1. **Copy** this folder → `customer-project/` (e.g. `rnt-connect/`).
+1. **Copy** this folder → `customer-project/`.
 2. **Fill in** `CLAUDE.md` and `project-context.md` (customer, project, brand owner, findings routing).
 3. **Drop brand assets** into `design/` — fill `brand-guidelines.md` with the palette, type scale, spacing, and `figma-links.md` with the frame URLs/node ids.
 4. **Seed tokens** in `tokens/` (colors / spacing / typography), then `npm install` and `npm run build:theme`.
@@ -40,8 +40,8 @@ A reusable scaffold for every new OutSystems frontend engagement. Copy this fold
 │   └── meetings/           # meeting summaries & notes (reference; distill decisions into the active files)
 ├── tokens/                # lightningcss source: colors.css, spacing.css, typography.css
 ├── src/
-│   ├── components/         # vanilla JS Web Components (incl. example rnt-segmented.js/.css)
-│   └── blocks/             # OutSystems Block wrappers + ExtendedClass CSS (incl. example rnt-button.css)
+│   ├── components/         # vanilla JS Web Components (e.g. loop-toast.js / loop-modal.js)
+│   └── blocks/             # OutSystems Block wrappers + ExtendedClass CSS (e.g. loop-button.css)
 ├── style-guide/           # Live Style Guide doc pages
 ├── handover/              # handover issue bodies for generated code (example included)
 ├── findings/              # design-conformance findings register + ticket payloads
