@@ -6,7 +6,7 @@
   --loop-table-row-bg-striped:   var(--color-bg-container-on-light-low);     /* Figma Rows=Zebra even-row fill (pixel-verified #f5f7f9) */
   --loop-table-divider:          var(--color-divider-on-light-subdued);      /* Figma Divider/On Light/Subdued #00396b14 — row dividers */
   --loop-table-header-separator: var(--color-divider-on-light-default);      /* Figma Divider/On Light/Default #00396b29 — header column separators */
-  --loop-table-header-separator-height: 24px;  /* Figma: separator is 24px tall, vertically centered — not full cell height */
+  --loop-table-header-separator-inset: var(--space-xsmall);  /* Figma Spacing/xsmall 12 — the heading cell's "right divider" py; 2px wide (--border-size-m), so 32px tall on the 56px cell */
   --loop-table-text:             var(--color-text-on-light-default);         /* Figma Text/On Light/Default #000d1ab2 — header AND body */
   --loop-table-font-size:        var(--font-size-300);                       /* Figma Body/Text/Base/Regular — 16px, lh 1.5 */
   --loop-table-cell-padding-x:   var(--space-xsmall);                        /* Figma loop/ag-grids/h-padding 12px */

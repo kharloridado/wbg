@@ -41,7 +41,7 @@
   border-radius: 0;
 }
 
-/* ===== 2) Header — Low fill, bold 16, centered 24px column separators ===== */
+/* ===== 2) Header — Low fill, bold 16, inset 2px column separators ===== */
 /* Row dividers are drawn as INSET box-shadows, not borders: Figma strokes sit
  * inside the 56px cell, and a real border would grow the row to 57px (the
  * border-no-height-shift rule — zero layout impact, pinned height). */
@@ -59,16 +59,16 @@
   padding: var(--loop-table-cell-padding-y, 16px) var(--loop-table-cell-padding-x, 12px);
 }
 
-/* Short vertical separator between header cells — 1px × 24px, vertically centered
- * (Figma draws it as a standalone divider line, not a full-height cell border). */
+/* Short vertical separator between header cells — 2px wide, inset 12px from the
+ * cell's top and bottom (Figma draws it as a standalone "right divider" child
+ * with py = Spacing/xsmall, not a full-height cell border). */
 .table .table-header th:not(:last-child)::after {
   content: "";
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--border-size-s, 1px);
-  height: var(--loop-table-header-separator-height, 24px);
+  top: var(--loop-table-header-separator-inset, 12px);
+  bottom: var(--loop-table-header-separator-inset, 12px);
+  width: var(--border-size-m, 2px);
   background: var(--loop-table-header-separator, #00396b29);
 }
 
@@ -77,6 +77,15 @@
 .table .table-header th.sorted,
 .desktop .table-header th.sortable:hover {
   color: var(--loop-table-text, #000d1ab2);
+}
+
+/* Breathing room for OSUI's sort chevrons when they abut the cell's right edge
+ * (right-aligned / last column): 4px + the 12px cell padding = 16px effective
+ * clearance. Invisible in left-aligned headers (the margin trails into empty
+ * space). The Figma variants ship the icon slot empty, so this clearance is
+ * unspecced — added per the brand-owner request, 2026-07-14. */
+.table .table-header th .sortable-icon {
+  margin-right: var(--space-tiny, 4px);
 }
 
 /* ===== 3) Body — Lowest fill, regular 16, subdued row dividers ===== */

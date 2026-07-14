@@ -5,7 +5,7 @@ Figma: `-The Loop- Main Library (2)` · "AG Grid" [node 25983-72091] · frozen r
 
 **Approach:** A **bare restyle** of the native OutSystems UI **Table** widget (`.table` /
 `.table-header` / `.table-row`) — every native Table renders the AG-Grid look by default:
-Low `#f5f7f9` header with bold 16px labels and short 24px column separators, white body rows
+Low `#f5f7f9` header with bold 16px labels and short inset column separators, white body rows
 with subdued 1px dividers, 56px rows, 12/16px cell padding, flat edges (no outer border or
 radius). **Styling only** — none of the AG Grid *features* in the Figma frame (grouping
 panel, pinned row-number/checkbox columns, Columns/Filters rails) are in scope; pagination
@@ -96,7 +96,7 @@ hairline dividers, optional zebra striping.
   border-radius: 0;
 }
 
-/* ===== 2) Header — Low fill, bold 16, centered 24px column separators ===== */
+/* ===== 2) Header — Low fill, bold 16, inset 2px column separators ===== */
 /* Row dividers are drawn as INSET box-shadows, not borders: Figma strokes sit
  * inside the 56px cell, and a real border would grow the row to 57px (the
  * border-no-height-shift rule — zero layout impact, pinned height). */
@@ -114,16 +114,16 @@ hairline dividers, optional zebra striping.
   padding: var(--loop-table-cell-padding-y, 16px) var(--loop-table-cell-padding-x, 12px);
 }
 
-/* Short vertical separator between header cells — 1px × 24px, vertically centered
- * (Figma draws it as a standalone divider line, not a full-height cell border). */
+/* Short vertical separator between header cells — 2px wide, inset 12px from the
+ * cell's top and bottom (Figma draws it as a standalone "right divider" child
+ * with py = Spacing/xsmall, not a full-height cell border). */
 .table .table-header th:not(:last-child)::after {
   content: "";
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--border-size-s, 1px);
-  height: var(--loop-table-header-separator-height, 24px);
+  top: var(--loop-table-header-separator-inset, 12px);
+  bottom: var(--loop-table-header-separator-inset, 12px);
+  width: var(--border-size-m, 2px);
   background: var(--loop-table-header-separator, #00396b29);
 }
 
@@ -132,6 +132,15 @@ hairline dividers, optional zebra striping.
 .table .table-header th.sorted,
 .desktop .table-header th.sortable:hover {
   color: var(--loop-table-text, #000d1ab2);
+}
+
+/* Breathing room for OSUI's sort chevrons when they abut the cell's right edge
+ * (right-aligned / last column): 4px + the 12px cell padding = 16px effective
+ * clearance. Invisible in left-aligned headers (the margin trails into empty
+ * space). The Figma variants ship the icon slot empty, so this clearance is
+ * unspecced — added per the brand-owner request, 2026-07-14. */
+.table .table-header th .sortable-icon {
+  margin-right: var(--space-tiny, 4px);
 }
 
 /* ===== 3) Body — Lowest fill, regular 16, subdued row dividers ===== */
@@ -225,9 +234,12 @@ hairline dividers, optional zebra striping.
 - `.table`: outer 1px border + soft radius **removed** (Figma has flat edges); first/last
   cell corner radii reset.
 - Header `th`: neutral-0 → **Low `#f5f7f9`**, semi-bold → **bold**, 48px → **56px**,
-  padding → **16px/12px**, plus the 1px × 24px vertically-centered `::after` column
-  separator (`Divider/On Light/Default`). `.sorted`/sortable-hover keep the design's single
-  text tone instead of OSUI's primary recolor.
+  padding → **16px/12px**, plus the 2px `::after` column separator inset 12px from the
+  cell's top/bottom (`Divider/On Light/Default` — the Figma heading cell's "right divider").
+  `.sorted`/sortable-hover keep the design's single text tone instead of OSUI's primary
+  recolor, and the sort chevrons get a 4px `margin-right` so a right-aligned/last column
+  icon clears the table edge by 16px (icon slot is empty in the Figma variants — clearance
+  added per the 2026-07-14 brand-owner request).
 - Body `td`: 16px/1.5 text in `Text/On Light/Default`, padding → 16px/12px.
 - **Row dividers are inset box-shadows, not borders** — Figma's strokes sit inside the 56px
   cell; a real border made rows 57px (border-no-height-shift rule). The divider also stays

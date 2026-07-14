@@ -33,7 +33,7 @@
 |---|---|---|
 | Header bg | #f5f7f9 | `Background/Container/On Light/Low` |
 | Header text | Open Sans **700** 16, lh 1.5, #000d1ab2 | `Body/Font Weight/Bold`, `Font-size/300`, `Text/On Light/Default` |
-| Header column separator | 1px × **24px tall**, vertically centered, between cells only | `Divider/On Light/Default` #00396b29 |
+| Header column separator | **2px wide**, inset **12px top/bottom** (≈32px tall on the 56px cell), between cells only — the heading cell's "right divider" flex child (`w-[2px]`, `py-[Spacing/xsmall]`); pixel-verified in `figma.png` at x=249–250, y≈76–108 | `Divider/On Light/Default` #00396b29, `Spacing/xsmall` 12 |
 | Body cell bg | #ffffff | `Background/Container/On Light/Lowest` |
 | Body text | Open Sans 400 16, lh 1.5, #000d1ab2 | `Body/Text/Base/Regular`, `Text/On Light/Default` |
 | Row divider | 1px border-bottom, header + every body row (incl. last) | `Divider/On Light/Subdued` #00396b14 |
@@ -44,3 +44,4 @@
 | Numeric cells | **IBM Plex Mono** Regular 16, right-aligned — HARD-CODED, no variable → finding; implemented as Open Sans + tabular-nums (brand-owner ruling: font set closed) | — |
 | H-scrollbar | 8px, rounded, thumb #bdccdb | `loop/scroll-bar/height`, `Background/Container/On Light/High` |
 | Hover | NOT specified in the variants (AG Grid behavior) — implementation reuses the Low tone | — |
+| Sort icon | NOT in the variants (the heading cell's icon slot is empty; slot gap would be `Spacing/small` 16) — clearance unspecced. OSUI's native chevrons kept; 4px `margin-right` added per brand-owner request 2026-07-14 so a right-aligned/last column icon clears the edge by 16px | — |
