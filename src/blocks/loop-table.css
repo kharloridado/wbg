@@ -1,0 +1,157 @@
+/* ============================================
+   Component: Table  ("The Loop" — AG Grid look)
+   Figma: -The Loop- Main Library · "AG Grid" [node:25983-72091] · ref loop/refs/cmp-table/
+   Approach: RESTYLE the native OutSystems UI Table widget (.table / .table-header /
+             .table-row) — NOT a parallel class system. STYLING ONLY: backgrounds,
+             borders, text, zebra. No AG Grid features (pinning, grouping, filters).
+   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
+   Escalation Level: L2 (native widget + token-driven theme override)
+   OutSystems UI v2.28.1 baseline (src/scss/03-widgets/_table.scss):
+     .table has a 1px neutral-4 outer border + soft radius (incl. first/last th/td
+     corner radii); th 48px semi-bold on neutral-0; td 56px on neutral-0; hover
+     neutral-2; zebra hook = .table-row-stripping:nth-child(even) td (neutral-1).
+   Tokens consumed: --loop-table-* (component-table.css) → foundation
+     --color-bg-container-on-light-*, --color-divider-on-light-*,
+     --color-text-on-light-default, --font-*, --space-*.
+   Fidelity notes:
+     · Figma has NO outer border and NO corner radius — both reset from the OSUI default.
+     · Figma's Row-based vs Column-based variants are pixel-identical (AG Grid hover
+       behavior, not static style) — one base style + the zebra modifier covers all four.
+     · Row hover isn't specified in the Figma variants; we reuse the design's own
+       Low tone rather than OSUI's off-palette neutral-2 (documented assumption).
+     · Figma numeric cells hard-code IBM Plex Mono (untokenized). Font set is closed
+       per brand-owner ruling → Open Sans + tabular-nums (design-token finding).
+     · .table-row-selected and the phone/tablet stacked layout stay native (out of
+       the Figma scope).
+*/
+
+/* ===== 1) Container — flat edges per Figma (no outer border, no radius) ===== */
+.table {
+  border: 0;
+  border-radius: 0;
+  border-spacing: 0;
+  background: var(--loop-table-row-bg, #ffffff);
+}
+
+/* OSUI rounds the first/last header and last-row cells — reset to the flat look. */
+.table .table-header th:first-child,
+.table .table-header th:last-child,
+.table .table-row:last-child > td:first-child,
+.table .table-row:last-child > td:last-child {
+  border-radius: 0;
+}
+
+/* ===== 2) Header — Low fill, bold 16, centered 24px column separators ===== */
+/* Row dividers are drawn as INSET box-shadows, not borders: Figma strokes sit
+ * inside the 56px cell, and a real border would grow the row to 57px (the
+ * border-no-height-shift rule — zero layout impact, pinned height). */
+.table .table-header th {
+  position: relative;                       /* anchors the ::after separator */
+  background-color: var(--loop-table-header-bg, #f5f7f9);
+  border-bottom: 0;
+  box-shadow: inset 0 calc(-1 * var(--border-size-s, 1px)) 0 var(--loop-table-divider, #00396b14);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-font-size, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-base, 1.5);
+  height: var(--loop-table-row-height, 56px);
+  padding: var(--loop-table-cell-padding-y, 16px) var(--loop-table-cell-padding-x, 12px);
+}
+
+/* Short vertical separator between header cells — 1px × 24px, vertically centered
+ * (Figma draws it as a standalone divider line, not a full-height cell border). */
+.table .table-header th:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--border-size-s, 1px);
+  height: var(--loop-table-header-separator-height, 24px);
+  background: var(--loop-table-header-separator, #00396b29);
+}
+
+/* Sorted / sortable-hover stay in the design's own text color (OSUI recolors to
+ * primary — the Figma header has a single text tone for all states). */
+.table .table-header th.sorted,
+.desktop .table-header th.sortable:hover {
+  color: var(--loop-table-text, #000d1ab2);
+}
+
+/* ===== 3) Body — Lowest fill, regular 16, subdued row dividers ===== */
+.table .table-row td {
+  background: var(--loop-table-row-bg, #ffffff);
+  border-bottom: 0;
+  box-shadow: inset 0 calc(-1 * var(--border-size-s, 1px)) 0 var(--loop-table-divider, #00396b14);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-font-size, 16px);
+  line-height: var(--line-height-base, 1.5);
+  height: var(--loop-table-row-height, 56px);
+  padding: var(--loop-table-cell-padding-y, 16px) var(--loop-table-cell-padding-x, 12px);
+}
+
+/* Keep OSUI's native RowSize modifiers working — the token rule above (0,2,1)
+ * out-specifies the framework's .table-row-small/-medium td (0,1,1), so restate
+ * the native heights at matching specificity. (Figma specs one 56px size only.) */
+.table .table-row-small td  { height: 48px; }
+.table .table-row-medium td { height: 64px; }
+
+/* Figma keeps the divider under the last row too (OSUI strips the border there;
+ * our divider is the inset shadow above, so just keep the border at 0) */
+.table .table-row:last-child > td {
+  border-bottom: 0;
+}
+
+/* Keep the phone/tablet STACKED layout fully native: OSUI resets the td border
+ * there but knows nothing of our inset-shadow divider, which would otherwise draw
+ * a hairline under every stacked cell (native shows one per row, on the tr). */
+.phone .table:not(.table-no-responsive) .table-row td,
+.tablet .table:not(.table-no-responsive) .table-row td {
+  box-shadow: none;
+}
+
+/* ===== 4) Hover — design's Low tone (assumption: no hover in the Figma variants) ===== */
+.table .table-row:hover td {
+  background: var(--loop-table-header-bg, #f5f7f9);
+}
+
+/* ===== 5) Zebra — native OSUI striping hook, Figma Rows=Zebra fill ===== */
+.table .table-row-stripping:nth-child(even) td {
+  background: var(--loop-table-row-bg-striped, #f5f7f9);
+}
+.table .table-row-stripping:nth-child(even):hover td {
+  background: var(--loop-table-row-bg-striped, #f5f7f9);
+}
+
+/* ===== 6) Numeric cell helper — right-aligned lining figures ===== */
+/* Apply per column via the cell's style/ExtendedClass. Figma specs IBM Plex Mono
+ * here; the project font set is closed, so Open Sans + tabular-nums stands in
+ * (finding logged — see the header note). */
+.table td.loop-table-cell--numeric,
+.table th.loop-table-cell--numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== 7) Horizontal-scroll wrapper — slim rounded scrollbar per Figma ===== */
+.overflow-horizontal::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar {
+  height: var(--loop-table-scrollbar-size, 8px);
+  width: var(--loop-table-scrollbar-size, 8px);
+}
+.overflow-horizontal::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--loop-table-scrollbar-thumb, #bdccdb);
+  border-radius: var(--radius-base, 4px);
+}
+.overflow-horizontal::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-horizontal,
+.table-responsive {
+  scrollbar-width: thin;                                        /* Firefox */
+  scrollbar-color: var(--loop-table-scrollbar-thumb, #bdccdb) transparent;
+}

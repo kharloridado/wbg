@@ -105,6 +105,8 @@ const META = {
   "component-toast.css":        { group: "Components",   name: "Toast" },
   "component-upload.css":       { group: "Components",   name: "File Uploader" },
   "component-pagination.css":  { group: "Components",   name: "Pagination" },
+  "component-table.css":       { group: "Components",   name: "Table (AG Grid look)" },
+  "loop-table.css":            { group: "Widget Overrides", name: "Table (AG Grid look)" },
 };
 
 const RULE = "=".repeat(78); // section-banner rule width (OutSystems UI style)

@@ -102,6 +102,7 @@ const MAP = {
   "loop-split-btn.md":       [["src/blocks/loop-split-btn.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tabs.md":            [["src/blocks/loop-tabs.css", "css", "Theme CSS — paste below OutSystems UI"]],
+  "loop-table.md":           [["src/blocks/loop-table.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-modal.md": {
     files: [["src/components/loop-modal.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
     wiring: {

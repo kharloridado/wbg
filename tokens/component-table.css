@@ -1,0 +1,23 @@
+/* component-table.css — table tokens (bare .table override on the native Table widget,
+ * styled to the Figma "AG Grid" look — STYLING ONLY, no AG Grid features) */
+:root {
+  --loop-table-header-bg:        var(--color-bg-container-on-light-low);     /* Figma Background/Container/On Light/Low #f5f7f9 */
+  --loop-table-row-bg:           var(--color-bg-container-on-light-lowest);  /* Figma Background/Container/On Light/Lowest #ffffff */
+  --loop-table-row-bg-striped:   var(--color-bg-container-on-light-low);     /* Figma Rows=Zebra even-row fill (pixel-verified #f5f7f9) */
+  --loop-table-divider:          var(--color-divider-on-light-subdued);      /* Figma Divider/On Light/Subdued #00396b14 — row dividers */
+  --loop-table-header-separator: var(--color-divider-on-light-default);      /* Figma Divider/On Light/Default #00396b29 — header column separators */
+  --loop-table-header-separator-height: 24px;  /* Figma: separator is 24px tall, vertically centered — not full cell height */
+  --loop-table-text:             var(--color-text-on-light-default);         /* Figma Text/On Light/Default #000d1ab2 — header AND body */
+  --loop-table-font-size:        var(--font-size-300);                       /* Figma Body/Text/Base/Regular — 16px, lh 1.5 */
+  --loop-table-cell-padding-x:   var(--space-xsmall);                        /* Figma loop/ag-grids/h-padding 12px */
+  --loop-table-cell-padding-y:   var(--space-small);                         /* Figma loop/ag-grids/v-padding 16px */
+  --loop-table-row-height:       56px;                                       /* Figma cell height — 24px content + 2×16px v-padding */
+
+  /* Horizontal scroll affordance (Figma shows a slim rounded scrollbar under the grid) */
+  --loop-table-scrollbar-size:   8px;                                        /* Figma loop/scroll-bar/height 8 */
+  --loop-table-scrollbar-thumb:  var(--color-bg-container-on-light-high);    /* Figma Background/Container/On Light/High #bdccdb */
+
+  /* No font-family token: Figma numeric cells hard-code IBM Plex Mono (untokenized).
+   * Brand owner ruled the font set closed (Open Sans + FA6 Pro) — numeric cells inherit
+   * Open Sans and use tabular-nums instead. Divergence recorded as a design-token finding. */
+}
