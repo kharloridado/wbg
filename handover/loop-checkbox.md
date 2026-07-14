@@ -173,6 +173,10 @@ reference existing semantic tokens already in `dist/theme.css`.
   background: var(--color-white, #ffffff);
 }
 
+[data-checkbox][disabled].loop-checkbox--indeterminate:after {
+  height: 0px;
+}
+
 /* Disabled glyph — re-assert our check geometry over the OS UI baseline (its
    [disabled]:checked:after borders all 4 sides and deforms the mark); recolor to the muted token. */
 [data-checkbox][disabled]:checked::after,
@@ -184,7 +188,8 @@ reference existing semantic tokens already in `dist/theme.css`.
 }
 [data-checkbox][disabled]:indeterminate::after,
 [data-checkbox][disabled].loop-checkbox--indeterminate::after,
-[data-checkbox][aria-disabled="true"]:indeterminate::after {
+[data-checkbox][aria-disabled="true"]:indeterminate::after,
+[data-checkbox][aria-disabled="true"].loop-checkbox--indeterminate::after {
   background: var(--color-icon-on-light-state-disabled);
 }
 

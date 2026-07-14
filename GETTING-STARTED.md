@@ -48,7 +48,7 @@ cd <customer>-<project>
 
 ### 3. Fill in the project placeholders
 - `project-context.md` — customer, project, repo, brand owner (who findings go to), and `findings.ticket_target = <org>/<customer>-<project>`.
-- `CLAUDE.md` — confirm prefix (`rnt-`), environment (ODC), and the findings/handover routing block.
+- `CLAUDE.md` — confirm the class prefix, environment (ODC), and the findings/handover routing block.
 
 ### 4. Add the brand source of truth
 - `design/brand-guidelines.md` — the brand palette, type scale, spacing, signed-off exceptions.

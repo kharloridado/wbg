@@ -14,10 +14,26 @@ Fill this in at project kickoff. The OutSystems skills read these values so they
 - Designer / brand owner contact (who findings go back to): `<name / channel>`
 
 ## Conventions (override CLAUDE.md defaults only if this project differs)
-- Prefix: `rnt-`
+- Prefix: `loop-`
 - Environment: ODC
-- Spacing base: unconfirmed — grid spec TBD (don't flag values as "off the 4pt grid"); scale per `tokens/spacing.css`, confirm base/grid with the Loop team
 - Token style: OutSystems UI standard
+
+### Conventions are three-state — only `confirmed` is a rule
+A convention that has not actually been confirmed by the designer or brand owner is **not a
+rule**, and nothing may be flagged as a finding for "violating" it.
+
+| Convention | Value | Status |
+| --- | --- | --- |
+| Spacing base / grid | — | **TBD** — not confirmed. Scale is per `tokens/spacing.css`. |
+| Breakpoints | OutSystems UI `.tablet` / `.phone` | assumed |
+| Default component size | — | **TBD** — confirm per component against the Figma Component Sizes collection. |
+
+> The spacing base was originally carried over from the project template as "4pt". Nobody had
+> verified it. The loop believed it and flagged every value that wasn't a multiple of 4,
+> producing findings FND-005/013/018/022 — all false positives, one of which had already been
+> filed as a GitHub issue and had to be closed as not-planned. **Never flag a value for being
+> off a grid that isn't a confirmed rule.** See the 2026-06-16 Live Style Guide sync: the final
+> grid spec is still not confirmed.
 
 ## Framework reference — OutSystems UI
 - **Source of truth for framework conventions:** [`OutSystems/outsystems-ui`](https://github.com/OutSystems/outsystems-ui), vendored read-only as a git submodule at `vendor/outsystems-ui`, **pinned to `v2.28.1`** — ✅ confirmed to match the target ODC environment's OutSystems UI version (2026-06-17). We build *on top of* this — never edit it (hard rule #1). `git submodule update --init` after cloning.

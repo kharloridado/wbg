@@ -680,7 +680,10 @@ element's), exactly like the Modal trigger. You can also pass the DOM element di
    The boolean attribute is **value-aware** (`"false"`/`"0"`/absent = off), so the `If(...)`
    expression works directly — no OnReady JavaScript node needed. Do **not** set the `id`
    attribute.
-3. Wire `action` CustomEvent → `OnAction`, `dismiss` CustomEvent → `OnDismiss`.
+3. Wire `action` CustomEvent → `OnAction`, `dismiss` CustomEvent → `OnDismiss` in the Block's
+   **OnReady**, and remove them in **OnDestroy** — copy the code from **[## Event wiring (OnReady
+   / OnDestroy)](#event-wiring-onready--ondestroy)** below (handlers stored on `$public`; not the
+   declarative "Handle Events" path).
 4. To **trigger** the toast, give the `<loop-toast>` element (or its wrapping Block/Container)
    a **Name**, then add a Client Action with a **"Run JavaScript"** node whose `WidgetId` input
    is set to that widget's **platform-generated** `.Id` (e.g. `ToastEl.Id`) — never a hand-typed
@@ -714,6 +717,47 @@ element's), exactly like the Modal trigger. You can also pass the DOM element di
 - ⚠️ **token gap (FND-055):** the warning **title** shade `#612705` (Figma `lift/text/on state/warning/emphasis`)
   has no primitive token; `--loop-toast-warning-title` falls back to the warning text token
   (`#473201`), so the title renders one shade lighter than Figma pending a primitive — see `findings/findings-register.md`.
+
+## Event wiring (OnReady / OnDestroy)
+
+> The component's CustomEvents are wired in the Block's **OnReady** and cleaned up in
+> **OnDestroy** — the declarative "Handle Events" path is unreliable for custom elements.
+> Give the `<loop-toast>` element (or its wrapping Block) a **Name** and pass its
+> platform-generated `.Id` to each "Run JavaScript" node as `WidgetId`. Paste these two
+> blocks verbatim — they store each handler on `$public` so OnDestroy removes it by
+> reference. (If your ODC version doesn't persist `$public` across OnReady/OnDestroy,
+> stash the handlers on the element instead — `el._loopHandlers = { … }`.)
+
+| CustomEvent | raises Block event |
+|---|---|
+| `action` | `OnAction()` |
+| `dismiss` | `OnDismiss()` |
+
+**OnReady** — resolve the element, attach listeners, stash for cleanup:
+
+```js
+// Block OnReady — "Run JavaScript" node. Input: WidgetId = <ElementName>.Id
+var root = document.getElementById($parameters.WidgetId);
+var el = (root && root.tagName && root.tagName.toLowerCase() === 'loop-toast')
+  ? root : (root ? root.querySelector('loop-toast') : null);
+if (el) {
+  $public.el = el;                       // stash for OnDestroy cleanup
+  $public.handleAction = function (e) { $actions.OnAction(); };
+  $public.handleDismiss = function (e) { $actions.OnDismiss(); };
+  el.addEventListener('action' , $public.handleAction);
+  el.addEventListener('dismiss', $public.handleDismiss);
+}
+```
+
+**OnDestroy** — remove the listeners:
+
+```js
+// Block OnDestroy — "Run JavaScript" node. Uses the reference stashed in OnReady.
+if ($public.el) {
+  $public.el.removeEventListener('action' , $public.handleAction);
+  $public.el.removeEventListener('dismiss', $public.handleDismiss);
+}
+```
 
 ## Build in ODC with Mentor Studio
 
@@ -768,8 +812,13 @@ Task — create these elements, referencing each by the exact name given:
    Static-Entity inputs bind directly (e.g. type = Type) — the Value attribute is the
    record Identifier. Use If(flag,"true","false") for every Boolean (values, not presence).
 
-3. Wire CustomEvents to Block events: the "action" CustomEvent triggers OnAction, and the "dismiss" CustomEvent triggers OnDismiss. Implement with a "Run JavaScript" that
-   addEventListener's each event on the <loop-toast> element and raises the Block event.
+3. Wire CustomEvents to Block events: the "action" CustomEvent triggers OnAction, and the "dismiss" CustomEvent triggers OnDismiss. Do NOT use the declarative "Handle Events"
+   path (unreliable for custom elements). Instead add a "Run JavaScript" node in the Block's
+   OnReady that resolves the <loop-toast>, addEventListener's each event (storing each handler on
+   $public so it can be removed), and raises the matching Block event; add a second
+   "Run JavaScript" node in OnDestroy that removeEventListener's them. The exact OnReady +
+   OnDestroy code is in this handover's "## Event wiring (OnReady / OnDestroy)" section —
+   paste it verbatim (you are placing provided JS, not authoring it).
 
 4. OutSystems generates element ids at runtime, so you address a specific instance by its
    widget's platform id — NOT a hand-typed string. Give the <loop-toast> element (or its
@@ -793,6 +842,7 @@ Start with step 1 (the Block "Toast" interface) and show it to me before wiring.
 - [ ] Rebuild `dist/theme.css` and paste into the ODC Theme editor (includes `--loop-toast-*` tokens).
 - [ ] Create the `ToastType` / `ToastPosition` Static Entities (records + `Value` attr).
 - [ ] Create Block `Toast` with the inputs/events above (Static-Entity `Type`/`Position`, no `Id` input); give each placed instance a unique **Name**.
+- [ ] Wire the `action`/`dismiss` CustomEvents in the Block's **OnReady** and remove them in **OnDestroy** — paste the code from the **Event wiring (OnReady / OnDestroy)** section.
 - [ ] Add a Client Action with a "Run JavaScript" node calling `window.LoopToast.show($parameters.WidgetId)`, with `WidgetId` set to the toast widget's platform-generated `.Id`.
 - [ ] Test all five types and both layouts (with/without title); test action + dismiss; test
       auto-dismiss + hover-to-pause; test multiple toasts stacking at one anchor.

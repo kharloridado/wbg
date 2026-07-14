@@ -1,45 +1,46 @@
-# Handover — Dropdown / Select (restyle native OutSystems UI Dropdown + VirtualSelect)
+# Handover — Dropdown / Select (restyle native OutSystems UI Dropdown)
 
 The Loop **Dropdown / Select** styling, ready to add into OutSystems.
-Figma: `-The Loop- Main Library` · "Select" [node 18787-4817] · "Multiselect" [node 18830-17312].
+Figma: `-The Loop- Main Library` · "Select" [node 18787-4817].
 
-**Approach:** No custom dropdown class system. This **restyles the two native OutSystems UI
-dropdown widgets** to The Loop design — same pattern as the Button / Text Field:
+> **Scope change (2026-07-07): Dropdown Search and Dropdown Tags are NOT shipping.**
+> The VirtualSelect provider restyle (`.osui-dropdown-search` / `.osui-dropdown-tags`) was
+> removed from `src/blocks/loop-dropdown.css`. Only the native single **Select** ships. If the
+> two variants return, restore the removed CSS from git history (commits `149022f`
+> feat(dropdown-tags) and `51969e8` fix(dropdown search)) and re-run the embed script.
+
+**Approach:** No custom dropdown class system. This **restyles the native OutSystems UI
+single-Select Dropdown widget** to The Loop design — same pattern as the Button / Text Field:
 
 1. **Dropdown PATTERN** (server-side single Select) → `.dropdown-container.dropdown` /
    `.dropdown-display` / `.dropdown-list` / `.dropdown-popup-row`.
-2. **VirtualSelect PROVIDER** (Dropdown Search = searchable single; Dropdown Tags =
-   multi-select with tag chips) → `.osui-dropdown-search` / `.osui-dropdown-tags`
-   rendered as `.vscomp-*` DOM.
 
-Developers keep using the stock **Dropdown** / **Dropdown Search** / **Dropdown Tags**
-blocks; this layer makes them render to The Loop spec. The field reuses the Text Field's
-state **colours** (shared semantic tokens) but has its own box metrics: a pill
-(`--radius-pill` 32px), 13px text, ~40px tall. Focus = 2px Blue/50 brand ring (FND-012).
+Developers keep using the stock **Dropdown** block; this layer makes it render to The Loop
+spec. The field reuses the Text Field's state **colours** (shared semantic tokens) but has its
+own box metrics: a pill (`--radius-pill` 32px), 13px text, ~40px tall. Focus = 2px Blue/50
+brand ring (FND-012).
 
 ## When to use / How to use
 
 > **Live Style Guide doc** — short usage spec for the Dropdown / Select page.
 
-**What it is.** The Loop select — native Dropdown (single) and VirtualSelect (searchable single / multi-tag) restyled.
+**What it is.** The Loop select — native single Dropdown restyled.
 
 **When to use**
-- Choose one or several values from a longer list.
-- **Dropdown Search** for long lists that benefit from filtering.
-- **Dropdown Tags** when the user picks several values shown as chips.
+- Choose one value from a longer list.
 
 **When not to use** (reach for instead)
 - ≤5 always-visible options → **Radio Button** or **Button Group**.
 - Free-text entry → **Text Field**.
 
 **How to use**
-- Use the stock **Dropdown** / **Dropdown Search** / **Dropdown Tags** blocks — the styling applies automatically.
+- Use the stock **Dropdown** block — the styling applies automatically.
 
 ## Files
 | File | OutSystems destination |
 |---|---|
 | `src/blocks/loop-dropdown.css` | Theme CSS (paste **below** OutSystems UI so it wins) |
-| `tokens/component-field.css` → `dist/theme.css` | Theme CSS (adds the `--loop-select-*` / `--loop-multiselect-*` tokens) |
+| `tokens/component-field.css` → `dist/theme.css` | Theme CSS (adds the `--loop-select-*` tokens) |
 
 > Canonical CSS lives in `src/blocks/loop-dropdown.css`; it is embedded into this ticket by
 > `node build/embed-handover-code.mjs` — re-run after editing the source to keep them in sync.
@@ -52,11 +53,19 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 <summary><code>loop-dropdown.css</code> → Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)</summary>
 
 ```css
-/* loop-dropdown.css — Dropdown / Select: native Dropdown pattern + VirtualSelect provider restyle */
+/* loop-dropdown.css — Dropdown / Select: native single-Select Dropdown pattern.
+   NOTE: the VirtualSelect provider restyle (Dropdown Search + Dropdown Tags) was
+   removed on 2026-07-07 — those two variants are NOT shipping. Only the native
+   single Select ships. If they return, restore §2–3 from git history (commits
+   149022f feat(dropdown-tags) and 51969e8 fix(dropdown search)). */
 
 /* =====================================================================
    1) Native Dropdown PATTERN — single Select  (.dropdown-container.dropdown)
    ===================================================================== */
+[data-dropdown] .dropdown-display-content {
+  display: inline-flex;
+  gap: var(--space-s);
+}
 
 /* ---- Field box (Default / Filled / Selected share this) ---- */
 .dropdown-container.dropdown > div.dropdown-display,
@@ -174,190 +183,47 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 }
 
 /* =====================================================================
-   2) VirtualSelect PROVIDER — Dropdown Search (single) + Dropdown Tags (multi)
-      A few field-box props use !important to beat the provider's own injected CSS.
-   ===================================================================== */
-
-/* ---- Field box (the wrapper is the visible pill) ---- */
-.osui-dropdown-search .vscomp-ele-wrapper,
-.osui-dropdown-tags .vscomp-ele-wrapper {
-  min-height: 40px;
-  background-color: var(--color-bg-container-on-light-lowest) !important;
-  border: 1px solid var(--color-outline-on-light-default) !important;
-  border-radius: var(--loop-select-radius) !important;
-  color: var(--color-text-on-light-default);
-  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-300, 16px);
+   2) Field Wrapper size cascade — Select follows the .loop-field--* size
+   =====================================================================
+   Mirrors the Text Field / Search size ramp (cmp-field-sizing ref: "every sizeable control
+   inside a sized Field Wrapper follows the wrapper"). The select has no documented standalone
+   size ramp in Figma — its component set publishes only the Regular 40px surface — so it adopts
+   the shared field ramp: height 56/48/40/32, vpadding 18/14/11/8, text 16/14/13/12, label
+   16/14/13/12. One modifier on the wrapper re-points the --loop-select-* custom props that the
+   field-box, native dropdown-display, value text, and label rules already read — so the native
+   Select scales together with the label, exactly like the sibling controls. Regular is the token
+   default but is re-declared so a select nested under an outer sized wrapper still resolves to
+   its own size. */
+.loop-field--xlarge {
+  --loop-select-h: 56px;
+  --loop-select-padding-block: var(--loop-field-padding-block, 18px);
+  --loop-select-text-size: 16px;    --loop-select-text-leading: 16px;
+  --loop-select-label-size: 16px;   --loop-select-label-tracking: 0px;
 }
-.osui-dropdown-tags .vscomp-ele-wrapper.multiple {
-  border-radius: var(--loop-select-radius, 8px) !important;
+.loop-field--large {
+  --loop-select-h: 48px;
+  --loop-select-padding-block: 14px;
+  --loop-select-text-size: 14px;    --loop-select-text-leading: 16px;
+  --loop-select-label-size: 14px;   --loop-select-label-tracking: 0px;
 }
-
-/* toggle button (content row) */
-.osui-dropdown-search .vscomp-toggle-button,
-.osui-dropdown-tags .vscomp-toggle-button {
-  gap: var(--loop-select-gap, 8px);
-  padding: var(--loop-multiselect-padding-block, 12px) var(--loop-select-padding-inline, 16px);
-  min-height: var(--loop-multiselect-min-content, 28px);
+.loop-field--regular {
+  --loop-select-h: 40px;
+  --loop-select-padding-block: 11px;
+  --loop-select-text-size: 13px;    --loop-select-text-leading: 14px;
+  --loop-select-label-size: 13px;   --loop-select-label-tracking: 0.25px;
 }
-
-/* value / placeholder text */
-.osui-dropdown-search .vscomp-value,
-.osui-dropdown-tags .vscomp-value {
-  color: var(--color-text-on-light-default);
-}
-.osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value,
-.osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
-  color: var(--color-text-on-light-subdued);
-}
-
-/* chevron arrow — provider draws it with borders; recolour to the icon token */
-.osui-dropdown-search .vscomp-arrow::after,
-.osui-dropdown-tags .vscomp-arrow::after,
-.osui-dropdown-search .vscomp-arrow,
-.osui-dropdown-tags .vscomp-arrow {
-  border-color: var(--color-icon-on-light-default) !important;
-}
-
-/* focused state */
-.osui-dropdown-search .vscomp-ele-wrapper.focused,
-.osui-dropdown-tags .vscomp-ele-wrapper.focused {
-  border: 2px solid var(--color-outline-on-light-link-focused) !important;
-  box-shadow: none !important;
-}
-
-/* clear button */
-.osui-dropdown-search .vscomp-clear-icon,
-.osui-dropdown-tags .vscomp-clear-icon {
-  background-color: var(--color-icon-on-light-default);
-}
-
-/* ---- Tag chips (multi-select) — neutral chip, NOT the blue loop-tag block ---- */
-.osui-dropdown-tags .vscomp-value-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--loop-select-tag-gap, 4px);
-  padding: var(--loop-select-tag-padding-block, 8px) var(--loop-select-tag-padding-inline, 12px);
-  border-radius: var(--loop-select-tag-radius, 48px) !important;
-  background-color: var(--loop-select-tag-bg) !important;
-  color: var(--color-text-on-light-default);
-  font-size: var(--font-size-300, 16px);
-  line-height: var(--font-size-300, 16px);
-  letter-spacing: 0.25px;
-}
-.osui-dropdown-tags .vscomp-value-tag-content {
-  color: var(--color-text-on-light-default);
-}
-.osui-dropdown-tags .vscomp-value-tag-clear-button {
-  width: var(--loop-select-tag-cross-size, 14px);
-  height: var(--loop-select-tag-cross-size, 14px);
-}
-.osui-dropdown-tags .vscomp-value-tag-clear-button .vscomp-clear-icon {
-  background-color: var(--color-icon-on-light-default);
-}
-.osui-dropdown-tags .vscomp-value-tag-clear-button:focus-visible {
-  outline: 2px solid var(--color-outline-on-light-link-focused);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-/* ---- Options dropbox (open list) ---- */
-.osui-dropdown-search .vscomp-dropbox,
-.osui-dropdown-tags .vscomp-dropbox {
-  background-color: var(--color-bg-container-on-light-lowest) !important;
-  border: 1px solid var(--color-outline-on-light-subdued) !important;
-  border-radius: var(--loop-select-list-radius, 8px) !important;
-  box-shadow: var(--loop-select-list-shadow) !important;
-}
-.osui-dropdown-search .vscomp-option,
-.osui-dropdown-tags .vscomp-option {
-  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
-  color: var(--color-text-on-light-default);
-  font-size: var(--font-size-200, 14px);
-}
-.osui-dropdown-search .vscomp-option.hovered,
-.osui-dropdown-search .vscomp-option.focused,
-.osui-dropdown-tags .vscomp-option.hovered,
-.osui-dropdown-tags .vscomp-option.focused {
-  background-color: var(--color-bg-container-on-light-low) !important;
-}
-.osui-dropdown-search .vscomp-option.selected,
-.osui-dropdown-tags .vscomp-option.selected {
-  background-color: var(--color-bg-container-on-light-low) !important;
-  color: var(--color-text-on-light-default);
-}
-
-/* search box inside the open list */
-.osui-dropdown-search .vscomp-search-container,
-.osui-dropdown-tags .vscomp-search-container {
-  border-bottom: 1px solid var(--color-outline-on-light-subdued);
-  padding: var(--space-xtiny, 4px) var(--loop-select-padding-inline, 16px);
-}
-/* leading magnifier glyph (provider ships none in this build) — FA 6 Pro font glyph */
-.osui-dropdown-search .vscomp-search-container::before,
-.osui-dropdown-tags .vscomp-search-container::before {
-  content: var(--loop-select-search-icon-char, "\f002");
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  margin-right: var(--space-xxsmall, 8px);
-  color: var(--color-icon-on-light-subdued);
-  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
-  font-weight: var(--loop-select-search-icon-weight, 400);
-  font-size: var(--loop-select-search-icon-glyph, 14px);
-  font-style: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-}
-.osui-dropdown-search .vscomp-search-input,
-.osui-dropdown-tags .vscomp-search-input {
-  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  font-size: var(--font-size-200, 14px);
-  color: var(--color-text-on-light-default);
-}
-
-/* =====================================================================
-   3) Live-provider refinements — DOM only the runtime VirtualSelect emits
-   ===================================================================== */
-
-/* Move the provider's left .checkbox-icon to the trailing edge and suppress the
-   unchecked square, so selected rows get a right-aligned check and others are bare. */
-.osui-dropdown-tags .vscomp-option .vscomp-option-text { order: 1; }
-.osui-dropdown-tags .vscomp-option .checkbox-icon {
-  order: 2;
-  margin-left: auto;          /* push the marker to the trailing edge */
-  margin-right: 0;
-  width: 16px;
-  height: 16px;
-}
-/* unchecked rows: no marker at all (provider draws a square checkbox by default) */
-.osui-dropdown-tags .vscomp-option:not(.selected) .checkbox-icon { display: none; }
-/* selected rows: a clean brand check mark (fully redefined so the provider's
-   purple-tick geometry never partially wins on equal specificity) */
-.osui-dropdown-tags .vscomp-option.selected .checkbox-icon::after {
-  width: 60%;
-  height: 100%;
-  margin: 0 auto;
-  border: 2px solid var(--color-icon-on-light-link-enabled);
-  border-top-color: transparent;
-  border-left-color: transparent;
-  transform: rotate(45deg) translate(-1px, -2px);
-}
-
-/* "+N" overflow alias (.more-value-count) — a compact, non-removable neutral pill */
-.osui-dropdown-tags .vscomp-value-tag.more-value-count {
-  font-weight: var(--font-weight-semibold, 600);
+.loop-field--small {
+  --loop-select-h: 32px;
+  --loop-select-padding-block: 8px;
+  --loop-select-padding-inline: var(--space-xsmall, 12px);   /* Small pulls the side padding in (Figma 19336-9755) */
+  --loop-select-text-size: 12px;    --loop-select-text-leading: 12px;
+  --loop-select-label-size: 12px;   --loop-select-label-tracking: 0.5px;
 }
 
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .dropdown-container.dropdown > div.dropdown-display,
-  .dropdown-container.dropdown > div.dropdown-display::after,
-  .osui-dropdown-search .vscomp-ele-wrapper,
-  .osui-dropdown-tags .vscomp-ele-wrapper { transition: none; }
+  .dropdown-container.dropdown > div.dropdown-display::after { transition: none; }
 }
 ```
 
@@ -390,7 +256,9 @@ state **colours** (shared semantic tokens) but has its own box metrics: a pill
 - **2px Blue/50** focus/expanded ring (padding shrinks 1px so the box doesn't jump).
 - Tinted **Error** (red) / **Warning** (yellow) / **Disabled** (neutral) fills + borders.
 - Popup **list**: white, 8px radius, low shadow, subtle border.
-- Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48), 14px clear icon.
+- Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48, 1px `--color-outline-on-light-default` border), **16px / weight 400** label, 12px/8px padding, and a clean inline **14px** clear-cross. The provider (`outsystems-ui.css`) beats us on specificity (`.vscomp-wrapper.show-value-as-tags .vscomp-value-tag` 0,3,0 → 12px/600/`6px 35px`), absolutely-positions the cross over the label, and gives it a dark `neutral-7` circle — all reset via `!important` + `position:static` + a two-bar "×".
+- Multi-select **right icons**: OSUI hides the chevron once tags are selected (`.show-value-as-tags.has-value .vscomp-arrow{display:none}`) and top-pins the clear-all. The Loop restores BOTH as a vertically-centred right-edge cluster **[× clear-all][⌄ chevron]** (20px each), matching Figma's filled state; the toggle reserves `--loop-select-tags-padding-right` so tags never run under them.
+- Multi-select **"+N" overflow**: styled as a compact 6px-padding neutral pill. The badge **text** ("+ N more…") is provider-generated, NOT CSS — set the Dropdown Tags block's `moreText` (VirtualSelect option) to `""` for the Figma-style compact **"+N"**.
 
 ## Build in ODC with Mentor Studio
 
@@ -425,6 +293,7 @@ generating, list what you created by name and flag anything you could not finish
 - [ ] Single Select → native **Dropdown** widget; Search → **Dropdown Search**; Multi → **Dropdown Tags**.
 - [ ] Error → bind an OutSystems **Validation** (sets `.not-valid`); Warning → Extended Class `is-warning`; empty single Select → `is-placeholder`.
 - [ ] Wrap Label + field + helper in a Container with `loop-field loop-field--select` (single) or `loop-field` (multi).
+- [ ] **Dropdown Tags** overflow badge — set the block's `moreText` VirtualSelect option to `""` for the compact Figma **"+N"** (default renders "+ N more…").
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview). The VirtualSelect DOM is provider-generated — confirm the `.vscomp-*` overrides land on the published markup.
 
 ## Open findings linked to this work (register-only — low, no GitHub Bug auto-filed)

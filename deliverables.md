@@ -72,9 +72,9 @@ verify/finish · **To build** = net-new.
 | Numeric Field | **To build** | (text-field variant) |
 | Radio Button | Built | `src/blocks/loop-radio-button.css` |
 | Search | Built | `src/blocks/loop-search.css` |
-| Search Typeahead (= Dropdown Search) | Partial | dropdown search variant — verify against Figma |
-| Select / Dropdown Native | Built | `src/blocks/loop-dropdown.css` |
-| Multi-select (= Dropdown Tags) | Partial | dropdown tags variant — verify |
+| Search Typeahead (= Dropdown Search) | **Won't ship** | Not shipping (decision 2026-07-07). VirtualSelect restyle removed from `loop-dropdown.css`; restore from git (commit 51969e8) if reinstated. |
+| Select / Dropdown Native | Built | `src/blocks/loop-dropdown.css` (native single Select only) |
+| Multi-select (= Dropdown Tags) | **Won't ship** | Not shipping (decision 2026-07-07). VirtualSelect restyle (§2–3) removed from `loop-dropdown.css`; frozen ref `loop/refs/cmp-dropdown-tags/` retained; restore from git (commit 149022f) if reinstated. |
 | Tag & Meta Tag | Partial | Tag built (`loop-tag.css`); Meta Tag to build/verify |
 
 ## Messaging, Alerts, Notification

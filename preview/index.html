@@ -36,12 +36,6 @@
 <!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
 <link rel="stylesheet" href="../dist/theme.css">
 
-<!-- 2b) The VirtualSelect provider's own stylesheet — the SAME library OutSystems'
-        Dropdown Search / Dropdown Tags ship (vendored from virtual-select v1.1.0).
-        Loaded BEFORE the loop-* block CSS so The Loop overrides win the cascade,
-        mirroring how the ODC Theme CSS sits below the runtime-injected provider CSS. -->
-<link rel="stylesheet" href="vendor/virtual-select/virtual-select.min.css">
-
 <!-- 2c) The Flatpickr provider's own stylesheet — the SAME library OutSystems'
         DatePicker ships in ODC (vendored from flatpickr v4.6.13). Loaded BEFORE the
         loop-* block CSS so The Loop overrides win the cascade, mirroring how the ODC
@@ -64,6 +58,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-popover.css">
 <link rel="stylesheet" href="../src/blocks/loop-tabs.css">
 <link rel="stylesheet" href="../src/blocks/loop-pagination.css">
+<link rel="stylesheet" href="../src/blocks/loop-breadcrumb.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
 
 <!-- 3b) Font Awesome 6 Free — the FULL icon set, self-hosted. In ODC this is the
@@ -406,14 +401,26 @@
       <button type="button" class="loop-nav-toggle" aria-label="Collapse navigation" aria-expanded="true" aria-controls="pv-app-nav" data-pv-nav-toggle></button>
     </div>
     <nav class="app-menu-links">
-      <a href="#sec-layout" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Layout</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-typography"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6V4h12v2M10 4v12M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Typography</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-icons"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3l2 4.5 5 .5-3.7 3.3 1.1 4.7L10 13.5 5.6 16l1.1-4.7L3 8l5-.5L10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Icons</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-buttons"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="14" height="8" rx="4" stroke="currentColor" stroke-width="1.5"/></svg><span>Buttons</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-forms"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 8h8M6 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Form Controls</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-feedback"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3a5 5 0 0 1 5 5v3l1.5 2.5h-13L5 11V8a5 5 0 0 1 5-5zM8 16a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Feedback</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-data"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg><span>Data Display</span><span class="indicator" aria-hidden="true">›</span></a>
-      <a href="#sec-reference"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h8a2 2 0 0 1 2 2v12l-6-3-6 3V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>References</span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-layout" class="active"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Layout</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-typography"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6V4h12v2M10 4v12M7 16h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Typography</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-icons"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3l2 4.5 5 .5-3.7 3.3 1.1 4.7L10 13.5 5.6 16l1.1-4.7L3 8l5-.5L10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Icons</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-buttons"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="14" height="8" rx="4" stroke="currentColor" stroke-width="1.5"/></svg><span class="loop-menu-item__label">Buttons</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-forms"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M6 8h8M6 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="loop-menu-item__label">Form Controls</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-feedback"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3a5 5 0 0 1 5 5v3l1.5 2.5h-13L5 11V8a5 5 0 0 1 5-5zM8 16a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Feedback</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-data"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5"/></svg><span class="loop-menu-item__label">Data Display</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <a href="#sec-reference"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h8a2 2 0 0 1 2 2v12l-6-3-6 3V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">References</span></span><span class="indicator" aria-hidden="true">›</span></a>
+      <!-- Submenu (native OSUI .osui-submenu) inside the collapsible sidebar — in the rail its
+           header collapses to the same lone-icon pill as the flat links above (chevron + L2 dropped). -->
+      <div class="osui-submenu">
+        <div class="osui-submenu__header">
+          <span class="osui-submenu__header__item"><a href="#0"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Resources</span></span></a></span>
+          <span class="osui-submenu__header__icon" aria-hidden="true"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div class="osui-submenu__items">
+          <a href="#0">Guidelines</a>
+          <a href="#0">Downloads</a>
+        </div>
+      </div>
     </nav>
     <div class="app-login-info">
       <span class="pv-avatar" aria-hidden="true"></span>
@@ -460,10 +467,10 @@
           <span class="app-logo application-name">Nav Label</span>
         </div>
         <nav class="app-menu-links">
-          <a href="#0" class="active"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Dashboard</span><span class="indicator" aria-hidden="true">›</span></a>
-          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 5h11M6 10h11M6 15h11M3 5h.01M3 10h.01M3 15h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>List</span><span class="indicator" aria-hidden="true">›</span></a>
-          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Detail</span><span class="indicator" aria-hidden="true">›</span></a>
-          <a href="#0"><svg class="pv-menu-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v9H8l-4 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>AI Chat</span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0" class="active"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 7l7-4 7 4v9a1 1 0 0 1-1 1h-4v-5H8v5H4a1 1 0 0 1-1-1V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Dashboard</span></span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 5h11M6 10h11M6 15h11M3 5h.01M3 10h.01M3 15h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="loop-menu-item__label">List</span></span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4zM7 8h6M7 11h6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">Detail</span></span><span class="indicator" aria-hidden="true">›</span></a>
+          <a href="#0"><span class="loop-menu-item__holder"><svg class="pv-menu-icon loop-menu-item__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v9H8l-4 3V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="loop-menu-item__label">AI Chat</span></span><span class="indicator" aria-hidden="true">›</span></a>
           <!-- Submenu (native OSUI .osui-submenu) — OPEN + selected parent with L2 children -->
           <div class="osui-submenu active osui-submenu--is-open">
             <div class="osui-submenu__header">
@@ -789,8 +796,9 @@
       <code>aria-hidden</code>; an icon that carries meaning needs an accessible label.</p>
 
     <h3 class="pv-subhead">Searchable reference — custom Web Component <code>&lt;loop-icon-reference&gt;</code></h3>
-    <p class="pv-figma">src/components/loop-icon-reference.js + loop-icon-data.js (generated) · the full FA6 set as a searchable grid · click any icon to copy the name for your CustomIcon block · like <code>&lt;loop-typography-reference&gt;</code></p>
+    <p class="pv-figma">src/components/loop-icon-reference.js · the full FA6 set as a searchable grid · renders each tile as an inline SVG straight from the IcoMoon export (dist/icomoon/*.selection.json — run <code>npm run gen:icomoon</code> first; falls back to the font via loop-icon-data.js if absent) · click any icon to copy the name for your CustomIcon block</p>
     <loop-icon-reference
+      src="../dist/icomoon/loop-fa-solid.selection.json,../dist/icomoon/loop-fa-regular.selection.json,../dist/icomoon/loop-fa-light.selection.json"
       heading="Icon library"
       intro="The complete Font Awesome 6 Pro set. Search by name or keyword, filter by style, then click an icon to copy its name."
       copy-format="class">
@@ -1443,8 +1451,8 @@
 
   <!-- ============ DROPDOWN / SELECT ============ -->
   <section>
-    <h2>Dropdown / Select — restyle native <code>.dropdown</code> + VirtualSelect <code>.vscomp-*</code></h2>
-    <p class="pv-figma">handover/loop-dropdown.md · Figma nodes 18787-4817 (Select) · 18830-17312 (Multiselect)</p>
+    <h2>Dropdown / Select — restyle native <code>.dropdown</code></h2>
+    <p class="pv-figma">handover/loop-dropdown.md · Figma node 18787-4817 (Select). Dropdown Search + Dropdown Tags are NOT shipping (removed 2026-07-07).</p>
 
     <div class="pv-row pv-row--end">
       <span class="pv-label pv-label--full">Select — states (closed)</span>
@@ -1483,6 +1491,68 @@
     </div>
 
     <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes — one <code>.loop-field--*</code> scales the field box + label together (shared field ramp)</span>
+      <div class="loop-field loop-field--select loop-field--xlarge pv-field">
+        <label data-label for="dd-xl">xLarge (56px · label 16)</label>
+        <div class="dropdown-container dropdown" id="dd-xl">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--large pv-field">
+        <label data-label for="dd-lg">Large (48px · label 14)</label>
+        <div class="dropdown-container dropdown" id="dd-lg">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--regular pv-field">
+        <label data-label for="dd-rg">Regular (40px · label 13 · default)</label>
+        <div class="dropdown-container dropdown" id="dd-rg">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--small pv-field">
+        <label data-label for="dd-sm">Small (32px · label 12)</label>
+        <div class="dropdown-container dropdown" id="dd-sm">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+      </div>
+      <span class="pv-note">The select has no standalone size ramp in Figma (its set publishes only the Regular 40px surface); per the cmp-field-sizing DS rule it adopts the shared field ramp so a sized Field Wrapper scales it — height 56/48/40/32, text 16/14/13/12, label with it.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">States — one <code>.loop-field--*</code> modifier recolors the field box + helper (wrapper-driven, like the Text Field)</span>
+      <div class="loop-field loop-field--select loop-field--error pv-field">
+        <label data-label for="dd-w-err">Error</label>
+        <div class="dropdown-container dropdown" id="dd-w-err">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--select loop-field--warning pv-field">
+        <label data-label for="dd-w-warn">Warning</label>
+        <div class="dropdown-container dropdown" id="dd-w-warn">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--select loop-field--disabled pv-field">
+        <label data-label for="dd-w-dis">Disabled</label>
+        <div class="dropdown-container dropdown" id="dd-w-dis">
+          <div class="dropdown-display" tabindex="-1"><div class="dropdown-display-content"><span>Select Item</span></div></div>
+        </div>
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <div class="loop-field loop-field--select loop-field--read-only pv-field">
+        <label data-label for="dd-w-ro">Read-Only</label>
+        <div class="dropdown-container dropdown" id="dd-w-ro">
+          <div class="dropdown-display" tabindex="0"><div class="dropdown-display-content"><span>Patricia Wesley</span></div></div>
+        </div>
+        <span class="loop-field__helper">(This is a helper text)</span>
+      </div>
+      <span class="pv-note">One State param drives the field: the wrapper modifier recolors the native <code>.dropdown</code> box (above) — no need for the element-level <code>.not-valid</code>/<code>.is-warning</code>/<code>.dropdown-disabled</code>. Read-Only goes borderless + drops the chevron.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
       <span class="pv-label pv-label--full">Radius</span>
       <div class="loop-field loop-field--select pv-field">
         <label data-label for="dd-soft">Soft rounded (8px — default)</label>
@@ -1517,23 +1587,8 @@
     </div>
 
     <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-label pv-label--block">Dropdown Search — searchable single (<code>.osui-dropdown-search</code> · live provider)</span>
-      <div class="loop-field loop-field--select">
-        <label data-label for="dd-search">Select Date</label>
-        <!-- Real VirtualSelect target — the provider builds the .vscomp-* DOM here at runtime. -->
-        <div class="osui-dropdown-search" id="dd-search"></div>
-      </div>
-    </div>
-
-    <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-label pv-label--block">Multi-select / Dropdown Tags — tag chips + “+N” overflow (<code>.osui-dropdown-tags</code> · live provider)</span>
-      <div class="loop-field">
-        <label data-label for="dd-tags">Select Options</label>
-        <!-- Real VirtualSelect target — multiple + showValueAsTags + noOfDisplayValues:3 → the Figma “+3” overflow. -->
-        <div class="osui-dropdown-tags" id="dd-tags"></div>
-      </div>
-      <span class="pv-note">Live: type to search, pick/clear tags, “+N” collapses overflow. The single Select states above stay the server-side <code>.dropdown</code> pattern.</span>
-      <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius now shared: Text Field + Select both use --radius-pill 32px.)</span>
+      <span class="pv-note">Dropdown Search (searchable single) and Multi-select / Dropdown Tags are NOT shipping — removed 2026-07-07. Only the native single <code>.dropdown</code> Select above ships. If they return, restore the VirtualSelect restyle from git history (commits 149022f / 51969e8).</span>
+      <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius shared: Text Field + single Select both use --radius-medium 8px per Figma 18770:10424; 32px pill is opt-in via .loop-field--rounded.)</span>
     </div>
   </section>
 
@@ -1840,7 +1895,7 @@
   <!-- ============ PAGINATION ============ -->
   <section>
     <h2>Pagination — custom CSS block <code>.loop-pagination</code> (<code>ExtendedClass</code> on the native Pagination)</h2>
-    <p class="pv-figma">tokens/component-pagination.css · src/blocks/loop-pagination.css · Figma nodes 23714-3726 / 23714-3840 · Regular size (Small also specced; Large/xLarge not in use) · 40px controls, pill active page, blue link chips</p>
+    <p class="pv-figma">tokens/component-pagination.css · src/blocks/loop-pagination.css · Figma nodes 23714-3726 / 23714-3840 · Regular (40px) + Small via <code>.loop-pagination--small</code> (32px, node 26629:59237; Large/xLarge not in use) · pill active page, blue link chips</p>
 
     <div class="pv-row pv-row--stack">
       <span class="pv-label">With labels + items per page &amp; showing</span>
@@ -1884,6 +1939,50 @@
         </div>
       </div>
       <span class="pv-note">Left nav (First / Prev / page chips / Next / Last) plus a right rail (items-per-page dropdown + Showing summary). Active page <strong>2</strong> carries the pill outline; numeric ranges in the summary are bold 14px per Figma. Hovering any control fills it bright blue (#169af3) with a white label.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Small — <code>.loop-pagination--small</code> (AG-grid dashboards)</span>
+      <div class="loop-pagination loop-pagination--small">
+        <div class="loop-pagination__nav">
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">First</span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-first" href="#">
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="loop-pagination__btn-label">Prev</span>
+          </a>
+          <a class="loop-pagination__page" href="#">1</a>
+          <a class="loop-pagination__page loop-pagination__page--active" href="#" aria-current="page">2</a>
+          <a class="loop-pagination__page" href="#">3</a>
+          <a class="loop-pagination__page" href="#">4</a>
+          <a class="loop-pagination__page" href="#">5</a>
+          <a class="loop-pagination__page" href="#">6</a>
+          <a class="loop-pagination__page" href="#">7</a>
+          <a class="loop-pagination__page" href="#">8</a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Next</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+          <a class="loop-pagination__btn loop-pagination__btn--icon-last" href="#">
+            <span class="loop-pagination__btn-label">Last</span>
+            <span class="loop-pagination__icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M6 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </a>
+        </div>
+        <div class="loop-pagination__controls">
+          <div class="loop-pagination__items-per-page">
+            <span class="loop-pagination__label">items per page</span>
+            <div class="dropdown-container dropdown">
+              <select class="dropdown-display loop-pagination__input" aria-label="Items per page">
+                <option>10</option><option selected>20</option><option>50</option>
+              </select>
+            </div>
+          </div>
+          <span class="loop-pagination__showing">Showing <span class="loop-pagination__showing-count">1-20</span> of <span class="loop-pagination__showing-count">500</span></span>
+        </div>
+      </div>
+      <span class="pv-note">Same markup as the Regular row above with <code>.loop-pagination--small</code> added: 32px controls, 13px labels/page numbers, tighter nav &amp; right-rail gaps. Icons stay 20px and the active-page pill is unchanged.</span>
     </div>
 
     <div class="pv-row pv-row--stack">
@@ -1978,6 +2077,37 @@
         </div>
       </div>
       <span class="pv-note">Compact dropdown jump — <code>Go to [n] page</code>.</span>
+    </div>
+  </section>
+
+  <!-- ============ BREADCRUMBS ============ -->
+  <section>
+    <h2>Breadcrumbs — colour override on native OutSystems UI <code>.breadcrumbs</code></h2>
+    <p class="pv-figma">src/blocks/loop-breadcrumb.css · Figma node 30367:747 · colours only — links <code>#004370</code> (Link/Primary Enabled), current page <code>rgba(0,41,77,.57)</code> (Subdued), separator <code>rgba(0,41,77,.42)</code> (State/Disabled), leading icon <code>#004370</code> (Icon/Primary). Native chevron separator glyph & geometry left as-is.</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Trail (native Breadcrumbs widget DOM)</span>
+      <nav aria-label="breadcrumb" class="breadcrumbs">
+        <div class="breadcrumbs-content">
+          <div class="breadcrumbs-item">
+            <div class="title"><a data-link href="#0"><i class="icon fa fa-house fa-1x" aria-hidden="true"></i></a></div>
+            <div class="placeholder-empty" aria-hidden="true"><i class="icon fa fa-angle-right fa-1x" aria-hidden="true"></i></div>
+          </div>
+          <div class="breadcrumbs-item">
+            <div class="title"><a data-link href="#0">Dashboard</a></div>
+            <div class="placeholder-empty" aria-hidden="true"><i class="icon fa fa-angle-right fa-1x" aria-hidden="true"></i></div>
+          </div>
+          <div class="breadcrumbs-item">
+            <div class="title"><a data-link href="#0">Requests</a></div>
+            <div class="placeholder-empty" aria-hidden="true"><i class="icon fa fa-angle-right fa-1x" aria-hidden="true"></i></div>
+          </div>
+          <div class="breadcrumbs-item">
+            <div class="title" aria-current="page">Requests Overview</div>
+            <div class="placeholder-empty" aria-hidden="true"></div>
+          </div>
+        </div>
+      </nav>
+      <span class="pv-note">Same DOM the OSUI Breadcrumbs Block renders (<code>nav.breadcrumbs &gt; .breadcrumbs-content &gt; .breadcrumbs-item</code> with a <code>.title</code> link and a separator <code>.icon</code> in a sibling wrapper). Linked crumbs are blue, the leading home glyph is primary blue, the last crumb (<code>aria-current</code>) is subdued and unlinked, and the between-crumb chevrons are disabled grey. Separator glyph/spacing are the native defaults — only colours are overridden.</span>
     </div>
   </section>
 
@@ -2662,50 +2792,9 @@
   });
 </script>
 
-<!-- 4) The real VirtualSelect provider (vendored). OutSystems' Dropdown Search /
-        Dropdown Tags blocks drive this same library; here we init it directly so the
-        preview is the live widget, styled to The Loop spec by loop-dropdown.css. -->
-<script src="vendor/virtual-select/virtual-select.min.js"></script>
-<script>
-  // Dropdown Search — single, searchable. Mirrors the Figma "Select" open state.
-  VirtualSelect.init({
-    ele: '#dd-search',
-    placeholder: 'Select project date',
-    search: true,
-    hideClearButton: false,
-    options: [
-      { label: 'Select Item A', value: 'a' },
-      { label: 'Select Item B', value: 'b' },
-      { label: 'Select Item C', value: 'c' },
-      { label: 'Select Item D', value: 'd' },
-      { label: 'Select Item E', value: 'e' },
-      { label: 'Select Item F', value: 'f' },
-      { label: 'Select Item G', value: 'g' },
-      { label: 'Select Item K', value: 'k' },
-    ],
-  });
-
-  // Multi-select / Dropdown Tags — multiple, tags, "+N" overflow. Mirrors Figma "Multi Select".
-  VirtualSelect.init({
-    ele: '#dd-tags',
-    placeholder: 'Select Options',
-    multiple: true,
-    showValueAsTags: true,
-    search: true,
-    disableSelectAll: true,          // no "Select all" row — Figma list is plain options
-    noOfDisplayValues: 3,            // 3 chips then "+N" — the Figma "+3" overflow badge
-    selectedValue: ['in-progress', 'done', 'closed', 'in-review', 'blocked', 'cancelled'],
-    options: [
-      { label: 'In Progress', value: 'in-progress' },
-      { label: 'Done',        value: 'done' },
-      { label: 'Closed',      value: 'closed' },
-      { label: 'In Review',   value: 'in-review' },
-      { label: 'Blocked',     value: 'blocked' },
-      { label: 'Cancelled',   value: 'cancelled' },
-      { label: 'Deferred',    value: 'deferred' },
-    ],
-  });
-</script>
+<!-- The VirtualSelect provider (Dropdown Search / Dropdown Tags) was removed here on
+     2026-07-07 — those two variants are NOT shipping. Only the native single Select
+     ships. Restore from git history (commits 149022f / 51969e8) if they return. -->
 
 <!-- 5) The real Flatpickr provider (vendored). OutSystems' DatePicker drives this same
         library in ODC; here we init it directly so the preview is the live calendar

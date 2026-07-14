@@ -219,6 +219,43 @@ if (!customElements.get('rnt-segmented')) {
 
 </details>
 
+## Event wiring (OnReady / OnDestroy)
+
+> The component's CustomEvents are wired in the Block's **OnReady** and cleaned up in
+> **OnDestroy** — the declarative "Handle Events" path is unreliable for custom elements.
+> Give the `<rnt-segmented>` element (or its wrapping Block) a **Name** and pass its
+> platform-generated `.Id` to each "Run JavaScript" node as `WidgetId`. Paste these two
+> blocks verbatim — they store each handler on `$public` so OnDestroy removes it by
+> reference. (If your ODC version doesn't persist `$public` across OnReady/OnDestroy,
+> stash the handlers on the element instead — `el._loopHandlers = { … }`.)
+
+| CustomEvent | raises Block event |
+|---|---|
+| `change` | `OnChange(e.detail.value)` |
+
+**OnReady** — resolve the element, attach listeners, stash for cleanup:
+
+```js
+// Block OnReady — "Run JavaScript" node. Input: WidgetId = <ElementName>.Id
+var root = document.getElementById($parameters.WidgetId);
+var el = (root && root.tagName && root.tagName.toLowerCase() === 'rnt-segmented')
+  ? root : (root ? root.querySelector('rnt-segmented') : null);
+if (el) {
+  $public.el = el;                       // stash for OnDestroy cleanup
+  $public.handleChange = function (e) { $actions.OnChange(e.detail.value); };
+  el.addEventListener('change', $public.handleChange);
+}
+```
+
+**OnDestroy** — remove the listeners:
+
+```js
+// Block OnDestroy — "Run JavaScript" node. Uses the reference stashed in OnReady.
+if ($public.el) {
+  $public.el.removeEventListener('change', $public.handleChange);
+}
+```
+
 ## Build in ODC with Mentor Studio
 
 > Paste this into **ODC Mentor Studio** to scaffold the OutSystems side of this handover
@@ -252,8 +289,12 @@ Events" tables (paste the relevant table into the chat so I work from real names
    (ODC requires one on every attribute). Static-Entity inputs bind directly (e.g.
    type = Type) since their Value attribute is the identifier; Booleans use
    If(Flag, "true", "false") — not presence.
-3. Wire each CustomEvent to its Block event via a "Run JavaScript" handler that
-   addEventListener's the event on the <rnt-segmented> element and raises the Block event.
+3. Wire each CustomEvent to its Block event in the Block's OnReady (attach) and OnDestroy
+   (remove) — not via the declarative "Handle Events" path, which is unreliable for custom
+   elements. Add a "Run JavaScript" node in OnReady that resolves the <rnt-segmented>,
+   addEventListener's each event (storing each handler on $public), and raises the Block
+   event; add a second in OnDestroy that removeEventListener's them. Paste the verbatim
+   OnReady + OnDestroy code from this handover's "## Event wiring (OnReady / OnDestroy)" section.
 4. If the component exposes a global helper (see its API section), give the element/Block
    a Name and pass its platform-generated runtime .Id, e.g.
    window.LoopX.show($parameters.WidgetId) where the WidgetId input = <WidgetName>.Id.
