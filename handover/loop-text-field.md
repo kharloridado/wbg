@@ -246,8 +246,9 @@ Class on the field Container.
 }
 
 /* Rounded (pill) variant — opt-in per instance. Overrides the 8px soft-rounded default with the
-   32px pill for the Text Input, Text Area, and Dropdown/Select inside this wrapper. The custom
-   props cascade to the field box and the native dropdown-display alike. */
+   32px pill for the Text Input, Text Area, Dropdown/Select and Dropdown Tags inside this wrapper
+   (the tags field box consumes --loop-field-radius too). The custom props cascade to the field
+   box and the native dropdown-display alike. */
 .loop-field--rounded {
   --loop-field-radius: var(--radius-pill);   /* 32px */
   --loop-select-radius: var(--radius-pill);  /* 32px */

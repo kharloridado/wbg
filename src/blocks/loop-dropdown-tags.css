@@ -1,0 +1,538 @@
+/* loop-dropdown-tags.css — Dropdown TAGS (multi-select).
+   A restyle of the OutSystems VirtualSelect "Tags" provider. ExtendedClass hook:
+   `osui-dropdown-tags` (already OSUI's own class on the .vscomp-ele root — we simply
+   scope to it; nothing here mutates OSUI internals).
+
+   Frozen ref: loop/refs/cmp-dropdown-tags (Figma 18830:17333; overflow state 18830:16426;
+   size ramp 18830:17324 — §9).
+   Companion script: src/components/loop-dropdown-tags.js — computes how many chips fit
+   on ONE line and collapses the rest into the "+N" pill. The CSS below holds the row to one
+   line on its own, so if the script never loads the field still cannot grow to two rows.
+
+   THE CASCADE WE ARE FIGHTING (all of it ships inside outsystems-ui.css):
+     · OSUI bundles VirtualSelect v1.1.5's stylesheet verbatim, THEN layers its own theme on
+       top. Our rules land after both, so specificity ties are enough — we out-specify rather
+       than spray !important.
+     · Strongest rules to beat, by selector weight:
+         0,3,0  .vscomp-wrapper.has-value.show-value-as-tags .vscomp-toggle-button  (padding)
+         0,3,0  .vscomp-wrapper.show-value-as-tags .vscomp-value-tag .vscomp-value-tag-clear-button
+         0,3,0  .vscomp-wrapper:not(.text-direction-rtl).has-value .vscomp-clear-button
+         0,2,0  .vscomp-wrapper.show-value-as-tags .vscomp-value      (flex-wrap:wrap; overflow:auto)
+         0,2,0  .vscomp-wrapper.show-value-as-tags .vscomp-value-tag  (12px/600 chip, 6px 35px pad)
+       Prefixing with `.osui-dropdown-tags` buys us +0,1,0 on every one of them.
+     · The chevron is NOT the provider's `.vscomp-arrow` — OSUI sets that to display:none and
+       draws the caret as an icon-font glyph on `.vscomp-toggle-button::after`, sized by the
+       `--vscomp-toogle-btn-arrow-size` custom prop. We re-point that prop rather than redraw it.
+     · The clear-all `×` is likewise an OSUI icon-font glyph (`.vscomp-clear-icon::after`); the
+       provider's two rotated background bars underneath are already neutralised by OSUI.
+   ===================================================================== */
+
+/* =====================================================================
+   1) Field box
+   ===================================================================== */
+.osui-dropdown-tags .vscomp-toggle-button {
+  /* re-point the provider/OSUI knobs instead of redrawing what they draw */
+  --vscomp-toogle-btn-arrow-size: var(--loop-select-icon-size, 20px);
+
+  height: auto;
+  min-height: auto;                /* the row's own min-height governs (see §2) */
+  line-height: normal;             /* OSUI pins 40px here for the single-line dropdown */
+
+  background-color: var(--color-bg-container-on-light-lowest);
+  /* The outline is an INSET SHADOW, not a border, so it occupies zero layout: Figma's field is
+     64px (12 + a 40px chip + 12) with the stroke inside. A real 1px border would make it 66. */
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-default);
+  border-radius: var(--loop-field-radius);        /* 8px — NOT the Select's pill */
+  color: var(--color-text-on-light-default);
+
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-multiselect-text-size, 16px);
+}
+
+/* Padding. Two OSUI rules squash this (0,2,0 shorthand + a 0,3,0 padding-left on .has-value),
+   so both of ours carry the wrapper classes to out-specify them. The right side reserves the
+   gutter that the absolutely-positioned icon cluster lives in (§4) — without it the tag row
+   would slide underneath the chevron. */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-toggle-button,
+.osui-dropdown-tags .vscomp-wrapper.has-value.show-value-as-tags .vscomp-toggle-button {
+  padding: var(--loop-multiselect-padding-block, 12px)
+           var(--loop-select-tags-padding-right, 72px)
+           var(--loop-multiselect-padding-block, 12px)
+           var(--loop-field-padding-inline, 16px);
+  gap: var(--loop-field-gap, 8px);
+  /* OSUI ALSO pins `min-height: var(--vscomp-toogle-btn-height)` (40px) at this same 0,3,0
+     weight (`.vscomp-wrapper.show-value-as-tags .vscomp-toggle-button`), so §1's 0,2,0 `auto`
+     loses that tie. Re-assert it here at 0,4,0 — otherwise the Small size (32px field) can
+     never drop under 40px. Invisible at xLarge/Large/Regular, whose content is ≥ 40px anyway. */
+  min-height: auto;
+}
+
+.osui-dropdown-tags .vscomp-toggle-button:hover {
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-subdued);
+}
+
+/* Focus — the design's own 2px focus colour. Same inset-shadow trick, so the thicker ring
+   still costs zero layout.
+   The :focus-within arm is LOAD-BEARING for the inline-search build: the provider applies
+   `.focused` only while the balloon is OPEN, and the keyboard tab stop is the injected proxy
+   INPUT (the wrapper is demoted to tabindex -1) — so after Escape closes the balloon with the
+   caret kept in the field, only :focus-within still shows the ring (WCAG 2.4.7). */
+.osui-dropdown-tags .vscomp-wrapper.focused .vscomp-toggle-button,
+.osui-dropdown-tags .vscomp-wrapper:focus .vscomp-toggle-button,
+.osui-dropdown-tags .vscomp-wrapper:focus-visible .vscomp-toggle-button,
+.osui-dropdown-tags .vscomp-wrapper:focus-within .vscomp-toggle-button {
+  box-shadow: inset 0 0 0 2px var(--color-outline-on-light-link-focused);
+  outline: none;
+}
+
+/* =====================================================================
+   2) The tag row — ONE LINE (the crux)
+   ===================================================================== */
+/* The provider ships `flex-wrap: wrap; overflow: auto`, which is what lets the field grow to
+   several rows. Figma's "Tags Wapper" is `overflow: clip` on a single flex row. */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value {
+  display: flex;
+  flex-wrap: nowrap;                                   /* provider: wrap  */
+  overflow: hidden;                                    /* provider: auto  */
+  align-items: center;
+  gap: var(--loop-select-tag-row-gap, 4px);
+  height: auto;
+  min-height: var(--loop-multiselect-min-content, 28px);
+  margin: 0;                                           /* OSUI adds margin-right on .has-value; the gutter is the toggle's padding, not this */
+  font-size: var(--loop-multiselect-text-size, 16px);  /* OSUI hard-sets --font-size-s */
+  color: var(--color-text-on-light-default);
+
+  /* Figma's Tags Wapper is `flex: 1 0 0` + `min-w-px`. The min-width is LOAD-BEARING: a flex
+     item defaults to `min-width: auto`, i.e. it refuses to shrink below its content — so with
+     nowrap the row would just push the field wider and NEVER report an overflow, and the fit
+     script would have nothing to measure. This one line is what makes the row clip. */
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Placeholder. OSUI re-colours it to neutral-7 at 0,2,0; Figma's is the subdued alpha the
+   sibling Text Field uses — the #00294d91 primitive, NOT the orphan --color-text-on-light-subdued
+   (see FND-020). */
+.osui-dropdown-tags .vscomp-wrapper:not(.has-value) .vscomp-value {
+  color: var(--color-neutral-alpha-57);
+  opacity: 1;
+}
+
+/* =====================================================================
+   3) Tag chip  (the `-loop tag` component, neutral variant)
+   ===================================================================== */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;                                      /* chips keep their size; the row clips instead */
+  gap: var(--loop-select-tag-gap, 4px);
+  margin: 0;                                           /* provider spaces chips with margin; we use the row's gap */
+  max-width: 100%;
+
+  /* Height is PINNED so the 1px border cannot grow the chip (border-no-height-shift) — see the
+     token's own note for how 40px is composed. */
+  height: var(--loop-select-tag-h, 40px);
+  padding-block: 0;
+  padding-inline: var(--loop-select-tag-padding-inline, 12px);
+
+  background-color: var(--loop-select-tag-bg);
+  border: 1px solid var(--loop-select-tag-border-color);
+  border-radius: var(--loop-select-tag-radius, 48px);
+  color: var(--color-text-on-light-default);
+
+  font-size: var(--loop-select-tag-text-size, 16px);   /* OSUI forces 12px */
+  font-weight: var(--font-weight-regular, 400);        /* OSUI forces 600 */
+  line-height: var(--loop-select-tag-text-leading, 16px);
+  letter-spacing: var(--loop-select-tag-text-tracking, 0.25px);
+  position: relative;
+}
+
+/* Label. OSUI stretches it to width:100% (it has to, because it absolutely-positions the cross
+   on top of the label — see below). We restore normal flow and cap it at Figma's 200px. */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag .vscomp-value-tag-content {
+  width: auto;
+  max-width: var(--loop-select-tag-text-max, 200px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The cross. OSUI absolutely-positions this at `right: 10px` INSIDE a dark neutral-7 circle —
+   so it floats over the end of the label. Figma sits it beside the label as a bare 14px glyph.
+   Put it back in flow and strip the circle. */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag .vscomp-value-tag-clear-button {
+  position: static;
+  flex-shrink: 0;
+  width: var(--loop-select-tag-cross-size, 14px);
+  height: var(--loop-select-tag-cross-size, 14px);
+  background-color: transparent;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+/* Keyboard reachability for the per-tag cross (implementation-level a11y — the design's own
+   focus colour, no visual value changed). */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag .vscomp-value-tag-clear-button:focus-visible {
+  outline: 2px solid var(--color-outline-on-light-link-focused);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs, 2px);
+}
+
+/* ---- The "+N" overflow pill ----
+   Same chip component, exactly two deltas: 6px inline padding (vs 12px), and no cross.
+   `margin-left: auto` is what pins it to the right edge, as in Figma — where the pill sits
+   OUTSIDE the clipped tags wrapper, ahead of the icon cluster.
+   The COUNT and its text are owned by loop-dropdown-tags.js: the provider would render
+   "+ 3 more..." (its template hard-codes the space, so even moreText:"" yields "+ 3 "), and
+   the script rewrites it to Figma's compact "+3". */
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag.more-value-count {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-inline: var(--loop-select-tag-count-padding-inline, 6px);
+  white-space: nowrap;
+  cursor: pointer;
+
+  /* Belt and braces. The fit script normally leaves slack, so `margin-left: auto` alone pins
+     the pill right. But in the degenerate case — one chip so long it overflows on its own, or
+     the script not running at all — an auto margin collapses and the pill would be clipped
+     along with the overflow. Sticky keeps it parked on the row's right edge regardless
+     (`overflow: hidden` above makes .vscomp-value the scrollport it sticks to). */
+  position: sticky;
+  right: 0;
+}
+
+/* =====================================================================
+   4) Right icon cluster — clear-all ×  +  chevron ⌄
+      Both are absolutely positioned by OSUI inside the toggle button, which is why §1 reserves
+      a 72px right gutter. Figma: chevron 20px at the 16px edge, clear-all 20px one 8px gap to
+      its left  →  right = 16 + 20 + 8 = 44px.
+   ===================================================================== */
+.osui-dropdown-tags .vscomp-toggle-button::after {          /* the chevron glyph */
+  right: var(--loop-field-padding-inline, 16px);
+  color: var(--color-icon-on-light-default);
+}
+
+.osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-clear-button,
+.osui-dropdown-tags .vscomp-wrapper:not(.text-direction-rtl).has-value .vscomp-clear-button {
+  right: calc(var(--loop-field-padding-inline, 16px)
+              + var(--loop-select-icon-size, 20px)
+              + var(--loop-field-gap, 8px));             /* 44px */
+  top: 50%;
+  margin-top: 0;
+  transform: translateY(-50%);
+  width: var(--loop-select-icon-size, 20px);
+  height: var(--loop-select-icon-size, 20px);
+  border-radius: 0;
+}
+
+.osui-dropdown-tags .vscomp-clear-button:hover {
+  background-color: transparent;
+}
+
+.osui-dropdown-tags .vscomp-clear-button:focus-visible {
+  outline: 2px solid var(--color-outline-on-light-link-focused);
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   5) Icons — FA 6 Pro glyphs
+      OSUI draws the caret and both crosses from ITS OWN icon font
+      (`content: var(--osui-icon-arrow-down)` / `var(--osui-icon-clear)` against
+      `--osui-icon-font-family`). The Loop's icons are FontAwesome 6 Pro glyphs — no inline
+      SVGs — so we re-point the same ::after pseudo-elements at the FA family + codepoint,
+      exactly as loop-search.css and loop-datepicker.css do.
+   ===================================================================== */
+.osui-dropdown-tags .vscomp-toggle-button::after,
+.osui-dropdown-tags .vscomp-clear-icon::after {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-icon-on-light-default);
+}
+
+/* chevron-down (Right Icon II) */
+.osui-dropdown-tags .vscomp-toggle-button::after {
+  content: "\f078";                                    /* fa-chevron-down */
+  font-size: var(--loop-select-icon-size, 20px);
+}
+
+/* xmark — used by BOTH the clear-all (Right Icon I) and the per-tag cross. The provider also
+   draws two rotated background bars on ::before/::after to fake an ×; neutralise them so only
+   the glyph shows. */
+.osui-dropdown-tags .vscomp-clear-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.osui-dropdown-tags .vscomp-clear-icon::before {
+  display: none;
+}
+.osui-dropdown-tags .vscomp-clear-icon::after {
+  content: "\f00d";                                    /* fa-xmark */
+  position: static;
+  width: auto;
+  height: auto;
+  background: none;
+  transform: none;
+  text-indent: 0;
+}
+
+.osui-dropdown-tags .vscomp-clear-button .vscomp-clear-icon::after {
+  font-size: var(--loop-select-icon-size, 20px);       /* 20px clear-all */
+}
+.osui-dropdown-tags .vscomp-value-tag-clear-button .vscomp-clear-icon::after {
+  font-size: var(--loop-select-tag-cross-size, 14px);  /* 14px tag cross */
+}
+
+/* =====================================================================
+   6) States — inherited from the Field Wrapper, matching loop-dropdown.css
+   ===================================================================== */
+/* All three re-colour the same inset ring §1 draws — never a real border, or the field would
+   change height between states. */
+.loop-field--error .osui-dropdown-tags .vscomp-toggle-button,
+.osui-dropdown-tags.osui-dropdown--not-valid .vscomp-toggle-button {
+  background-color: var(--color-bg-container-state-error-low);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-state-error-high);
+}
+
+.loop-field--warning .osui-dropdown-tags .vscomp-toggle-button {
+  background-color: var(--color-domain-state-warning-low);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-state-warning-high);
+}
+
+.loop-field--disabled .osui-dropdown-tags .vscomp-toggle-button,
+.osui-dropdown-tags.vscomp-ele[disabled] .vscomp-toggle-button {
+  background-color: var(--color-domain-state-disable-low);
+  /* The ref's disabled outline is white-48 (#ffffff7a) over the #dae3eb fill — a light inner
+     edge. Do NOT reuse the fill colour here; the ring would be invisible. */
+  box-shadow: inset 0 0 0 1px var(--color-gray-alpha-white-48);
+  color: var(--color-text-on-light-state-disabled);
+}
+
+.loop-field--disabled .osui-dropdown-tags .vscomp-value,
+.osui-dropdown-tags.vscomp-ele[disabled] .vscomp-value {
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* The disabled token already carries the fade (it is an alpha colour) — no extra opacity, or the
+   chip label double-fades. */
+.loop-field--disabled .osui-dropdown-tags .vscomp-wrapper.show-value-as-tags .vscomp-value-tag,
+.osui-dropdown-tags.vscomp-ele[disabled] .vscomp-wrapper.show-value-as-tags .vscomp-value-tag {
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* =====================================================================
+   7) Option list — the open balloon  (Figma 18830:18200)
+      SCOPING RULE (load-bearing): these rules are prefixed with
+      `.vscomp-wrapper.multiple.show-value-as-tags`, NOT `.osui-dropdown-tags`. In ODC the
+      provider appends the balloon to <body> as a `.vscomp-dropbox-wrapper` that MIRRORS the
+      wrapper's classes (`vscomp-wrapper multiple show-value-as-tags …`) — the OSUI root class
+      is not mirrored, so a root-scoped rule would silently never reach the balloon. The
+      mirrored-class scope matches both append paths (body and in-field) and intentionally
+      hits every Dropdown Tags app-wide. If per-instance scoping is ever needed, pass
+      `additionalDropboxContainerClasses` via the block's ExtendedOptions.
+
+      Rows carry NO checkbox: selection = row fill + right-aligned check. Row HEIGHT is not
+      set here — rows are virtually scrolled at fixed `optionHeight` intervals, so the height
+      travels as the provider option (ExtendedOptions {"optionHeight":"37px"}), never as CSS.
+   ===================================================================== */
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-dropbox {
+  background-color: var(--color-bg-container-on-light-lowest);
+  border-radius: var(--loop-select-list-radius, 8px);
+  /* Replaces OSUI's inset-shadow "border" — Figma's balloon has a soft drop shadow and no
+     visible outline. */
+  box-shadow: var(--loop-multiselect-list-shadow, 0 2px 3px rgba(0, 0, 0, 0.08));
+  padding: 0;
+}
+
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option {
+  background-color: var(--color-bg-container-on-light-lowest);
+  padding: 0 var(--loop-select-option-padding-inline, 12px);
+}
+
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option-text {
+  /* the lib stretches the label to width:100%, which would shove our right-aligned check
+     out of the row — let it flex instead */
+  width: auto;
+  flex: 1;
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-option-text-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.5;
+  color: var(--color-text-on-light-default);
+}
+
+/* No checkbox — one rule kills both the lib's bordered box and OSUI's primary-filled glyph
+   (their strongest rule, `.vscomp-wrapper.multiple .vscomp-option.selected .checkbox-icon:after`
+   at 0,5,0, dies with its parent). */
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option .checkbox-icon {
+  display: none;
+}
+
+/* Selected row — #e7edf3 fill + a right-aligned FA check (same glyph pattern as §5).
+   The row is display:flex and the label is flex:1, so margin-left:auto lands the glyph
+   on the right edge of the padded row. */
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option.selected {
+  background-color: var(--loop-select-option-selected-bg);
+}
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option.selected::after {
+  content: "\f00c";                                    /* fa-check */
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-select-option-check-size, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-icon-on-light-default);
+  margin-left: var(--loop-select-option-check-gap, 8px);
+  flex-shrink: 0;
+}
+
+/* Hover / keyboard-focused row — not drawn in Figma (recorded assumption in the ref):
+   one step lighter than the selected fill. Selected wins even while focused. */
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option.focused {
+  background-color: var(--color-bg-container-on-light-low);
+}
+.vscomp-wrapper.multiple.show-value-as-tags .vscomp-option.selected.focused {
+  background-color: var(--loop-select-option-selected-bg);
+}
+
+/* =====================================================================
+   8) Inline search — gated on `.loop-tags--inline-search`
+      The marker class is stamped by loop-dropdown-tags.js on BOTH wrappers
+      (vs.$allWrappers = the in-field wrapper AND the body-appended balloon wrapper), because
+      the design puts the search in the FIELD, not the balloon — and the provider can only
+      build its search input inside the balloon. The script injects a proxy input after
+      .vscomp-value and reassigns the provider's $searchInput reference to it; these rules
+      lay the proxy out and hide the now-redundant balloon search row.
+      Script absent ⇒ no marker ⇒ none of this fires and the stock balloon search stays
+      visible and functional (graceful degradation).
+   ===================================================================== */
+
+/* The balloon's search row (which also hosts Select-All — Figma shows neither). */
+.vscomp-wrapper.loop-tags--inline-search .vscomp-search-wrapper {
+  display: none;
+}
+
+/* With a proxy in the row, the tag row stops growing (the proxy takes the slack, which is
+   also what keeps the typing caret visible) — the fit measurement still works because
+   flexbox now shrinks the value row to (container − proxy min − pill). */
+.osui-dropdown-tags .vscomp-wrapper.loop-tags--inline-search.show-value-as-tags .vscomp-value {
+  flex: 0 1 auto;                                      /* §2 sets 1 1 auto; min-width:0 stays load-bearing */
+}
+
+.osui-dropdown-tags .loop-tags-search {
+  flex: 1 1 24px;
+  min-width: 24px;
+  border: 0;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: var(--loop-multiselect-text-size, 16px);
+  color: var(--color-text-on-light-default);
+}
+.osui-dropdown-tags .loop-tags-search::placeholder {
+  /* same subdued alpha as the provider placeholder it replaces (FND-020 / FND-071 lineage) */
+  color: var(--color-neutral-alpha-57);
+  opacity: 1;
+}
+
+/* The proxy owns the placeholder (a native input placeholder vanishes while typing, which
+   the provider's .vscomp-value text can't do) — hide the provider's copy. */
+.osui-dropdown-tags .vscomp-wrapper.loop-tags--inline-search:not(.has-value) .vscomp-value {
+  display: none;
+}
+
+.loop-field--disabled .osui-dropdown-tags .loop-tags-search,
+.osui-dropdown-tags.vscomp-ele[disabled] .loop-tags-search {
+  pointer-events: none;                                /* belt — the script also syncs .disabled */
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* =====================================================================
+   9) Sizes — the Field Wrapper cascade  (Figma 18830:17324, "How To Use — Sizes")
+      One modifier on the wrapper scales the WHOLE field, like every other sizeable
+      control (cmp-field-sizing rule) — the Figma page's own note says size is picked
+      on the nested Field label / loop input and "this parent component will adjust".
+      Each block just re-points the custom props the rules above already read, scoped
+      under `.osui-dropdown-tags` so wrapper-level props shared with siblings (the
+      row gap feeding §1's padding rule and §4's clear-button offset) can step to the
+      multi-select's own 6px at Regular/Small without leaking to other controls in
+      the wrapper. The :root defaults ARE the XLarge scale (the component's default —
+      unlike the Text Field whose family default is Regular / FND-021); the xlarge
+      block re-declares them so a field nested under an outer sized wrapper still
+      resolves to its own size, exactly like the single Select's ramp.
+      FieldLabel size/tracking come from the shared .loop-field--* ramp
+      (loop-text-field.css); helper text never changes size. The body-appended
+      balloon inherits none of this — correct, the option list is size-independent
+      (the Sizes page draws closed fields only; recorded in the ref).
+      Radius does NOT step: `input fields` = 8px at every size, consumed in §1 as
+      var(--loop-field-radius) — which is also what makes the .loop-field--rounded
+      pill variant work here for free.
+      Chip heights stay PINNED (border-no-height-shift): 40/40/32/24 =
+      vpad + label-wrapper + line + label-wrapper + vpad per the ref's Sizes table.
+      Large shrinks only the FIELD (vpadding 8, text 14/16) — its chips are
+      identical to XLarge's; the tag scale first steps down at Regular.
+      The right gutter = clear-button offset (hpadding + icon + gap) + icon + gap
+      of slack, so it tracks the icon cluster at each size: 72/72/60/48. */
+.loop-field--xlarge .osui-dropdown-tags {
+  --loop-multiselect-padding-block: var(--space-xsmall);       /* 12px */
+  --loop-multiselect-min-content: 28px;
+  --loop-multiselect-text-size: 16px;
+  --loop-field-gap: var(--space-xxsmall);                      /* 8px */
+  --loop-select-icon-size: 20px;
+  --loop-select-tags-padding-right: 72px;                      /* 16+20+8 + 20 + 8 */
+  --loop-select-tag-h: 40px;
+  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px */
+  --loop-select-tag-text-size: 16px;
+  --loop-select-tag-text-leading: 16px;
+  --loop-select-tag-cross-size: 14px;
+}
+.loop-field--large .osui-dropdown-tags {
+  --loop-multiselect-padding-block: var(--space-xxsmall);      /* 8px */
+  --loop-multiselect-min-content: 26px;
+  --loop-multiselect-text-size: 14px;
+  --loop-field-gap: var(--space-xxsmall);                      /* 8px */
+  --loop-select-icon-size: 20px;
+  --loop-select-tags-padding-right: 72px;                      /* 16+20+8 + 20 + 8 */
+  --loop-select-tag-h: 40px;                                   /* chips don't shrink until Regular */
+  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px */
+  --loop-select-tag-text-size: 16px;
+  --loop-select-tag-text-leading: 16px;
+  --loop-select-tag-cross-size: 14px;
+}
+.loop-field--regular .osui-dropdown-tags {
+  --loop-multiselect-padding-block: 6px;                       /* off-scale literal, like the Select's 11px */
+  --loop-multiselect-min-content: 24px;
+  --loop-multiselect-text-size: 13px;
+  --loop-field-gap: 6px;                                       /* loop/field/hgap steps to 6 — off-scale literal */
+  --loop-select-icon-size: 16px;
+  --loop-select-tags-padding-right: 60px;                      /* 16+16+6 + 16 + 6 */
+  --loop-select-tag-h: 32px;                                   /* 5+4+14+4+5 */
+  --loop-select-tag-padding-inline: var(--space-xsmall);       /* 12px */
+  --loop-select-tag-text-size: 14px;
+  --loop-select-tag-text-leading: 14px;
+  --loop-select-tag-cross-size: 12px;
+}
+.loop-field--small .osui-dropdown-tags {
+  /* --loop-field-padding-inline steps to 12px via the shared .loop-field--small (loop-text-field.css) */
+  --loop-multiselect-padding-block: var(--space-tiny);         /* 4px */
+  --loop-multiselect-min-content: 20px;
+  --loop-multiselect-text-size: 12px;
+  --loop-field-gap: 6px;                                       /* off-scale literal */
+  --loop-select-icon-size: 12px;
+  --loop-select-tags-padding-right: 48px;                      /* 12+12+6 + 12 + 6 */
+  --loop-select-tag-h: 24px;                                   /* 4+2+12+2+4 */
+  --loop-select-tag-padding-inline: 10px;                      /* loop/tag/hpadding pulls in — off-scale literal */
+  --loop-select-tag-text-size: 12px;
+  --loop-select-tag-text-leading: 12px;
+  --loop-select-tag-cross-size: 12px;
+}

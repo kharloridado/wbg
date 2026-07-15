@@ -52,6 +52,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-text-field.css">
 <link rel="stylesheet" href="../src/blocks/loop-search.css">
 <link rel="stylesheet" href="../src/blocks/loop-dropdown.css">
+<link rel="stylesheet" href="../src/blocks/loop-dropdown-tags.css">
 <link rel="stylesheet" href="../src/blocks/loop-datepicker.css">
 <link rel="stylesheet" href="../src/blocks/loop-switch.css">
 <link rel="stylesheet" href="../src/blocks/loop-tooltip.css">
@@ -154,6 +155,13 @@
   .pv-row--end     { align-items: flex-end; }
   .pv-row--narrow  { max-width: 400px; }
   .pv-row--measure { max-width: 520px; }
+  .pv-row--tight   { max-width: 300px; }   /* deliberately cramped — proves the tag row is width-aware */
+  /* Normal block flow instead of the wrapping column-flex .pv-row. A flex line's cross-size is
+     sized to its items' max-content, so a nowrap tag row would stretch its own container to
+     671px and never clip. In ODC the field sits in ordinary flow with a definite width — this
+     mirrors that, so what the preview shows is what the Block does. */
+  .pv-row--block   { display: block; }
+  .pv-row--block .pv-label--block { display: block; }
 
   .pv-label {
     flex: 0 0 130px;
@@ -1587,8 +1595,92 @@
     </div>
 
     <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-note">Dropdown Search (searchable single) and Multi-select / Dropdown Tags are NOT shipping — removed 2026-07-07. Only the native single <code>.dropdown</code> Select above ships. If they return, restore the VirtualSelect restyle from git history (commits 149022f / 51969e8).</span>
+      <span class="pv-note">Dropdown <em>Search</em> (searchable single) is still NOT shipping. Only the native single <code>.dropdown</code> Select above, and Dropdown <em>Tags</em> below, ship.</span>
       <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius shared: Text Field + single Select both use --radius-medium 8px per Figma 18770:10424; 32px pill is opt-in via .loop-field--rounded.)</span>
+    </div>
+  </section>
+
+  <!-- ============ DROPDOWN TAGS (VirtualSelect provider — one-line tag row + "+N") ============ -->
+  <section>
+    <h2>Dropdown Tags — one-line tag row, width-aware “+N”, search in the field (<code>.osui-dropdown-tags</code>)</h2>
+    <p class="pv-figma">tokens/component-field.css · src/blocks/loop-dropdown-tags.css · src/components/loop-dropdown-tags.js · Figma nodes 18830-16426 (overflow) + 18830-18200 (open balloon) · ODC provider = VirtualSelect · <strong>live widget</strong></p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-note">The provider’s own stylesheet is <strong>not</strong> loaded separately here — OutSystems UI already bundles VirtualSelect’s CSS inside <code>outsystems-ui.css</code>, which is exactly how it reaches the browser in ODC. Loading a second copy would misrepresent the cascade our overrides have to win.</span>
+      <span class="pv-note">Open a field: the balloon has <strong>no search row and no checkboxes</strong> — the selected rows carry an #e7edf3 fill + a right-aligned check, and <strong>typing filters directly in the field</strong> (an injected proxy input the provider adopts as its <code>$searchInput</code>). The balloon is appended to <code>&lt;body&gt;</code> like ODC does (the “Placeholder” demo keeps the in-field append so both paths stay covered).</span>
+    </div>
+
+    <div class="pv-row pv-row--block pv-row--measure">
+      <span class="pv-label pv-label--block">Wide field — six selected, as many chips as fit · wrapped in a &lt;form&gt; to prove Enter selects instead of submitting</span>
+      <!-- The form is a test harness: Enter in the field must select the focused option, never submit. -->
+      <form action="#" onsubmit="document.getElementById('dd-tags-form-log').textContent = 'FORM SUBMITTED — Enter leaked through!'; return false;">
+        <div class="loop-field">
+          <label data-label for="dd-tags-wide">Select Options</label>
+          <!-- Real VirtualSelect target — the provider builds the .vscomp-* DOM here at runtime. -->
+          <div class="osui-dropdown-tags" id="dd-tags-wide"></div>
+        </div>
+      </form>
+      <span class="pv-log" id="dd-tags-form-log"></span>
+    </div>
+
+    <div class="pv-row pv-row--block pv-row--tight">
+      <span class="pv-label pv-label--block">Cramped field — same six values, fewer chips fit, bigger “+N”</span>
+      <div class="loop-field">
+        <label data-label for="dd-tags-tight">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags-tight"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--block pv-row--measure">
+      <span class="pv-label pv-label--block">Long labels — chip ellipsises at its 200px max-width; the row still holds one line</span>
+      <div class="loop-field">
+        <label data-label for="dd-tags-long">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags-long"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--block pv-row--tight">
+      <span class="pv-label pv-label--block">Placeholder — nothing selected</span>
+      <div class="loop-field">
+        <label data-label for="dd-tags-empty">Select Options</label>
+        <div class="osui-dropdown-tags" id="dd-tags-empty"></div>
+      </div>
+    </div>
+
+    <!-- Sizes — each sized field sits in its own block-flow row (NOT a shared flex stack: the
+         nowrap chip row would size the flex line to its max-content and blow past the 520px cap
+         — the same trap the .pv-row--block comment documents). Same data at every size; only
+         the wrapper modifier changes. -->
+    <div class="pv-row pv-row--block pv-row--measure">
+      <span class="pv-label pv-label--block">Sizes — one wrapper modifier scales the whole field (Figma 18830-17324): field 64/56/44/32, chips 40/40/32/24, icons 20/20/16/12. The unmodified default IS xLarge; Large shrinks only the field, chips first step down at Regular</span>
+      <div class="loop-field loop-field--xlarge">
+        <label data-label for="dd-tags-xlarge">xLarge (the default)</label>
+        <div class="osui-dropdown-tags" id="dd-tags-xlarge"></div>
+      </div>
+    </div>
+    <div class="pv-row pv-row--block pv-row--measure">
+      <div class="loop-field loop-field--large">
+        <label data-label for="dd-tags-large">Large</label>
+        <div class="osui-dropdown-tags" id="dd-tags-large"></div>
+      </div>
+    </div>
+    <div class="pv-row pv-row--block pv-row--measure">
+      <div class="loop-field loop-field--regular">
+        <label data-label for="dd-tags-regular">Regular</label>
+        <div class="osui-dropdown-tags" id="dd-tags-regular"></div>
+      </div>
+    </div>
+    <div class="pv-row pv-row--block pv-row--measure">
+      <div class="loop-field loop-field--small">
+        <label data-label for="dd-tags-small">Small</label>
+        <div class="osui-dropdown-tags" id="dd-tags-small"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-note">Resize the window and watch “+N” recompute — the count is measured, not configured. The provider’s <code>noOfDisplayValues</code> is a fixed count and can’t express “one line”, so <code>loop-dropdown-tags.js</code> drives it from the rendered width. Select/deselect from the list to see it re-fit.</span>
+      <span class="pv-note">The design does not specify a collapse threshold (see loop/refs/cmp-dropdown-tags → Overflow); “exactly the chips that don’t fit” is the recorded assumption, not a Figma value.</span>
+      <span class="pv-note">Typing behaviour inherited from the provider: the query persists across picks (select several matches without retyping) and clears when the balloon closes; Backspace in an empty search does not remove chips. Row height 37px travels as the provider’s <code>optionHeight</code> option (virtual scroll), not CSS — in ODC: ExtendedOptions <code>{"optionHeight":"37px"}</code>.</span>
     </div>
   </section>
 
@@ -2878,9 +2970,68 @@
   });
 </script>
 
-<!-- The VirtualSelect provider (Dropdown Search / Dropdown Tags) was removed here on
-     2026-07-07 — those two variants are NOT shipping. Only the native single Select
-     ships. Restore from git history (commits 149022f / 51969e8) if they return. -->
+<!-- 4) The real VirtualSelect provider (vendored). OutSystems' Dropdown Tags Block drives this
+        same library in ODC; here we init it directly so the preview is the live widget, styled
+        to The Loop spec by loop-dropdown-tags.css. Note we load the provider's JS only — its
+        CSS already reaches the page inside outsystems-ui.css (layer 1), exactly as in ODC.
+        (Dropdown SEARCH is not shipping; only the Tags variant is initialised below.) -->
+<script src="vendor/virtual-select/virtual-select.min.js"></script>
+<!-- The Loop Tags behaviour layer: one-line "+N" fit + the field-side search proxy. -->
+<script src="../src/components/loop-dropdown-tags.js"></script>
+<script>
+  const ddTagOptions = [
+    { label: 'In Progress', value: 'in-progress' },
+    { label: 'Done',        value: 'done' },
+    { label: 'Closed',      value: 'closed' },
+    { label: 'In Review',   value: 'in-review' },
+    { label: 'Blocked',     value: 'blocked' },
+    { label: 'Cancelled',   value: 'cancelled' },
+    { label: 'Deferred',    value: 'deferred' },
+  ];
+  const ddTagSelected = ['in-progress', 'done', 'closed', 'in-review', 'blocked', 'cancelled'];
+
+  // NOTE: no `noOfDisplayValues` here — loop-dropdown-tags.js owns it, because the design's
+  // rule is "one line", not "N chips". Anything we set would just be overwritten on first fit.
+  // `search: true` mirrors OSUI (it hard-forces it); the balloon's search row is hidden by the
+  // inline-search CSS and the typing happens in the field via the injected proxy.
+  const ddTagsBase = {
+    multiple: true,
+    showValueAsTags: true,
+    search: true,
+    hideClearButton: false,
+    disableSelectAll: true,          // no "Select all" row — the Figma list is plain options
+    placeholder: 'Select Options',
+    optionHeight: '37px',            // Figma row = 8 + 14×1.5 + 8 (virtual scroll ⇒ provider option, not CSS). ODC: ExtendedOptions {"optionHeight":"37px"}
+    dropboxWrapper: 'body',          // ODC parity — OSUI appends the balloon to <body>; the balloon CSS must work on the mirrored-class wrapper
+  };
+
+  VirtualSelect.init({ ...ddTagsBase, ele: '#dd-tags-wide',  options: ddTagOptions, selectedValue: ddTagSelected });
+  VirtualSelect.init({ ...ddTagsBase, ele: '#dd-tags-tight', options: ddTagOptions, selectedValue: ddTagSelected });
+  // The empty demo keeps the provider's default in-field ('self') balloon so BOTH append
+  // paths stay covered by the preview.
+  VirtualSelect.init({ ...ddTagsBase, dropboxWrapper: 'self', ele: '#dd-tags-empty', options: ddTagOptions });
+
+  const ddTagLongOptions = [
+    { label: 'Environmental & Social Framework', value: 'esf' },
+    { label: 'Country Partnership Framework',    value: 'cpf' },
+    { label: 'Development Policy Financing',     value: 'dpf' },
+    { label: 'Program-for-Results',              value: 'pforr' },
+  ];
+  VirtualSelect.init({
+    ...ddTagsBase,
+    ele: '#dd-tags-long',
+    options: ddTagLongOptions,
+    selectedValue: ['esf', 'cpf', 'dpf', 'pforr'],
+  });
+
+  // Sizes ramp (Figma 18830-17324) — same data at every size; the .loop-field--* wrapper
+  // modifier does ALL the scaling (loop-dropdown-tags.css §9), nothing size-specific is
+  // configured on the provider. The fit script measures the rendered chips, so "+N"
+  // recomputes per size automatically.
+  ['xlarge', 'large', 'regular', 'small'].forEach(function (size) {
+    VirtualSelect.init({ ...ddTagsBase, ele: '#dd-tags-' + size, options: ddTagOptions, selectedValue: ddTagSelected });
+  });
+</script>
 
 <!-- 5) The real Flatpickr provider (vendored). OutSystems' DatePicker drives this same
         library in ODC; here we init it directly so the preview is the live calendar

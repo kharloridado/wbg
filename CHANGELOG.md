@@ -15,6 +15,40 @@ build.
 ## [Unreleased]
 
 ### Added
+- **Dropdown Tags — Field Wrapper size ramp** (Figma 18830-17324 "How To Use — Sizes", frozen
+  into `loop/refs/cmp-dropdown-tags/` as the Sizes section + `figma-sizes.png`). The same
+  `.loop-field--{xlarge,large,regular,small}` wrapper modifier that sizes every other control
+  now scales the whole tags field: field 64/56/44/32, chips 40/40/32/24 (Large shrinks only the
+  field — chips first step down at Regular), text 16/14/13/12, icons 20/20/16/12, and the icon
+  gutter tracks along (72/72/60/48). The unmodified default **is** the xLarge scale (the
+  component's Figma default — unlike the Text Field's Regular). Border radius stays the shared
+  8px `--loop-field-radius` at every size, so the `.loop-field--rounded` pill variant already
+  applies. Also fixes a latent clamp: OSUI pins `min-height: 40px` on the tags toggle at 0,3,0,
+  which silently floored the field — invisible until Small's 32px needed to go under it.
+  All in `loop-dropdown-tags.css` §9; nothing on the provider or the fit script changes
+  (the "+N" is measured, so it recomputes per size on its own).
+- **Dropdown Tags — checkmark balloon + search in the field** (Figma 18830-18200, frozen into
+  `loop/refs/cmp-dropdown-tags/` as the Open-state section). The option list drops its checkboxes
+  — selected rows read as a `#e7edf3` fill with a right-aligned 16px FA check — on white 14px rows
+  at a 37px rhythm (`optionHeight` provider option), 8px radius, `0 2px 3px` shadow (token gap →
+  FND-073). Type-to-filter moves **out of the balloon and into the field**: `loop-dropdown-tags.js`
+  (renamed from `loop-dropdown-tags-fit.js`) injects a combobox proxy input after the chips and
+  reassigns the provider's `$searchInput` to it — killing VirtualSelect's focus-stealing guards —
+  with Arrow/Enter/Escape handled at the proxy, `aria-activedescendant` mirrored, the "+N" pill
+  relocated after the typing slot, and the balloon's search row (plus Select-All) hidden behind a
+  script-stamped marker class so the stock search survives if the script is absent. Balloon CSS is
+  scoped to the provider's mirrored wrapper classes because ODC appends the balloon to `<body>`
+  without the OSUI root class. New `--loop-select-option-*` tokens.
+- **Dropdown Tags — one-line tag row with a width-aware "+N" pill** (Figma 18830-17333,
+  overflow state 18830-16426, frozen as `loop/refs/cmp-dropdown-tags/`). Back in scope after
+  the 2026-07-07 de-scope, and **rebuilt from scratch** rather than restored from `149022f`.
+  New `src/blocks/loop-dropdown-tags.css` (VirtualSelect Tags restyle: 8px field, 16px text,
+  neutral 48px chips with the cross back *beside* the label, FA 6 Pro icons, and the row
+  forced to `nowrap` + `overflow: hidden`) and `src/components/loop-dropdown-tags-fit.js`
+  (measures the rendered row and drives the provider's `noOfDisplayValues` so the "+N" count
+  reflects what actually fits at the current width — the provider option alone is a fixed
+  count and cannot express "one line"). New `--loop-multiselect-*` / `--loop-select-tag-*`
+  tokens. The field never grows to a second row even with the script absent.
 - **Field Wrapper size + state cascade** (Figma 19336-9726 / 19336-17818 / 17191-8819 /
   25862-14729, frozen as `loop/refs/cmp-field-sizing/`): one `.loop-field--{xlarge,large,
   regular,small}` on the wrapper now scales **every control inside** — input/textarea text

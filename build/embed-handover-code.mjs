@@ -80,6 +80,13 @@ const MAP = {
   },
   "loop-search.md":          [["src/blocks/loop-search.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-dropdown.md":        [["src/blocks/loop-dropdown.css", "css", "Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)"]],
+  "loop-dropdown-tags.md":   {
+    files: [
+      ["src/blocks/loop-dropdown-tags.css", "css", "Theme CSS — paste below OutSystems UI (VirtualSelect provider CSS ships inside outsystems-ui.css)"],
+      ["src/components/loop-dropdown-tags.js", "js", "Script resource (Theme/Library), Include = Always — no wiring needed; it finds every Dropdown Tags itself"],
+    ],
+    mentor: { kind: "restyle" },
+  },
   "loop-datepicker.md":      {
     files: [
       ["src/blocks/loop-datepicker.css", "css", "Theme CSS — paste below OutSystems UI (Flatpickr provider CSS is runtime-injected)"],

@@ -51,9 +51,8 @@
   /* =========================================================================
      Select / Dropdown — restyle of the native single-Select Dropdown.
      Reuses the Text Field state colours but has its own pill box (40px tall, 13px text).
-     NOTE: the VirtualSelect provider variants (Dropdown Search + Dropdown Tags) are NOT
-     shipping (removed 2026-07-07); their Search/Tags-only tokens were removed with them.
-     Restore from git (commits 149022f / 51969e8) if the variants return.
+     NOTE: Dropdown SEARCH (the other VirtualSelect variant) is still NOT shipping.
+     Dropdown TAGS was rebuilt from scratch 2026-07-14 — its tokens are the block below.
      ========================================================================= */
   --loop-select-h:                40px;                        /* pinned height of the field box */
   --loop-select-radius:           var(--radius-medium);        /* 8px soft-rounded — default, shared with the Text Field. Rounded (32px pill) variant via .loop-field--rounded. */
@@ -68,4 +67,55 @@
   --loop-select-text-tracking:    0.5px;
   --loop-select-list-radius:      var(--radius-medium);        /* 8px — popup list */
   --loop-select-list-shadow:      var(--shadow-low);           /* 0 2px 8px */
+
+  /* =========================================================================
+     Dropdown TAGS (multi-select) — restyle of the VirtualSelect "Tags" provider.
+     Frozen ref: loop/refs/cmp-dropdown-tags (Figma 18830:17333; overflow state 18830:16426).
+     A DIFFERENT scale from the single Select above: 16px text throughout, 12px vpadding
+     (FND-031 records the 13px-vs-16px divergence as intentional). Consumed by
+     src/blocks/loop-dropdown-tags.css.
+     These defaults ARE the XLarge size — the component's unmodified default in Figma
+     (18830:17324), unlike the Text Field whose family default is Regular (FND-021).
+     The .loop-field--* wrapper size ramp (field 64/56/44/32, chips 40/40/32/24,
+     icons 20/20/16/12) re-points these props in loop-dropdown-tags.css §9.
+     ========================================================================= */
+  --loop-multiselect-padding-block:  var(--space-xsmall);       /* 12px — loop/multi-select/vpadding */
+  --loop-multiselect-min-content:    28px;                      /* loop/multi-select/placeholder height — the row's floor so an empty field matches a filled one */
+  --loop-multiselect-text-size:      var(--font-size-300);      /* 16px — NOT the Select's 13px */
+  --loop-select-icon-size:           20px;                      /* loop/field/icon size — clear-all xmark + chevron */
+  --loop-select-tags-padding-right:  72px;                      /* right gutter reserved for the absolutely-positioned icon cluster: 16 edge + 20 chevron + 8 gap + 20 clear-all + ~8 slack */
+
+  /* ---- Tag chip (the `-loop tag` component, neutral variant) ---- */
+  --loop-select-tag-radius:               48px;                 /* loop/tag/border radius — a 48px pill, NOT --radius-pill (32px) */
+  /* Height is PINNED rather than derived from padding, so the chip's 1px border cannot grow it
+     (border-no-height-shift). 40px = Figma's chip: 8px vpadding + 4px label-wrapper + 16px line
+     + 4px + 8px. Sibling of --loop-select-h (the single Select's pinned 40px box). */
+  --loop-select-tag-h:                    40px;
+  --loop-select-tag-padding-inline:       var(--space-xsmall);  /* 12px — loop/tag/hpadding */
+  --loop-select-tag-gap:                  var(--space-tiny);    /* 4px  — loop/tag/hgap (label ↔ cross) */
+  --loop-select-tag-row-gap:              var(--space-tiny);    /* 4px  — elementts/space-compact (chip ↔ chip) */
+  --loop-select-tag-text-size:            var(--font-size-300); /* 16px — loop/tag/label/font size */
+  --loop-select-tag-text-leading:         16px;                 /* loop/tag/label/line height */
+  --loop-select-tag-text-tracking:        0.25px;               /* loop/Tag/Label/Letter Space */
+  --loop-select-tag-text-max:             200px;                /* max-w on the label; over-long labels ellipsise rather than blow the row */
+  --loop-select-tag-cross-size:           14px;                 /* loop/tag/icon/cross-size */
+  --loop-select-tag-bg:                   var(--color-bg-container-on-light-low);   /* #f5f7f9 */
+  --loop-select-tag-border-color:         var(--color-outline-on-light-default);    /* rgba(0,57,107,0.24) */
+
+  /* ---- The "+N" overflow pill ---- */
+  /* Same chip component, two deltas only: narrower inline padding, and no cross icon.
+     The COUNT is computed at runtime by loop-dropdown-tags.js (how many chips fit on
+     one line) — the design specifies no static threshold. See the ref's Overflow section. */
+  --loop-select-tag-count-padding-inline: 6px;                  /* px-6 in the reference (vs 12px on a real chip); no spacing-scale step lands on 6 */
+
+  /* ---- Option list (the open balloon) — Figma 18830:18200 ---- */
+  /* Rows carry NO checkbox: selection = row fill + a right-aligned check glyph. Search is
+     NOT in the balloon either — it happens in the field (see loop-dropdown-tags.js). */
+  --loop-multiselect-list-shadow:         0 2px 3px rgba(0, 0, 0, 0.08);  /* Figma effect has NO variable — token gap (not --shadow-low's 0 2px 8px); flagged in the register */
+  --loop-select-option-h:                 37px;                 /* 8px lift/spacing/space-2 + 14px×1.5 line + 8px. Consumed as the provider's optionHeight OPTION (rows are virtually scrolled at fixed intervals) — never as CSS height */
+  --loop-select-option-padding-inline:    var(--space-xsmall);  /* 12px — Spacing/xsmall */
+  --loop-select-option-text-size:         var(--font-size-200); /* 14px — Body/Text/Small/Regular (the closed field is 16px; the list steps down) */
+  --loop-select-option-selected-bg:       var(--color-bg-container-on-light-regular);  /* #e7edf3 */
+  --loop-select-option-check-size:        16px;                 /* right-aligned selected checkmark */
+  --loop-select-option-check-gap:         var(--space-xxsmall); /* 8px — elementts/space-inline (label ↔ check) */
 }

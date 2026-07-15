@@ -1,8 +1,8 @@
 /* loop-dropdown.css — Dropdown / Select: native single-Select Dropdown pattern.
-   NOTE: the VirtualSelect provider restyle (Dropdown Search + Dropdown Tags) was
-   removed on 2026-07-07 — those two variants are NOT shipping. Only the native
-   single Select ships. If they return, restore §2–3 from git history (commits
-   149022f feat(dropdown-tags) and 51969e8 fix(dropdown search)). */
+   NOTE: Dropdown SEARCH (the other VirtualSelect provider variant) is NOT shipping —
+   it was removed on 2026-07-07 and this file covers only the native single Select.
+   Dropdown TAGS came back into scope on 2026-07-14 and was rebuilt from scratch; it
+   lives in its own file, src/blocks/loop-dropdown-tags.css. */
 
 /* =====================================================================
    1) Native Dropdown PATTERN — single Select  (.dropdown-container.dropdown)

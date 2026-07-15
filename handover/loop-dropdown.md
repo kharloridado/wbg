@@ -3,11 +3,11 @@
 The Loop **Dropdown / Select** styling, ready to add into OutSystems.
 Figma: `-The Loop- Main Library` · "Select" [node 18787-4817].
 
-> **Scope change (2026-07-07): Dropdown Search and Dropdown Tags are NOT shipping.**
-> The VirtualSelect provider restyle (`.osui-dropdown-search` / `.osui-dropdown-tags`) was
-> removed from `src/blocks/loop-dropdown.css`. Only the native single **Select** ships. If the
-> two variants return, restore the removed CSS from git history (commits `149022f`
-> feat(dropdown-tags) and `51969e8` fix(dropdown search)) and re-run the embed script.
+> **Scope: this ticket is the native single Select only.**
+> Dropdown **Search** (`.osui-dropdown-search`) is still NOT shipping — its VirtualSelect restyle
+> was removed on 2026-07-07. Dropdown **Tags** came back into scope on 2026-07-14 and was rebuilt
+> from scratch; it has its own ticket — see `handover/loop-dropdown-tags.md`
+> (`src/blocks/loop-dropdown-tags.css` + `src/components/loop-dropdown-tags.js`).
 
 **Approach:** No custom dropdown class system. This **restyles the native OutSystems UI
 single-Select Dropdown widget** to The Loop design — same pattern as the Button / Text Field:
@@ -54,10 +54,10 @@ brand ring (FND-012).
 
 ```css
 /* loop-dropdown.css — Dropdown / Select: native single-Select Dropdown pattern.
-   NOTE: the VirtualSelect provider restyle (Dropdown Search + Dropdown Tags) was
-   removed on 2026-07-07 — those two variants are NOT shipping. Only the native
-   single Select ships. If they return, restore §2–3 from git history (commits
-   149022f feat(dropdown-tags) and 51969e8 fix(dropdown search)). */
+   NOTE: Dropdown SEARCH (the other VirtualSelect provider variant) is NOT shipping —
+   it was removed on 2026-07-07 and this file covers only the native single Select.
+   Dropdown TAGS came back into scope on 2026-07-14 and was rebuilt from scratch; it
+   lives in its own file, src/blocks/loop-dropdown-tags.css. */
 
 /* =====================================================================
    1) Native Dropdown PATTERN — single Select  (.dropdown-container.dropdown)
@@ -256,9 +256,10 @@ brand ring (FND-012).
 - **2px Blue/50** focus/expanded ring (padding shrinks 1px so the box doesn't jump).
 - Tinted **Error** (red) / **Warning** (yellow) / **Disabled** (neutral) fills + borders.
 - Popup **list**: white, 8px radius, low shadow, subtle border.
-- Multi-select **tag chips** (`.vscomp-value-tag`): neutral pill (`#f5f7f9`, radius 48, 1px `--color-outline-on-light-default` border), **16px / weight 400** label, 12px/8px padding, and a clean inline **14px** clear-cross. The provider (`outsystems-ui.css`) beats us on specificity (`.vscomp-wrapper.show-value-as-tags .vscomp-value-tag` 0,3,0 → 12px/600/`6px 35px`), absolutely-positions the cross over the label, and gives it a dark `neutral-7` circle — all reset via `!important` + `position:static` + a two-bar "×".
-- Multi-select **right icons**: OSUI hides the chevron once tags are selected (`.show-value-as-tags.has-value .vscomp-arrow{display:none}`) and top-pins the clear-all. The Loop restores BOTH as a vertically-centred right-edge cluster **[× clear-all][⌄ chevron]** (20px each), matching Figma's filled state; the toggle reserves `--loop-select-tags-padding-right` so tags never run under them.
-- Multi-select **"+N" overflow**: styled as a compact 6px-padding neutral pill. The badge **text** ("+ N more…") is provider-generated, NOT CSS — set the Dropdown Tags block's `moreText` (VirtualSelect option) to `""` for the Figma-style compact **"+N"**.
+- Multi-select (**Dropdown Tags**) is no longer part of this ticket — it was rebuilt from scratch on
+  2026-07-14 and ships separately as `handover/loop-dropdown-tags.md`
+  (`src/blocks/loop-dropdown-tags.css` + `src/components/loop-dropdown-tags.js`). That ticket owns
+  the tag chips, the right-icon cluster, the one-line tag row and the "+N" overflow pill.
 
 ## Build in ODC with Mentor Studio
 
@@ -293,7 +294,6 @@ generating, list what you created by name and flag anything you could not finish
 - [ ] Single Select → native **Dropdown** widget; Search → **Dropdown Search**; Multi → **Dropdown Tags**.
 - [ ] Error → bind an OutSystems **Validation** (sets `.not-valid`); Warning → Extended Class `is-warning`; empty single Select → `is-placeholder`.
 - [ ] Wrap Label + field + helper in a Container with `loop-field loop-field--select` (single) or `loop-field` (multi).
-- [ ] **Dropdown Tags** overflow badge — set the block's `moreText` VirtualSelect option to `""` for the compact Figma **"+N"** (default renders "+ N more…").
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview). The VirtualSelect DOM is provider-generated — confirm the `.vscomp-*` overrides land on the published markup.
 
 ## Open findings linked to this work (register-only — low, no GitHub Bug auto-filed)
