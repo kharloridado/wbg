@@ -52,6 +52,15 @@ Make NO changes to any issue.
 
 ---
 
+## 4. Live-theme drift check  (guards the manual ODC paste)
+**Trigger:** weekdays 08:00 America/New_York (`0 12 * * 1-5` UTC — winter DST shifts it to 07:00 ET).
+**What it runs:** `npm run check:live-theme` (`build/check-live-theme.mjs`) — fetches the live compiled theme CSS from the ODC environment (URL discovered from the Live Style Guide page; the fingerprint rotates per publish), rebuilds `dist/theme.css` from `tokens/` at HEAD, normalizes both sides (comments, ODC minification, url fingerprints) and diffs token-by-token + rule-by-rule.
+**Exit contract:** `0` in sync (report only, no issue) · `1` drift (file/refresh the drift issue) · `2` live theme unreachable (file a check-failure issue — a rotated URL must never fail silently).
+**Dedup:** one open issue labeled `theme-drift` at a time — comment fresh reports onto it instead of opening duplicates.
+**Prompt:** see the routine "Daily live-theme drift check" at claude.ai/code/routines.
+
+---
+
 ## Which scheduler for which job
 
 - **Routines (cloud):** the loop, token reconciliation, digests — anything that should run with your laptop closed. Start here.

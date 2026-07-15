@@ -100,6 +100,7 @@ licensed vector artwork, **all IcoMoon outputs stay in gitignored `dist/`** (lik
 | `npm run watch:theme` | Same, rebuilding on token changes. |
 | `npm run build:theme:ship` | Customer deliverable: `dist/theme.css` with ordinary comments stripped, `/*!` TOC + section banners kept. Paste into ODC. |
 | `npm run build:theme:min` | Minified `dist/theme.min.css` (not for ODC paste). |
+| `npm run check:live-theme` | Diff the LIVE ODC theme CSS against a fresh local build (normalizes ODC minification + url fingerprints). Exit 0 in sync / 1 drift / 2 live unreachable. Run daily by the "live-theme drift check" cloud Routine (`loop/ROUTINES.md` §4), which files a `theme-drift` issue on drift. |
 | `npm run gen:color-utilities` | Generate `.background-*` / `.text-*` utility classes (`tokens/color-utilities*.css`). |
 | `npm run gen:type-utilities` | Generate `.font-size-*` / `.font-weight-*` classes (`tokens/typography-utilities.css`). |
 | `npm run gen:spacing-utilities` | Generate directional margin/padding classes (`tokens/spacing-utilities.css`). |
