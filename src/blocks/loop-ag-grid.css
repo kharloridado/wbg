@@ -1,0 +1,203 @@
+/* ============================================
+   Component: AG Grid  ("The Loop" — real AG Grid, AGGrid_Lib)
+   Figma: -The Loop- Main Library · "AG Grid" [node:25983-72091] · ref loop/refs/cmp-ag-grid/
+   Approach: RESTYLE the AG Grid Community v33 instance rendered by the OutSystems
+             `AGGrid_Lib` block (`.ag-grid__wrapper.ag-theme-quartz`). v33 styles are
+             runtime-injected (Theming API, `<style data-ag-global-css>`) — there is no
+             legacy theme stylesheet to replace. Overrides work in two layers:
+             (1) `--ag-*` theme-param custom properties on the wrapper, which the
+             injected CSS consumes; (2) direct `.ag-*` class rules for what params
+             can't express. Win by SPECIFICITY (wrapper-class prefix), never !important.
+   Location: Theme CSS of the consuming app (paste below OutSystems UI).
+   Escalation Level: L2 (library widget + token-driven theme override)
+   Shared spec: identical Figma component as loop-table.css — see loop/refs/cmp-table/
+     for the pixel-verified core values. This file only re-expresses them for AG DOM.
+   Tokens consumed: --loop-table-* (component-table.css) → foundation
+     --color-*, --font-*, --space-*, --radius-*.
+   Fidelity notes:
+     · Flat edges per Figma — the Quartz wrapper border AND radius are reset.
+     · Grouping panel + Columns/Filters side rail are AG Grid ENTERPRISE features;
+       Community v33 (the demo) never renders them. Hooks ship below so they inherit
+       the look on an Enterprise upgrade — scope note, not a finding.
+     · AG's native paging panel keeps its own DOM (arrows + "x to y of z"); the
+       design's numbered pager is the OSUI Pagination widget (.loop-pagination--small)
+       placed below the grid — see the handover.
+     · Numeric cells: Figma hard-codes IBM Plex Mono; font set is closed per
+       brand-owner ruling → Open Sans + tabular-nums (finding already filed, cmp-table).
+     · Row hover reuses the design's Low tone; selection/checkbox accent derives from
+       the brand primary (#004370) — both documented assumptions (unspecced variants).
+*/
+
+/* ===== 1) Theme-param overrides (v33 Theming API custom properties) =====
+ * Set on the block wrapper so they inherit into the whole grid; the doubled
+ * selector out-specifies the injected defaults. Values mirror loop-table.css. */
+.ag-grid__wrapper.ag-theme-quartz,
+.ag-grid__wrapper .ag-root-wrapper {
+  /* type */
+  --ag-font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  --ag-font-size: var(--loop-table-font-size, 16px);
+  --ag-header-font-weight: var(--font-weight-bold, 700);
+  /* surfaces + text */
+  --ag-background-color: var(--loop-table-row-bg, #ffffff);
+  --ag-foreground-color: var(--loop-table-text, #000d1ab2);
+  --ag-text-color: var(--loop-table-text, #000d1ab2);
+  --ag-header-background-color: var(--loop-table-header-bg, #f5f7f9);
+  --ag-header-text-color: var(--loop-table-text, #000d1ab2);
+  /* geometry — 56px cells (24px content + 2×16px v-padding), 12px h-padding */
+  --ag-row-height: var(--loop-table-row-height, 56px);
+  --ag-header-height: var(--loop-table-row-height, 56px);
+  --ag-cell-horizontal-padding: var(--loop-table-cell-padding-x, 12px);
+  --ag-icon-size: 16px;
+  /* borders — flat outer edges, subdued row dividers, inset header separators */
+  --ag-wrapper-border: none;
+  --ag-wrapper-border-radius: 0;
+  --ag-border-radius: 0;
+  --ag-row-border: solid var(--border-size-s, 1px) var(--loop-table-divider, #00396b14);
+  --ag-header-row-border: solid var(--border-size-s, 1px) var(--loop-table-divider, #00396b14);
+  --ag-column-border: none;
+  --ag-header-column-border: solid var(--border-size-m, 2px) var(--loop-table-header-separator, #00396b29);
+  --ag-header-column-border-height: calc(var(--loop-table-row-height, 56px) - 2 * var(--loop-table-header-separator-inset, 12px));
+  /* Quartz also paints its own resize-handle line (2px×30%) on the same edge —
+   * with the header-column-border above that reads as a doubled separator.
+   * Make the handle invisible; the resize HIT AREA is untouched. */
+  --ag-header-column-resize-handle-color: transparent;
+  --ag-pinned-column-border: solid var(--border-size-s, 1px) var(--loop-table-pinned-divider, #00396b29);
+  /* states — hover reuses the Low tone; accent drives checkbox/selection/focus */
+  --ag-row-hover-color: var(--loop-table-header-bg, #f5f7f9);
+  --ag-header-cell-hover-background-color: var(--loop-table-header-bg, #f5f7f9);
+  --ag-accent-color: var(--loop-table-accent, #004370);
+  --ag-checkbox-checked-background-color: var(--loop-table-accent, #004370);
+  --ag-checkbox-checked-border-color: var(--loop-table-accent, #004370);
+  --ag-checkbox-unchecked-border-color: var(--color-outline-on-light-default, #00396b3d);
+}
+
+/* ===== 2) Structural backstops — flat edges + header type =====
+ * Guarantees for the load-bearing visuals in case a param name shifts between
+ * v33 minors (the injected CSS is versioned with the lib bundle). Same values
+ * as §1, so no double-draw when both apply. */
+.ag-grid__wrapper .ag-root-wrapper {
+  border: 0;
+  border-radius: 0;
+  background: var(--loop-table-row-bg, #ffffff);
+}
+.ag-grid__wrapper .ag-header {
+  background-color: var(--loop-table-header-bg, #f5f7f9);
+}
+.ag-grid__wrapper .ag-header-cell {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-font-size, 16px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--loop-table-text, #000d1ab2);
+}
+.ag-grid__wrapper .ag-cell {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-font-size, 16px);
+  color: var(--loop-table-text, #000d1ab2);
+}
+
+/* ===== 3) Sort-icon clearance =====
+ * Port of the 2026-07-14 brand-owner request from loop-table.css: 4px + the 12px
+ * cell padding = 16px effective clearance when the sort icon abuts the right edge
+ * (right-aligned / last column). Invisible in left-aligned headers. */
+.ag-grid__wrapper .ag-header-cell .ag-sort-indicator-container {
+  margin-right: var(--space-tiny, 4px);
+}
+
+/* ===== 4) Numeric cells — right-aligned lining figures =====
+ * AG's own rightAligned column type adds these classes; Figma specs IBM Plex Mono
+ * here, but the font set is closed → tabular-nums stands in (finding on file). */
+.ag-grid__wrapper .ag-right-aligned-cell,
+.ag-grid__wrapper .ag-right-aligned-header {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== 5) Scrollbars — slim rounded thumb per Figma (8px, High tone) ===== */
+.ag-grid__wrapper .ag-body-viewport::-webkit-scrollbar,
+.ag-grid__wrapper .ag-body-horizontal-scroll-viewport::-webkit-scrollbar,
+.ag-grid__wrapper .ag-body-vertical-scroll-viewport::-webkit-scrollbar,
+.ag-grid__wrapper .ag-center-cols-viewport::-webkit-scrollbar {
+  width: var(--loop-table-scrollbar-size, 8px);
+  height: var(--loop-table-scrollbar-size, 8px);
+}
+.ag-grid__wrapper .ag-body-viewport::-webkit-scrollbar-thumb,
+.ag-grid__wrapper .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-thumb,
+.ag-grid__wrapper .ag-body-vertical-scroll-viewport::-webkit-scrollbar-thumb,
+.ag-grid__wrapper .ag-center-cols-viewport::-webkit-scrollbar-thumb {
+  background: var(--loop-table-scrollbar-thumb, #bdccdb);
+  border-radius: var(--radius-base, 4px);
+}
+.ag-grid__wrapper .ag-body-viewport::-webkit-scrollbar-track,
+.ag-grid__wrapper .ag-body-horizontal-scroll-viewport::-webkit-scrollbar-track,
+.ag-grid__wrapper .ag-body-vertical-scroll-viewport::-webkit-scrollbar-track,
+.ag-grid__wrapper .ag-center-cols-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ag-grid__wrapper .ag-body-viewport,
+.ag-grid__wrapper .ag-body-horizontal-scroll-viewport,
+.ag-grid__wrapper .ag-body-vertical-scroll-viewport,
+.ag-grid__wrapper .ag-center-cols-viewport {
+  scrollbar-width: thin;                                        /* Firefox */
+  scrollbar-color: var(--loop-table-scrollbar-thumb, #bdccdb) transparent;
+}
+
+/* ===== 6) Paging panel — token-faithful restyle of AG's native footer =====
+ * (Hidden in the demo today. AG's DOM = arrows + "x to y of z"; the design's
+ * numbered pager is the OSUI Pagination widget — see the handover note.) */
+.ag-grid__wrapper .ag-paging-panel {
+  height: var(--loop-table-row-height, 56px);
+  background: var(--loop-table-row-bg, #ffffff);
+  border-top: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-200, 14px);
+}
+.ag-grid__wrapper .ag-paging-button {
+  color: var(--color-text-on-light-link-primary-enabled, #004370);
+  cursor: pointer;
+}
+
+/* ===== 7) Grouping panel + side rail — ENTERPRISE-ONLY hooks =====
+ * Community v33 (the demo) never renders these; they inherit the Figma look if
+ * AGGrid_Lib moves to Enterprise. Grouping strip: Low fill, subdued bottom
+ * divider, Open Sans 400 14, default icon tone. */
+.ag-grid__wrapper .ag-column-drop-horizontal {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  border-bottom: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-grouping-font-size, 14px);
+  line-height: var(--line-height-base, 1.5);
+}
+.ag-grid__wrapper .ag-column-drop-horizontal .ag-icon {
+  color: var(--loop-table-grouping-icon, #4b5e71);
+}
+.ag-grid__wrapper .ag-side-bar {
+  background-color: var(--loop-table-header-bg, #f5f7f9);
+  border-left: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
+}
+.ag-grid__wrapper .ag-side-buttons .ag-side-button-button {
+  color: var(--color-text-on-light-link-primary-enabled, #004370);
+}
+
+/* ===== 8) Floating filter — the design's per-column search field =====
+ * Hidden in the Default variant (floatingFilter=false); minimal loop text-field
+ * alignment for apps that enable it. */
+.ag-grid__wrapper .ag-floating-filter-input .ag-input-field-input {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--font-size-200, 14px);
+  color: var(--loop-table-text, #000d1ab2);
+  background: var(--loop-table-row-bg, #ffffff);
+  border: var(--border-size-s, 1px) solid var(--color-outline-on-light-default, #00396b3d);
+  border-radius: var(--radius-medium, 8px);
+}
+
+/* ===== 9) Zebra — opt-in modifier via ExtendedClass on the block wrapper =====
+ * Figma Rows=Zebra: even rows (1-indexed) carry the Low fill — AG's .ag-row-odd
+ * (0-indexed) is exactly those rows. Var + direct rule so it holds either way. */
+.loop-ag-grid--zebra,
+.loop-ag-grid--zebra .ag-root-wrapper {
+  --ag-odd-row-background-color: var(--loop-table-row-bg-striped, #f5f7f9);
+}
+.loop-ag-grid--zebra .ag-row-odd {
+  background-color: var(--loop-table-row-bg-striped, #f5f7f9);
+}

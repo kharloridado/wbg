@@ -1,0 +1,52 @@
+/* ============================================
+   Component: <loop-ag-grid-pagination> — glue styles only
+   Figma: "-loop pagination" [node:27044-57397] · ref loop/refs/cmp-ag-grid-pagination/
+   The look lives in src/blocks/loop-pagination.css (.loop-pagination--large);
+   this file adds only what the generated light-DOM markup needs beyond the block:
+   the native <select> chrome and the custom first/last edge-bar glyphs.
+============================================ */
+
+loop-ag-grid-pagination {
+  display: block;
+}
+
+/* ---- Items-per-page: native select wearing .loop-pagination__input ---- */
+.loop-pagination__select {
+  position: relative;
+  display: inline-flex;
+}
+.loop-pagination__select .loop-pagination__input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--space-medium);   /* 32px — clears the chevron */
+  cursor: pointer;
+}
+.loop-pagination__select-chevron {
+  position: absolute;
+  right: var(--space-tiny);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  color: var(--color-text-on-light-default);
+}
+
+/* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
+   a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
+.loop-pagination__icon--edge-first,
+.loop-pagination__icon--edge-last {
+  gap: 1px;
+}
+.loop-pagination__icon--edge-first::before,
+.loop-pagination__icon--edge-last::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 2px;
+  height: 13px;
+  border-radius: 1px;
+  background: currentColor;
+}

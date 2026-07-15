@@ -20,4 +20,12 @@
   /* No font-family token: Figma numeric cells hard-code IBM Plex Mono (untokenized).
    * Brand owner ruled the font set closed (Open Sans + FA6 Pro) — numeric cells inherit
    * Open Sans and use tabular-nums instead. Divergence recorded as a design-token finding. */
+
+  /* AG Grid chrome (real AG Grid v33 via AGGrid_Lib — ref loop/refs/cmp-ag-grid/).
+   * Same Figma component as the table above; these cover the grid-only pieces. */
+  --loop-table-grouping-bg:        var(--color-bg-container-on-light-low);  /* Figma grouping panel fill #f5f7f9 */
+  --loop-table-grouping-font-size: var(--font-size-200);                    /* Figma Body/Text/Small/Regular — 14px */
+  --loop-table-grouping-icon:      var(--color-icon-on-light-default);      /* Figma Icon/On Light/Default #4b5e71 */
+  --loop-table-pinned-divider:     var(--color-divider-on-light-default);   /* row-number column border-right #00396b29 */
+  --loop-table-accent:             var(--color-bg-link-primary-enabled);    /* selection/checkbox accent — unspecced in the variants, brand primary #004370 (documented assumption) */
 }

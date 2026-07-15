@@ -27,6 +27,23 @@
   --loop-pagination-padding-label:   10px;                 /* 12 -> 10 (no token) */
 }
 
+/* ---- Large size (Figma 27044-57397 — the AG Grid footer pager) ----
+   48px controls / 16px type, ref loop/refs/cmp-ag-grid-pagination/. Same
+   re-declare-the-custom-props pattern as --small. NOTE: the Figma "Small"
+   description says it's the AG-grid size, but the AG Grid frame itself
+   instantiates THIS 48px scale — the frame wins (see the ref's spec.md). */
+.loop-pagination--large {
+  --loop-pagination-btn-height:      var(--space-xlarge);   /* 40 -> 48 */
+  --loop-pagination-font-size:       var(--font-size-300);  /* 14 -> 16 */
+  --loop-pagination-pages-font-size: var(--font-size-300);  /* 14 -> 16 */
+  --loop-pagination-gap-items:       var(--space-xsmall);   /* 8 -> 12 */
+  --loop-pagination-gap-right:       var(--space-small);    /* 14 -> 16 */
+}
+/* Input h-padding grows with the scale (Figma h-padding-left-side = 12) */
+.loop-pagination--large .loop-pagination__input {
+  padding: 0 var(--space-xsmall);
+}
+
 /* ---- Left-side nav strip ---- */
 .loop-pagination__nav {
   display: flex;
@@ -135,10 +152,13 @@
   background-color: var(--color-bg-link-primary-hover);
   color: var(--color-text-on-light-link-primary-enabled);
 }
-/* Active/selected page: pill border */
+/* Active/selected page: pill border. Numeral drops to Regular — a local
+   override on the shared SemiBold page-number style, verified in the AG-grid
+   pagination ref (Figma 27044-57397). */
 .loop-pagination__page--active {
   border: 2px solid var(--color-outline-on-light-link-enabled);
   border-radius: var(--radius-pill);
+  font-weight: var(--font-weight-regular);
 }
 
 /* ---- Ellipsis between page ranges ---- */
