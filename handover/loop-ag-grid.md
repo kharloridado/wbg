@@ -88,6 +88,61 @@ config string. **Do not** set an AG `theme` object — the look comes entirely f
 numbered pager is the separate Loop Pagination component (`src/components/loop-ag-grid-pagination.js`
 + `.loop-pagination--large`) placed under the grid — unchanged by this handover.
 
+## Combining with a custom OnReady grid script
+
+If the screen already runs its own "Run JavaScript" node against the grid (e.g. cell editors,
+dirty-cell tracking, value formatters), the Loop options **coexist** with it — they touch
+different grid options:
+
+| Grid option | Owner | Combine rule |
+|---|---|---|
+| `columnDefs` (editors, formatters, per-column tweaks) | your script | Loop doesn't touch it — leave as-is |
+| `defaultColDef` | **both** (you: `cellClassRules` / `onCellValueChanged`; Loop: `filter` / `enableRowGroup` / clean-header flags) | **merge into one object — don't replace** |
+| `sideBar`, `rowGroupPanelShow` | Loop only | independent — just add the two `setGridOption` calls |
+
+Merge `defaultColDef` in place (so both sets of keys survive), then add the two top-level
+options. Keep your `columnDefs` mapping unchanged:
+
+```js
+// defaultColDef — MERGE your editing hooks with the Loop options (don't overwrite)
+let defaultColDef = GridAPI.getGridOption("defaultColDef") || {};
+Object.assign(defaultColDef, {
+    // Loop options — Figma look + behaviour
+    sortable: true, resizable: true,
+    filter: true, floatingFilter: false,   // filters surface in the Filters tool panel
+    enableRowGroup: true,                   // draggable into the row-group panel
+    suppressHeaderMenuButton: true,         // Figma-clean header (no kebab)
+    suppressHeaderFilterButton: true,       // Figma-clean header (no funnel)
+    // your editing hooks (unchanged)
+    cellClassRules: {
+        "ag-cell-dirty": (p) => p.node.editedCols && p.node.editedCols[p.column.getId()],
+    },
+    onCellValueChanged: cellEdited,
+});
+GridAPI.setGridOption("defaultColDef", defaultColDef);
+
+// top-level Loop options (independent of columnDefs / defaultColDef)
+GridAPI.setGridOption("rowGroupPanelShow", "always");
+GridAPI.setGridOption("sideBar", {
+    position: "right",
+    toolPanels: [
+        { id:"columns", labelDefault:"Columns", labelKey:"columns", iconKey:"columns",
+          toolPanel:"agColumnsToolPanel",
+          toolPanelParams:{ suppressRowGroups:false, suppressValues:true, suppressPivots:true, suppressPivotMode:true } },
+        { id:"filters", labelDefault:"Filters", labelKey:"filters", iconKey:"filter", toolPanel:"agFiltersToolPanel" },
+    ],
+});
+```
+
+Gotchas:
+- **`Object.assign` order = who wins.** Loop keys apply *over* the existing `defaultColDef`;
+  Loop never sets `editable`, so your editing stays intact. Put a key *after* the Loop block
+  if you need your value to win on a shared key.
+- **Set `defaultColDef` before `columnDefs`** if the clean header / filter doesn't take on first
+  paint (v33 usually re-processes columns on a `defaultColDef` change, but ordering removes doubt).
+- **`sideBar` + `rowGroupPanelShow` need the Enterprise bundle** (see Prerequisites / FND-074);
+  cell editors, dirty-tracking, and formatters are Community and work regardless.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
