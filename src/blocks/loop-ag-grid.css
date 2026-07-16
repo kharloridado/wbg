@@ -20,7 +20,7 @@
        Community v33 (the demo) never renders them. Hooks ship below so they inherit
        the look on an Enterprise upgrade — scope note, not a finding.
      · AG's native paging panel keeps its own DOM (arrows + "x to y of z"); the
-       design's numbered pager is the OSUI Pagination widget (.loop-pagination--small)
+       design's numbered pager is the OSUI Pagination widget (.loop-pagination--large)
        placed below the grid — see the handover.
      · Numeric cells: Figma hard-codes IBM Plex Mono; font set is closed per
        brand-owner ruling → Open Sans + tabular-nums (finding already filed, cmp-table).

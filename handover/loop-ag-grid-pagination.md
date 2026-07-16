@@ -131,12 +131,14 @@ type), addressable by pointing it at the grid's exposed API object.
   text-decoration: none;
   white-space: nowrap;
 }
-/* Hover = filled bright-blue pill + white label/icon (Figma 23714-1496:
-   Background/Container/On Light/Link/Primary/Hover = blue-40 #169af3). The label
-   and icon both inherit color, so setting it here flips them to white. */
+/* Hover = filled bright-blue pill (Figma 23714-1496: Background/Container/On
+   Light/Link/Primary/Hover = blue-40 #169af3). Blue/70 text on that fill is
+   only 3.4:1 (fails AA) — same precedent as the Button hover fix (FND-014):
+   use the on-light-emphasis (Blue/90) tone instead, which passes at 5.75:1.
+   The label and icon both inherit color, so setting it here flips both. */
 .loop-pagination__btn:hover:not(.loop-pagination__btn--disabled) {
   background-color: var(--color-bg-link-primary-hover);
-  color: var(--color-text-on-light-link-primary-enabled);
+  color: var(--color-text-on-light-emphasis);
 }
 /* icon-first: |< First, < Prev -- icon padding left, label padding right */
 .loop-pagination__btn--icon-first {
@@ -208,7 +210,7 @@ type), addressable by pointing it at the grid's exposed API object.
 }
 .loop-pagination__page:hover {
   background-color: var(--color-bg-link-primary-hover);
-  color: var(--color-text-on-light-link-primary-enabled);
+  color: var(--color-text-on-light-emphasis);
 }
 /* Active/selected page: pill border. Numeral drops to Regular — a local
    override on the shared SemiBold page-number style, verified in the AG-grid
@@ -325,9 +327,12 @@ type), addressable by pointing it at the grid's exposed API object.
   color: var(--color-text-on-light-default);
   white-space: nowrap;
 }
-/* Numeric ranges (1-20) and total (500): Bold 14px per Figma (23714-1496) */
+/* Numeric ranges (1-20) and total (500): Bold, 14px per Figma (23714-1496) —
+   reads var(--loop-pagination-pages-font-size) so it scales with --small/--large
+   like the sibling .loop-pagination__label (was hardcoded to 14px, so it stayed
+   14px instead of 16px under --large — see loop/refs/cmp-ag-grid-pagination). */
 .loop-pagination__showing-count {
-  font-size: var(--font-size-200);
+  font-size: var(--loop-pagination-pages-font-size);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-on-light-default);
 }
@@ -433,7 +438,7 @@ type), addressable by pointing it at the grid's exposed API object.
       super();
       this._api = null;
       this._pollTimer = null;
-      this._onPaginationChanged = this._render.bind(this);
+      this._onPaginationChanged = this._handlePaginationChanged.bind(this);
       this._onClick = this._handleClick.bind(this);
       this._onSizeChange = this._handleSizeChange.bind(this);
     }
@@ -494,6 +499,15 @@ type), addressable by pointing it at the grid's exposed API object.
       this._render();
     }
 
+    /* AG Grid's own paginationChanged fires for grid-driven changes too (e.g. a
+       filter reducing the row count), not just clicks/size-select made through
+       this component — re-render AND re-emit so loop-pagination-changed reflects
+       those the same way, matching the documented event contract. */
+    _handlePaginationChanged() {
+      this._render();
+      this._emit();
+    }
+
     _emit() {
       var api = this._api;
       this.dispatchEvent(new CustomEvent('loop-pagination-changed', {
@@ -507,6 +521,10 @@ type), addressable by pointing it at the grid's exposed API object.
       }));
     }
 
+    /* AG Grid's pagination API calls below dispatch its native 'paginationChanged'
+       event synchronously, which _handlePaginationChanged already re-renders +
+       re-emits on — no separate this._emit() here, or every user click would
+       fire loop-pagination-changed twice. */
     _handleClick(ev) {
       var btn = ev.target.closest('[data-nav],[data-page]');
       if (!btn || !this._api || btn.hasAttribute('disabled')) { return; }
@@ -517,13 +535,11 @@ type), addressable by pointing it at the grid's exposed API object.
       else if (btn.dataset.nav === 'prev')  { api.paginationGoToPreviousPage(); }
       else if (btn.dataset.nav === 'next')  { api.paginationGoToNextPage(); }
       else if (btn.dataset.nav === 'last')  { api.paginationGoToLastPage(); }
-      this._emit();
     }
 
     _handleSizeChange(ev) {
       if (!this._api) { return; }
       this._api.setGridOption('paginationPageSize', parseInt(ev.target.value, 10));
-      this._emit();
     }
 
     _navBtn(kind, label, disabled, edge) {

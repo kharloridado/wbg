@@ -67,7 +67,7 @@
       super();
       this._api = null;
       this._pollTimer = null;
-      this._onPaginationChanged = this._render.bind(this);
+      this._onPaginationChanged = this._handlePaginationChanged.bind(this);
       this._onClick = this._handleClick.bind(this);
       this._onSizeChange = this._handleSizeChange.bind(this);
     }
@@ -128,6 +128,15 @@
       this._render();
     }
 
+    /* AG Grid's own paginationChanged fires for grid-driven changes too (e.g. a
+       filter reducing the row count), not just clicks/size-select made through
+       this component — re-render AND re-emit so loop-pagination-changed reflects
+       those the same way, matching the documented event contract. */
+    _handlePaginationChanged() {
+      this._render();
+      this._emit();
+    }
+
     _emit() {
       var api = this._api;
       this.dispatchEvent(new CustomEvent('loop-pagination-changed', {
@@ -141,6 +150,10 @@
       }));
     }
 
+    /* AG Grid's pagination API calls below dispatch its native 'paginationChanged'
+       event synchronously, which _handlePaginationChanged already re-renders +
+       re-emits on — no separate this._emit() here, or every user click would
+       fire loop-pagination-changed twice. */
     _handleClick(ev) {
       var btn = ev.target.closest('[data-nav],[data-page]');
       if (!btn || !this._api || btn.hasAttribute('disabled')) { return; }
@@ -151,13 +164,11 @@
       else if (btn.dataset.nav === 'prev')  { api.paginationGoToPreviousPage(); }
       else if (btn.dataset.nav === 'next')  { api.paginationGoToNextPage(); }
       else if (btn.dataset.nav === 'last')  { api.paginationGoToLastPage(); }
-      this._emit();
     }
 
     _handleSizeChange(ev) {
       if (!this._api) { return; }
       this._api.setGridOption('paginationPageSize', parseInt(ev.target.value, 10));
-      this._emit();
     }
 
     _navBtn(kind, label, disabled, edge) {
