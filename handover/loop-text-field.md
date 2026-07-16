@@ -563,7 +563,7 @@ span.validation-message::before {
 Goal: In ODC Studio, apply the WBG "The Loop" styling for TextField to the native
 OutSystems UI widget(s) it restyles.
 
-Context (already done): loop-text-field.css and dist/theme.css are already pasted into the ODC
+Context (already done): loop-text-field.css, dist/tokens.css and dist/theme.css are already pasted into the ODC
 Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
 you to style, and you must not write or edit CSS.
 

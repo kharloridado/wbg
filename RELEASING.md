@@ -1,9 +1,9 @@
 # Releasing — cutting a versioned theme build
 
 The version lives in **one place**: the `version` field in `package.json`. The theme build
-reads it and stamps it at the top of `dist/theme.css`, so whatever a developer pastes into
-the ODC Theme editor self-identifies and matches its [`CHANGELOG.md`](./CHANGELOG.md)
-entry.
+reads it and stamps it at the top of both `dist/tokens.css` and `dist/theme.css`, so
+whatever a developer pastes into the ODC Theme editor self-identifies and matches its
+[`CHANGELOG.md`](./CHANGELOG.md) entry.
 
 Versioning is [SemVer](https://semver.org) in the **0.x** range (pre-1.0): bump the **MINOR**
 for a new component/feature tier, the **PATCH** for fixes only. Token/class renames are
@@ -28,8 +28,10 @@ OutSystems build — see the board workflow). The release captures exactly that 
    ```bash
    npm run build:theme
    ```
-   Confirm the top of `dist/theme.css` reads `Version x.y.z · built <date>`. This is the
-   file pasted into ODC.
+   Confirm the top of `dist/tokens.css` AND `dist/theme.css` reads `Version x.y.z ·
+   built <date>`. These are the two files pasted into ODC (tokens first). The build's
+   token change report also lands in `tokens/TOKEN-CHANGELOG.md` — commit it with the
+   release so the token history matches the tag.
 4. **Tag and push**:
    ```bash
    git commit -am "release: vx.y.z"
@@ -45,6 +47,6 @@ git tag.
 - `dist/theme.min.css` (`npm run build:theme:min`) is **not** the file pasted into ODC. It
   is compiled independently by lightningcss straight from `tokens/index.css` — it does not
   go through the assembler, so it carries neither the version banner nor the block CSS. The
-  file pasted into ODC is always `dist/theme.css`.
+  files pasted into ODC are always `dist/tokens.css` + `dist/theme.css`.
 - No release automation (`changesets` / `standard-version` / CI) is wired up by design —
   releases are manual and gated on board approval.

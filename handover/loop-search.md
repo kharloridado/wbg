@@ -90,8 +90,9 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
 /* ---- Clear (×) — Filled state ----
    WebKit/Blink show the cancel button on <input type="search"> only while it holds a value
    (matches the Filled state); set the Search Input's type to Search to surface it. Firefox draws none.
-   Stays a MASK (native pseudo-element can't render font glyphs) but the shape is the genuine
-   FA 6 Pro xmark path — see --loop-search-clear-icon in tokens/component-search.css. */
+   Stays a MASK (native pseudo-element can't render font glyphs) but the shape is now two crossed
+   linear-gradient layers — no data-URI SVG, which tripped OutSystems' offline-behavior warning.
+   The token carries the FULL mask value (layers + position/size) — see tokens/component-search.css. */
 .osui-search input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
           appearance: none;
@@ -100,8 +101,8 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
   margin: 0;
   cursor: pointer;
   background-color: var(--loop-search-clear-color);
-  -webkit-mask: var(--loop-search-clear-icon) center / contain no-repeat;
-          mask: var(--loop-search-clear-icon) center / contain no-repeat;
+  -webkit-mask: var(--loop-search-clear-icon);
+          mask: var(--loop-search-clear-icon);
 }
 /* Hide the browser's default decoration in case appearance:none is ignored */
 .osui-search input[type="search"]::-webkit-search-decoration {
@@ -194,7 +195,7 @@ glass icon and a clear (×), reusing the Text Field box/states/sizes.
 Goal: In ODC Studio, apply the WBG "The Loop" styling for Search to the native
 OutSystems UI widget(s) it restyles.
 
-Context (already done): loop-search.css and dist/theme.css are already pasted into the ODC
+Context (already done): loop-search.css, dist/tokens.css and dist/theme.css are already pasted into the ODC
 Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
 you to style, and you must not write or edit CSS.
 

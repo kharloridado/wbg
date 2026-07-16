@@ -688,7 +688,7 @@ Field Wrapper (FieldLabel row + Input + Helper) around NATIVE OutSystems widgets
 purely by the already-pasted CSS + tokens via Extended Class.
 
 Context (already done manually — do NOT re-create or edit these):
-- dist/theme.css and loop-text-field.css are already pasted into the ODC Theme editor
+- dist/tokens.css, dist/theme.css and loop-text-field.css are already pasted into the ODC Theme editor
   (below OutSystems UI). The look is pure CSS + var(--token) — do NOT write or edit CSS.
 - loop-field-count.js is already imported as a Script resource (Include = Always); it
   defines the global helper window.LoopFieldCount and live-updates the character-count badge.

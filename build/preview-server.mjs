@@ -6,6 +6,7 @@
  */
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { extname, normalize, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -35,6 +36,18 @@ const server = createServer(async (req, res) => {
     if (urlPath === '/') {
       res.writeHead(302, { Location: ENTRY }).end();
       return;
+    }
+
+    // Mirror ODC's Theme-resource rewrite: the theme CSS references uploaded resources
+    // by the literal /TheLoopTheme/<file> path (ODC swaps in the fingerprinted URL at
+    // compile time). Locally, serve those from the authored assets (src/assets/), falling
+    // back to the generated webfonts (dist/fontawesome-webfonts/) so the theme's own
+    // @font-face urls resolve too.
+    if (urlPath.startsWith('/TheLoopTheme/')) {
+      const name = urlPath.slice('/TheLoopTheme/'.length);
+      urlPath = existsSync(join(ROOT, 'src/assets', name))
+        ? `/src/assets/${name}`
+        : `/dist/fontawesome-webfonts/${name}`;
     }
 
     // Resolve safely inside ROOT (block path traversal).

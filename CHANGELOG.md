@@ -6,8 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html) in the **0.x**
 range — pre-1.0, so token/class renames are expected and are **not** treated as breaking.
 
-Each version below is the value stamped at the top of `dist/theme.css` (the artifact
-pasted into the ODC Theme editor) for that release — the theme always self-identifies with
+Each version below is the value stamped at the top of `dist/tokens.css` + `dist/theme.css`
+(the two artifacts pasted into the ODC Theme editor) for that release — the theme always self-identifies with
 the version of its changelog entry. See [`RELEASING.md`](./RELEASING.md) for how a release
 is cut. "Shipped" = merged to `main`; only board-**Approved** items reach an OutSystems
 build.
@@ -15,6 +15,15 @@ build.
 ## [Unreleased]
 
 ### Added
+- **AG Grid — row-number index column** (Figma "AG Grid" `columnNumbers`, node 25983-72091).
+  Turns on AG Grid's built-in `rowNumbers` (Community, v33.1+) in
+  `loop-ag-grid-enterprise.grid-options.js` — a left-pinned index column that auto-renumbers on
+  sort/filter/scroll. Under the existing §1 theme params it already lands on the Figma index look
+  (60px, Low `#f5f7f9` fill, right-aligned `#000d1ab2`, pinned 1px right divider); `loop-ag-grid.css`
+  §10 only drops the numbers from AG's header-bold 700 to regular **400** + `tabular-nums` to match.
+  ⚠ `rowNumbers` is **initial-only** — it must be merged into the grid options before `createGrid`
+  (the GridOptions input); a later `AgGridAPI.setGridOption` is silently ignored. Handover updated
+  (`handover/loop-ag-grid.md`). Verified live against the deployed grid 2026-07-16.
 - **Dropdown Tags — Field Wrapper size ramp** (Figma 18830-17324 "How To Use — Sizes", frozen
   into `loop/refs/cmp-dropdown-tags/` as the Sizes section + `figma-sizes.png`). The same
   `.loop-field--{xlarge,large,regular,small}` wrapper modifier that sizes every other control
@@ -107,6 +116,42 @@ build.
   `--space-m` default, incl. the phone stacked-buttons layout.
 
 ### Changed
+- **Theme is now data-URI-free — the two `data:image/svg+xml` glyphs replaced** (2026-07-16).
+  OutSystems raised an **offline-behavior warning** on the theme's two inline-SVG `url()`s
+  (a url() the platform can't resolve to a module resource). The side-nav toggle's masked
+  `sidebar` vector now ships as an **ODC Theme resource** — the exact Figma SVG lives at
+  `src/assets/loop-icon-sidebar.svg` (new dir: authored files destined for Theme Resources),
+  is uploaded to the Theme as `loop-icon-sidebar.svg`, and the mask token points at the
+  literal `url("/TheLoopTheme/loop-icon-sidebar.svg")` that ODC rewrites to the fingerprinted
+  resource URL at compile time, exactly like the `@font-face` woff2 srcs. (An FA `fa-sidebar`
+  font glyph was tried in between but looked visibly different from the Figma asset — filled
+  left column vs the export's pure outline — so it was reverted same-day per dev direction.)
+  The preview server now mirrors the ODC rewrite (`/TheLoopTheme/<file>` → `src/assets/`,
+  falling back to `dist/fontawesome-webfonts/` — so the theme's own font urls resolve locally
+  too). The Search clear `×` cannot be a font glyph (`::-webkit-search-cancel-
+  button` is a native pseudo-element that doesn't render `content`), so its FA-xmark-path
+  mask became **two crossed `linear-gradient` mask layers** — pure CSS, no `url()` — with the
+  full mask value travelling in `--loop-search-clear-icon` (position/size included, so the
+  62.5% X scales with the 16/14px glyph box). Native show-on-filled/clear behavior unchanged;
+  both verified in the live preview. The × glyph delta is disclosed as **FND-075** (register-only,
+  low; the toggle half resolved by the resource revert). (`tokens/outsystems-ui-side-responsive.css`,
+  `tokens/component-search.css`, `src/blocks/loop-search.css`, `build/preview-server.mjs`,
+  handovers `loop-layout-side.md` + `loop-search.md`.)
+- **Theme split into two ODC pastes + per-build token change report** (2026-07-16). The
+  assembler now emits **`dist/tokens.css`** — the design tokens ONLY (single consolidated
+  `:root` + device-scoped redefinitions like the `body.phone` type steps) — and
+  **`dist/theme.css`** — everything else (`@font-face`, base rules, utilities, widget/
+  component overrides; no tokens). Both carry the version-stamped `/*!` head + their own
+  Section Index; `--ship` strips notes from both. Token edits now only require re-pasting
+  `dist/tokens.css`. Verified structurally identical (rule-for-rule) to the pre-split
+  single-file build. **Every build now diffs the assembled token set** against the new
+  committed baseline `tokens/tokens.lock.json` and reports added/modified/removed tokens
+  classified **branding / foundation / component**, newest-first in the new
+  `tokens/TOKEN-CHANGELOG.md` (both files generated — never hand-edited).
+  `check:live-theme` compares the live ODC bundle against the two pastes concatenated;
+  the preview loads both in paste order (`build/build-theme.mjs`,
+  `build/check-live-theme.mjs`, `preview/index.html`, handover boilerplate via
+  `build/embed-handover-code.mjs`).
 - **Card now overrides the native `.card` directly** (reverses the 2026-07-04 opt-in
   re-scope, per user ruling): the Loop card look — white, 8px radius, no border,
   `--shadow-medium` (0 8px 20px), 24px padding — is now the **default for every native

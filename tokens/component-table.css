@@ -40,4 +40,5 @@
   --loop-table-sidebtn-text:       var(--color-text-on-light-link-primary-enabled); /* Figma side tab label — Text/On Light/Link/Primary #004370 */
   --loop-table-sidebtn-icon:       var(--color-icon-on-light-primary);      /* Figma side tab icon — Icon/On Light/Primary #004370 */
   --loop-table-sidebtn-font-size:  var(--font-size-200);                    /* Figma loop/button/label/font-size 14 */
+  --loop-table-sidebtn-pad-x:      var(--space-xsmall);                     /* Figma side tab h-padding — Spacing/xsmall 12 (rail width 48 via --space-xlarge) */
 }

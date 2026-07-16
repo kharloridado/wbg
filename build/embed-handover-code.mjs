@@ -32,7 +32,7 @@ const WIRING_MARKER = "## Event wiring (OnReady / OnDestroy)";
 const MENTOR_MARKER = "## Build in ODC with Mentor Studio";
 
 /* md file → the artifact(s) a developer hand-places into ODC, plus an optional `mentor`
- * spec for a fully-filled Mentor Studio prompt. Tokens travel via dist/theme.css (already
+ * spec for a fully-filled Mentor Studio prompt. Tokens travel via dist/tokens.css (already
  * its own paste) so they are not duplicated here. */
 const MAP = {
   "loop-button.md":          [["src/blocks/loop-button.css", "css", "Theme CSS — paste below OutSystems UI"]],
@@ -126,7 +126,7 @@ const MAP = {
         `not styling — the look is already handled by CSS.`,
         ``,
         `Context (already done manually — do NOT re-create or edit these):`,
-        `- dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor`,
+        `- dist/tokens.css, dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor`,
         `  (below OutSystems UI). The rail/panel look is pure CSS + var(--token) — do NOT write,`,
         `  edit, or add CSS, and do NOT set an AG Grid \`theme\` object.`,
         `- The grid-options delta LOOP_AG_GRID_ENTERPRISE_OPTIONS (from`,
@@ -457,7 +457,7 @@ function wcFilled(m) {
     `Web Component <${tag}> for the WBG "The Loop" design system.`,
     ``,
     `Context (already done manually — do NOT re-create or edit these):`,
-    `- dist/theme.css (brand + component tokens) is already pasted into the ODC Theme editor.`,
+    `- dist/tokens.css (brand + component tokens) and dist/theme.css are already pasted into the ODC Theme editor.`,
     `- ${tag}.js is already imported as a Script resource (Theme/Library), ${m.include}. It`,
     `  defines the custom element <${tag}>${m.helper ? ` and the global helper ${m.helper}` : ``}.`,
     `- Do NOT write CSS, author or modify JavaScript, or edit the Theme. Your job is only the`,
@@ -516,7 +516,7 @@ function blockFilled(m) {
     `purely by the already-pasted CSS + tokens via Extended Class.`,
     ``,
     `Context (already done manually — do NOT re-create or edit these):`,
-    `- dist/theme.css and loop-text-field.css are already pasted into the ODC Theme editor`,
+    `- dist/tokens.css, dist/theme.css and loop-text-field.css are already pasted into the ODC Theme editor`,
     `  (below OutSystems UI). The look is pure CSS + var(--token) — do NOT write or edit CSS.`,
     `- loop-field-count.js is already imported as a Script resource (Include = Always); it`,
     `  defines the global helper ${m.helper} and live-updates the character-count badge.`,
@@ -579,7 +579,7 @@ function wcGeneric(block, tag, jsFile, dest) {
     `Web Component <${tag}> for the WBG "The Loop" design system.`,
     ``,
     `Context (already done manually — do NOT re-create or edit these):`,
-    `- dist/theme.css and any block CSS are already pasted into the ODC Theme editor.`,
+    `- dist/tokens.css, dist/theme.css and any block CSS are already pasted into the ODC Theme editor.`,
     `- ${jsFile} is already imported as a ${dest}. It defines the custom element <${tag}>.`,
     `- Do NOT write CSS, author/modify JavaScript, or edit the Theme. Your job is only the`,
     `  Block, its inputs/events, the attribute bindings, the event wiring, and any Client`,
@@ -624,7 +624,7 @@ function restyleGeneric(block, cssFile) {
     `Goal: In ODC Studio, apply the WBG "The Loop" styling for ${block} to the native`,
     `OutSystems UI widget(s) it restyles.`,
     ``,
-    `Context (already done): ${cssFile} and dist/theme.css are already pasted into the ODC`,
+    `Context (already done): ${cssFile}, dist/tokens.css and dist/theme.css are already pasted into the ODC`,
     `Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for`,
     `you to style, and you must not write or edit CSS.`,
     ``,
@@ -648,7 +648,7 @@ function refGeneric(block, tag, jsFile) {
     `screen for the WBG "The Loop" design system.`,
     ``,
     `Context (already done): ${jsFile} is added under Resources and loads on the Style-Guide`,
-    `screen; dist/theme.css is in the Theme. It is a self-contained display component.`,
+    `screen; dist/tokens.css + dist/theme.css are in the Theme. It is a self-contained display component.`,
     ``,
     `Task: add the <${tag}> element to the Style Guide screen where this specimen belongs.`,
     `There are no inputs or events to wire. Do NOT write CSS or JavaScript.`,

@@ -702,7 +702,7 @@ Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported
 Web Component <loop-file-uploader> for the WBG "The Loop" design system.
 
 Context (already done manually — do NOT re-create or edit these):
-- dist/theme.css (brand + component tokens) is already pasted into the ODC Theme editor.
+- dist/tokens.css (brand + component tokens) and dist/theme.css are already pasted into the ODC Theme editor.
 - loop-file-uploader.js is already imported as a Script resource (Theme/Library), Include = Always. It
   defines the custom element <loop-file-uploader>.
 - Do NOT write CSS, author or modify JavaScript, or edit the Theme. Your job is only the

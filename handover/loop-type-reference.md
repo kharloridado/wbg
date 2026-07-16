@@ -731,7 +731,7 @@ Goal: In ODC Studio, place the Style-Guide reference element <loop-typography-re
 screen for the WBG "The Loop" design system.
 
 Context (already done): loop-typography-reference.js is added under Resources and loads on the Style-Guide
-screen; dist/theme.css is in the Theme. It is a self-contained display component.
+screen; dist/tokens.css + dist/theme.css are in the Theme. It is a self-contained display component.
 
 Task: add the <loop-typography-reference> element to the Style Guide screen where this specimen belongs.
 There are no inputs or events to wire. Do NOT write CSS or JavaScript.

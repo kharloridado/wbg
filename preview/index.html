@@ -18,7 +18,8 @@
     1) Real OutSystems UI (ODC) framework base — the vendored submodule compiled by
        `npm run build:osui`. This is the SAME framework CSS ODC ships, so the preview
        validates fidelity against the real base, not a hand-written approximation.
-    2) Brand theme tokens (dist/theme.css) — retints OutSystems UI's CSS variables.
+    2) The two ODC theme pastes: dist/tokens.css (design tokens — retints OutSystems
+       UI's CSS variables) then dist/theme.css (classes/overrides, no tokens).
     3) Provider stylesheets (virtual-select, flatpickr) — runtime-injected in ODC.
     4) The handover override CSS (src/blocks/loop-*.css) — pasted into Theme CSS, BELOW
        OutSystems UI, so it loads LAST and wins equal-specificity rules by source order.
@@ -33,7 +34,9 @@
         cascade (resets, :root tokens, .btn, inputs, .header, .dropdown, .alert, …). -->
 <link rel="stylesheet" href="vendor/outsystems-ui/outsystems-ui.css">
 
-<!-- 2) The real brand theme (tokens). Same file you paste into the ODC Theme editor. -->
+<!-- 2) The real brand theme — the SAME two pastes that go into the ODC Theme editor:
+        tokens first (dist/tokens.css), then the classes/overrides (dist/theme.css). -->
+<link rel="stylesheet" href="../dist/tokens.css">
 <link rel="stylesheet" href="../dist/theme.css">
 
 <!-- 2c) The Flatpickr provider's own stylesheet — the SAME library OutSystems'
@@ -452,7 +455,7 @@
       <span aria-current="page">Component Library</span>
     </nav>
     <h1 class="loop-heading-h2-small">Component Library</h1>
-    <p class="pv-apphead-note">Real OutSystems UI (ODC) framework CSS as the base, then real theme tokens (dist/theme.css) + the actual handover CSS/JS on top — the same cascade as ODC. The whole page runs inside the branded <strong>Layout Side</strong> shell.</p>
+    <p class="pv-apphead-note">Real OutSystems UI (ODC) framework CSS as the base, then the real theme pastes (dist/tokens.css + dist/theme.css) + the actual handover CSS/JS on top — the same cascade as ODC. The whole page runs inside the branded <strong>Layout Side</strong> shell.</p>
   </div>
   <div class="pv-apphead-utils">
     <a class="pv-util" href="#sec-reference">FAQ</a>

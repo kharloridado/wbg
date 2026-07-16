@@ -39,7 +39,7 @@ Findings become **GitHub Issues filed as Bugs** (Bug issue type + `bug` label) i
 
 Generated code (CSS, Web Component `.js`, Block instructions) is **not** the end of the chat — it is handed over as a **GitHub issue filed as a Task and assigned to the developer**, so they add it into OutSystems themselves. Label `handover` + `task`; form at `.github/ISSUE_TEMPLATE/handover.yml`; example body in `handover/`.
 
-**Rule: the handover ticket must CONTAIN the JS/CSS to copy into ODC — not just point at a repo path.** Every `handover/*.md` carries a `## Code to paste into ODC` section with the verbatim artifact(s) in a collapsed `<details>` block (source path in the `<summary>`). Tokens travel via `dist/theme.css` (its own paste) so they aren't duplicated there. Embed only what the developer hand-places: block CSS overrides and Web Component `.js`. The blocks are generated from source by `node build/embed-handover-code.mjs` (idempotent) — re-run it after editing a source file, and add new handovers to its `MAP`.
+**Rule: the handover ticket must CONTAIN the JS/CSS to copy into ODC — not just point at a repo path.** Every `handover/*.md` carries a `## Code to paste into ODC` section with the verbatim artifact(s) in a collapsed `<details>` block (source path in the `<summary>`). Tokens travel via `dist/tokens.css` (its own paste) so they aren't duplicated there. Embed only what the developer hand-places: block CSS overrides and Web Component `.js`. The blocks are generated from source by `node build/embed-handover-code.mjs` (idempotent) — re-run it after editing a source file, and add new handovers to its `MAP`.
 
 **Rule: every handover also carries a `## Build in ODC with Mentor Studio` section** — a ready-to-paste prompt for **ODC Mentor Studio** that scaffolds the OutSystems side (Block, attribute bindings, event wiring, Client Actions). Mentor is a logic/data agent — it does *not* author the CSS or the Web Component, so the prompt fences those off as already-pasted and aims Mentor only at the wiring. The same `embed-handover-code.mjs` generates it: archetype-aware by default (Web Component / native-widget restyle / Style-Guide reference), or fully filled when the `MAP` entry supplies a `mentor` spec (see `loop-toast.md` for the worked example). The reusable template lives at `handover/MENTOR-STUDIO-PROMPT.md`.
 
@@ -54,15 +54,27 @@ Both findings (bugs) and handovers (tasks) can live on the same GitHub **Project
 ## Build pipeline
 
 - Source tokens live in `tokens/` (`colors.css`, `spacing.css`, `typography.css`).
-- `npm run build:theme` → `dist/theme.css` to paste into the ODC Theme editor.
+- `npm run build:theme` → **two ODC pastes** (the 2026-07-16 token split):
+  **`dist/tokens.css`** — the design tokens ONLY (single consolidated `:root` +
+  device-scoped token redefinitions like `body.phone` type steps) — and
+  **`dist/theme.css`** — everything else (`@font-face`, base rules, utility
+  classes, widget/component overrides; NO tokens). Both pasted into the ODC
+  Theme editor; token edits only require re-pasting `dist/tokens.css`.
   Assembled by `build/build-theme.mjs` (comment-preserving), which prepends an
-  **OutSystems-UI-style Table of Contents + `#SECTION` banners** and keeps the
-  source provenance/finding comments. **Rule: `dist/theme.css` must always carry
-  this TOC + sectioning** — never ship a flat, comment-stripped theme. Section
-  order follows the `@import` order in `tokens/index.css`; add a file's title to
-  the `META` map in the build script when you add a new token file.
-- `npm run build:theme:ship` → the **customer deliverable**: same
-  `dist/theme.css` but with the ordinary `/* … */` provenance/finding notes
+  **OutSystems-UI-style Table of Contents + section banners** to EACH file and
+  keeps the source provenance/finding comments. **Rule: both dist files must
+  always carry this TOC + sectioning** — never ship a flat, comment-stripped
+  theme. Section order follows the `@import` order in `tokens/index.css`; add a
+  file's title to the `META` map in the build script when you add a new token file.
+- **Token change report (every build):** the assembled token set is diffed
+  against the committed baseline `tokens/tokens.lock.json`; added/modified/removed
+  tokens are printed classified **branding** (colors, semantic roles, OSUI brand
+  retints) / **foundation** (spacing, typography, radius, border, shadows) /
+  **component** (`component-*.css` + block `:root` vars), and recorded newest-first
+  in `tokens/TOKEN-CHANGELOG.md`. Both files are tracked and generated — commit
+  them with the token change; never edit them by hand.
+- `npm run build:theme:ship` → the **customer deliverable**: same two dist files
+  but with the ordinary `/* … */` provenance/finding notes
   stripped, keeping the `/*!` **head, Section Index, and section banners** (so it
   still satisfies the TOC + sectioning rule above — it is not a flat theme). Verified
   byte-identical to the commented build after minification (strip touches only
@@ -96,9 +108,9 @@ licensed vector artwork, **all IcoMoon outputs stay in gitignored `dist/`** (lik
 | Command | What it does |
 | --- | --- |
 | `npm install` | Install build deps (lightningcss-cli, sass). |
-| `npm run build:theme` | Assemble `tokens/*.css` → `dist/theme.css` (commented, TOC'd, single `:root`). Paste into ODC. |
+| `npm run build:theme` | Assemble `tokens/*.css` → `dist/tokens.css` (design tokens only, single `:root`) + `dist/theme.css` (classes/overrides, no tokens), both commented + TOC'd. Paste BOTH into ODC. Also diffs tokens vs `tokens/tokens.lock.json` and logs branding/foundation/component changes to `tokens/TOKEN-CHANGELOG.md`. |
 | `npm run watch:theme` | Same, rebuilding on token changes. |
-| `npm run build:theme:ship` | Customer deliverable: `dist/theme.css` with ordinary comments stripped, `/*!` TOC + section banners kept. Paste into ODC. |
+| `npm run build:theme:ship` | Customer deliverable: same two dist files with ordinary comments stripped, `/*!` TOC + section banners kept. Paste both into ODC. |
 | `npm run build:theme:min` | Minified `dist/theme.min.css` (not for ODC paste). |
 | `npm run check:live-theme` | Diff the LIVE ODC theme CSS against a fresh local build (normalizes ODC minification + url fingerprints). Exit 0 in sync / 1 drift / 2 live unreachable. Run daily by the "live-theme drift check" cloud Routine (`loop/ROUTINES.md` §4), which files a `theme-drift` issue on drift. |
 | `npm run gen:color-utilities` | Generate `.background-*` / `.text-*` utility classes (`tokens/color-utilities*.css`). |
@@ -135,13 +147,13 @@ Hybrid: Claude.ai for design analysis + generation, Claude Code for Git operatio
 The repo turns Figma designs into three OutSystems-pasteable artifacts: **theme tokens**, **block CSS overrides**, and **Web Component JS**. How they fit together:
 
 **Token layering (`tokens/`).** `tokens/index.css` is the single `@import` manifest and the order is load-bearing:
-primitives (`colors`, `spacing`, `typography`, `radius`, `border`, `shadows`) → semantic role layer (`semantic-colors.css`) → generated utility classes → per-component token files (`component-*.css`) → **OutSystems UI overrides LAST** (`outsystems-ui-overrides.css`, `-header`, `-alert`, `-feedback-message`) so their `:root` redefinitions win over the framework defaults. `build/build-theme.mjs` lifts every file's `:root` into ONE consolidated block, keeps comments, and prepends an OutSystems-UI-style TOC. When you add a token file: add it to `index.css` AND to the `META` map in `build-theme.mjs`.
+primitives (`colors`, `spacing`, `typography`, `radius`, `border`, `shadows`) → semantic role layer (`semantic-colors.css`) → generated utility classes → per-component token files (`component-*.css`) → **OutSystems UI overrides LAST** (`outsystems-ui-overrides.css`, `-header`, `-alert`, `-feedback-message`) so their `:root` redefinitions win over the framework defaults. `build/build-theme.mjs` lifts every file's `:root` into ONE consolidated block in `dist/tokens.css` (classes/overrides land in `dist/theme.css`), keeps comments, prepends an OutSystems-UI-style TOC to each output, and diffs the token set against `tokens/tokens.lock.json` — every build reports added/modified/removed tokens classified branding/foundation/component into `tokens/TOKEN-CHANGELOG.md`. When you add a token file: add it to `index.css` AND to the `META` map in `build-theme.mjs`.
 
 **`src/` — two delivery shapes:**
 - `src/blocks/*.css` — BEM `ExtendedClass` overrides that **restyle native OutSystems UI widgets** (button, dropdown, switch, text-field…). Prefer overriding native `.btn`/`.dropdown`/etc. classes over building parallel systems. These are handed over as paste-in CSS.
 - `src/components/*.js` (+ matching `.css`) — vanilla JS **Web Components** for L5 builds that don't exist in OSUI (`loop-alert`, `loop-modal`, `loop-toast`, `loop-system-alert`, plus the Live Style Guide reference components `loop-*-reference.js`). No Lit/Stencil/React.
 
-**Local preview (`preview/`).** `preview/index.html` is the Live Style Guide harness. Layer 1 is the **real** compiled OSUI CSS (`npm run build:osui`), layer 2 is `dist/theme.css`, layer 3 is the `src/` overrides + Web Components. Chrome must stay token-only and class-only (no inline styles / ad-hoc hex). Serve with `npm run preview`, then validate in a real browser — never trust Service Studio Preview for Web Components.
+**Local preview (`preview/`).** `preview/index.html` is the Live Style Guide harness. Layer 1 is the **real** compiled OSUI CSS (`npm run build:osui`), layer 2 is the two theme pastes (`dist/tokens.css` then `dist/theme.css`), layer 3 is the `src/` overrides + Web Components. Chrome must stay token-only and class-only (no inline styles / ad-hoc hex). Serve with `npm run preview`, then validate in a real browser — never trust Service Studio Preview for Web Components.
 
 **The design loop (`.claude/` + `loop/`).** `/design-loop` (or `loop/run.sh`) drives an autonomous Figma→OutSystems loop defined by `loop/goal.md`. Per component: **`@maker`** builds one artifact faithfully → **`@checker`** independently validates (fidelity, token-only, BEM, Web Component correctness, accessibility flag-don't-fix) and returns PASS/FAIL. On PASS it commits, opens a handover Task, and updates the Style Guide. State is resumable via `loop/state.json`; `loop/REPORT.md` summarizes the run. The **spec of record** is the frozen Figma snapshot at `loop/refs/<item-id>/` (`spec.md` + `variables.json` + `figma.png`) — the orchestrator snapshots it via Figma MCP **before** the maker runs, because subagents have no Figma access; both maker and checker judge against the ref, never live Figma, and **no ref ⇒ the item goes `needs-human`, never built**.
 

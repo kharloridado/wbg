@@ -1199,7 +1199,7 @@ value is set silently, nothing would ever bring it back until the user changed t
 Goal: In ODC Studio, apply the WBG "The Loop" styling for DropdownTags to the native
 OutSystems UI widget(s) it restyles.
 
-Context (already done): loop-dropdown-tags.css and dist/theme.css are already pasted into the ODC
+Context (already done): loop-dropdown-tags.css, dist/tokens.css and dist/theme.css are already pasted into the ODC
 Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
 you to style, and you must not write or edit CSS.
 

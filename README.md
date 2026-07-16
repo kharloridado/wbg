@@ -47,7 +47,7 @@ A reusable scaffold for every new OutSystems frontend engagement. Copy this fold
 ├── findings/              # design-conformance findings register + ticket payloads
 │   ├── findings-register.md
 │   └── tickets/
-└── dist/                  # build output (gitignored) → theme.css to paste into ODC
+└── dist/                  # build output (gitignored) → tokens.css + theme.css to paste into ODC
 ```
 
 ## The findings workflow
@@ -58,6 +58,8 @@ This template bakes in the **flag-don't-fix** rule. The implementation always ma
 
 ```bash
 npm install
-npm run build:theme      # → dist/theme.css (flat, paste into ODC Theme editor)
+npm run build:theme      # → dist/tokens.css (design tokens) + dist/theme.css (classes/overrides)
+                         #   paste BOTH into the ODC Theme editor; also reports token
+                         #   adds/edits (branding/foundation/component) vs tokens/tokens.lock.json
 npm run watch:theme      # rebuild on change while iterating
 ```

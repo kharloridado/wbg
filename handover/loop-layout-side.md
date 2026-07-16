@@ -198,13 +198,19 @@ Loop (white panel, dark text, 320px, pill menu items, brand logo + profile).
 .layout-side .menu-icon .menu-icon-line { display: none; }  /* hide native 3 bars */
 .layout-side .menu-icon::before,
 .layout-side .loop-nav-toggle::before {
-  content: ""; width: var(--space-small); height: var(--space-small);
+  content: ""; width: var(--loop-side-toggle-icon-size); height: var(--loop-side-toggle-icon-size);
   background-color: currentColor;
   -webkit-mask: var(--loop-side-toggle-icon) center / contain no-repeat;
           mask: var(--loop-side-toggle-icon) center / contain no-repeat;
 }
-/* `sidebar` glyph — a rounded panel with a divided, filled left column (masked inline SVG). */
-.layout-side { --loop-side-toggle-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2.5' y='3.5' width='15' height='13' rx='2.5'/%3E%3Cline x1='8' y1='3.5' x2='8' y2='16.5'/%3E%3C/svg%3E"); }
+/* `sidebar` glyph — the Figma vector as an ODC Theme RESOURCE (upload `loop-icon-sidebar.svg`,
+   see "Theme resource" step below). ODC rewrites the literal /TheLoopTheme/ path to the
+   fingerprinted resource URL at compile time — do NOT "fix" the path. (Replaces the old
+   data-URI mask, which tripped OutSystems' offline-behavior warning.) */
+.layout-side {
+  --loop-side-toggle-icon-size: 20px;
+  --loop-side-toggle-icon: url("/TheLoopTheme/loop-icon-sidebar.svg");
+}
 .layout-side .menu-icon:hover,
 .layout-side .loop-nav-toggle:hover { background-color: var(--color-neutral-2); }
 .layout-side .menu-icon:focus-visible,
@@ -597,6 +603,17 @@ close it).
       browser** at desktop / tablet / phone widths: desktop collapses to an **84px icon rail**
       (icons only, content reflows; logo or toggle at top per the swap); tablet/phone slide the
       drawer in over the **blue** scrim; scrim-click and `Esc` close the drawer.
+- [ ] **Theme resource — the toggle's `sidebar` glyph.** Save the one-line SVG below as
+      **`loop-icon-sidebar.svg`** and upload it to the Theme's **Resources** (the same place
+      as the `*.woff2` fonts; source file in the repo: `src/assets/loop-icon-sidebar.svg`).
+      The theme CSS references it as `url("/TheLoopTheme/loop-icon-sidebar.svg")` — ODC
+      rewrites that literal path to the fingerprinted resource URL at compile time, so do
+      **not** "fix" the path (it 404s only outside ODC). Without the resource the toggle
+      pill renders empty and the offline-behavior warning returns.
+
+      ```svg
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="#000" stroke-width="1.6"><rect x="2.5" y="3.5" width="15" height="13" rx="2.5"/><line x1="8" y1="3.5" x2="8" y2="16.5"/></svg>
+      ```
 - [ ] Rebuild `dist/theme.css` (`npm run build:theme`) and paste it into the ODC **Theme
       editor**, below OutSystems UI.
 - [ ] Author each menu entry with a leading **Icon**, the label, and (optionally) a trailing

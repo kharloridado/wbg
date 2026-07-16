@@ -13,6 +13,7 @@
    │    by default, matching the Figma Default variant). ENTERPRISE.              │
    │ 3. "Drag here to set row groups" panel across the top. ENTERPRISE.           │
    │ 4. Per-column filters (surfaced by the Filters tool panel). COMMUNITY.       │
+   │ 5. Row-number index column down the left edge. COMMUNITY (v33.1+).           │
    └────────────────────────────────────────────────────────────────────────────┘
 
    ══ PREREQUISITES (platform work, done ONCE INSIDE the AGGrid_Lib library) ═════
@@ -52,6 +53,14 @@
    OnReady handler with AgGridAPI). It is plain JSON-serialisable data — no
    functions — so it can equally be pasted as a JSON config string.
 
+   ⚠ `rowNumbers` is INITIAL-ONLY. `sideBar` / `rowGroupPanelShow` / `defaultColDef`
+   are dynamic (settable in OnReady via AgGridAPI.setGridOption). `rowNumbers` is NOT:
+   AG reads it at createGrid time, so it renders ONLY when merged into the grid
+   options BEFORE the grid is created (the GridOptions input) — a later
+   AgGridAPI.setGridOption("rowNumbers", true) is silently ignored (verified live
+   2026-07-16). If you can only reach the grid in OnReady, the other three still
+   apply there; row numbers need the pre-createGrid path.
+
    NOTE — styling lives in CSS, not here. Do NOT set an AG `theme` object; the look
    comes entirely from loop-ag-grid.css + dist/theme.css (Theming API params +
    `.ag-*` overrides). Icon keys below (`columns`, `filter`) select AG's built-in
@@ -59,6 +68,15 @@
 ============================================================================ */
 
 export const LOOP_AG_GRID_ENTERPRISE_OPTIONS = {
+  /* 5) Row-number index column — AG's built-in row numbers, pinned down the left
+   *    edge (Figma "columnNumbers"). COMMUNITY, v33.1+ (needs RowNumbersModule,
+   *    which ships inside AllCommunityModule, so it's already registered wherever
+   *    the community grid runs). ⚠ INITIAL-ONLY: must be present at createGrid — see
+   *    the HOW TO APPLY note. Renumbers automatically on sort/filter/scroll.
+   *    The Figma index look (60px, Low #f5f7f9 fill, right-aligned #000d1ab2, pinned
+   *    1px right divider) comes from loop-ag-grid.css §1 + §10 — nothing to set here. */
+  rowNumbers: true,
+
   /* 3) Row-group panel — the "Drag here to set row groups" strip (Enterprise). */
   rowGroupPanelShow: "always",
 

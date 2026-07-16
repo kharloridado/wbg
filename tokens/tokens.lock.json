@@ -1,0 +1,5940 @@
+{
+  "version": "0.6.0",
+  "tokens": {
+    ":root --border-radius-soft": {
+      "value": "var(--radius-base)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --border-size-l": {
+      "value": "3px",
+      "file": "border.css",
+      "kind": "foundation"
+    },
+    ":root --border-size-m": {
+      "value": "2px",
+      "file": "border.css",
+      "kind": "foundation"
+    },
+    ":root --border-size-none": {
+      "value": "0",
+      "file": "border.css",
+      "kind": "foundation"
+    },
+    ":root --border-size-s": {
+      "value": "1px",
+      "file": "border.css",
+      "kind": "foundation"
+    },
+    ":root --color-accent-indigo-10": {
+      "value": "#f5f6ff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-20": {
+      "value": "#e3e6fc",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-30": {
+      "value": "#ced4fd",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-40": {
+      "value": "#9fa9f7",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-50": {
+      "value": "#a8b2ff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-60": {
+      "value": "#586af3",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-70": {
+      "value": "#2e43e0",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-80": {
+      "value": "#2132b0",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-indigo-90": {
+      "value": "#0a1885",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-10": {
+      "value": "#ffe6f6",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-20": {
+      "value": "#feaee1",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-30": {
+      "value": "#fe7cce",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-40": {
+      "value": "#fd49bb",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-50": {
+      "value": "#fd1caa",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-60": {
+      "value": "#de028d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-70": {
+      "value": "#ac016d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-80": {
+      "value": "#79014d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-magenta-90": {
+      "value": "#47012d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-10": {
+      "value": "#fdebe8",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-20": {
+      "value": "#facfc7",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-30": {
+      "value": "#f5a799",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-40": {
+      "value": "#f17f6a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-50": {
+      "value": "#ec553a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-60": {
+      "value": "#df3416",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-70": {
+      "value": "#b12911",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-80": {
+      "value": "#821e0d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-orange-90": {
+      "value": "#541408",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-10": {
+      "value": "#e1f4eb",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-20": {
+      "value": "#b5e3ce",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-30": {
+      "value": "#59c090",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-40": {
+      "value": "#4cbb88",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-50": {
+      "value": "#3b9b6f",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-60": {
+      "value": "#2d7655",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-70": {
+      "value": "#296b4d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-80": {
+      "value": "#235c42",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-pale-green-90": {
+      "value": "#1f513a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-10": {
+      "value": "#e6fcff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-20": {
+      "value": "#a9f4fe",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-30": {
+      "value": "#03d7f2",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-40": {
+      "value": "#02aac0",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-50": {
+      "value": "#0298ac",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-60": {
+      "value": "#017d8d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-70": {
+      "value": "#01707e",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-80": {
+      "value": "#015e6a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-accent-teal-90": {
+      "value": "#01505b",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-background-body": {
+      "value": "var(--color-neutral-05)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-background-login": {
+      "value": "var(--color-white)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-dark-high": {
+      "value": "var(--color-neutral-70)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-dark-low": {
+      "value": "var(--color-neutral-95)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-dark-lowest": {
+      "value": "var(--color-black)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-dark-medium": {
+      "value": "var(--color-neutral-80)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-dark-regular": {
+      "value": "var(--color-neutral-90)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-light-high": {
+      "value": "var(--color-neutral-30)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-light-low": {
+      "value": "var(--color-neutral-05)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-light-lowest": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-light-medium": {
+      "value": "var(--color-neutral-20)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-on-light-regular": {
+      "value": "var(--color-neutral-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-secondary": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-error-high": {
+      "value": "var(--color-red-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-error-low": {
+      "value": "var(--color-red-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-info-high": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-info-low": {
+      "value": "var(--color-blue-05)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-success-high": {
+      "value": "var(--color-green-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-success-low": {
+      "value": "var(--color-green-03)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-suggestion-high": {
+      "value": "var(--color-purple-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-container-state-suggestion-low": {
+      "value": "var(--color-purple-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-footer-external": {
+      "value": "#1a1a1a",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-primary-disabled": {
+      "value": "var(--color-neutral-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-primary-enabled": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-primary-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-primary-pressed": {
+      "value": "var(--color-blue-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-primary-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-secondary-disabled": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-secondary-enabled": {
+      "value": "#ffffff00",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-secondary-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-secondary-pressed": {
+      "value": "var(--color-blue-30)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-secondary-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-tertiary-disabled": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-tertiary-enabled": {
+      "value": "#ffffff00",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-tertiary-hover": {
+      "value": "var(--color-blue-20)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-link-tertiary-pressed": {
+      "value": "var(--color-blue-30)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-dark-low": {
+      "value": "var(--color-gray-alpha-white-16)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-dark-medium": {
+      "value": "var(--color-gray-alpha-white-48)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-dark-regular": {
+      "value": "var(--color-gray-alpha-white-24)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-light-low": {
+      "value": "var(--color-neutral-alpha-08)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-light-lowest": {
+      "value": "var(--color-neutral-alpha-04)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-light-medium": {
+      "value": "var(--color-neutral-alpha-24)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-overlay-on-light-regular": {
+      "value": "var(--color-neutral-alpha-16)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-page-default": {
+      "value": "var(--color-neutral-05)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-page-default-inverted": {
+      "value": "var(--color-black)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-page-end": {
+      "value": "#e3e6fc",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-bg-page-start": {
+      "value": "#e8f5fc",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-black": {
+      "value": "#000000",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue": {
+      "value": "var(--color-blue-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-05": {
+      "value": "#f6fcff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-10": {
+      "value": "#e9f7fd",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-100": {
+      "value": "#002035",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-120": {
+      "value": "#001c2d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-20": {
+      "value": "#cde7f9",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-30": {
+      "value": "#a3daff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-40": {
+      "value": "#169af3",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-50": {
+      "value": "#0071bc",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-60": {
+      "value": "#00538a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-70": {
+      "value": "#004370",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-80": {
+      "value": "#053657",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-90": {
+      "value": "#012740",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-dark": {
+      "value": "var(--color-blue-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-darker": {
+      "value": "var(--color-blue-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-darkest": {
+      "value": "var(--color-blue-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-light": {
+      "value": "var(--color-blue-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-lighter": {
+      "value": "var(--color-blue-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-blue-lightest": {
+      "value": "var(--color-blue-05)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan": {
+      "value": "var(--color-accent-teal-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-dark": {
+      "value": "var(--color-accent-teal-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-darker": {
+      "value": "var(--color-accent-teal-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-darkest": {
+      "value": "var(--color-accent-teal-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-light": {
+      "value": "var(--color-accent-teal-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-lighter": {
+      "value": "var(--color-accent-teal-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-cyan-lightest": {
+      "value": "var(--color-accent-teal-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-dark-default": {
+      "value": "#00538a99",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-dark-emphasis": {
+      "value": "var(--color-gray-alpha-white-60)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-dark-subdued": {
+      "value": "var(--color-gray-alpha-white-24)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-light-default": {
+      "value": "var(--color-neutral-alpha-16)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-light-emphasis": {
+      "value": "var(--color-neutral-alpha-24)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-divider-on-light-subdued": {
+      "value": "var(--color-neutral-alpha-08)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-dark-high": {
+      "value": "var(--color-neutral-70)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-dark-low": {
+      "value": "var(--color-neutral-95)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-dark-lowest": {
+      "value": "var(--color-black)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-dark-medium": {
+      "value": "var(--color-neutral-80)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-dark-regular": {
+      "value": "var(--color-neutral-90)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-light-high": {
+      "value": "var(--color-neutral-30)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-light-low": {
+      "value": "var(--color-neutral-05)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-light-lowest": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-elevation-light-medium": {
+      "value": "var(--color-neutral-20)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-disable": {
+      "value": "var(--color-neutral-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-enabled-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-enabled-secondary": {
+      "value": "var(--color-neutral-95)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-focused": {
+      "value": "var(--color-blue-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-pressed": {
+      "value": "var(--color-blue-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-interactive-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-secondary": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-high": {
+      "value": "var(--color-neutral-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-highest": {
+      "value": "var(--color-neutral-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-low": {
+      "value": "var(--color-neutral-15)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-lowest": {
+      "value": "var(--color-neutral-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-medium": {
+      "value": "var(--color-neutral-30)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-disable-regular": {
+      "value": "var(--color-neutral-20)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-info-high": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-info-low": {
+      "value": "var(--color-blue-05)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-info-regular": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-negative-high": {
+      "value": "var(--color-red-80)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-negative-low": {
+      "value": "var(--color-red-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-negative-regular": {
+      "value": "var(--color-red-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-positive-high": {
+      "value": "var(--color-green-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-positive-low": {
+      "value": "var(--color-green-03)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-positive-regular": {
+      "value": "var(--color-green-on-dark-07)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-suggestion-high": {
+      "value": "var(--color-purple-80)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-suggestion-low": {
+      "value": "var(--color-purple-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-suggestion-regular": {
+      "value": "var(--color-purple-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-warning-high": {
+      "value": "var(--color-yellow-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-warning-low": {
+      "value": "var(--color-yellow-03)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-warning-medium": {
+      "value": "var(--color-yellow-base)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-domain-state-warning-regular": {
+      "value": "var(--color-yellow-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-error": {
+      "value": "var(--color-red-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-error-light": {
+      "value": "var(--color-red-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-focus-inner": {
+      "value": "var(--color-neutral-95)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-focus-keyboard-on-light": {
+      "value": "#b6490c",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-focus-outer": {
+      "value": "var(--color-blue-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape": {
+      "value": "var(--color-purple-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-dark": {
+      "value": "var(--color-purple-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-darker": {
+      "value": "var(--color-purple-80)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-darkest": {
+      "value": "var(--color-purple-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-light": {
+      "value": "var(--color-purple-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-lighter": {
+      "value": "var(--color-purple-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-grape-lightest": {
+      "value": "var(--color-purple-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-black-08": {
+      "value": "#00000014",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-black-16": {
+      "value": "#00000029",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-black-24": {
+      "value": "#0000003d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-black-48": {
+      "value": "#0000007a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-black-60": {
+      "value": "#00000099",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-16": {
+      "value": "#ffffff29",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-24": {
+      "value": "#ffffff3d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-48": {
+      "value": "#ffffff7a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-60": {
+      "value": "#ffffff99",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-75": {
+      "value": "#ffffffbf",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-gray-alpha-white-90": {
+      "value": "#ffffffe5",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green": {
+      "value": "var(--color-green-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-03": {
+      "value": "#f6fef0",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-07": {
+      "value": "#163102",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-30": {
+      "value": "#b8ec93",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-60": {
+      "value": "#388004",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-70": {
+      "value": "#234f03",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-base": {
+      "value": "#1e4602",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-dark": {
+      "value": "var(--color-green-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-darker": {
+      "value": "var(--color-green-base)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-darkest": {
+      "value": "var(--color-green-07)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-light": {
+      "value": "var(--color-green-on-dark-07)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-lighter": {
+      "value": "var(--color-green-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-lightest": {
+      "value": "var(--color-green-03)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-green-on-dark-07": {
+      "value": "#56c606",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-green-on-dark-base": {
+      "value": "#459e05",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-alpha-default": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-alpha-emphasis": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-default": {
+      "value": "var(--color-neutral-05)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-emphasis": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-link-enabled-primary": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-link-hover": {
+      "value": "var(--color-blue-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-link-visited": {
+      "value": "var(--color-purple-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-primary": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-disabled": {
+      "value": "var(--color-neutral-15)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-error": {
+      "value": "var(--color-red-30)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-info": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-success": {
+      "value": "var(--color-green-on-dark-07)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-suggest": {
+      "value": "var(--color-purple-30)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-dark-state-warning": {
+      "value": "var(--color-yellow-on-dark-base)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-alpha-default": {
+      "value": "var(--color-neutral-alpha-57)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-alpha-disable": {
+      "value": "var(--color-neutral-alpha-42)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-alpha-emphasis": {
+      "value": "var(--color-neutral-alpha-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-default": {
+      "value": "var(--color-neutral-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-emphasis": {
+      "value": "var(--color-neutral-80)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-link-enabled": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-link-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-link-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-secondary": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-disabled": {
+      "value": "var(--color-neutral-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-error": {
+      "value": "var(--color-red-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-informational": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-success": {
+      "value": "var(--color-green-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-suggestional": {
+      "value": "var(--color-purple-80)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-warning-high": {
+      "value": "var(--color-yellow-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-icon-on-light-state-warning-regular": {
+      "value": "var(--color-yellow-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo": {
+      "value": "var(--color-accent-indigo-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-dark": {
+      "value": "var(--color-accent-indigo-80)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-darker": {
+      "value": "var(--color-accent-indigo-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-darkest": {
+      "value": "var(--color-accent-indigo-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-light": {
+      "value": "var(--color-accent-indigo-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-lighter": {
+      "value": "var(--color-accent-indigo-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-indigo-lightest": {
+      "value": "var(--color-accent-indigo-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-info": {
+      "value": "var(--color-blue-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-info-light": {
+      "value": "var(--color-blue-05)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime": {
+      "value": "var(--color-accent-pale-green-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-dark": {
+      "value": "var(--color-accent-pale-green-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-darker": {
+      "value": "var(--color-accent-pale-green-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-darkest": {
+      "value": "var(--color-accent-pale-green-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-light": {
+      "value": "var(--color-accent-pale-green-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-lighter": {
+      "value": "var(--color-accent-pale-green-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-lime-lightest": {
+      "value": "var(--color-accent-pale-green-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-0": {
+      "value": "var(--color-white)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-05": {
+      "value": "#f5f7f9",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-1": {
+      "value": "var(--color-neutral-05)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-10": {
+      "value": "#e7edf3",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-15": {
+      "value": "#dae3eb",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-2": {
+      "value": "var(--color-neutral-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-20": {
+      "value": "#d4dee8",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-3": {
+      "value": "var(--color-neutral-15)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-30": {
+      "value": "#bdccdb",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-4": {
+      "value": "var(--color-neutral-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-40": {
+      "value": "#8a9db1",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-5": {
+      "value": "var(--color-neutral-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-50": {
+      "value": "#586e84",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-6": {
+      "value": "var(--color-neutral-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-60": {
+      "value": "#4b5e71",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-7": {
+      "value": "var(--color-neutral-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-70": {
+      "value": "#3d4c5c",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-8": {
+      "value": "var(--color-neutral-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-80": {
+      "value": "#252e37",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-9": {
+      "value": "var(--color-neutral-80)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-90": {
+      "value": "#181f25",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-95": {
+      "value": "#0c0f12",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-02": {
+      "value": "#00396b08",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-04": {
+      "value": "#00396b0d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-08": {
+      "value": "#00396b14",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-16": {
+      "value": "#00396b29",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-24": {
+      "value": "#00396b3d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-42": {
+      "value": "#00294d6b",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-57": {
+      "value": "#00294d91",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-65": {
+      "value": "#000d1aa6",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-70": {
+      "value": "#000d1ab2",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-neutral-alpha-95": {
+      "value": "#000d1af5",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-orange": {
+      "value": "var(--color-accent-orange-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-dark": {
+      "value": "var(--color-accent-orange-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-darker": {
+      "value": "var(--color-accent-orange-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-darkest": {
+      "value": "var(--color-accent-orange-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-light": {
+      "value": "var(--color-accent-orange-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-lighter": {
+      "value": "var(--color-accent-orange-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-orange-lightest": {
+      "value": "var(--color-accent-orange-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-default": {
+      "value": "var(--color-neutral-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-dimmed": {
+      "value": "var(--color-neutral-80)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-emphasis": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-link-enabled": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-link-focused": {
+      "value": "var(--color-blue-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-link-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-link-visited": {
+      "value": "var(--color-purple-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-disable": {
+      "value": "var(--color-gray-alpha-white-48)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-error-high": {
+      "value": "var(--color-red-10)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-error-low": {
+      "value": "var(--color-red-80)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-informational-high": {
+      "value": "var(--color-blue-05)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-informational-low": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-success-high": {
+      "value": "var(--color-green-03)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-success-low": {
+      "value": "var(--color-green-70)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-suggestional-high": {
+      "value": "var(--color-purple-10)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-suggestional-low": {
+      "value": "var(--color-purple-80)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-warning-high": {
+      "value": "var(--color-yellow-03)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-state-warning-low": {
+      "value": "var(--color-yellow-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-dark-subdued": {
+      "value": "var(--color-neutral-70)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-default": {
+      "value": "var(--color-neutral-alpha-24)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-dimmed": {
+      "value": "var(--color-neutral-alpha-08)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-emphasis": {
+      "value": "var(--color-neutral-alpha-42)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-link-enabled": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-link-focused": {
+      "value": "var(--color-blue-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-link-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-link-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-disable-low": {
+      "value": "var(--color-neutral-20)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-error-high": {
+      "value": "var(--color-red-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-error-low": {
+      "value": "var(--color-red-10)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-info-high": {
+      "value": "var(--color-blue-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-info-low": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-success-high": {
+      "value": "var(--color-green-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-success-low": {
+      "value": "var(--color-green-03)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-suggest-high": {
+      "value": "var(--color-purple-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-suggest-low": {
+      "value": "var(--color-purple-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-warning-high": {
+      "value": "var(--color-yellow-base)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-state-warning-low": {
+      "value": "var(--color-yellow-03)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-on-light-subdued": {
+      "value": "var(--color-neutral-alpha-16)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-transparent": {
+      "value": "#ffffff00",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-outline-white": {
+      "value": "var(--color-white)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-pink": {
+      "value": "var(--color-accent-magenta-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-dark": {
+      "value": "var(--color-accent-magenta-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-darker": {
+      "value": "var(--color-accent-magenta-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-darkest": {
+      "value": "var(--color-accent-magenta-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-light": {
+      "value": "var(--color-accent-magenta-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-lighter": {
+      "value": "var(--color-accent-magenta-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-pink-lightest": {
+      "value": "var(--color-accent-magenta-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-primary": {
+      "value": "var(--color-blue-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-primary-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-primary-lightest": {
+      "value": "var(--color-blue-05)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-primary-selected": {
+      "value": "var(--color-blue-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-10": {
+      "value": "#f1e1ff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-20": {
+      "value": "#e5c7ff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-30": {
+      "value": "#cd95fe",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-40": {
+      "value": "#c17cfe",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-50": {
+      "value": "#b25dfe",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-60": {
+      "value": "#763ba9",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-70": {
+      "value": "#5c01ac",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-80": {
+      "value": "#410179",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-purple-90": {
+      "value": "#260147",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red": {
+      "value": "var(--color-red-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-10": {
+      "value": "#fdf2f2",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-20": {
+      "value": "#f6bcbf",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-30": {
+      "value": "#ec747a",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-40": {
+      "value": "#e64750",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-50": {
+      "value": "#da1e28",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-60": {
+      "value": "#c91c25",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-70": {
+      "value": "#9d161d",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-80": {
+      "value": "#861319",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-90": {
+      "value": "#550c10",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-red-dark": {
+      "value": "var(--color-red-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-darker": {
+      "value": "var(--color-red-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-darkest": {
+      "value": "var(--color-red-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-light": {
+      "value": "var(--color-red-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-lighter": {
+      "value": "var(--color-red-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-red-lightest": {
+      "value": "var(--color-red-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-secondary": {
+      "value": "var(--color-wb-brand-dark-blue)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-success": {
+      "value": "var(--color-green-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-success-light": {
+      "value": "var(--color-green-03)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal": {
+      "value": "var(--color-accent-teal-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-dark": {
+      "value": "var(--color-accent-teal-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-darker": {
+      "value": "var(--color-accent-teal-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-darkest": {
+      "value": "var(--color-accent-teal-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-light": {
+      "value": "var(--color-accent-teal-30)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-lighter": {
+      "value": "var(--color-accent-teal-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-teal-lightest": {
+      "value": "var(--color-accent-teal-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-blue": {
+      "value": "#004099",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-default": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-emphasis": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-link-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-link-primary-enabled": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-link-secondary": {
+      "value": "var(--color-neutral-05)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-link-visited": {
+      "value": "var(--color-purple-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-disabled": {
+      "value": "var(--color-gray-alpha-white-48)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-error": {
+      "value": "var(--color-red-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-info": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-success": {
+      "value": "var(--color-green-on-dark-07)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-suggest": {
+      "value": "var(--color-purple-40)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-state-warning": {
+      "value": "var(--color-yellow-50)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-dark-subdued": {
+      "value": "var(--color-gray-alpha-white-60)",
+      "file": "semantic-colors-dark.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-default": {
+      "value": "var(--color-neutral-alpha-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-emphasis": {
+      "value": "var(--color-blue-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-headers": {
+      "value": "var(--color-neutral-alpha-95)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-hover": {
+      "value": "#066db1",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-primary-enabled": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-secondary-enabled": {
+      "value": "var(--color-neutral-95)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-underline-disabled": {
+      "value": "var(--color-neutral-15)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-underline-enabled": {
+      "value": "#0043708c",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-underline-hover": {
+      "value": "var(--color-blue-40)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-link-visited": {
+      "value": "var(--color-purple-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-disabled": {
+      "value": "var(--color-neutral-alpha-42)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-error": {
+      "value": "var(--color-red-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-info": {
+      "value": "var(--color-blue-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-success": {
+      "value": "var(--color-green-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-suggest": {
+      "value": "var(--color-purple-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-state-warning": {
+      "value": "var(--color-yellow-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-light-subdued": {
+      "value": "#000d1a91",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-error-default": {
+      "value": "var(--color-red-50)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-error-emphasis": {
+      "value": "var(--color-red-80)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-info-default": {
+      "value": "var(--color-blue-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-info-emphasis": {
+      "value": "var(--color-blue-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-success-default": {
+      "value": "var(--color-green-60)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-success-emphasis": {
+      "value": "var(--color-green-70)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-warning-default": {
+      "value": "var(--color-yellow-base)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-text-on-state-warning-emphasis": {
+      "value": "var(--color-yellow-90)",
+      "file": "semantic-colors.css",
+      "kind": "branding"
+    },
+    ":root --color-violet": {
+      "value": "var(--color-purple-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-dark": {
+      "value": "var(--color-purple-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-darker": {
+      "value": "var(--color-purple-70)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-darkest": {
+      "value": "var(--color-purple-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-light": {
+      "value": "var(--color-purple-40)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-lighter": {
+      "value": "var(--color-purple-20)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-violet-lightest": {
+      "value": "var(--color-purple-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-warning": {
+      "value": "var(--color-yellow-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-warning-light": {
+      "value": "var(--color-yellow-03)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-wb-brand-dark-blue": {
+      "value": "#002244",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-white": {
+      "value": "#ffffff",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow": {
+      "value": "var(--color-yellow-50)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-03": {
+      "value": "#fef3d7",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-05": {
+      "value": "#b27c00",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-10": {
+      "value": "#fff7e6",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-50": {
+      "value": "#e19d00",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-60": {
+      "value": "#ca8d02",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-90": {
+      "value": "#473201",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-base": {
+      "value": "#896001",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-dark": {
+      "value": "var(--color-yellow-60)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-darker": {
+      "value": "var(--color-yellow-base)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-darkest": {
+      "value": "var(--color-yellow-90)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-light": {
+      "value": "var(--color-yellow-on-dark-07)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-lighter": {
+      "value": "var(--color-yellow-10)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-lightest": {
+      "value": "var(--color-yellow-03)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-on-dark-07": {
+      "value": "#fed881",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --color-yellow-on-dark-base": {
+      "value": "#ffecc2",
+      "file": "colors.css",
+      "kind": "branding"
+    },
+    ":root --font-bold": {
+      "value": "var(--font-weight-bold)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --font-family-base": {
+      "value": "var(--font-family-body)",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-family-body": {
+      "value": "\"Open Sans\"",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-family-heading": {
+      "value": "\"Open Sans\"",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-family-icon": {
+      "value": "\"Font Awesome 6 Pro\"",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-family-label": {
+      "value": "\"Open Sans\"",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-regular": {
+      "value": "var(--font-weight-regular)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --font-semi-bold": {
+      "value": "var(--font-weight-semibold)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --font-size-100": {
+      "value": "12px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-1000": {
+      "value": "40px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-1100": {
+      "value": "48px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-1200": {
+      "value": "60px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-200": {
+      "value": "14px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-300": {
+      "value": "16px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-400": {
+      "value": "18px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-500": {
+      "value": "20px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-600": {
+      "value": "24px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-700": {
+      "value": "28px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-800": {
+      "value": "32px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-900": {
+      "value": "36px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-body-base": {
+      "value": "16px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-body-small": {
+      "value": "14px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-body-tiny": {
+      "value": "12px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-huge-72": {
+      "value": "72px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-size-label-large": {
+      "value": "20px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-bold": {
+      "value": "700",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-icon-light": {
+      "value": "300",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-icon-regular": {
+      "value": "400",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-icon-solid": {
+      "value": "900",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-medium": {
+      "value": "500",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-regular": {
+      "value": "400",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --font-weight-semibold": {
+      "value": "600",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --grid-gutter": {
+      "value": "24px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-button": {
+      "value": "-0.5px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-caps": {
+      "value": "1px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-heading": {
+      "value": "-3px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-label": {
+      "value": "-1.5px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-none": {
+      "value": "0px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --letter-spacing-tight": {
+      "value": "-0.35px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-base": {
+      "value": "1.5",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-button-text": {
+      "value": "1.9",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-heading": {
+      "value": "1.12",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-label": {
+      "value": "1.15",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-list": {
+      "value": "1.8",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-narrow": {
+      "value": "1.25",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --line-height-solid": {
+      "value": "1",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    ":root --loop-alert-accent-width": {
+      "value": "4px",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-action": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-action-pt": {
+      "value": "var(--space-xsmall)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-body-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-corner-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-dismiss": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-error-accent": {
+      "value": "var(--color-bg-container-state-error-high)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-error-bg": {
+      "value": "var(--color-bg-container-state-error-low)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-error-icon": {
+      "value": "var(--color-icon-on-light-state-error)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-error-message": {
+      "value": "var(--color-text-on-light-state-error)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-error-title": {
+      "value": "var(--color-text-on-state-error-emphasis)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-gap": {
+      "value": "var(--space-small)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-gap-multi": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-hairline-width": {
+      "value": "1px",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-icon-size": {
+      "value": "16px",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-information-accent": {
+      "value": "var(--color-text-on-light-state-info)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-information-bg": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-information-icon": {
+      "value": "var(--color-icon-on-light-state-informational)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-information-message": {
+      "value": "var(--color-text-on-light-state-info)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-information-title": {
+      "value": "var(--color-text-on-state-info-emphasis)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-min-height": {
+      "value": "40px",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-min-width": {
+      "value": "230px",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-padding-h": {
+      "value": "var(--space-small)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-padding-h-multi": {
+      "value": "var(--space-xsmall)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-padding-v-multi": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-success-accent": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-success-bg": {
+      "value": "var(--color-domain-state-positive-low)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-success-icon": {
+      "value": "var(--color-icon-on-light-state-success)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-success-message": {
+      "value": "var(--color-text-on-state-success-default)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-success-title": {
+      "value": "var(--color-text-on-state-success-emphasis)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-title-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-accent": {
+      "value": "var(--color-domain-state-warning-medium)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-bg": {
+      "value": "var(--color-domain-state-warning-low)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-icon": {
+      "value": "var(--color-icon-on-light-state-warning-regular)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-message": {
+      "value": "var(--color-text-on-state-warning-default)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-message-multi": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-alert-warning-title": {
+      "value": "var(--color-text-on-state-warning-emphasis)",
+      "file": "component-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-border": {
+      "value": "1px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-font": {
+      "value": "var(--font-family-body)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-indigo-heavy": {
+      "value": "#3c40f0",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-indigo-light": {
+      "value": "#d8d9fc",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-leading": {
+      "value": "17px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-pad-l": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-pad-r": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-pad-v": {
+      "value": "var(--space-tiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-large-tracking": {
+      "value": "0",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-leading": {
+      "value": "var(--loop-badge-label-regular-leading)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-magenta-heavy": {
+      "value": "#a028ad",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-magenta-light": {
+      "value": "#f2d6f6",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-neutral-heavy": {
+      "value": "var(--color-neutral-60)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-neutral-light": {
+      "value": "var(--color-neutral-10)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-neutral-text": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-pad-l": {
+      "value": "var(--loop-badge-label-regular-pad-l)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-pad-r": {
+      "value": "var(--loop-badge-label-regular-pad-r)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-pad-v": {
+      "value": "var(--loop-badge-label-regular-pad-v)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-purple-heavy": {
+      "value": "#6427ef",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-purple-light": {
+      "value": "#e4dafb",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-red-heavy": {
+      "value": "#b4234d",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-red-light": {
+      "value": "#f4dee4",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-leading": {
+      "value": "17px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-pad-l": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-pad-r": {
+      "value": "6px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-pad-v": {
+      "value": "var(--space-xtiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-size": {
+      "value": "13px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-regular-tracking": {
+      "value": "0.25px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-size": {
+      "value": "var(--loop-badge-label-regular-size)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-leading": {
+      "value": "14px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-pad-l": {
+      "value": "var(--space-tiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-pad-r": {
+      "value": "var(--space-tiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-pad-v": {
+      "value": "var(--space-xtiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-size": {
+      "value": "11px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-small-tracking": {
+      "value": "0.25px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-teal-heavy": {
+      "value": "#026e89",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-teal-light": {
+      "value": "#cfe9ef",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-text-on-heavy": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-tracking": {
+      "value": "var(--loop-badge-label-regular-tracking)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-weight": {
+      "value": "var(--font-weight-medium, 500)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-leading": {
+      "value": "20px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-pad-l": {
+      "value": "10px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-pad-r": {
+      "value": "10px",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-pad-v": {
+      "value": "var(--space-tiny)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-label-xlarge-tracking": {
+      "value": "0",
+      "file": "component-badge-label.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-error-bg": {
+      "value": "var(--color-domain-state-negative-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-error-border": {
+      "value": "var(--color-outline-on-light-state-error-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-error-indicator": {
+      "value": "var(--color-icon-on-light-state-error)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-in-progress-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-in-progress-border": {
+      "value": "var(--color-outline-on-light-state-disable-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-in-progress-indicator": {
+      "value": "var(--color-icon-on-light-state-informational)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-informational-bg": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-informational-border": {
+      "value": "var(--color-outline-on-light-state-info-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-informational-indicator": {
+      "value": "var(--color-icon-on-light-state-informational)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-label-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-label-family": {
+      "value": "var(--font-family-body)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-label-tracking": {
+      "value": "0.5px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-label-weight": {
+      "value": "var(--font-weight-medium, 500)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-dot": {
+      "value": "12px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-font": {
+      "value": "var(--font-size-300)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-gap": {
+      "value": "4px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-headline-h": {
+      "value": "32px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-icon": {
+      "value": "18px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-leading": {
+      "value": "16px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-pad-left": {
+      "value": "10px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-large-pad-right": {
+      "value": "var(--space-xsmall)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-not-started-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-not-started-border": {
+      "value": "var(--color-domain-state-disable-medium)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-not-started-indicator": {
+      "value": "var(--color-icon-on-light-state-disabled)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-dot": {
+      "value": "10px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-font": {
+      "value": "var(--font-size-200)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-gap": {
+      "value": "4px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-headline-h": {
+      "value": "24px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-icon": {
+      "value": "16px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-leading": {
+      "value": "14px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-pad-left": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-regular-pad-right": {
+      "value": "10px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-dot": {
+      "value": "8px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-font": {
+      "value": "var(--font-size-100)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-gap": {
+      "value": "4px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-headline-h": {
+      "value": "22px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-icon": {
+      "value": "14px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-leading": {
+      "value": "14px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-pad-left": {
+      "value": "6px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-small-pad-right": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-success-bg": {
+      "value": "var(--color-domain-state-positive-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-success-border": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-success-indicator": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-suggestive-bg": {
+      "value": "var(--color-domain-state-suggestion-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-suggestive-border": {
+      "value": "var(--color-outline-on-light-state-suggest-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-suggestive-indicator": {
+      "value": "var(--color-outline-on-light-state-suggest-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-warning-bg": {
+      "value": "var(--color-domain-state-warning-low)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-warning-border": {
+      "value": "var(--color-outline-on-light-state-warning-high)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-warning-indicator": {
+      "value": "var(--color-icon-on-light-state-warning-regular)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-dot": {
+      "value": "14px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-font": {
+      "value": "var(--font-size-400)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-gap": {
+      "value": "6px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-headline-h": {
+      "value": "40px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-icon": {
+      "value": "20px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-leading": {
+      "value": "20px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-pad-left": {
+      "value": "var(--space-xsmall)",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-badge-status-xlarge-pad-right": {
+      "value": "14px",
+      "file": "component-badge-status.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-adjacent-gap": {
+      "value": "var(--space-xxsmall, 8px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-font-large": {
+      "value": "var(--font-size-200, 14px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-font-regular": {
+      "value": "var(--font-size-100, 12px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-font-small": {
+      "value": "11px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-font-xlarge": {
+      "value": "var(--font-size-300, 16px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-gap-small": {
+      "value": "4px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-h-large": {
+      "value": "48px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-h-regular": {
+      "value": "40px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-h-small": {
+      "value": "32px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-h-xlarge": {
+      "value": "56px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-icon-large": {
+      "value": "16px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-icon-regular": {
+      "value": "14px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-icon-small": {
+      "value": "12px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-icon-xlarge": {
+      "value": "18px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-lh": {
+      "value": "24px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-lh-small": {
+      "value": "20px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-card-container-color": {
+      "value": "var(--color-white)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-padding": {
+      "value": "var(--space-regular)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-placeholder-bg": {
+      "value": "var(--color-neutral-10)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-placeholder-text": {
+      "value": "var(--color-text-on-light-state-disabled)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-shadow": {
+      "value": "var(--shadow-medium)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-border": {
+      "value": "var(--color-outline-on-light-subdued)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-caret-color": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-caret-glyph": {
+      "value": "14px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-caret-size": {
+      "value": "32px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-disabled": {
+      "value": "var(--color-text-on-light-state-disabled)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-hover-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-muted": {
+      "value": "var(--color-text-on-light-state-disabled)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-radius": {
+      "value": "var(--radius-pill)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-size": {
+      "value": "36px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-day-size-text": {
+      "value": "var(--font-size-200)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-focus-ring": {
+      "value": "var(--color-outline-on-light-link-focused)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-header-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-header-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-header-weight": {
+      "value": "var(--font-weight-semibold)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-nav-glyph": {
+      "value": "14px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-nav-hover-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-nav-icon": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-nav-size": {
+      "value": "32px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-pad-bottom": {
+      "value": "var(--space-regular)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-pad-inline": {
+      "value": "var(--space-regular)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-pad-top": {
+      "value": "var(--space-xsmall)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-range-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-selected-bg": {
+      "value": "var(--color-bg-link-primary-enabled)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-selected-text": {
+      "value": "var(--color-white)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-shadow": {
+      "value": "var(--shadow-low)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-today-border": {
+      "value": "var(--color-outline-on-light-link-enabled)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-weekday-color": {
+      "value": "var(--color-text-on-light-subdued)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-weekday-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-weekday-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-width": {
+      "value": "300px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-cell-h": {
+      "value": "36px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-cols": {
+      "value": "4",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-hover-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-radius": {
+      "value": "var(--radius-pill)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-selected-border": {
+      "value": "var(--color-outline-on-light-link-enabled)",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-datepicker-year-view-max": {
+      "value": "248px",
+      "file": "component-datepicker.css",
+      "kind": "component"
+    },
+    ":root --loop-field-count-bg": {
+      "value": "var(--color-bg-container-on-light-regular)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-count-padding": {
+      "value": "var(--space-xtiny) var(--space-tiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-count-radius": {
+      "value": "var(--radius-xs)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-count-size": {
+      "value": "var(--font-size-100)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-icon-char": {
+      "value": "\"\\f05a\"",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-icon-color": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-icon-glyph": {
+      "value": "12px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-icon-weight": {
+      "value": "var(--font-weight-icon-solid, 900)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-helper-size": {
+      "value": "var(--font-size-100)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-gap": {
+      "value": "6px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-leading": {
+      "value": "16px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-row-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-tracking": {
+      "value": "0px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-label-weight": {
+      "value": "var(--font-weight-semibold)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-optional-size": {
+      "value": "var(--font-size-100)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-padding-block": {
+      "value": "18px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-padding-inline": {
+      "value": "var(--space-small)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-placeholder-pad": {
+      "value": "var(--space-xtiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-text-leading": {
+      "value": "14px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-text-size": {
+      "value": "13px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-text-tracking": {
+      "value": "0.5px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-field-text-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-close-bg": {
+      "value": "var(--color-blue-40)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-close-focus": {
+      "value": "var(--color-domain-interactive-focused)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-close-glyph": {
+      "value": "16px",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-close-icon": {
+      "value": "var(--color-icon-on-light-primary)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-close-size": {
+      "value": "40px",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-content-pb": {
+      "value": "var(--space-large)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-footer-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-footer-pb": {
+      "value": "var(--space-large)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-gutter": {
+      "value": "var(--space-small)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-header-pb": {
+      "value": "var(--space-small)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-header-pt": {
+      "value": "var(--space-regular)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-icon-color": {
+      "value": "var(--color-icon-on-light-primary)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-icon-pt": {
+      "value": "var(--space-xtiny)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-icon-size": {
+      "value": "24px",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-overlay": {
+      "value": "color-mix(in srgb, var(--color-blue-90) 90%, transparent)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-radius": {
+      "value": "var(--radius-large)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-shadow": {
+      "value": "none",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-side-padding": {
+      "value": "var(--space-large)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-title-color": {
+      "value": "var(--color-text-on-light-emphasis)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-title-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-title-leading": {
+      "value": "normal",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-title-size": {
+      "value": "var(--font-size-600)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-title-weight": {
+      "value": "var(--font-weight-bold)",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-width-medium": {
+      "value": "960px",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-width-small": {
+      "value": "456px",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-modal-z": {
+      "value": "1000",
+      "file": "component-modal.css",
+      "kind": "component"
+    },
+    ":root --loop-multiselect-list-shadow": {
+      "value": "0 2px 3px rgba(0, 0, 0, 0.08)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-multiselect-min-content": {
+      "value": "28px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-multiselect-padding-block": {
+      "value": "var(--space-xsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-multiselect-text-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-note-action-pt": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-body-leading": {
+      "value": "var(--line-height-narrow)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-body-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-corner-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-important-bg": {
+      "value": "var(--color-domain-state-warning-low)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-important-border": {
+      "value": "var(--color-domain-state-warning-medium)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-important-label": {
+      "value": "var(--color-domain-state-warning-medium)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-information-bg": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-information-border": {
+      "value": "var(--color-domain-state-info-regular)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-information-label": {
+      "value": "var(--color-text-on-light-state-info)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-min-w": {
+      "value": "150px",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-padding-h": {
+      "value": "var(--space-small)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-padding-v": {
+      "value": "var(--space-xsmall)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-success-bg": {
+      "value": "var(--color-domain-state-positive-low)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-success-border": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-success-label": {
+      "value": "var(--color-text-on-light-state-success)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-tip-bg": {
+      "value": "var(--color-domain-state-suggestion-low)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-tip-border": {
+      "value": "var(--color-domain-state-suggestion-regular)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-note-tip-label": {
+      "value": "var(--color-text-on-light-state-suggest)",
+      "file": "component-note.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-btn-height": {
+      "value": "var(--space-large)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-font-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-gap-items": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-gap-labeled": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-gap-right": {
+      "value": "14px",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-gap-simple": {
+      "value": "var(--space-tiny)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-input-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-padding-icon": {
+      "value": "6px",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-padding-label": {
+      "value": "var(--space-xsmall)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-page-radius": {
+      "value": "var(--radius-pill)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-pagination-pages-font-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-body-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-body-leading": {
+      "value": "18px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-body-size": {
+      "value": "var(--font-size-100)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-body-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-dismiss-color": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-divider-color": {
+      "value": "var(--color-divider-on-light-default)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-focus": {
+      "value": "var(--color-outline-on-light-link-enabled)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-header-gap": {
+      "value": "var(--space-small)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-padding-h": {
+      "value": "var(--space-small)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-padding-v": {
+      "value": "var(--space-small)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-pointer-h": {
+      "value": "8px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-pointer-offset": {
+      "value": "24px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-pointer-w": {
+      "value": "18px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-shadow": {
+      "value": "0px 2px 3px rgba(0, 0, 0, 0.12)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-title-color": {
+      "value": "var(--color-text-on-light-headers)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-title-leading": {
+      "value": "20px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-title-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-title-tracking": {
+      "value": "0.25px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-title-weight": {
+      "value": "var(--font-weight-bold)",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-popover-width": {
+      "value": "320px",
+      "file": "component-popover.css",
+      "kind": "component"
+    },
+    ":root --loop-search-clear-color": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-clear-glyph": {
+      "value": "16px",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-clear-icon": {
+      "value": "linear-gradient(45deg, transparent calc(50% - 0.8px), #000 calc(50% - 0.8px), #000 calc(50% + 0.8px), transparent calc(50% + 0.8px)) center / 62.5% 62.5% no-repeat, linear-gradient(135deg, transparent calc(50% - 0.8px), #000 calc(50% - 0.8px), #000 calc(50% + 0.8px), transparent calc(50% + 0.8px)) center / 62.5% 62.5% no-repeat",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-char": {
+      "value": "\"\\f002\"",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-color": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-glyph": {
+      "value": "14px",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-inset": {
+      "value": "var(--loop-field-padding-inline, 16px)",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-size": {
+      "value": "16px",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-icon-weight": {
+      "value": "var(--font-weight-icon-regular, 400)",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-search-pad-left": {
+      "value": "calc(var(--loop-field-padding-inline, 16px) + var(--loop-search-icon-size, 16px) + var(--loop-field-gap, 8px))",
+      "file": "component-search.css",
+      "kind": "component"
+    },
+    ":root --loop-select-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-h": {
+      "value": "40px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-icon-size": {
+      "value": "20px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-label-leading": {
+      "value": "16px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-label-size": {
+      "value": "13px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-label-tracking": {
+      "value": "0.25px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-list-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-list-shadow": {
+      "value": "var(--shadow-low)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-check-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-check-size": {
+      "value": "16px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-h": {
+      "value": "37px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-padding-inline": {
+      "value": "var(--space-xsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-selected-bg": {
+      "value": "var(--color-bg-container-on-light-regular)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-option-text-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-padding-block": {
+      "value": "11px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-padding-inline": {
+      "value": "var(--space-small)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-border-color": {
+      "value": "var(--color-outline-on-light-default)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-count-padding-inline": {
+      "value": "6px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-cross-size": {
+      "value": "14px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-h": {
+      "value": "40px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-padding-inline": {
+      "value": "var(--space-xsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-radius": {
+      "value": "48px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-row-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-text-leading": {
+      "value": "16px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-text-max": {
+      "value": "200px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-text-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tag-text-tracking": {
+      "value": "0.25px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-tags-padding-right": {
+      "value": "72px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-text-leading": {
+      "value": "14px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-text-size": {
+      "value": "13px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-select-text-tracking": {
+      "value": "0.5px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-action-height": {
+      "value": "42px",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-action-pt": {
+      "value": "0",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-body-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-action": {
+      "value": "var(--color-neutral-05)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-action-multi": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-bg": {
+      "value": "var(--color-bg-container-state-error-high)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-icon": {
+      "value": "var(--color-white)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-message": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-message-multi": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-error-title": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-icon-size": {
+      "value": "16px",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-action": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-action-multi": {
+      "value": "var(--color-white)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-bg": {
+      "value": "var(--color-bg-container-state-info-high)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-icon": {
+      "value": "var(--color-white)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-message": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-informative-title": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-min-width": {
+      "value": "280px",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-min-width-multiline": {
+      "value": "230px",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-action": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-bg": {
+      "value": "var(--color-domain-interactive-disable)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-icon": {
+      "value": "var(--color-white)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-message": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-message-multi": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-offline-title": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-padding-h": {
+      "value": "var(--space-xsmall)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-padding-v": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-title-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-warning-action": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-warning-bg": {
+      "value": "var(--color-domain-state-warning-regular)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-warning-icon": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-warning-message": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-sysalert-warning-title": {
+      "value": "var(--color-gray-alpha-white-75)",
+      "file": "component-system-alert.css",
+      "kind": "component"
+    },
+    ":root --loop-table-accent": {
+      "value": "var(--color-bg-link-primary-enabled)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-cell-padding-x": {
+      "value": "var(--space-xsmall)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-cell-padding-y": {
+      "value": "var(--space-small)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-divider": {
+      "value": "var(--color-divider-on-light-subdued)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-font-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-grouping-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-grouping-font-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-grouping-icon": {
+      "value": "var(--color-icon-on-light-default)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-header-bg": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-header-separator": {
+      "value": "var(--color-divider-on-light-default)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-header-separator-inset": {
+      "value": "var(--space-xsmall)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-pinned-divider": {
+      "value": "var(--color-divider-on-light-default)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-row-bg": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-row-bg-striped": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-row-height": {
+      "value": "56px",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-scrollbar-size": {
+      "value": "8px",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-scrollbar-thumb": {
+      "value": "var(--color-bg-container-on-light-high)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-sidebar-border": {
+      "value": "var(--color-outline-on-light-default)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-sidebtn-font-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-sidebtn-icon": {
+      "value": "var(--color-icon-on-light-primary)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-sidebtn-pad-x": {
+      "value": "var(--space-xsmall)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-sidebtn-text": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-text": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-toolpanel-pad-x": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-toolpanel-pad-y": {
+      "value": "var(--space-xsmall)",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-table-toolpanel-width": {
+      "value": "250px",
+      "file": "component-table.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-content-size": {
+      "value": "var(--font-size-500)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-content-size-compact": {
+      "value": "var(--font-size-300)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-content-size-tablet": {
+      "value": "var(--font-size-400)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-divider-color": {
+      "value": "var(--color-divider-on-light-subdued)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-divider-size": {
+      "value": "var(--border-size-m)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-gap": {
+      "value": "var(--space-regular)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-gap-compact": {
+      "value": "20px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-h-padding": {
+      "value": "var(--space-xsmall)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-h-padding-compact": {
+      "value": "10px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-indicator-color": {
+      "value": "var(--color-bg-link-primary-hover)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-indicator-size": {
+      "value": "4px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-color": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-color-active": {
+      "value": "var(--color-text-on-light-emphasis)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-color-disabled": {
+      "value": "var(--color-text-on-light-state-disabled)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-color-hover": {
+      "value": "var(--color-text-on-light-emphasis)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-family": {
+      "value": "var(--font-family-label)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-leading": {
+      "value": "20px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-leading-compact": {
+      "value": "18px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-size": {
+      "value": "var(--font-size-500)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-size-compact": {
+      "value": "var(--font-size-400)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-tracking": {
+      "value": "-0.13px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-label-weight": {
+      "value": "var(--font-weight-bold)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-v-padding": {
+      "value": "var(--space-xsmall)",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tabs-v-padding-compact": {
+      "value": "10px",
+      "file": "component-tabs.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-blue-bg": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-blue-border": {
+      "value": "var(--color-domain-state-info-regular)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-blue-selected-bg": {
+      "value": "var(--color-domain-state-info-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-blue-text": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-disabled-bg": {
+      "value": "var(--color-domain-state-disable-low)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-disabled-border": {
+      "value": "var(--color-domain-state-disable-regular)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-disabled-text": {
+      "value": "var(--color-text-on-light-state-disabled)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-dismiss-size": {
+      "value": "14px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-flag-h": {
+      "value": "18px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-flag-radius": {
+      "value": "var(--radius-xs)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-flag-w": {
+      "value": "25px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-focus": {
+      "value": "var(--color-domain-interactive-focused)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-green-bg": {
+      "value": "var(--color-domain-state-positive-low)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-green-border": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-green-selected-bg": {
+      "value": "var(--color-domain-state-positive-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-green-text": {
+      "value": "var(--color-text-on-light-state-success)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-h-large": {
+      "value": "var(--space-large)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-h-regular": {
+      "value": "var(--space-medium)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-h-small": {
+      "value": "var(--space-regular)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-h-xlarge": {
+      "value": "var(--space-xlarge)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-icon-size": {
+      "value": "14px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-initials-bg": {
+      "value": "var(--color-domain-state-info-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-initials-color": {
+      "value": "var(--color-white)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-initials-size": {
+      "value": "10px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-initials-tracking": {
+      "value": "0.25px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-initials-weight": {
+      "value": "var(--font-weight-bold)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-label-leading": {
+      "value": "16px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-label-size": {
+      "value": "var(--font-size-300)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-label-tracking": {
+      "value": "0.25px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-label-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-label-weight-selected": {
+      "value": "var(--font-weight-bold)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-meta-lpad": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-meta-size": {
+      "value": "24px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-padding-h": {
+      "value": "var(--space-xsmall)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-purple-bg": {
+      "value": "var(--color-domain-state-suggestion-low)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-purple-border": {
+      "value": "var(--color-domain-state-suggestion-regular)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-purple-selected-bg": {
+      "value": "var(--color-domain-state-suggestion-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-purple-text": {
+      "value": "var(--color-text-on-light-state-suggest)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-radius": {
+      "value": "48px",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-selected-text": {
+      "value": "var(--color-white)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-yellow-bg": {
+      "value": "var(--color-domain-state-warning-low)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-yellow-border": {
+      "value": "var(--color-domain-state-warning-medium)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-yellow-selected-bg": {
+      "value": "var(--color-domain-state-warning-high)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-tag-yellow-text": {
+      "value": "var(--color-domain-state-warning-medium)",
+      "file": "component-tag.css",
+      "kind": "component"
+    },
+    ":root --loop-textarea-min-h": {
+      "value": "80px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-textarea-padding-block": {
+      "value": "var(--space-xsmall)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-textarea-padding-inline": {
+      "value": "var(--space-small)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-textarea-text-leading": {
+      "value": "18px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-textarea-text-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-action-on-dark": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-action-on-light": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-action-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-action-underline-on-dark": {
+      "value": "var(--color-gray-alpha-white-60)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-action-underline-on-light": {
+      "value": "var(--color-text-on-light-link-underline-enabled)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-body-line-height": {
+      "value": "21px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-body-line-height-mobile": {
+      "value": "18px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-body-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-body-size-mobile": {
+      "value": "var(--font-size-100)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-content-gap": {
+      "value": "var(--space-xsmall)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-content-gap-mobile": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-default-bg": {
+      "value": "var(--color-neutral-80)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-default-divider": {
+      "value": "var(--color-neutral-50)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-default-icon": {
+      "value": "var(--color-white)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-default-text": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-dismiss-pad-l": {
+      "value": "var(--space-small)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-dismiss-pad-v": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-divider-on-dark": {
+      "value": "var(--color-neutral-40)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-edge-block": {
+      "value": "var(--space-regular)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-edge-gap": {
+      "value": "var(--space-small)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-error-bg": {
+      "value": "var(--color-bg-container-state-error-high)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-error-icon": {
+      "value": "var(--color-white)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-error-text": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-gap": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-gap-mobile": {
+      "value": "var(--space-tiny)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-icon-pt": {
+      "value": "var(--space-tiny)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-icon-size": {
+      "value": "24px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-icon-size-mobile": {
+      "value": "18px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-information-bg": {
+      "value": "var(--color-bg-container-state-info-high)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-information-icon": {
+      "value": "var(--color-white)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-information-text": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-max-width": {
+      "value": "550px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-max-width-tablet": {
+      "value": "450px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-min-width": {
+      "value": "400px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-min-width-mobile": {
+      "value": "300px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-min-width-titled": {
+      "value": "450px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-min-width-titled-mobile": {
+      "value": "316px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-min-width-titled-tablet": {
+      "value": "450px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-padding-h": {
+      "value": "var(--space-regular)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-padding-h-mobile": {
+      "value": "var(--space-small)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-padding-v": {
+      "value": "var(--space-small)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-padding-v-mobile": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-radius": {
+      "value": "var(--radius-medium)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-shadow": {
+      "value": "var(--shadow-low)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-success-bg": {
+      "value": "var(--color-bg-container-state-success-high)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-success-icon": {
+      "value": "var(--color-white)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-success-text": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-text-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-title-size": {
+      "value": "var(--font-size-500)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-title-tracking": {
+      "value": "-0.25px",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-warning-bg": {
+      "value": "var(--color-domain-state-warning-regular)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-warning-divider": {
+      "value": "var(--color-outline-on-light-state-warning-high)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-warning-icon": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-warning-text": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-warning-title": {
+      "value": "var(--color-text-on-light-state-warning)",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toast-z": {
+      "value": "9000",
+      "file": "component-toast.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-check-char": {
+      "value": "\"\\f00c\"",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-check-color": {
+      "value": "var(--color-domain-interactive-enabled-primary)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-check-weight": {
+      "value": "var(--font-weight-icon-solid, 900)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-circle": {
+      "value": "16px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-label-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-label-leading": {
+      "value": "15px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-label-size": {
+      "value": "13px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-label-tracking": {
+      "value": "var(--letter-spacing-none)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-label-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-padding": {
+      "value": "var(--space-xtiny)",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-row-minh": {
+      "value": "32px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-track-h": {
+      "value": "20px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-toggle-track-w": {
+      "value": "40px",
+      "file": "component-toggle.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-arrow-height": {
+      "value": "4px",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-arrow-width": {
+      "value": "8px",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-dark-bg": {
+      "value": "var(--color-black)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-dark-text": {
+      "value": "var(--color-gray-alpha-white-90)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-font-size": {
+      "value": "var(--font-size-200)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-font-weight": {
+      "value": "var(--font-weight-regular)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-light-bg": {
+      "value": "var(--color-white)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-light-shadow": {
+      "value": "0px 2px 2px rgba(0, 0, 0, 0.1)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-light-text": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-line-height": {
+      "value": "var(--line-height-narrow)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-padding-block": {
+      "value": "var(--space-xtiny)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-padding-inline": {
+      "value": "var(--space-xxsmall)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-tooltip-radius": {
+      "value": "var(--radius-xs)",
+      "file": "component-tooltip.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-border-width": {
+      "value": "var(--border-size-s)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-color": {
+      "value": "var(--color-outline-on-light-link-enabled, #004370)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-gap": {
+      "value": "var(--space-button-gap, 6px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-icon": {
+      "value": "18px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-label-leading": {
+      "value": "24px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-label-size": {
+      "value": "var(--font-size-300, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-label-tracking": {
+      "value": "var(--letter-spacing-button, -0.5px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-label-weight": {
+      "value": "var(--font-weight-bold, 700)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-pad-h": {
+      "value": "var(--space-medium, 32px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-pad-v": {
+      "value": "var(--space-small, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-btn-radius": {
+      "value": "var(--radius-pill, 32px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-disabled-bg": {
+      "value": "var(--color-domain-state-disable-low, #dae3eb)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-disabled-border": {
+      "value": "var(--color-neutral-30, #bdccdb)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-disabled-icon": {
+      "value": "var(--color-icon-on-light-state-disabled, #8a9db1)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-disabled-text": {
+      "value": "var(--color-text-on-light-state-disabled, #00294d6b)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-dropzone-gap": {
+      "value": "var(--space-small)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-dropzone-icon-size": {
+      "value": "32px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-dropzone-min-h": {
+      "value": "179px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-dropzone-pad": {
+      "value": "var(--space-regular)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-dropzone-radius": {
+      "value": "var(--radius-base)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-enabled-bg": {
+      "value": "var(--color-bg-container-on-light-low, #f5f7f9)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-enabled-border": {
+      "value": "var(--color-outline-on-light-state-info-high, #00538a)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-enabled-icon": {
+      "value": "var(--color-icon-on-light-link-enabled, #004370)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-error-accent": {
+      "value": "var(--color-text-on-light-state-error, #9d161d)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-error-bg": {
+      "value": "var(--color-bg-container-state-error-low, #fdf2f2)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-error-border": {
+      "value": "var(--color-outline-on-light-state-error-high, #9d161d)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-focus": {
+      "value": "var(--color-domain-interactive-focused, #0071bc)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-helper-color": {
+      "value": "var(--color-text-on-light-subdued)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-helper-gap": {
+      "value": "var(--space-tiny)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-helper-size": {
+      "value": "var(--loop-field-helper-size, 12px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-helper-tracking": {
+      "value": "0.5px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-gap": {
+      "value": "var(--loop-field-gap, 8px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-icon": {
+      "value": "20px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-pad-h": {
+      "value": "var(--loop-field-padding-inline, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-pad-v": {
+      "value": "var(--loop-field-padding-block, 18px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-placeholder": {
+      "value": "var(--color-text-on-light-subdued)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-input-radius": {
+      "value": "var(--loop-field-radius, 8px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-label-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-label-gap": {
+      "value": "var(--loop-field-label-gap, 6px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-label-leading": {
+      "value": "var(--loop-field-label-leading, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-label-size": {
+      "value": "var(--loop-field-label-size, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-label-weight": {
+      "value": "var(--loop-field-label-weight, 600)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-link-color": {
+      "value": "var(--color-text-on-light-link-primary-enabled)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-progress-fill": {
+      "value": "var(--color-bg-container-primary, #004370)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-progress-h": {
+      "value": "8px",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-progress-pct-size": {
+      "value": "var(--font-size-300, 16px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-progress-radius": {
+      "value": "var(--radius-pill, 32px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-progress-track": {
+      "value": "var(--color-bg-container-on-light-regular, #e7edf3)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-prompt-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-prompt-leading": {
+      "value": "1.5",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-prompt-size": {
+      "value": "var(--font-size-200, 14px)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-success-accent": {
+      "value": "var(--color-text-on-light-state-success, #388004)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-success-bg": {
+      "value": "var(--color-bg-container-state-success-low, #f6fef0)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-success-border": {
+      "value": "var(--color-outline-on-light-state-success-high, #388004)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-warning-accent": {
+      "value": "var(--color-text-on-light-state-warning, #473201)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-warning-bg": {
+      "value": "var(--color-domain-state-warning-low, #fef3d7)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --loop-upload-warning-border": {
+      "value": "var(--color-outline-on-light-state-warning-high, #896001)",
+      "file": "component-upload.css",
+      "kind": "component"
+    },
+    ":root --overlay-background": {
+      "value": "var(--color-gray-alpha-black-24)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --radius-base": {
+      "value": "4px",
+      "file": "radius.css",
+      "kind": "foundation"
+    },
+    ":root --radius-large": {
+      "value": "16px",
+      "file": "radius.css",
+      "kind": "foundation"
+    },
+    ":root --radius-medium": {
+      "value": "8px",
+      "file": "radius.css",
+      "kind": "foundation"
+    },
+    ":root --radius-pill": {
+      "value": "32px",
+      "file": "radius.css",
+      "kind": "foundation"
+    },
+    ":root --radius-xs": {
+      "value": "2px",
+      "file": "radius.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-color": {
+      "value": "#21262d29",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-high": {
+      "value": "0 5px 32px 0 var(--shadow-color)",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-l": {
+      "value": "var(--shadow-medium)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --shadow-low": {
+      "value": "0 2px 8px 0 var(--shadow-color)",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-lowest": {
+      "value": "0 0 8px 0 var(--shadow-color)",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-m": {
+      "value": "var(--shadow-regular)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --shadow-medium": {
+      "value": "0 8px 20px 0 var(--shadow-color)",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-regular": {
+      "value": "0 4px 12px 0 var(--shadow-color)",
+      "file": "shadows.css",
+      "kind": "foundation"
+    },
+    ":root --shadow-s": {
+      "value": "var(--shadow-low)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --shadow-xl": {
+      "value": "var(--shadow-high)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --shadow-xs": {
+      "value": "var(--shadow-lowest)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --side-menu-size": {
+      "value": "320px",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-100": {
+      "value": "8px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-200": {
+      "value": "16px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-500": {
+      "value": "40px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-base": {
+      "value": "var(--space-small)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-button-gap": {
+      "value": "6px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-checkbox-gap": {
+      "value": "8px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-checkbox-group-column": {
+      "value": "20px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-checkbox-group-row": {
+      "value": "14px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-huge": {
+      "value": "80px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-l": {
+      "value": "var(--space-medium)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-large": {
+      "value": "40px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-m": {
+      "value": "var(--space-regular)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-medium": {
+      "value": "32px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-none": {
+      "value": "0",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-regular": {
+      "value": "24px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-s": {
+      "value": "var(--space-xxsmall)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-small": {
+      "value": "16px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-tiny": {
+      "value": "4px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xhuge": {
+      "value": "96px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xl": {
+      "value": "var(--space-large)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-xlarge": {
+      "value": "48px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xs": {
+      "value": "var(--space-tiny)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-xsmall": {
+      "value": "12px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xtiny": {
+      "value": "2px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xxl": {
+      "value": "var(--space-xlarge)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    ":root --space-xxlarge": {
+      "value": "64px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --space-xxsmall": {
+      "value": "8px",
+      "file": "spacing.css",
+      "kind": "foundation"
+    },
+    ":root --text-color-neutral-10": {
+      "value": "var(--color-neutral-95)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
+    "body.phone --font-size-1000": {
+      "value": "32px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-1100": {
+      "value": "36px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-1200": {
+      "value": "40px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-700": {
+      "value": "24px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-800": {
+      "value": "24px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-900": {
+      "value": "28px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.phone --font-size-huge-72": {
+      "value": "48px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-1000": {
+      "value": "36px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-1100": {
+      "value": "40px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-1200": {
+      "value": "48px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-700": {
+      "value": "28px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-800": {
+      "value": "28px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-900": {
+      "value": "32px",
+      "file": "typography.css",
+      "kind": "foundation"
+    },
+    "body.tablet --font-size-huge-72": {
+      "value": "60px",
+      "file": "typography.css",
+      "kind": "foundation"
+    }
+  }
+}

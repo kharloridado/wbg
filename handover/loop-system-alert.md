@@ -492,7 +492,7 @@ Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported
 Web Component <loop-system-alert> for the WBG "The Loop" design system.
 
 Context (already done manually — do NOT re-create or edit these):
-- dist/theme.css and any block CSS are already pasted into the ODC Theme editor.
+- dist/tokens.css, dist/theme.css and any block CSS are already pasted into the ODC Theme editor.
 - loop-system-alert.js is already imported as a Script resource (Theme/Library), Include = Always. It defines the custom element <loop-system-alert>.
 - Do NOT write CSS, author/modify JavaScript, or edit the Theme. Your job is only the
   Block, its inputs/events, the attribute bindings, the event wiring, and any Client

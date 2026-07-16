@@ -100,6 +100,19 @@
   color: var(--loop-table-text, #000d1ab2);
 }
 
+/* ===== 3aa) Header separators — no trailing line after the last column =====
+ * AG's injected Quartz CSS paints the inset header separator via
+ * `.ag-header-cell::after { border-right: var(--ag-header-column-border) }` on
+ * EVERY header cell — including the rightmost, which leaves a stray separator
+ * hanging at the grid's right edge (Figma draws separators only BETWEEN columns).
+ * AG tags the real last column with `.ag-column-last` (that class travels with the
+ * true last column, not the last *rendered* one, so this survives AG's column
+ * virtualisation where a `:last-child` selector would wrongly drop a mid-grid
+ * separator). Suppress its separator only. Verified live 2026-07-16. */
+.ag-grid__wrapper .ag-header-cell.ag-column-last::after {
+  display: none;
+}
+
 /* ===== 3) Sort-icon clearance =====
  * Port of the 2026-07-14 brand-owner request from loop-table.css: 4px + the 12px
  * cell padding = 16px effective clearance when the sort icon abuts the right edge
@@ -212,6 +225,11 @@
  * as the tertiary -loop button (link tone), read vertically. AG already orients
  * the button vertically; we only set the tone + type. */
 .ag-grid__wrapper .ag-side-button-button {
+  /* Figma side tab: 48px rail width, 12px horizontal padding (AG defaults to a
+   * ~34px-wide button with 8px h-padding). Vertical padding is AG's own. */
+  width: var(--space-xlarge, 48px);
+  padding-left: var(--loop-table-sidebtn-pad-x, 12px);
+  padding-right: var(--loop-table-sidebtn-pad-x, 12px);
   color: var(--loop-table-sidebtn-text, #004370);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-table-sidebtn-font-size, 14px);
@@ -292,4 +310,27 @@
 }
 .loop-ag-grid--zebra .ag-row-odd {
   background-color: var(--loop-table-row-bg-striped, #f5f7f9);
+}
+
+/* ===== 10) Row-number index column (AG built-in `rowNumbers`) =====
+ * Turned on by `rowNumbers: true` in the grid-options delta (Community, v33.1+).
+ * AG pins the row-number column down the left edge and, under the §1 params, ALREADY
+ * renders it as the Figma index column — 60px wide, Low `#f5f7f9` fill, right-aligned
+ * `#000d1ab2` numbers, with the pinned 1px right divider (`--ag-pinned-column-border`)
+ * and the gray header fill all inherited. The ONE deviation is weight: AG styles the
+ * numbers header-bold (700); the Figma index numbers are regular. Drop them to 400 and
+ * give them tabular figures so the digits align (matches the §4 numeric-cell treatment).
+ * Header cell is empty (no label) per Figma, so it needs no rule. Inert on grids that
+ * don't enable rowNumbers (the DOM node is simply absent). Verified live 2026-07-16. */
+.ag-grid__wrapper .ag-row-number-cell {
+  font-weight: var(--font-weight-regular, 400);
+  font-variant-numeric: tabular-nums;
+}
+/* The row-number HEADER doubles its divider: the 1px pinned column border (which
+ * the body cells also carry, `--ag-pinned-column-border`) PLUS the generic 2px
+ * inset `::after` header separator every header cell gets (§1). That reads as a
+ * thick/doubled line against the body's single 1px. Drop the header's `::after`
+ * so the index column shows one clean 1px divider, header and body matching. */
+.ag-grid__wrapper .ag-row-number-header::after {
+  display: none;
 }

@@ -19,8 +19,13 @@
   /* ---- Clear (×) — Filled state ---- */
   --loop-search-clear-glyph: 16px;                              /* × glyph box (14px at Small) */
   --loop-search-clear-color: var(--color-icon-on-light-default);      /* neutral-60 */
-  /* FA 6 Pro xmark (regular) outline as a MASK — ::-webkit-search-cancel-button is a native
-     pseudo-element that can't render font glyphs, so the FA shape travels as its vector path
-     (from vendor/fontawesome-6/metadata/icons.json) instead of a codepoint. */
-  --loop-search-clear-icon:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath d='M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z'/%3E%3C/svg%3E");
+  /* × drawn as two crossed linear-gradient MASK layers (full mask value: layer + position/size
+     travel together in this token). ::-webkit-search-cancel-button is a native pseudo-element
+     that can't render font glyphs, and a data-URI SVG mask trips OutSystems' offline-behavior
+     warning (url() the platform can't resolve to a module resource) — so the shape is pure CSS:
+     two 1.6px diagonal bars sized to 62.5% of the glyph box (10px of 16 — the footprint the FA
+     xmark path occupied), coloured by --loop-search-clear-color through the mask. */
+  --loop-search-clear-icon:
+    linear-gradient(45deg,  transparent calc(50% - 0.8px), #000 calc(50% - 0.8px), #000 calc(50% + 0.8px), transparent calc(50% + 0.8px)) center / 62.5% 62.5% no-repeat,
+    linear-gradient(135deg, transparent calc(50% - 0.8px), #000 calc(50% - 0.8px), #000 calc(50% + 0.8px), transparent calc(50% + 0.8px)) center / 62.5% 62.5% no-repeat;
 }

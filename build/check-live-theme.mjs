@@ -3,8 +3,9 @@
  *
  * The theme is hand-pasted into the ODC Theme editor, so the live environment can
  * drift from the repo (stale paste after token changes, or edits made directly in
- * ODC). This script fetches the live compiled CSS, rebuilds dist/theme.css from
- * tokens/, normalizes both sides, and reports the difference. Run by the daily
+ * ODC). This script fetches the live compiled CSS, rebuilds the two pastes
+ * (dist/tokens.css + dist/theme.css) from tokens/, normalizes both sides, and
+ * reports the difference. Run by the daily
  * "live-theme drift check" cloud Routine (see loop/ROUTINES.md §4).
  *
  * Normalization — both sides, so none of these read as drift:
@@ -307,7 +308,7 @@ function report({ liveUrl, via, liveStamp, localStamp, tokens, rules }) {
     (r) => `- \`${clip(r.sel)}\`\n  - live: \`${clip(r.live)}\`\n  - repo: \`${clip(r.local)}\``);
   if (count > 0) {
     lines.push("", "## Remediation", "");
-    lines.push("- Live stale → `npm run build:theme:ship`, paste `dist/theme.css` into the ODC Theme editor, republish.");
+    lines.push("- Live stale → `npm run build:theme:ship`, paste `dist/tokens.css` (tokens theme) + `dist/theme.css` (classes/overrides) into the ODC Theme editor, republish.");
     lines.push("- Live edited directly in ODC on purpose → port the change back into `tokens/` / `src/blocks/` so the repo stays the source of truth.");
   }
   return { text: lines.join("\n"), count };
@@ -335,7 +336,14 @@ async function main() {
       stdio: ["ignore", "inherit", "inherit"],
     });
     if (build.status !== 0) throw new Error("npm run build:theme failed — cannot compare");
-    localRaw = readFileSync(join(root, "dist", "theme.css"), "utf8");
+    // Two-paste split (2026-07-16): the live ODC bundle compiles BOTH pastes into
+    // one CSS file, so the local side is dist/tokens.css + dist/theme.css concatenated
+    // (tokens first — same order as the pastes). Comparison is structural, so the
+    // concatenation point itself never reads as drift.
+    localRaw =
+      readFileSync(join(root, "dist", "tokens.css"), "utf8") +
+      "\n" +
+      readFileSync(join(root, "dist", "theme.css"), "utf8");
   }
 
   const normalize = (css) => canonicalize(neutralizeUrls(stripAllComments(css)));

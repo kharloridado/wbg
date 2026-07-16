@@ -21,7 +21,7 @@ body:
       description: >-
         Paste the verbatim JS/CSS the developer copies into ODC, each in a collapsed
         <details> block with the source path in the summary. Tokens travel via
-        dist/theme.css (its own paste) so don't duplicate them here. The ticket must
+        dist/tokens.css (its own paste) so don't duplicate them here. The ticket must
         CONTAIN the code — not just point at a repo path.
       placeholder: |
         <details>

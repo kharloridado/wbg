@@ -8,9 +8,9 @@ Figma: `-The Loop- Main Library (2)` · "AG Grid" [node 25983-72091] · frozen r
 
 **Approach.** Two paste-in artifacts, no Web Component:
 1. **Grid options** (`loop-ag-grid-enterprise.grid-options.js`) — the *behaviour*: turns on
-   `sideBar` (Columns + Filters tool panels), `rowGroupPanelShow`, per-column filters, and
-   keeps columns movable. Plain JSON-serialisable data merged into the `AGGrid_Lib` grid
-   config.
+   `sideBar` (Columns + Filters tool panels), `rowGroupPanelShow`, a left-edge **row-number
+   index column** (`rowNumbers`), per-column filters, and keeps columns movable. Plain
+   JSON-serialisable data merged into the `AGGrid_Lib` grid config.
 2. **Restyle** (`loop-ag-grid.css` §7/§8) — the *look*: skins AG's native Enterprise DOM
    (row-group panel, side bar, side buttons, tool panels, filter inputs) to the Figma, via
    the v33 Theming-API params + `.ag-*` overrides won by specificity (no `!important`).
@@ -115,6 +115,7 @@ production go-live.
 | **Filters panel** | Enterprise | `sideBar` → `agFiltersToolPanel`; per-column filters + search | Open the **Filters** tab in the right rail |
 | **Row-group panel** | Enterprise | `rowGroupPanelShow: 'always'` + `enableRowGroup` on columns | Drag a column into the top strip to group |
 | **Per-column filters** | Community | `defaultColDef.filter: true` (floating filter off by default, matching the Figma Default variant) | Filters appear in the Filters panel / column menu |
+| **Row-number index column** | Community (v33.1+) | `rowNumbers: true` — pinned left, auto-renumbers on sort/filter/scroll. **⚠ initial-only** (must be in the grid options *before* `createGrid`, not set via `AgGridAPI` in OnReady) | A 60px left column shows 1, 2, 3…; restyled by `loop-ag-grid.css` §10 |
 
 **Applying the grid options.** Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the options
 `AGGrid_Lib` passes to `createGrid` — either via the block's GridOptions/advanced-config input,
@@ -122,6 +123,13 @@ or in the grid's OnReady using the exposed `window.AgGridAPI` (e.g. `AgGridAPI.s
 / `updateGridOptions(...)`). It carries no functions, so it can equally be pasted as a JSON
 config string. **Do not** set an AG `theme` object — the look comes entirely from the CSS +
 `dist/theme.css`.
+
+> **⚠ `rowNumbers` is initial-only.** `sideBar`, `rowGroupPanelShow` and `defaultColDef`
+> can be applied in OnReady via `AgGridAPI`, but `rowNumbers` is read once at `createGrid` —
+> a later `AgGridAPI.setGridOption("rowNumbers", true)` is silently ignored (verified live
+> 2026-07-16). So the row-number column **must** go through the GridOptions/advanced-config
+> input (merged before the grid is created). If the screen can only reach the grid in OnReady,
+> the other options still apply there; row numbers need the pre-`createGrid` path.
 
 **Numbered pager.** AG's own paging panel keeps its arrow/"x to y of z" DOM. The Figma's
 numbered pager is the separate Loop Pagination component (`src/components/loop-ag-grid-pagination.js`
@@ -302,6 +310,19 @@ Gotchas:
   color: var(--loop-table-text, #000d1ab2);
 }
 
+/* ===== 3aa) Header separators — no trailing line after the last column =====
+ * AG's injected Quartz CSS paints the inset header separator via
+ * `.ag-header-cell::after { border-right: var(--ag-header-column-border) }` on
+ * EVERY header cell — including the rightmost, which leaves a stray separator
+ * hanging at the grid's right edge (Figma draws separators only BETWEEN columns).
+ * AG tags the real last column with `.ag-column-last` (that class travels with the
+ * true last column, not the last *rendered* one, so this survives AG's column
+ * virtualisation where a `:last-child` selector would wrongly drop a mid-grid
+ * separator). Suppress its separator only. Verified live 2026-07-16. */
+.ag-grid__wrapper .ag-header-cell.ag-column-last::after {
+  display: none;
+}
+
 /* ===== 3) Sort-icon clearance =====
  * Port of the 2026-07-14 brand-owner request from loop-table.css: 4px + the 12px
  * cell padding = 16px effective clearance when the sort icon abuts the right edge
@@ -414,6 +435,11 @@ Gotchas:
  * as the tertiary -loop button (link tone), read vertically. AG already orients
  * the button vertically; we only set the tone + type. */
 .ag-grid__wrapper .ag-side-button-button {
+  /* Figma side tab: 48px rail width, 12px horizontal padding (AG defaults to a
+   * ~34px-wide button with 8px h-padding). Vertical padding is AG's own. */
+  width: var(--space-xlarge, 48px);
+  padding-left: var(--loop-table-sidebtn-pad-x, 12px);
+  padding-right: var(--loop-table-sidebtn-pad-x, 12px);
   color: var(--loop-table-sidebtn-text, #004370);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-table-sidebtn-font-size, 14px);
@@ -495,6 +521,29 @@ Gotchas:
 .loop-ag-grid--zebra .ag-row-odd {
   background-color: var(--loop-table-row-bg-striped, #f5f7f9);
 }
+
+/* ===== 10) Row-number index column (AG built-in `rowNumbers`) =====
+ * Turned on by `rowNumbers: true` in the grid-options delta (Community, v33.1+).
+ * AG pins the row-number column down the left edge and, under the §1 params, ALREADY
+ * renders it as the Figma index column — 60px wide, Low `#f5f7f9` fill, right-aligned
+ * `#000d1ab2` numbers, with the pinned 1px right divider (`--ag-pinned-column-border`)
+ * and the gray header fill all inherited. The ONE deviation is weight: AG styles the
+ * numbers header-bold (700); the Figma index numbers are regular. Drop them to 400 and
+ * give them tabular figures so the digits align (matches the §4 numeric-cell treatment).
+ * Header cell is empty (no label) per Figma, so it needs no rule. Inert on grids that
+ * don't enable rowNumbers (the DOM node is simply absent). Verified live 2026-07-16. */
+.ag-grid__wrapper .ag-row-number-cell {
+  font-weight: var(--font-weight-regular, 400);
+  font-variant-numeric: tabular-nums;
+}
+/* The row-number HEADER doubles its divider: the 1px pinned column border (which
+ * the body cells also carry, `--ag-pinned-column-border`) PLUS the generic 2px
+ * inset `::after` header separator every header cell gets (§1). That reads as a
+ * thick/doubled line against the body's single 1px. Drop the header's `::after`
+ * so the index column shows one clean 1px divider, header and body matching. */
+.ag-grid__wrapper .ag-row-number-header::after {
+  display: none;
+}
 ```
 
 </details>
@@ -517,6 +566,7 @@ Gotchas:
    │    by default, matching the Figma Default variant). ENTERPRISE.              │
    │ 3. "Drag here to set row groups" panel across the top. ENTERPRISE.           │
    │ 4. Per-column filters (surfaced by the Filters tool panel). COMMUNITY.       │
+   │ 5. Row-number index column down the left edge. COMMUNITY (v33.1+).           │
    └────────────────────────────────────────────────────────────────────────────┘
 
    ══ PREREQUISITES (platform work, done ONCE INSIDE the AGGrid_Lib library) ═════
@@ -556,6 +606,14 @@ Gotchas:
    OnReady handler with AgGridAPI). It is plain JSON-serialisable data — no
    functions — so it can equally be pasted as a JSON config string.
 
+   ⚠ `rowNumbers` is INITIAL-ONLY. `sideBar` / `rowGroupPanelShow` / `defaultColDef`
+   are dynamic (settable in OnReady via AgGridAPI.setGridOption). `rowNumbers` is NOT:
+   AG reads it at createGrid time, so it renders ONLY when merged into the grid
+   options BEFORE the grid is created (the GridOptions input) — a later
+   AgGridAPI.setGridOption("rowNumbers", true) is silently ignored (verified live
+   2026-07-16). If you can only reach the grid in OnReady, the other three still
+   apply there; row numbers need the pre-createGrid path.
+
    NOTE — styling lives in CSS, not here. Do NOT set an AG `theme` object; the look
    comes entirely from loop-ag-grid.css + dist/theme.css (Theming API params +
    `.ag-*` overrides). Icon keys below (`columns`, `filter`) select AG's built-in
@@ -563,6 +621,15 @@ Gotchas:
 ============================================================================ */
 
 export const LOOP_AG_GRID_ENTERPRISE_OPTIONS = {
+  /* 5) Row-number index column — AG's built-in row numbers, pinned down the left
+   *    edge (Figma "columnNumbers"). COMMUNITY, v33.1+ (needs RowNumbersModule,
+   *    which ships inside AllCommunityModule, so it's already registered wherever
+   *    the community grid runs). ⚠ INITIAL-ONLY: must be present at createGrid — see
+   *    the HOW TO APPLY note. Renumbers automatically on sort/filter/scroll.
+   *    The Figma index look (60px, Low #f5f7f9 fill, right-aligned #000d1ab2, pinned
+   *    1px right divider) comes from loop-ag-grid.css §1 + §10 — nothing to set here. */
+  rowNumbers: true,
+
   /* 3) Row-group panel — the "Drag here to set row groups" strip (Enterprise). */
   rowGroupPanelShow: "always",
 
@@ -638,7 +705,8 @@ if (typeof window !== "undefined") {
 | `columnsToolPanel` | `agColumnsToolPanel` | expanded Columns panel (250px) |
 | `filtersToolPanel` | `agFiltersToolPanel` | expanded Filters panel |
 | `floatingFilter` | `defaultColDef.floatingFilter` | **false** in the Default variant; flip per-column to show the search row |
-| `columnNumbers` / `columnCheckbox` | (row-number / selection columns) | governed by column defs, not this options delta |
+| `columnNumbers` | `rowNumbers: true` | AG's built-in left-edge row-number index column (Community v33.1+); restyled to the Figma index look by `loop-ag-grid.css` §10. **Initial-only** — set before `createGrid` |
+| `columnCheckbox` | (selection column) | governed by `rowSelection` / column defs, not this options delta |
 
 ## What the restyle changes vs AG Quartz baseline
 - **Clean header per Figma** — hides the per-column **filter button** (`.ag-header-cell-filter-button`,
@@ -658,6 +726,11 @@ if (typeof window !== "undefined") {
   inherit the Loop accent `#004370` from the `--ag-checkbox-*` params (§1).
 - **Filter inputs** (`.ag-floating-filter-input`, `.ag-filter-toolpanel-search`,
   `.ag-mini-filter`): the Loop text field — white fill, `outline/default` 1px, 8px radius.
+- **Row-number index column** (`.ag-row-number-cell`, §10): AG's built-in `rowNumbers` column
+  already lands on the Figma index look from the §1 params (60px, Low `#f5f7f9` fill,
+  right-aligned `#000d1ab2`, pinned 1px right divider); §10 only drops the numbers from AG's
+  header-bold 700 to regular **400** + `tabular-nums` to match the design. Inert unless
+  `rowNumbers` is enabled.
 - Every rule is scoped under `.ag-grid__wrapper` and inert on Community.
 
 ## Build in ODC with Mentor Studio
@@ -708,8 +781,8 @@ Enterprise-bundle prerequisite as blocking for the rail + row-group panel.
 - [ ] **Platform (blocking):** point `AGGrid_Lib` at the AG Grid **Enterprise** v33 bundle, install the licence key, register the Enterprise modules (see Prerequisites).
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-table-*` side-rail/tool-panel tokens).
 - [ ] Paste `loop-ag-grid.css` into Theme CSS, **below** OutSystems UI.
-- [ ] Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the `AGGrid_Lib` grid options (block GridOptions input, or `AgGridAPI` in OnReady).
-- [ ] 1-Click Publish → validate in a **real browser**: right rail shows **Columns** + **Filters** tabs, both expand to 250px Loop-styled panels; the top strip reads "Drag here to set row groups"; dragging a header reorders columns.
+- [ ] Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the `AGGrid_Lib` grid options (block GridOptions input, or `AgGridAPI` in OnReady). **`rowNumbers` must go through the pre-`createGrid` GridOptions input** — it is ignored if set in OnReady.
+- [ ] 1-Click Publish → validate in a **real browser**: a 60px **row-number column** (1, 2, 3…) is pinned at the left edge and renumbers on sort/filter; the right rail shows **Columns** + **Filters** tabs, both expand to 250px Loop-styled panels; the top strip reads "Drag here to set row groups"; dragging a header reorders columns.
 - [ ] Confirm column drag-reorder + Filters work even before the Enterprise swap (Community capabilities).
 
 ## Findings linked to this work

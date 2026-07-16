@@ -312,7 +312,7 @@ FND-030 (selected-state colors inferred). See `findings/findings-register.md`.
 Goal: In ODC Studio, apply the WBG "The Loop" styling for Tag to the native
 OutSystems UI widget(s) it restyles.
 
-Context (already done): loop-tag.css and dist/theme.css are already pasted into the ODC
+Context (already done): loop-tag.css, dist/tokens.css and dist/theme.css are already pasted into the ODC
 Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
 you to style, and you must not write or edit CSS.
 

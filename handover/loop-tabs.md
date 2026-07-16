@@ -214,7 +214,7 @@ the active label darkens to emphasis; hover darkens and shows a 2px underline.
 Goal: In ODC Studio, apply the WBG "The Loop" styling for Tabs to the native
 OutSystems UI widget(s) it restyles.
 
-Context (already done): loop-tabs.css and dist/theme.css are already pasted into the ODC
+Context (already done): loop-tabs.css, dist/tokens.css and dist/theme.css are already pasted into the ODC
 Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
 you to style, and you must not write or edit CSS.
 

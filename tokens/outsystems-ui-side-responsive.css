@@ -56,9 +56,13 @@
  *                       already toggles .menu-visible on click — no custom JS).
  *   · .loop-nav-toggle— an ExtendedClass we put on the desktop collapse button that
  *                       lives inside the docked panel's nav header.
- * The glyph is a masked inline SVG (the house pattern for native-widget restyles —
- * cf. loop-search — so it needs no icon webfont and --color-icon-on-light-default
- * drives its fill). */
+ * The glyph is the Figma-exported `sidebar` vector, masked from an SVG that ships as
+ * an ODC Theme RESOURCE (`loop-icon-sidebar.svg`, source: src/assets/) — the literal
+ * /TheLoopTheme/ path is rewritten by ODC to the fingerprinted resource URL at compile
+ * time, exactly like the @font-face woff2 srcs (do NOT "fix" the path). A resolvable
+ * module resource keeps OutSystems' offline-behavior warning away (a data-URI here
+ * trips it), and the FA `fa-sidebar` glyph tried in between was visibly different from
+ * the Figma asset. currentColor drives the fill via the mask. */
 .layout-side .menu-icon,
 .layout-side .loop-nav-toggle {
   align-items: center;
@@ -88,10 +92,10 @@
   -webkit-mask: var(--loop-side-toggle-icon) center / contain no-repeat;
           mask: var(--loop-side-toggle-icon) center / contain no-repeat;
 }
-/* The `sidebar` glyph: a rounded panel with a divided, filled left column. */
+/* The `sidebar` glyph: a rounded panel with a divided left column (1.6px stroke). */
 .layout-side {
   --loop-side-toggle-icon-size: 20px;   /* parity with the menu-item leading icon */
-  --loop-side-toggle-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2.5' y='3.5' width='15' height='13' rx='2.5'/%3E%3Cline x1='8' y1='3.5' x2='8' y2='16.5'/%3E%3C/svg%3E");
+  --loop-side-toggle-icon: url("/TheLoopTheme/loop-icon-sidebar.svg");  /* ODC Theme resource — path rewritten at compile time */
 }
 /* Hover / focus affordance — a subtle neutral pill (matches the menu-item hover). */
 .layout-side .menu-icon:hover,
