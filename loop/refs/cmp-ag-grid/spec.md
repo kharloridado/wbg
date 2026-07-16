@@ -39,19 +39,51 @@
 | Floating filter row | 56px, hidden by default (`floatingFilter=false`); per-column `-loop text field` (search icon + placeholder) | cross-ref cmp-field |
 | V-scrollbar | 8px wide, 56px header spacer above the thumb track, thumb `#bdccdb` rounded | `loop/scroll-bar/height`, `Background/Container/On Light/High` |
 | H-scrollbar | 8px tall, same thumb | same |
-| Pagination footer | the Loop Pagination component (cmp-pagination; `.loop-pagination--small` documented "Used in AG-grid dashboard apps") | cross-ref cmp-pagination |
+| Pagination footer | the Loop Pagination component (cmp-pagination; `.loop-pagination--large` documented "Used in AG-grid dashboard apps") | cross-ref cmp-pagination |
 | Default variant props | groupingPanel=true, pagination=true, columnsFilters=true (side rail), columnNumbers=true, columnCheckbox=false, floatingFilter=false, h/vScrollbar=true | — |
+
+## Interaction build — Columns/Filters rail + row-group panel + drag-drop (decided 2026-07-15)
+
+User goal (2026-07-15): make the grid interactions real — **column drag-and-drop reorder**,
+the **Columns/Filters side rail** with tool panels, the **"Drag here to set row groups"**
+panel, and **per-column filters** — using AG Grid's own APIs, feasible for OutSystems. Decision:
+**target AG Grid Enterprise** (1:1 with the Figma), delivered as grid-config + CSS restyle.
+
+- **Delivery = two paste-in artifacts, no Web Component:**
+  - `src/blocks/loop-ag-grid-enterprise.grid-options.js` — the behaviour:
+    `sideBar` (`agColumnsToolPanel` + `agFiltersToolPanel`, collapsed by default = Figma
+    Default variant), `rowGroupPanelShow:'always'`, `defaultColDef` (`filter:true`,
+    `floatingFilter:false`, `enableRowGroup:true`), columns left movable.
+  - `src/blocks/loop-ag-grid.css` §7/§8 — the look: active restyle of AG's Enterprise DOM.
+- **Live-demo probe (2026-07-15, Chrome):** `window.AgGridAPI` is the live Grid API instance
+  (`getColumnState`/`applyColumnState`, `setColumnsVisible`, `moveColumns`,
+  `getColumnFilterInstance`, `setFilterModel`, `updateGridOptions`/`setGridOption`). Column
+  drag-reorder already works — `suppressMovableColumns:false`, all columns `movable:true`.
+  `LicenseManager:false`, `columnsToolPanel` module NOT registered → Community, no Enterprise.
+- **Side-rail values (get_variable_defs on 25983:72496, 2026-07-15):** collapsed tabs are the
+  tertiary `-loop button` read vertically — label + icon `#004370` (Text/Icon On Light/Primary),
+  Open Sans **Bold 14**, letter-spacing -0.5px; Columns icon = table-layout, Filters icon =
+  funnel. Tool panel = **250px**, bg Low `#f5f7f9`, left edge Outline/On Light/Default `#00396b3d`,
+  padding px 8 (xxsmall) / py 12 (xsmall). Row-group panel: Low fill, 1px subdued bottom divider,
+  Open Sans 400 14/1.5 `#000d1ab2`, 16px icon `#4b5e71`. Tokens added to `component-table.css`
+  (`--loop-table-sidebar-border`, `--loop-table-toolpanel-*`, `--loop-table-sidebtn-*`).
+- **Platform dependency (blocking for rail + row-group panel):** the deployed `AGGrid_Lib` is
+  Community v33; `sideBar`/`rowGroupPanelShow` are silently ignored until WBG swaps to the
+  Enterprise bundle + licence + module registration. Tracked as **FND-074** and unmissable in
+  the handover. The CSS is inert on Community (target nodes absent). Column drag-reorder +
+  per-column filters are Community and work regardless. **Runtime verification of the rail +
+  row-group panel is deferred until the Enterprise bundle is provisioned** — re-probe the demo
+  then to confirm render + restyle and close FND-074.
 
 ## Scope rulings (fidelity-first, decided 2026-07-15)
 
-- **Grouping panel + Columns/Filters side rail are AG Grid Enterprise features.**
-  Community v33 cannot render them; the demo never shows them. Style hooks ship
-  (commented Enterprise-only) so they inherit the look if the lib upgrades. This is a
-  platform-capability scope note, NOT a design finding.
+- **Grouping panel + Columns/Filters side rail are AG Grid Enterprise features.** Community v33
+  cannot render them. Superseded by the interaction build above (Enterprise now the target); the
+  §7 CSS is an active restyle, and the capability gap is filed as FND-074.
 - **AG's native paging panel** has a different DOM than the design's numbered pager
   (arrows + "x to y of z" — no page-number buttons). It gets a token-faithful restyle of
   its native structure; the handover recommends the OSUI Pagination widget
-  (`.loop-pagination--small`) under the grid for the true numbered look. Demo currently
+  (`.loop-pagination--large`) under the grid for the true numbered look. Demo currently
   hides the panel anyway.
 - IBM-Plex-Mono numeric cells → Open Sans + `tabular-nums` (existing brand-owner ruling
   + already-filed finding from cmp-table — do not re-file).

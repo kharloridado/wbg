@@ -16,7 +16,9 @@
  * A MAP entry is either `[[file, lang, dest], …]` (files only) or
  * `{ files: [[…]], mentor: { … } }` to override the auto-derived Mentor prompt with a
  * fully-filled one. When `mentor` is absent the prompt is derived from the artifact kind
- * (Web Component / native-widget restyle / Style-Guide reference).
+ * (Web Component / native-widget restyle / Style-Guide reference). A `mentor.prompt`
+ * string is used VERBATIM — the escape hatch for handovers that fit none of the three
+ * archetypes (e.g. a library-block config + restyle like AG Grid).
  *
  * Usage: node build/embed-handover-code.mjs */
 import { readFileSync, writeFileSync } from "node:fs";
@@ -110,7 +112,51 @@ const MAP = {
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tabs.md":            [["src/blocks/loop-tabs.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-table.md":           [["src/blocks/loop-table.css", "css", "Theme CSS — paste below OutSystems UI"]],
-  "loop-ag-grid.md":         [["src/blocks/loop-ag-grid.css", "css", "Theme CSS — paste below OutSystems UI (AG Grid v33 Theming API CSS is runtime-injected)"]],
+  "loop-ag-grid.md": {
+    files: [
+      ["src/blocks/loop-ag-grid.css", "css", "Theme CSS — paste below OutSystems UI"],
+      ["src/blocks/loop-ag-grid-enterprise.grid-options.js", "js", "Grid options — merge into the AGGrid_Lib grid config / apply via AgGridAPI in OnReady (NOT a Theme paste)"],
+    ],
+    mentor: {
+      kind: "config",
+      prompt: [
+        `Goal: In ODC Studio, enable the WBG "The Loop" AG Grid interactions (Columns/Filters`,
+        `side rail, "Drag here to set row groups" panel, per-column filters, column drag-reorder)`,
+        `on the screen/Block that uses the AGGrid_Lib grid. This is grid CONFIGURATION + wiring,`,
+        `not styling — the look is already handled by CSS.`,
+        ``,
+        `Context (already done manually — do NOT re-create or edit these):`,
+        `- dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor`,
+        `  (below OutSystems UI). The rail/panel look is pure CSS + var(--token) — do NOT write,`,
+        `  edit, or add CSS, and do NOT set an AG Grid \`theme\` object.`,
+        `- The grid-options delta LOOP_AG_GRID_ENTERPRISE_OPTIONS (from`,
+        `  loop-ag-grid-enterprise.grid-options.js, embedded in this handover) is the config to`,
+        `  apply. It is plain JSON-serialisable data: sideBar (agColumnsToolPanel + agFiltersToolPanel),`,
+        `  rowGroupPanelShow:'always', and a defaultColDef enabling filter + enableRowGroup while`,
+        `  keeping columns movable.`,
+        ``,
+        `Platform prerequisite (NOT your task — flag it, don't attempt it): the side rail and`,
+        `row-group panel are AG Grid ENTERPRISE features. They render only once AGGrid_Lib is on`,
+        `the Enterprise bundle with a licence key + the Enterprise modules registered. Until then,`,
+        `column drag-reorder and per-column filters still work; the rail/panel stay dark.`,
+        ``,
+        `Task — reference each element by the exact name:`,
+        `1. On the Block/screen hosting the AGGrid_Lib widget, apply LOOP_AG_GRID_ENTERPRISE_OPTIONS`,
+        `   to the grid — merge it into the block's GridOptions / advanced-config input if it exposes`,
+        `   one; otherwise add a "Run JavaScript" node in the grid's OnReady that calls`,
+        `   window.AgGridAPI.updateGridOptions(<the options object>) (or setGridOption per key).`,
+        `2. Ensure the column definitions the app passes carry filter:true and enableRowGroup:true`,
+        `   for the columns that should be filterable / groupable (defaultColDef already sets these`,
+        `   as the baseline — only override per-column where needed). Do NOT set suppressMovableColumns.`,
+        `3. Leave the numbered pager as-is — it is the separate Loop Pagination component under the`,
+        `   grid, not part of this config.`,
+        ``,
+        `Constraints: never edit the OutSystems UI module or the AGGrid_Lib library; add no CSS and`,
+        `no hard-coded style values. After applying, list what you changed by name and flag the`,
+        `Enterprise-bundle prerequisite as blocking for the rail + row-group panel.`,
+      ].join("\n"),
+    },
+  },
   "loop-ag-grid-pagination.md": {
     files: [
       ["src/blocks/loop-pagination.css", "css", "Theme CSS — paste below OutSystems UI (shared pagination block styles)"],
@@ -613,6 +659,9 @@ function refGeneric(block, tag, jsFile) {
 
 function mentorPrompt(md, entry) {
   const m = entry.mentor;
+  // Verbatim override — for handovers whose Mentor work fits none of the three
+  // archetypes (e.g. a library-block config + restyle like AG Grid).
+  if (m && typeof m.prompt === "string") return m.prompt.replace(/\s+$/, "");
   if (m && m.kind === "web-component") return wcFilled(m);
   if (m && m.kind === "block") return blockFilled(m);
 

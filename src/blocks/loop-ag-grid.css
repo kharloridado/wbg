@@ -16,9 +16,14 @@
      --color-*, --font-*, --space-*, --radius-*.
    Fidelity notes:
      · Flat edges per Figma — the Quartz wrapper border AND radius are reset.
-     · Grouping panel + Columns/Filters side rail are AG Grid ENTERPRISE features;
-       Community v33 (the demo) never renders them. Hooks ship below so they inherit
-       the look on an Enterprise upgrade — scope note, not a finding.
+     · Row-group panel ("Drag here to set row groups") + the Columns/Filters side
+       rail with its tool panels are AG Grid ENTERPRISE features (§7). They are now
+       an ACTIVE restyle (the design calls for them — decided 2026-07-15), driven by
+       the grid-options in src/blocks/loop-ag-grid-enterprise.grid-options.js. They
+       render only on the AG Grid ENTERPRISE bundle; the deployed AGGrid_Lib is
+       Community v33, so they stay dark until the bundle + licence are provisioned —
+       a platform dependency tracked as a finding, NOT a design change. Every rule
+       is inert in Community (its DOM nodes are simply absent).
      · AG's native paging panel keeps its own DOM (arrows + "x to y of z"); the
        design's numbered pager is the OSUI Pagination widget (.loop-pagination--large)
        placed below the grid — see the handover.
@@ -156,33 +161,109 @@
   cursor: pointer;
 }
 
-/* ===== 7) Grouping panel + side rail — ENTERPRISE-ONLY hooks =====
- * Community v33 (the demo) never renders these; they inherit the Figma look if
- * AGGrid_Lib moves to Enterprise. Grouping strip: Low fill, subdued bottom
- * divider, Open Sans 400 14, default icon tone. */
+/* ===== 7) ENTERPRISE chrome — row-group panel + Columns/Filters side rail =====
+ * Active restyle of AG Grid Enterprise DOM (row-group panel, side bar, tool
+ * panels), turned on by loop-ag-grid-enterprise.grid-options.js. Every rule is
+ * scoped under .ag-grid__wrapper so it wins on specificity (never !important) and
+ * is inert on Community, whose bundle never renders these nodes. Values mirror the
+ * Figma "AG Grid" component (node 25983-72091, ref loop/refs/cmp-ag-grid/). */
+
+/* 7a) Row-group panel — the "Drag here to set row groups" strip.
+ * Low fill, subdued bottom divider, Open Sans 400 14/1.5, default icon tone. */
+.ag-grid__wrapper .ag-column-drop-horizontal.ag-column-drop-row-group,
 .ag-grid__wrapper .ag-column-drop-horizontal {
   background-color: var(--loop-table-grouping-bg, #f5f7f9);
   border-bottom: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
   color: var(--loop-table-text, #000d1ab2);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-table-grouping-font-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
   line-height: var(--line-height-base, 1.5);
+}
+.ag-grid__wrapper .ag-column-drop-horizontal .ag-column-drop-empty-message {
+  color: var(--loop-table-text, #000d1ab2);
 }
 .ag-grid__wrapper .ag-column-drop-horizontal .ag-icon {
   color: var(--loop-table-grouping-icon, #4b5e71);
 }
-.ag-grid__wrapper .ag-side-bar {
-  background-color: var(--loop-table-header-bg, #f5f7f9);
-  border-left: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
+
+/* 7b) Side bar — the docked rail on the right. Low fill, outline-default left edge. */
+.ag-grid__wrapper .ag-side-bar,
+.ag-grid__wrapper .ag-side-bar-right {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  border-left: var(--border-size-s, 1px) solid var(--loop-table-sidebar-border, #00396b3d);
 }
-.ag-grid__wrapper .ag-side-buttons .ag-side-button-button {
-  color: var(--color-text-on-light-link-primary-enabled, #004370);
+.ag-grid__wrapper .ag-side-buttons {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
 }
 
-/* ===== 8) Floating filter — the design's per-column search field =====
- * Hidden in the Default variant (floatingFilter=false); minimal loop text-field
- * alignment for apps that enable it. */
-.ag-grid__wrapper .ag-floating-filter-input .ag-input-field-input {
+/* 7c) Side buttons — the collapsed "Columns" / "Filters" tabs. Figma styles them
+ * as the tertiary -loop button (link tone), read vertically. AG already orients
+ * the button vertically; we only set the tone + type. */
+.ag-grid__wrapper .ag-side-button-button {
+  color: var(--loop-table-sidebtn-text, #004370);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--letter-spacing-button, -0.5px);
+}
+.ag-grid__wrapper .ag-side-button-label {
+  color: var(--loop-table-sidebtn-text, #004370);
+}
+.ag-grid__wrapper .ag-side-button-icon-wrapper .ag-icon,
+.ag-grid__wrapper .ag-side-button .ag-icon {
+  color: var(--loop-table-sidebtn-icon, #004370);
+}
+/* Selected/open tab — keep the link tone, lift with the Lowest surface so the open
+ * panel reads continuous with its button (AG's default recolors off-palette). */
+.ag-grid__wrapper .ag-side-button.ag-selected .ag-side-button-button {
+  background-color: var(--loop-table-row-bg, #ffffff);
+  color: var(--loop-table-sidebtn-text, #004370);
+}
+
+/* 7d) Tool panels — the 250px expanded body behind a tab (Columns / Filters).
+ * Low fill, outline-default left edge, Figma padding. */
+.ag-grid__wrapper .ag-tool-panel-wrapper {
+  width: var(--loop-table-toolpanel-width, 250px);
+  padding: var(--loop-table-toolpanel-pad-y, 12px) var(--loop-table-toolpanel-pad-x, 8px);
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  border-left: var(--border-size-s, 1px) solid var(--loop-table-sidebar-border, #00396b3d);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+}
+/* Columns tool panel — the checkbox list of columns. The checkboxes inherit the
+ * Loop accent from the --ag-checkbox-* params set in §1. */
+.ag-grid__wrapper .ag-column-select,
+.ag-grid__wrapper .ag-column-select-list {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+}
+.ag-grid__wrapper .ag-column-select-column-label,
+.ag-grid__wrapper .ag-column-select-column-group-label {
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+}
+/* Filters tool panel — the search field + per-column filter list. */
+.ag-grid__wrapper .ag-filter-toolpanel,
+.ag-grid__wrapper .ag-filter-toolpanel-search {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  color: var(--loop-table-text, #000d1ab2);
+}
+.ag-grid__wrapper .ag-filter-toolpanel-group-title {
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* ===== 8) Text inputs in filters — the design's Loop text field =====
+ * Both the floating-filter row (per-column, hidden in the Default variant) and the
+ * Filters tool-panel search share AG's .ag-input-field-input; align both to the
+ * Loop text field (white fill, outline-default 1px, 8px radius). */
+.ag-grid__wrapper .ag-floating-filter-input .ag-input-field-input,
+.ag-grid__wrapper .ag-filter-toolpanel-search .ag-input-field-input,
+.ag-grid__wrapper .ag-mini-filter .ag-input-field-input {
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
   color: var(--loop-table-text, #000d1ab2);

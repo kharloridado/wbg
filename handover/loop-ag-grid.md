@@ -1,65 +1,109 @@
-# Handover — AG Grid (The Loop restyle of AGGrid_Lib Community v33)
+# Handover — AG Grid: Columns/Filters rail + row-group panel + drag-drop columns
 
-The Loop **AG Grid** styling, ready to add into OutSystems.
+Adds the Figma's grid interactions to the real AG Grid rendered by `AGGrid_Lib`:
+**column drag-and-drop reorder**, a docked **Columns / Filters side rail** (with tool
+panels), a **"Drag here to set row groups"** panel, and **per-column filters** — using
+AG Grid's own APIs, skinned to "The Loop".
 Figma: `-The Loop- Main Library (2)` · "AG Grid" [node 25983-72091] · frozen ref `loop/refs/cmp-ag-grid/`.
 
-**Approach:** A **restyle** of the real **AG Grid Community v33** instance rendered by the
-OutSystems `AGGrid_Lib` block (`.ag-grid__wrapper.ag-theme-quartz`). v33 ships no legacy
-theme stylesheet — its look is runtime-injected via the **Theming API** (`<style
-data-ag-global-css>`), so the override works in two layers: (1) `--ag-*` theme-param custom
-properties set on the wrapper, which the injected CSS consumes, and (2) direct `.ag-*` class
-rules for what the params can't express. Wins by **specificity** (wrapper-class prefix),
-never `!important`. Same pixel-verified core values as the native `.table` restyle (see
-`handover/loop-table.md`) re-expressed for AG's DOM — **styling only**, no AG Grid features
-added or removed.
+**Approach.** Two paste-in artifacts, no Web Component:
+1. **Grid options** (`loop-ag-grid-enterprise.grid-options.js`) — the *behaviour*: turns on
+   `sideBar` (Columns + Filters tool panels), `rowGroupPanelShow`, per-column filters, and
+   keeps columns movable. Plain JSON-serialisable data merged into the `AGGrid_Lib` grid
+   config.
+2. **Restyle** (`loop-ag-grid.css` §7/§8) — the *look*: skins AG's native Enterprise DOM
+   (row-group panel, side bar, side buttons, tool panels, filter inputs) to the Figma, via
+   the v33 Theming-API params + `.ag-*` overrides won by specificity (no `!important`).
 
-## When to use / How to use
+Column drag-reorder is a **Community** capability (already live on the demo — dragging a
+header reorders it). The side rail and row-group panel are **Enterprise** — see Prerequisites.
+
+> This handover extends the base **AG Grid restyle** (`loop-ag-grid.css`, already shipped) with
+> the interaction layer. The base-look usage (zebra, numeric columns, when-to-use) is below;
+> the new interactions follow.
+
+## When to use / How to use (base restyle)
 
 > **Live Style Guide doc** — short usage spec for the AG Grid page.
 
-**What it is.** The AG Grid data-grid surface at the Figma "AG Grid" look: Low `#f5f7f9`
-header with bold 16px labels and short inset column separators, white body rows with subdued
-1px dividers, 56px rows, 12/16px cell padding, flat edges (no outer border or radius) — the
-same visual language as the native Table restyle, applied to the real AG Grid library instead.
+**What it is.** The real AG Grid (`AGGrid_Lib`, Community v33) at the Figma "AG Grid" look:
+Low `#f5f7f9` header with bold 16px labels and short inset column separators, white body rows
+with subdued 1px dividers, 56px rows, 12/16px cell padding, flat edges — the same visual
+language as the native Table restyle, applied to the real AG Grid library.
 
 **When to use**
-- Any screen already using the OutSystems `AGGrid_Lib` block (real AG Grid Community v33) —
-  sorting, column resize, per-column filters, row selection, virtualized scrolling.
+- Any screen already using the OutSystems `AGGrid_Lib` block — sorting, column resize,
+  per-column filters, row selection, virtualized scrolling.
 - Reach for AG Grid over the native **Table** when the app needs AG Grid's own feature set
   (column tooling, large virtualized datasets); reach for the native **Table** restyle
-  (`loop-table.css`) when it doesn't — don't add AG Grid just for the look.
-
-**When not to use** (reach for instead)
-- Plain tabular records with no AG Grid dependency → the native **Table** restyle
-  (`handover/loop-table.md`).
-- Card-per-record layouts → **Card / Card Item**.
+  (`handover/loop-table.md`) when it doesn't — don't add AG Grid just for the look.
 
 **How to use**
-- Paste `loop-ag-grid.css` into the Theme CSS below OutSystems UI (see Files). No
-  ExtendedClass needed for the base look — it targets the AG Grid wrapper classes directly.
+- Paste `loop-ag-grid.css` into the Theme CSS below OutSystems UI (see Files). No ExtendedClass
+  needed for the base look — it targets the AG Grid wrapper classes directly.
 - **Zebra** → add `loop-ag-grid--zebra` to the block's wrapper element to fill even
   (`ag-row-odd`) rows with the Figma zebra tone.
 - **Numeric columns** → set the column's AG Grid `type: 'rightAligned'` (or add
-  `cellClass`/`headerClass` including `ag-right-aligned-cell` / `ag-right-aligned-header`) to
-  get right-aligned tabular figures.
-- **Pagination** → do not rely on AG's native paging panel for the Figma numbered-pager look;
-  see `handover/loop-ag-grid-pagination.md`.
+  `ag-right-aligned-cell` / `ag-right-aligned-header` via `cellClass`/`headerClass`) for
+  right-aligned tabular figures.
+- **Pagination** → don't rely on AG's native paging panel for the numbered-pager look; see
+  `handover/loop-ag-grid-pagination.md`.
+
+## ⚠ Prerequisites — AG Grid Enterprise (blocking for the rail + row-group panel)
+
+The live demo (`wbg-dev.outsystems.app/AGGridDemo`) loads AG Grid **Community v33**
+(`aggridcommunity_min_noStyle_v33`, `LicenseManager: false`). Community **silently ignores**
+`sideBar` and `rowGroupPanelShow`, so the side rail and the row-group panel **will not render**
+until the platform team, on the `AGGrid_Lib` library (a one-time change, outside this repo):
+
+1. **Swaps the bundle** to AG Grid **Enterprise** v33 (`aggridenterprise_*`) in place of the
+   community bundle.
+2. **Installs a licence key** at startup: `agGrid.LicenseManager.setLicenseKey("<WBG key>")`.
+3. **Registers the Enterprise modules** (v33 is modular):
+   `SideBarModule, ColumnsToolPanelModule, FiltersToolPanelModule, RowGroupingModule,
+   MenuModule, SetFilterModule`.
+
+Until (1)–(3) exist: **column drag-reorder and per-column filters still work** (Community);
+the **rail + row-group panel stay dark**. This dependency is tracked as **FND-074** (see below).
+The CSS is inert on Community — its target nodes are simply absent, so it is safe to paste now.
+
+## Capabilities & how to use
+
+| Capability | AG tier | How it's delivered | Verify |
+|---|---|---|---|
+| **Column drag-reorder** | Community | Movable columns are default-on; the grid options do **not** set `suppressMovableColumns` | Drag a header left/right — the column moves |
+| **Columns panel** (show/hide + reorder) | Enterprise | `sideBar` → `agColumnsToolPanel`; checkbox list toggles visibility, drag reorders | Open the **Columns** tab in the right rail |
+| **Filters panel** | Enterprise | `sideBar` → `agFiltersToolPanel`; per-column filters + search | Open the **Filters** tab in the right rail |
+| **Row-group panel** | Enterprise | `rowGroupPanelShow: 'always'` + `enableRowGroup` on columns | Drag a column into the top strip to group |
+| **Per-column filters** | Community | `defaultColDef.filter: true` (floating filter off by default, matching the Figma Default variant) | Filters appear in the Filters panel / column menu |
+
+**Applying the grid options.** Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the options
+`AGGrid_Lib` passes to `createGrid` — either via the block's GridOptions/advanced-config input,
+or in the grid's OnReady using the exposed `window.AgGridAPI` (e.g. `AgGridAPI.setGridOption(...)`
+/ `updateGridOptions(...)`). It carries no functions, so it can equally be pasted as a JSON
+config string. **Do not** set an AG `theme` object — the look comes entirely from the CSS +
+`dist/theme.css`.
+
+**Numbered pager.** AG's own paging panel keeps its arrow/"x to y of z" DOM. The Figma's
+numbered pager is the separate Loop Pagination component (`src/components/loop-ag-grid-pagination.js`
++ `.loop-pagination--large`) placed under the grid — unchanged by this handover.
 
 ## Files
 | File | OutSystems destination |
 |---|---|
-| `src/blocks/loop-ag-grid.css` | Theme CSS — paste below OutSystems UI (AG Grid v33 Theming API CSS is runtime-injected) |
-| `tokens/component-table.css` → `dist/theme.css` | Theme CSS (adds the `--loop-table-*` AG Grid chrome tokens — shared with the Table restyle) |
+| `src/blocks/loop-ag-grid.css` | Theme CSS (paste **below** OutSystems UI so it wins) |
+| `src/blocks/loop-ag-grid-enterprise.grid-options.js` | Grid config — merge into the `AGGrid_Lib` grid options (or apply via `AgGridAPI` in OnReady) |
+| `tokens/component-table.css` → `dist/theme.css` | Theme CSS (adds the `--loop-table-*` tokens the restyle consumes) |
 
-> Canonical CSS lives in `src/blocks/loop-ag-grid.css`; it is embedded into this ticket by
-> `node build/embed-handover-code.mjs` — re-run after editing the source to keep them in sync.
+> Canonical sources live in `src/blocks/`; they are embedded into this ticket by
+> `node build/embed-handover-code.mjs` — re-run after editing a source to keep them in sync.
 
 ## Code to paste into ODC
 
 > Copy the code below straight into ODC. The canonical source is the repo path in the summary — these blocks are generated from it (`node build/embed-handover-code.mjs`), so re-run after editing the source to keep the ticket in sync.
 
 <details>
-<summary><code>loop-ag-grid.css</code> → Theme CSS — paste below OutSystems UI (AG Grid v33 Theming API CSS is runtime-injected)</summary>
+<summary><code>loop-ag-grid.css</code> → Theme CSS — paste below OutSystems UI</summary>
 
 ```css
 /* ============================================
@@ -80,9 +124,14 @@ same visual language as the native Table restyle, applied to the real AG Grid li
      --color-*, --font-*, --space-*, --radius-*.
    Fidelity notes:
      · Flat edges per Figma — the Quartz wrapper border AND radius are reset.
-     · Grouping panel + Columns/Filters side rail are AG Grid ENTERPRISE features;
-       Community v33 (the demo) never renders them. Hooks ship below so they inherit
-       the look on an Enterprise upgrade — scope note, not a finding.
+     · Row-group panel ("Drag here to set row groups") + the Columns/Filters side
+       rail with its tool panels are AG Grid ENTERPRISE features (§7). They are now
+       an ACTIVE restyle (the design calls for them — decided 2026-07-15), driven by
+       the grid-options in src/blocks/loop-ag-grid-enterprise.grid-options.js. They
+       render only on the AG Grid ENTERPRISE bundle; the deployed AGGrid_Lib is
+       Community v33, so they stay dark until the bundle + licence are provisioned —
+       a platform dependency tracked as a finding, NOT a design change. Every rule
+       is inert in Community (its DOM nodes are simply absent).
      · AG's native paging panel keeps its own DOM (arrows + "x to y of z"); the
        design's numbered pager is the OSUI Pagination widget (.loop-pagination--large)
        placed below the grid — see the handover.
@@ -220,33 +269,109 @@ same visual language as the native Table restyle, applied to the real AG Grid li
   cursor: pointer;
 }
 
-/* ===== 7) Grouping panel + side rail — ENTERPRISE-ONLY hooks =====
- * Community v33 (the demo) never renders these; they inherit the Figma look if
- * AGGrid_Lib moves to Enterprise. Grouping strip: Low fill, subdued bottom
- * divider, Open Sans 400 14, default icon tone. */
+/* ===== 7) ENTERPRISE chrome — row-group panel + Columns/Filters side rail =====
+ * Active restyle of AG Grid Enterprise DOM (row-group panel, side bar, tool
+ * panels), turned on by loop-ag-grid-enterprise.grid-options.js. Every rule is
+ * scoped under .ag-grid__wrapper so it wins on specificity (never !important) and
+ * is inert on Community, whose bundle never renders these nodes. Values mirror the
+ * Figma "AG Grid" component (node 25983-72091, ref loop/refs/cmp-ag-grid/). */
+
+/* 7a) Row-group panel — the "Drag here to set row groups" strip.
+ * Low fill, subdued bottom divider, Open Sans 400 14/1.5, default icon tone. */
+.ag-grid__wrapper .ag-column-drop-horizontal.ag-column-drop-row-group,
 .ag-grid__wrapper .ag-column-drop-horizontal {
   background-color: var(--loop-table-grouping-bg, #f5f7f9);
   border-bottom: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
   color: var(--loop-table-text, #000d1ab2);
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-table-grouping-font-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
   line-height: var(--line-height-base, 1.5);
+}
+.ag-grid__wrapper .ag-column-drop-horizontal .ag-column-drop-empty-message {
+  color: var(--loop-table-text, #000d1ab2);
 }
 .ag-grid__wrapper .ag-column-drop-horizontal .ag-icon {
   color: var(--loop-table-grouping-icon, #4b5e71);
 }
-.ag-grid__wrapper .ag-side-bar {
-  background-color: var(--loop-table-header-bg, #f5f7f9);
-  border-left: var(--border-size-s, 1px) solid var(--loop-table-divider, #00396b14);
+
+/* 7b) Side bar — the docked rail on the right. Low fill, outline-default left edge. */
+.ag-grid__wrapper .ag-side-bar,
+.ag-grid__wrapper .ag-side-bar-right {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  border-left: var(--border-size-s, 1px) solid var(--loop-table-sidebar-border, #00396b3d);
 }
-.ag-grid__wrapper .ag-side-buttons .ag-side-button-button {
-  color: var(--color-text-on-light-link-primary-enabled, #004370);
+.ag-grid__wrapper .ag-side-buttons {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
 }
 
-/* ===== 8) Floating filter — the design's per-column search field =====
- * Hidden in the Default variant (floatingFilter=false); minimal loop text-field
- * alignment for apps that enable it. */
-.ag-grid__wrapper .ag-floating-filter-input .ag-input-field-input {
+/* 7c) Side buttons — the collapsed "Columns" / "Filters" tabs. Figma styles them
+ * as the tertiary -loop button (link tone), read vertically. AG already orients
+ * the button vertically; we only set the tone + type. */
+.ag-grid__wrapper .ag-side-button-button {
+  color: var(--loop-table-sidebtn-text, #004370);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--letter-spacing-button, -0.5px);
+}
+.ag-grid__wrapper .ag-side-button-label {
+  color: var(--loop-table-sidebtn-text, #004370);
+}
+.ag-grid__wrapper .ag-side-button-icon-wrapper .ag-icon,
+.ag-grid__wrapper .ag-side-button .ag-icon {
+  color: var(--loop-table-sidebtn-icon, #004370);
+}
+/* Selected/open tab — keep the link tone, lift with the Lowest surface so the open
+ * panel reads continuous with its button (AG's default recolors off-palette). */
+.ag-grid__wrapper .ag-side-button.ag-selected .ag-side-button-button {
+  background-color: var(--loop-table-row-bg, #ffffff);
+  color: var(--loop-table-sidebtn-text, #004370);
+}
+
+/* 7d) Tool panels — the 250px expanded body behind a tab (Columns / Filters).
+ * Low fill, outline-default left edge, Figma padding. */
+.ag-grid__wrapper .ag-tool-panel-wrapper {
+  width: var(--loop-table-toolpanel-width, 250px);
+  padding: var(--loop-table-toolpanel-pad-y, 12px) var(--loop-table-toolpanel-pad-x, 8px);
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  border-left: var(--border-size-s, 1px) solid var(--loop-table-sidebar-border, #00396b3d);
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+}
+/* Columns tool panel — the checkbox list of columns. The checkboxes inherit the
+ * Loop accent from the --ag-checkbox-* params set in §1. */
+.ag-grid__wrapper .ag-column-select,
+.ag-grid__wrapper .ag-column-select-list {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+}
+.ag-grid__wrapper .ag-column-select-column-label,
+.ag-grid__wrapper .ag-column-select-column-group-label {
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+}
+/* Filters tool panel — the search field + per-column filter list. */
+.ag-grid__wrapper .ag-filter-toolpanel,
+.ag-grid__wrapper .ag-filter-toolpanel-search {
+  background-color: var(--loop-table-grouping-bg, #f5f7f9);
+  color: var(--loop-table-text, #000d1ab2);
+}
+.ag-grid__wrapper .ag-filter-toolpanel-group-title {
+  color: var(--loop-table-text, #000d1ab2);
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-table-sidebtn-font-size, 14px);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* ===== 8) Text inputs in filters — the design's Loop text field =====
+ * Both the floating-filter row (per-column, hidden in the Default variant) and the
+ * Filters tool-panel search share AG's .ag-input-field-input; align both to the
+ * Loop text field (white fill, outline-default 1px, 8px radius). */
+.ag-grid__wrapper .ag-floating-filter-input .ag-input-field-input,
+.ag-grid__wrapper .ag-filter-toolpanel-search .ag-input-field-input,
+.ag-grid__wrapper .ag-mini-filter .ag-input-field-input {
   font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
   font-size: var(--font-size-200, 14px);
   color: var(--loop-table-text, #000d1ab2);
@@ -268,44 +393,141 @@ same visual language as the native Table restyle, applied to the real AG Grid li
 ```
 
 </details>
+<details>
+<summary><code>loop-ag-grid-enterprise.grid-options.js</code> → Grid options — merge into the AGGrid_Lib grid config / apply via AgGridAPI in OnReady (NOT a Theme paste)</summary>
 
-## What the override changes vs OutSystems UI baseline
-- Theme-param overrides on `.ag-grid__wrapper.ag-theme-quartz` / `.ag-root-wrapper`: font
-  family/size → Open Sans 16px, header weight → bold, surfaces/text recolored to the Loop
-  tokens, row/header height → **56px**, cell h-padding → **12px**, outer border/radius →
-  **none**, row/header-row border → 1px subdued divider, header column separator → 2px inset
-  divider (matches the native Table's `::after` treatment), the resize-handle line hidden so it
-  doesn't double the separator, row hover → the Low tone, accent (checkbox/selection focus) →
-  the brand primary `#004370`.
-- Structural backstops on `.ag-root-wrapper` / `.ag-header` / `.ag-header-cell` / `.ag-cell`
-  restate the same values directly, guarding against a theme-param name shifting between v33
-  minors.
-- Sort-icon clearance: 4px `margin-right` on `.ag-sort-indicator-container`, same 2026-07-14
-  brand-owner request ported from `loop-table.css`.
-- Numeric cells (`.ag-right-aligned-cell` / `.ag-right-aligned-header`): `tabular-nums` — see
-  the findings note below (FND-072).
-- Scrollbars: slim 8px rounded thumb on every AG viewport (body / horizontal / vertical /
-  center-cols), same treatment as the Table restyle.
-- Paging panel: AG's native footer (hidden in the demo) gets a token-faithful restyle in case
-  an app surfaces it directly — but see **Scope** below for the recommended replacement.
-- Zebra: opt-in `.loop-ag-grid--zebra` modifier fills `.ag-row-odd` with the striped tone
-  (AG's 0-indexed odd rows are the Figma's 1-indexed even rows).
+```js
+/* ============================================================================
+   AG Grid — Enterprise grid-options delta  ("The Loop" — Columns/Filters rail +
+   row-group panel + drag-drop columns)
+   Figma: -The Loop- Main Library · "AG Grid" [node:25983-72091] · ref loop/refs/cmp-ag-grid/
+   Pairs with the restyle in  src/blocks/loop-ag-grid.css  (the LOOK) — this file is
+   the BEHAVIOUR: the grid options that make AG Grid render the three interaction
+   affordances the Figma draws, using AG Grid's own APIs.
 
-## Scope
-- **Columns/Filters side rail + the grouping panel are AG Grid Enterprise features.**
-  Community v33 (what `AGGrid_Lib` ships) cannot render them, and the live demo never shows
-  them. Style hooks for both (`.ag-column-drop-horizontal`, `.ag-side-bar`,
-  `.ag-side-buttons`) ship in the CSS so they pick up the Loop look automatically if the
-  library is ever upgraded to Enterprise — this is a **platform-capability scope note**, not a
-  design finding, and nothing further is needed here.
-- **Pagination is its own component.** AG's native paging panel renders arrows + "x to y of
-  z" — a different DOM than the Figma numbered pager, so it cannot be restyled into the
-  numbered-chip look. Use `<loop-ag-grid-pagination>` below the grid instead (with
-  `suppressPaginationPanel: true` on the grid) — see `handover/loop-ag-grid-pagination.md`
-  for the full wiring.
-- Floating filter (per-column search row) and the grid's own filter popups / custom tooltip
-  are unspecced in the Figma variants and stay native; a minimal loop-text-field alignment is
-  included for floating filter in case an app enables it.
+   ┌─ WHAT THIS TURNS ON ──────────────────────────────────────────────────────┐
+   │ 1. Column drag-and-drop reorder — dragging a header to reorder columns.     │
+   │    COMMUNITY feature, on by default (we simply do NOT suppress it).          │
+   │ 2. Right-hand side rail with "Columns" + "Filters" tool panels (collapsed    │
+   │    by default, matching the Figma Default variant). ENTERPRISE.              │
+   │ 3. "Drag here to set row groups" panel across the top. ENTERPRISE.           │
+   │ 4. Per-column filters (surfaced by the Filters tool panel). COMMUNITY.       │
+   └────────────────────────────────────────────────────────────────────────────┘
+
+   ══ PREREQUISITES (platform work, done ONCE on the AGGrid_Lib library) ═════════
+   The live demo (wbg-dev.outsystems.app/AGGridDemo) currently loads AG Grid
+   COMMUNITY v33 (`aggridcommunity_min_noStyle_v33`). Community SILENTLY IGNORES
+   `sideBar` and `rowGroupPanelShow` — the panels below will not render until:
+     A) AGGrid_Lib is pointed at the AG Grid ENTERPRISE bundle
+        (`aggridenterprise_*` v33) instead of the community bundle;
+     B) a valid Enterprise licence key is installed at startup:
+           agGrid.LicenseManager.setLicenseKey("<WBG_AG_GRID_LICENSE_KEY>");
+     C) the required Enterprise modules are registered (v33 is modular):
+           agGrid.ModuleRegistry.registerModules([
+             SideBarModule, ColumnsToolPanelModule, FiltersToolPanelModule,
+             RowGroupingModule, MenuModule, SetFilterModule,
+           ]);
+   Until (A)+(B)+(C) exist, column drag-reorder (#1) and per-column filters (#4)
+   still work on Community; the rail (#2) and row-group panel (#3) stay dark.
+   See handover/loop-ag-grid.md and the finding in findings/findings-register.md.
+
+   ══ HOW TO APPLY IN OUTSYSTEMS ════════════════════════════════════════════════
+   Merge LOOP_AG_GRID_ENTERPRISE_OPTIONS into the grid options AGGrid_Lib passes to
+   `createGrid` (via the block's GridOptions / advanced-config input, or in the
+   OnReady handler with AgGridAPI). It is plain JSON-serialisable data — no
+   functions — so it can equally be pasted as a JSON config string.
+
+   NOTE — styling lives in CSS, not here. Do NOT set an AG `theme` object; the look
+   comes entirely from loop-ag-grid.css + dist/theme.css (Theming API params +
+   `.ag-*` overrides). Icon keys below (`columns`, `filter`) select AG's built-in
+   tool-panel tab icons, which the CSS restyles to the Figma.
+============================================================================ */
+
+export const LOOP_AG_GRID_ENTERPRISE_OPTIONS = {
+  /* 3) Row-group panel — the "Drag here to set row groups" strip (Enterprise). */
+  rowGroupPanelShow: "always",
+
+  /* 2) Right side rail — Columns + Filters tool panels (Enterprise).
+   *    defaultToolPanel omitted ⇒ rail starts COLLAPSED, matching the Figma
+   *    Default variant (columnsToolPanel=false, filtersToolPanel=false). */
+  sideBar: {
+    position: "right",
+    toolPanels: [
+      {
+        id: "columns",
+        labelDefault: "Columns",
+        labelKey: "columns",
+        iconKey: "columns",
+        toolPanel: "agColumnsToolPanel",
+        toolPanelParams: {
+          // Show the column list + the drag-to-group affordance; hide the
+          // pivot/values controls the Figma doesn't draw.
+          suppressRowGroups: false,
+          suppressValues: true,
+          suppressPivots: true,
+          suppressPivotMode: true,
+        },
+      },
+      {
+        id: "filters",
+        labelDefault: "Filters",
+        labelKey: "filters",
+        iconKey: "filter",
+        toolPanel: "agFiltersToolPanel",
+      },
+    ],
+  },
+
+  /* 1) + 4) Column behaviour applied to every column unless a colDef overrides it.
+   *    - filter/floatingFilter: per-column filters, surfaced in the Filters panel.
+   *      floatingFilter stays FALSE — the Figma Default variant has no floating
+   *      filter row (flip to true, or set per-column, if that variant is wanted).
+   *    - enableRowGroup: lets a column be dragged into the row-group panel (#3).
+   *    - movable is default-on: we deliberately DO NOT set suppressMovableColumns,
+   *      so header drag-reorder (#1) works. (Community already allows this.) */
+  defaultColDef: {
+    sortable: true,
+    resizable: true,
+    filter: true,
+    floatingFilter: false,
+    enableRowGroup: true,
+  },
+};
+
+/* Convenience for environments that consume a global instead of an ES import
+ * (e.g. an OutSystems Script resource). Mirrors the LoopIconData / LoopFieldCount
+ * pattern used elsewhere in this repo. */
+if (typeof window !== "undefined") {
+  window.LoopAgGridEnterpriseOptions = LOOP_AG_GRID_ENTERPRISE_OPTIONS;
+}
+```
+
+</details>
+
+## Variant mapping
+| Figma prop (component 25983-72091) | Grid option | Notes |
+|---|---|---|
+| `groupingPanel` | `rowGroupPanelShow: 'always'` | the "Drag here to set row groups" strip (Enterprise) |
+| `columnsFilters` (side rail) | `sideBar.toolPanels` | Columns + Filters tabs, collapsed by default (`defaultToolPanel` omitted) |
+| `columnsToolPanel` | `agColumnsToolPanel` | expanded Columns panel (250px) |
+| `filtersToolPanel` | `agFiltersToolPanel` | expanded Filters panel |
+| `floatingFilter` | `defaultColDef.floatingFilter` | **false** in the Default variant; flip per-column to show the search row |
+| `columnNumbers` / `columnCheckbox` | (row-number / selection columns) | governed by column defs, not this options delta |
+
+## What the restyle changes vs AG Quartz baseline
+- **Row-group panel** (`.ag-column-drop-horizontal`): Low `#f5f7f9` fill, 1px subdued bottom
+  divider, Open Sans 400 14/1.5 `#000d1ab2`, 16px icon `#4b5e71`.
+- **Side bar** (`.ag-side-bar` / `.ag-side-buttons`): Low fill, `outline/default` `#00396b3d`
+  left edge.
+- **Side buttons** (`.ag-side-button-button` / `-label` / icon): the Figma tertiary `-loop
+  button` tone — label + icon `#004370`, Open Sans **Bold 14**, letter-spacing -0.5px; the
+  open tab lifts onto the Lowest surface.
+- **Tool panels** (`.ag-tool-panel-wrapper`): 250px, Low fill, `outline/default` left edge,
+  8/12px padding; column list labels + filter titles in Open Sans; the Columns checkboxes
+  inherit the Loop accent `#004370` from the `--ag-checkbox-*` params (§1).
+- **Filter inputs** (`.ag-floating-filter-input`, `.ag-filter-toolpanel-search`,
+  `.ag-mini-filter`): the Loop text field — white fill, `outline/default` 1px, 8px radius.
+- Every rule is scoped under `.ag-grid__wrapper` and inert on Community.
 
 ## Build in ODC with Mentor Studio
 
@@ -315,36 +537,55 @@ same visual language as the native Table restyle, applied to the real AG Grid li
 > checklist first. Reusable template + notes: `handover/MENTOR-STUDIO-PROMPT.md`.
 
 ```
-Goal: In ODC Studio, apply the WBG "The Loop" styling for AgGrid to the native
-OutSystems UI widget(s) it restyles.
+Goal: In ODC Studio, enable the WBG "The Loop" AG Grid interactions (Columns/Filters
+side rail, "Drag here to set row groups" panel, per-column filters, column drag-reorder)
+on the screen/Block that uses the AGGrid_Lib grid. This is grid CONFIGURATION + wiring,
+not styling — the look is already handled by CSS.
 
-Context (already done): loop-ag-grid.css and dist/theme.css are already pasted into the ODC
-Theme editor (below OutSystems UI). The look is pure CSS + tokens — there is nothing for
-you to style, and you must not write or edit CSS.
+Context (already done manually — do NOT re-create or edit these):
+- dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor
+  (below OutSystems UI). The rail/panel look is pure CSS + var(--token) — do NOT write,
+  edit, or add CSS, and do NOT set an AG Grid `theme` object.
+- The grid-options delta LOOP_AG_GRID_ENTERPRISE_OPTIONS (from
+  loop-ag-grid-enterprise.grid-options.js, embedded in this handover) is the config to
+  apply. It is plain JSON-serialisable data: sideBar (agColumnsToolPanel + agFiltersToolPanel),
+  rowGroupPanelShow:'always', and a defaultColDef enabling filter + enableRowGroup while
+  keeping columns movable.
 
-Task — this component RESTYLES a native OutSystems widget, so the work is using the right
-widget, not generating styles. Referencing elements by name:
-1. Use the native OutSystems widget this maps to (see this handover's "When to use" /
-   "Variant mapping" section), not a custom element.
-2. Apply each variant via the Extended Class property only (e.g. ExtendedClass =
-   "<documented-modifier>") — never mutate OutSystems UI internals.
-3. Build any screen/Block logic the screen needs around it.
+Platform prerequisite (NOT your task — flag it, don't attempt it): the side rail and
+row-group panel are AG Grid ENTERPRISE features. They render only once AGGrid_Lib is on
+the Enterprise bundle with a licence key + the Enterprise modules registered. Until then,
+column drag-reorder and per-column filters still work; the rail/panel stay dark.
 
-Constraints: never edit the OutSystems UI module; add no CSS or hard-coded values. After
-generating, list what you created by name and flag anything you could not finish.
+Task — reference each element by the exact name:
+1. On the Block/screen hosting the AGGrid_Lib widget, apply LOOP_AG_GRID_ENTERPRISE_OPTIONS
+   to the grid — merge it into the block's GridOptions / advanced-config input if it exposes
+   one; otherwise add a "Run JavaScript" node in the grid's OnReady that calls
+   window.AgGridAPI.updateGridOptions(<the options object>) (or setGridOption per key).
+2. Ensure the column definitions the app passes carry filter:true and enableRowGroup:true
+   for the columns that should be filterable / groupable (defaultColDef already sets these
+   as the baseline — only override per-column where needed). Do NOT set suppressMovableColumns.
+3. Leave the numbered pager as-is — it is the separate Loop Pagination component under the
+   grid, not part of this config.
+
+Constraints: never edit the OutSystems UI module or the AGGrid_Lib library; add no CSS and
+no hard-coded style values. After applying, list what you changed by name and flag the
+Enterprise-bundle prerequisite as blocking for the rail + row-group panel.
 ```
 
 ## Checklist
-- [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the shared `--loop-table-*` tokens, incl. the AG Grid chrome additions).
+- [ ] **Platform (blocking):** point `AGGrid_Lib` at the AG Grid **Enterprise** v33 bundle, install the licence key, register the Enterprise modules (see Prerequisites).
+- [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the new `--loop-table-*` side-rail/tool-panel tokens).
 - [ ] Paste `loop-ag-grid.css` into Theme CSS, **below** OutSystems UI.
-- [ ] Confirm the app's `AGGrid_Lib` instance renders `.ag-grid__wrapper.ag-theme-quartz` — this override targets that wrapper class exactly.
-- [ ] Zebra → add `loop-ag-grid--zebra` on the wrapper; numeric columns → AG's `rightAligned` column type.
-- [ ] Pagination → follow `handover/loop-ag-grid-pagination.md` instead of relying on AG's native paging panel.
-- [ ] Verify: 56px rows, grey bold header with short separators, hairline dividers, flat outer edges (no border/radius), slim 8px scrollbars.
-- [ ] 1-Click Publish → validate in a **real browser** (never Service Studio Preview) — check sort, column resize, and row selection still work with the new colors/geometry.
+- [ ] Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the `AGGrid_Lib` grid options (block GridOptions input, or `AgGridAPI` in OnReady).
+- [ ] 1-Click Publish → validate in a **real browser**: right rail shows **Columns** + **Filters** tabs, both expand to 250px Loop-styled panels; the top strip reads "Drag here to set row groups"; dragging a header reorders columns.
+- [ ] Confirm column drag-reorder + Filters work even before the Enterprise swap (Community capabilities).
 
-## Findings linked to this work (register-only)
-- **FND-072 (open, designer action)** — Figma numeric cells hard-code **IBM Plex Mono**
-  (untokenized, outside the confirmed Open Sans brand set). Already register-only from the
-  native Table restyle (`cmp-table`) — this AG Grid restyle re-uses the same brand-owner
-  ruling (Open Sans + `font-variant-numeric: tabular-nums`, right-aligned). **Do not re-file.**
+## Findings linked to this work
+- **FND-074 (open, platform dependency)** — the Figma AG Grid requires **AG Grid Enterprise**
+  (`sideBar` tool panels + `rowGroupPanelShow`), but the deployed `AGGrid_Lib` loads Community
+  v33. The Columns/Filters rail and row-group panel cannot render until WBG provisions the
+  Enterprise bundle + licence. Column drag-reorder and per-column filters are unaffected
+  (Community). Not a design change — a platform-capability gap.
+- **FND-072 (open, designer action)** — numeric cells hard-code IBM Plex Mono (closed font
+  set → Open Sans + `tabular-nums`). Carried over from the Table handover; do not re-file.

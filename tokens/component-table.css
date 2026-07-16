@@ -28,4 +28,16 @@
   --loop-table-grouping-icon:      var(--color-icon-on-light-default);      /* Figma Icon/On Light/Default #4b5e71 */
   --loop-table-pinned-divider:     var(--color-divider-on-light-default);   /* row-number column border-right #00396b29 */
   --loop-table-accent:             var(--color-bg-link-primary-enabled);    /* selection/checkbox accent — unspecced in the variants, brand primary #004370 (documented assumption) */
+
+  /* AG Grid ENTERPRISE chrome — the Columns/Filters side rail + tool panels
+   * (ref loop/refs/cmp-ag-grid/; Figma "Columns & Filters" 25983:72496). These render
+   * only on the AG Grid Enterprise bundle; the restyle in loop-ag-grid.css §7 consumes
+   * them. Values pulled 2026-07-15 (get_variable_defs on the side-rail node). */
+  --loop-table-sidebar-border:     var(--color-outline-on-light-default);   /* Figma Outline/On Light/Default #00396b3d — side-rail & tool-panel left edge */
+  --loop-table-toolpanel-width:    250px;                                   /* Figma "Tool panels / Columns" width */
+  --loop-table-toolpanel-pad-x:    var(--space-xxsmall);                    /* Figma tool-panel px — Spacing/xxsmall 8 */
+  --loop-table-toolpanel-pad-y:    var(--space-xsmall);                     /* Figma tool-panel py — Spacing/xsmall 12 */
+  --loop-table-sidebtn-text:       var(--color-text-on-light-link-primary-enabled); /* Figma side tab label — Text/On Light/Link/Primary #004370 */
+  --loop-table-sidebtn-icon:       var(--color-icon-on-light-primary);      /* Figma side tab icon — Icon/On Light/Primary #004370 */
+  --loop-table-sidebtn-font-size:  var(--font-size-200);                    /* Figma loop/button/label/font-size 14 */
 }
