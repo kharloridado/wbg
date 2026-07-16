@@ -24,12 +24,16 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecord (get-only → { value, label } | null).
+ *             selectedRecord (get-only → { value, label, path } | null).
  * Methods:    open() · close() · clear().
+ *
+ * After selection the closed field shows the full ancestor path, e.g.
+ * "Asia > South East Asia > Philippines" (long paths ellipsise; full path in title).
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo;
- *            detail: { value, label } — the selected record.
+ *            detail: { value, label, path } — the selected record; path is the
+ *            ancestor labels joined with " > ".
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -123,7 +127,16 @@ class LoopMultilevelDropdown extends HTMLElement {
     const v = this.selectedValue;
     if (!v) return null;
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? { value: n.value, label: n.label } : null;
+    return n ? { value: n.value, label: n.label, path: this._pathLabels(n).join(' > ') } : null;
+  }
+
+  /* Ancestor labels root → node (the closed field shows them joined with " > "). */
+  _pathLabels(node) {
+    const byKey = this._byKey();
+    const labels = [node.label];
+    let p = node.parentKey;
+    while (p) { const pn = byKey.get(p); labels.unshift(pn.label); p = pn.parentKey; }
+    return labels;
   }
 
   open() {
@@ -149,7 +162,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: '', label: '' }, bubbles: true, composed: true,
+      detail: { value: '', label: '', path: '' }, bubbles: true, composed: true,
     }));
   }
 
@@ -366,7 +379,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: node.value, label: node.label }, bubbles: true, composed: true,
+      detail: { value: node.value, label: node.label, path: this._pathLabels(node).join(' > ') },
+      bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }
@@ -438,7 +452,7 @@ class LoopMultilevelDropdown extends HTMLElement {
         <button class="lmdd__field" type="button"${disabled ? ' disabled' : ''}
           aria-haspopup="tree" aria-expanded="${this._isOpen}" aria-controls="lmdd-panel"
           ${fieldName}>
-          <span class="lmdd__value${selRec ? '' : ' lmdd__value--placeholder'}" id="lmdd-value">${this._esc(selRec ? selRec.label : this._placeholder)}</span>
+          <span class="lmdd__value${selRec ? '' : ' lmdd__value--placeholder'}" id="lmdd-value"${selRec ? ` title="${this._esc(selRec.path)}"` : ''}>${this._esc(selRec ? selRec.path : this._placeholder)}</span>
           <span class="lmdd__chevron" aria-hidden="true">&#xf078;</span>
         </button>
         <div class="lmdd__panel" id="lmdd-panel">

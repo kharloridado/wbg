@@ -1761,7 +1761,7 @@
         items='not valid json'>
       </loop-multilevel-dropdown>
 
-      <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check.</p>
+      <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check; the closed field then shows the full path (Asia &gt; South East Asia &gt; Philippines).</p>
       <p class="pv-log" id="mldd-log">last event: —</p>
     </div>
   </section>
@@ -3048,7 +3048,7 @@
   // Surface Multilevel Dropdown change events.
   const mlddLog = document.getElementById('mldd-log');
   document.querySelectorAll('loop-multilevel-dropdown').forEach(el => {
-    el.addEventListener('change', e => { mlddLog.textContent = `change → value: ${e.detail.value} · label: ${e.detail.label}`; });
+    el.addEventListener('change', e => { mlddLog.textContent = `change → value: ${e.detail.value} · label: ${e.detail.label} · path: ${e.detail.path}`; });
   });
 
   // Surface Toast events.

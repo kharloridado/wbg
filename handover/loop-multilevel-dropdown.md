@@ -8,7 +8,7 @@
 
 > **Live Style Guide doc**
 
-**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel and fires a `change` event carrying the selected record `{value, label}`.
+**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event carrying the selected record `{value, label, path}`.
 
 **When to use.** Choosing ONE record from a categorised hierarchy (region → sub-region → country; department → team → member) where flat option lists get too long to scan and the category path carries meaning.
 
@@ -63,12 +63,16 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecord (get-only → { value, label } | null).
+ *             selectedRecord (get-only → { value, label, path } | null).
  * Methods:    open() · close() · clear().
+ *
+ * After selection the closed field shows the full ancestor path, e.g.
+ * "Asia > South East Asia > Philippines" (long paths ellipsise; full path in title).
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo;
- *            detail: { value, label } — the selected record.
+ *            detail: { value, label, path } — the selected record; path is the
+ *            ancestor labels joined with " > ".
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -162,7 +166,16 @@ class LoopMultilevelDropdown extends HTMLElement {
     const v = this.selectedValue;
     if (!v) return null;
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? { value: n.value, label: n.label } : null;
+    return n ? { value: n.value, label: n.label, path: this._pathLabels(n).join(' > ') } : null;
+  }
+
+  /* Ancestor labels root → node (the closed field shows them joined with " > "). */
+  _pathLabels(node) {
+    const byKey = this._byKey();
+    const labels = [node.label];
+    let p = node.parentKey;
+    while (p) { const pn = byKey.get(p); labels.unshift(pn.label); p = pn.parentKey; }
+    return labels;
   }
 
   open() {
@@ -188,7 +201,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: '', label: '' }, bubbles: true, composed: true,
+      detail: { value: '', label: '', path: '' }, bubbles: true, composed: true,
     }));
   }
 
@@ -405,7 +418,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: node.value, label: node.label }, bubbles: true, composed: true,
+      detail: { value: node.value, label: node.label, path: this._pathLabels(node).join(' > ') },
+      bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }
@@ -477,7 +491,7 @@ class LoopMultilevelDropdown extends HTMLElement {
         <button class="lmdd__field" type="button"${disabled ? ' disabled' : ''}
           aria-haspopup="tree" aria-expanded="${this._isOpen}" aria-controls="lmdd-panel"
           ${fieldName}>
-          <span class="lmdd__value${selRec ? '' : ' lmdd__value--placeholder'}" id="lmdd-value">${this._esc(selRec ? selRec.label : this._placeholder)}</span>
+          <span class="lmdd__value${selRec ? '' : ' lmdd__value--placeholder'}" id="lmdd-value"${selRec ? ` title="${this._esc(selRec.path)}"` : ''}>${this._esc(selRec ? selRec.path : this._placeholder)}</span>
           <span class="lmdd__chevron" aria-hidden="true">&#xf078;</span>
         </button>
         <div class="lmdd__panel" id="lmdd-panel">
@@ -873,7 +887,7 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | --- | --- | --- |
 | `items` | get/set | Mirrors the `items` attribute as a parsed array (defensive parse → `[]`). |
 | `selectedValue` | get/set | Mirrors the `selected-value` attribute. |
-| `selectedRecord` | get | `{ value, label }` of the selected leaf, or `null`. |
+| `selectedRecord` | get | `{ value, label, path }` of the selected leaf, or `null`. `path` = ancestor labels joined with `" > "`. |
 
 ## API — Methods (callable from OutSystems / JS)
 
@@ -881,13 +895,13 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | --- | --- |
 | `open()` | Opens the panel (no-op when disabled) and focuses the search input. |
 | `close()` | Closes the panel and returns focus to the field. |
-| `clear()` | Clears the selection and fires `change` with `{ value: "", label: "" }`. |
+| `clear()` | Clears the selection and fires `change` with `{ value: "", label: "", path: "" }`. |
 
 ## API — Events
 
 | Event | detail | Options |
 | --- | --- | --- |
-| `change` | `{ value, label }` — the selected record | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
+| `change` | `{ value, label, path }` — the selected record; `path` = ancestor labels joined with `" > "` (e.g. `"Asia > South East Asia > Philippines"`) | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
 
 Out of scope by decision (see Decision log): multi-select, per-node disabled, node icons, open/close events, error-state attribute.
 
@@ -917,7 +931,7 @@ Out of scope by decision (see Decision log): multi-select, per-node disabled, no
 2. Create a Block `MultilevelDropdown` with inputs `Items` (Text — the JSON), `SelectedValue`, `Placeholder`, `Label`, `ShowSearch` (Boolean), `SearchPlaceholder`, `NoResultsText`, `Disabled` (Boolean) and event `OnChange` (Text payload = the selected value).
 3. Place an HTML element `loop-multilevel-dropdown` and bind one attribute per input (ODC requires a Value expression on every attribute). Booleans are **value-aware**: `search = If(ShowSearch, "true", "false")`, `disabled = If(Disabled, "true", "false")` — never presence-only.
 4. Build the `Items` JSON in a data action or client logic (e.g. `JSONSerialize` over a nested structure, or a small loop over an Aggregate with parent references).
-5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. To read the label too, pass `JSON.stringify(e.detail)` instead of `e.detail.value`.
+5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. To read the label and ancestor path too, pass `JSON.stringify(e.detail)` instead of `e.detail.value` (detail = `{value, label, path}`).
 6. Sizing: the component consumes `--loop-select-*`, so the shared `.loop-field--xlarge/large/regular/small` wrapper ramp re-scales it automatically (custom properties inherit into shadow DOM).
 
 ## Accessibility (WCAG 2.2 AA)
@@ -1045,6 +1059,7 @@ Start with step 1 (the Block "MultilevelDropdown" interface) and show it to me b
 - **No Figma ref** — user-spec'd component; geometry and colors are borrowed 1:1 from the shipped single-Select restyle (`--loop-select-*`) for consistency. Per project rules this is a logged decision, not a finding (conventions are three-state; nothing `confirmed` was violated).
 - **Tree/accordion panel** (vs cascading flyouts / drill-down) — chosen by the requester; works on touch, keeps search results in context, simplest ARIA.
 - **Leaf-only selection** — nodes with children are group headers; `change` payload is always an unambiguous record.
+- **Closed field shows the full ancestor path** (`Asia > South East Asia > Philippines`) — requester-specified 2026-07-15; the path also travels on `change.detail.path` and `selectedRecord.path`.
 - **Search in the panel** (not in-field) — the closed field must pixel-match the shipped Select; the Tags rebuild's field-side proxy input exists only to work around a VirtualSelect constraint this component doesn't have.
 - **Combobox-with-tree-popup ARIA** — `role="tree"` over listbox+`aria-level` because collapse state needs the `aria-expanded` vocabulary; one combobox only (the search input), the trigger stays a plain disclosure button.
 - **3-level cap** — deeper nesting is ignored, not an error (documented in the API table).
