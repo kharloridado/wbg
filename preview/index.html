@@ -187,6 +187,8 @@
 
   /* --- inline-arrangement helpers (replace ad-hoc inline flex) --- */
   .pv-inline-set { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-small); }
+  .pv-mldd { width: 100%; max-width: 360px; }
+  .pv-mldd--narrow { max-width: 200px; }
   .pv-field { flex: 1; min-width: 160px; }
   .pv-field--full { width: 100%; }
   .pv-radio-label { margin-left: var(--space-xxsmall); }
@@ -1684,6 +1686,86 @@
     </div>
   </section>
 
+  <!-- ============ MULTILEVEL DROPDOWN ============ -->
+  <section>
+    <h2>Multilevel Dropdown — custom Web Component <code>&lt;loop-multilevel-dropdown&gt;</code></h2>
+    <p class="pv-figma">handover/loop-multilevel-dropdown.md · no Figma ref — user-spec'd · visuals derived from the Select restyle tokens (<code>--loop-select-*</code>) · searchable 3-level tree, leaf-only selection, <code>change</code> returns the selected {value, label} record</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Default (search on, 3 levels)</span>
+      <loop-multilevel-dropdown class="pv-mldd"
+        label="Region"
+        placeholder="Select a country"
+        items='[
+          {"value":"afr","label":"Africa","children":[
+            {"value":"waf","label":"West Africa","children":[
+              {"value":"ng","label":"Nigeria"},
+              {"value":"gh","label":"Ghana"},
+              {"value":"sn","label":"Senegal"}]},
+            {"value":"eaf","label":"East Africa","children":[
+              {"value":"ke","label":"Kenya"},
+              {"value":"tz","label":"Tanzania"}]}]},
+          {"value":"asi","label":"Asia","children":[
+            {"value":"sea","label":"South East Asia","children":[
+              {"value":"ph","label":"Philippines"},
+              {"value":"vn","label":"Vietnam"},
+              {"value":"id","label":"Indonesia"}]},
+            {"value":"sas","label":"South Asia","children":[
+              {"value":"in","label":"India"},
+              {"value":"bd","label":"Bangladesh"}]}]},
+          {"value":"lac","label":"Latin America and Caribbean","children":[
+            {"value":"br","label":"Brazil"},
+            {"value":"co","label":"Colombia"}]}
+        ]'>
+      </loop-multilevel-dropdown>
+
+      <span class="pv-label pv-label--block">Preselected level-3 leaf (<code>selected-value="ph"</code>)</span>
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Select a country"
+        selected-value="ph"
+        items='[
+          {"value":"asi","label":"Asia","children":[
+            {"value":"sea","label":"South East Asia","children":[
+              {"value":"ph","label":"Philippines"},
+              {"value":"vn","label":"Vietnam"}]},
+            {"value":"sas","label":"South Asia","children":[
+              {"value":"in","label":"India"}]}]}
+        ]'>
+      </loop-multilevel-dropdown>
+
+      <span class="pv-label pv-label--block">Disabled · search="false" · narrow container · invalid items JSON</span>
+      <loop-multilevel-dropdown class="pv-mldd" disabled="true"
+        placeholder="Disabled"
+        items='[{"value":"a","label":"Alpha"}]'>
+      </loop-multilevel-dropdown>
+      <loop-multilevel-dropdown class="pv-mldd" search="false"
+        label="No search (plain tree)"
+        placeholder="Select an option"
+        items='[
+          {"value":"g1","label":"Group One","children":[
+            {"value":"g1a","label":"Option 1A"},
+            {"value":"g1b","label":"Option 1B"}]},
+          {"value":"g2","label":"Group Two","children":[
+            {"value":"g2a","label":"Option 2A"}]}
+        ]'>
+      </loop-multilevel-dropdown>
+      <loop-multilevel-dropdown class="pv-mldd pv-mldd--narrow"
+        placeholder="Narrow (labels ellipsise)"
+        items='[
+          {"value":"n1","label":"A very long group label that ellipsises","children":[
+            {"value":"n1a","label":"A very long leaf option label that also ellipsises"}]}
+        ]'>
+      </loop-multilevel-dropdown>
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Invalid items JSON (renders empty, no error)"
+        items='not valid json'>
+      </loop-multilevel-dropdown>
+
+      <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check.</p>
+      <p class="pv-log" id="mldd-log">last event: —</p>
+    </div>
+  </section>
+
   <!-- ============ DATEPICKER (calendar balloon) ============ -->
   <section>
     <h2>DatePicker — restyle the Flatpickr calendar balloon (<code>.flatpickr-calendar</code>)</h2>
@@ -2924,6 +3006,7 @@
 <script src="../src/components/loop-modal.js"></script>
 <script src="../src/components/loop-toast.js"></script>
 <script src="../src/components/loop-file-uploader.js"></script>
+<script src="../src/components/loop-multilevel-dropdown.js"></script>
 <script src="../src/components/loop-field-count.js"></script>
 <script src="../src/components/loop-color-reference.js"></script>
 <script src="../src/components/loop-shadow-reference.js"></script>
@@ -2960,6 +3043,12 @@
   document.querySelectorAll('loop-modal').forEach(el => {
     el.addEventListener('open',  () => { mdLog.textContent = `open  ← #${el.id}`; });
     el.addEventListener('close', e => { mdLog.textContent = `close ← #${el.id} (reason: ${e.detail.reason})`; });
+  });
+
+  // Surface Multilevel Dropdown change events.
+  const mlddLog = document.getElementById('mldd-log');
+  document.querySelectorAll('loop-multilevel-dropdown').forEach(el => {
+    el.addEventListener('change', e => { mlddLog.textContent = `change → value: ${e.detail.value} · label: ${e.detail.label}`; });
   });
 
   // Surface Toast events.

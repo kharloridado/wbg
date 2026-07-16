@@ -35,6 +35,7 @@
 @import "./component-upload.css";
 @import "./component-pagination.css";
 @import "./component-table.css";
+@import "./component-multilevel-dropdown.css";
 /* Retint OutSystems UI to The Loop brand — must load LAST so its :root
  * --color-* redefinitions win over the framework's own defaults. */
 @import "./outsystems-ui-overrides.css";

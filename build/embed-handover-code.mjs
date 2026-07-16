@@ -204,6 +204,35 @@ const MAP = {
       methods: ["open", "addFiles", "setProgress", "removeFile", "clear"],
     },
   },
+  "loop-multilevel-dropdown.md": {
+    files: [["src/components/loop-multilevel-dropdown.js", "js", "Script resource (Theme/Library), Include = Always"]],
+    mentor: {
+      kind: "web-component",
+      block: "MultilevelDropdown",
+      tag: "loop-multilevel-dropdown",
+      include: "Include = Always",
+      inputs: [
+        ["Items", "Text (JSON)", '"[]"   // up to 3 levels of {value,label,children[]}'],
+        ["SelectedValue", "Text", '""'],
+        ["Placeholder", "Text", '"Select an option"'],
+        ["Label", "Text", '""'],
+        ["ShowSearch", "Boolean", "True"],
+        ["SearchPlaceholder", "Text", '"Search"'],
+        ["NoResultsText", "Text", '"No results found"'],
+        ["Disabled", "Boolean", "False"],
+      ],
+      events: ["OnChange"],
+      attrs: [
+        ["items", "Items"], ["selected-value", "SelectedValue"],
+        ["placeholder", "Placeholder"], ["label", "Label"],
+        ["search", 'If(ShowSearch, "true", "false")'],
+        ["search-placeholder", "SearchPlaceholder"], ["no-results-text", "NoResultsText"],
+        ["disabled", 'If(Disabled, "true", "false")'],
+      ],
+      customEvents: [["change", "OnChange", "e.detail.value"]],
+      methods: ["open", "close", "clear"],
+    },
+  },
   "loop-alert.md": {
     files: [["src/components/loop-alert.js", "js", "Script resource (Theme/Library), Include = Always"]],
     wiring: {

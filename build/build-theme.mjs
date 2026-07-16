@@ -106,6 +106,7 @@ const META = {
   "component-upload.css":       { group: "Components",   name: "File Uploader" },
   "component-pagination.css":  { group: "Components",   name: "Pagination" },
   "component-table.css":       { group: "Components",   name: "Table (AG Grid look)" },
+  "component-multilevel-dropdown.css": { group: "Components", name: "Multilevel Dropdown" },
   "loop-table.css":            { group: "Widget Overrides", name: "Table (AG Grid look)" },
 };
 
