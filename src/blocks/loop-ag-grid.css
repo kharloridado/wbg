@@ -108,6 +108,17 @@
   margin-right: var(--space-tiny, 4px);
 }
 
+/* ===== 3b) Clean header per Figma — no per-column filter / column-menu buttons =====
+ * The Figma header cell carries only its label + sort indicator; filters and
+ * column options are reached from the side rail (§7), NOT per-column header icons.
+ * Hide AG's header filter button (funnel, .ag-icon-filter) and column-menu button
+ * (kebab, .ag-icon-menu-alt). The sort indicator (§3) is untouched, and filtering /
+ * column management stay fully available via the Columns/Filters tool panels. */
+.ag-grid__wrapper .ag-header-cell-filter-button,
+.ag-grid__wrapper .ag-header-cell-menu-button {
+  display: none;
+}
+
 /* ===== 4) Numeric cells — right-aligned lining figures =====
  * AG's own rightAligned column type adds these classes; Figma specs IBM Plex Mono
  * here, but the font set is closed → tabular-nums stands in (finding on file). */

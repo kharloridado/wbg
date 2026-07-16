@@ -216,6 +216,17 @@ numbered pager is the separate Loop Pagination component (`src/components/loop-a
   margin-right: var(--space-tiny, 4px);
 }
 
+/* ===== 3b) Clean header per Figma — no per-column filter / column-menu buttons =====
+ * The Figma header cell carries only its label + sort indicator; filters and
+ * column options are reached from the side rail (§7), NOT per-column header icons.
+ * Hide AG's header filter button (funnel, .ag-icon-filter) and column-menu button
+ * (kebab, .ag-icon-menu-alt). The sort indicator (§3) is untouched, and filtering /
+ * column management stay fully available via the Columns/Filters tool panels. */
+.ag-grid__wrapper .ag-header-cell-filter-button,
+.ag-grid__wrapper .ag-header-cell-menu-button {
+  display: none;
+}
+
 /* ===== 4) Numeric cells — right-aligned lining figures =====
  * AG's own rightAligned column type adds these classes; Figma specs IBM Plex Mono
  * here, but the font set is closed → tabular-nums stands in (finding on file). */
@@ -491,6 +502,13 @@ export const LOOP_AG_GRID_ENTERPRISE_OPTIONS = {
     filter: true,
     floatingFilter: false,
     enableRowGroup: true,
+    // Figma header carries only label + sort — no per-column filter/menu icons.
+    // Filters + column options are reached from the side rail, so hide the header
+    // buttons (filtering stays available via the Filters tool panel). The CSS
+    // restyle (loop-ag-grid.css §3b) also hides them as a backstop for consumers
+    // that don't apply this options delta.
+    suppressHeaderMenuButton: true,
+    suppressHeaderFilterButton: true,
   },
 };
 
@@ -515,6 +533,11 @@ if (typeof window !== "undefined") {
 | `columnNumbers` / `columnCheckbox` | (row-number / selection columns) | governed by column defs, not this options delta |
 
 ## What the restyle changes vs AG Quartz baseline
+- **Clean header per Figma** — hides the per-column **filter button** (`.ag-header-cell-filter-button`,
+  funnel) and **column-menu button** (`.ag-header-cell-menu-button`, kebab); the header keeps
+  only its label + sort indicator. Filters and column options are reached from the side rail,
+  not the header (also enforced in the grid options via `suppressHeaderFilterButton` /
+  `suppressHeaderMenuButton`). Filtering stays available through the Filters tool panel.
 - **Row-group panel** (`.ag-column-drop-horizontal`): Low `#f5f7f9` fill, 1px subdued bottom
   divider, Open Sans 400 14/1.5 `#000d1ab2`, 16px icon `#4b5e71`.
 - **Side bar** (`.ag-side-bar` / `.ag-side-buttons`): Low fill, `outline/default` `#00396b3d`

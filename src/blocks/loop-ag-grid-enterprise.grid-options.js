@@ -92,6 +92,13 @@ export const LOOP_AG_GRID_ENTERPRISE_OPTIONS = {
     filter: true,
     floatingFilter: false,
     enableRowGroup: true,
+    // Figma header carries only label + sort — no per-column filter/menu icons.
+    // Filters + column options are reached from the side rail, so hide the header
+    // buttons (filtering stays available via the Filters tool panel). The CSS
+    // restyle (loop-ag-grid.css §3b) also hides them as a backstop for consumers
+    // that don't apply this options delta.
+    suppressHeaderMenuButton: true,
+    suppressHeaderFilterButton: true,
   },
 };
 

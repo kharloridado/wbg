@@ -92,3 +92,9 @@ panel, and **per-column filters** — using AG Grid's own APIs, feasible for Out
 - Selection state is unspecced → derived from the brand accent (`--ag-accent-color`
   #004370), documented assumption.
 - Never flag "off the 4pt grid" — spacing base is TBD.
+- **Clean header (2026-07-15):** the Figma header cell shows only label + sort — NO per-column
+  filter (funnel) or column-menu (kebab) buttons. Filters/columns are reached from the side
+  rail. Enforced both in CSS (`loop-ag-grid.css` §3b hides `.ag-header-cell-filter-button` +
+  `.ag-header-cell-menu-button`) and in the grid options (`suppressHeaderFilterButton` /
+  `suppressHeaderMenuButton`). Verified live against licensed AG Grid Enterprise v33
+  (2026-07-15): 0 header filter/menu buttons, sort + side rail intact.
