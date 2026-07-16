@@ -24,16 +24,23 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecord (get-only → { value, label, path } | null).
+ *             selectedRecord (get-only → the change-detail shape below, or null).
  * Methods:    open() · close() · clear().
  *
  * After selection the closed field shows the full ancestor path, e.g.
  * "Asia > South East Asia > Philippines" (long paths ellipsise; full path in title).
  *
  * Events (bubbles, composed):
- *   change — fired ONLY on user selection or clear(), never on attribute echo;
- *            detail: { value, label, path } — the selected record; path is the
- *            ancestor labels joined with " > ".
+ *   change — fired ONLY on user selection or clear(), never on attribute echo.
+ *            detail returns EVERY level of the selection, not just the leaf:
+ *              value   — selected leaf's value
+ *              label   — selected leaf's label
+ *              path    — ancestor labels joined with " > "
+ *              records — [{value,label}, …] root → leaf, one per level (a level-3
+ *                        pick returns three records: grandparent, parent, child)
+ *              parent  — the immediate parent {value,label}, or null for a
+ *                        level-1 leaf
+ *            clear() fires { value:"", label:"", path:"", records:[], parent:null }.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -127,16 +134,30 @@ class LoopMultilevelDropdown extends HTMLElement {
     const v = this.selectedValue;
     if (!v) return null;
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? { value: n.value, label: n.label, path: this._pathLabels(n).join(' > ') } : null;
+    return n ? this._detailFor(n) : null;
   }
 
-  /* Ancestor labels root → node (the closed field shows them joined with " > "). */
-  _pathLabels(node) {
+  /* Ancestor chain root → node as {value,label} records — the payload returns EVERY level,
+     not just the leaf: for a level-3 pick that's [grandparent, parent, child]. */
+  _ancestry(node) {
     const byKey = this._byKey();
-    const labels = [node.label];
+    const chain = [node];
     let p = node.parentKey;
-    while (p) { const pn = byKey.get(p); labels.unshift(pn.label); p = pn.parentKey; }
-    return labels;
+    while (p) { const pn = byKey.get(p); chain.unshift(pn); p = pn.parentKey; }
+    return chain;
+  }
+
+  /* The change-event / selectedRecord shape (see JSDoc header). */
+  _detailFor(node) {
+    const chain = this._ancestry(node);
+    const records = chain.map((n) => ({ value: n.value, label: n.label }));
+    return {
+      value: node.value,
+      label: node.label,
+      path: chain.map((n) => n.label).join(' > '),
+      records,
+      parent: records.length > 1 ? records[records.length - 2] : null,
+    };
   }
 
   open() {
@@ -162,7 +183,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: '', label: '', path: '' }, bubbles: true, composed: true,
+      detail: { value: '', label: '', path: '', records: [], parent: null },
+      bubbles: true, composed: true,
     }));
   }
 
@@ -379,8 +401,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: node.value, label: node.label, path: this._pathLabels(node).join(' > ') },
-      bubbles: true, composed: true,
+      detail: this._detailFor(node), bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }

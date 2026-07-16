@@ -229,7 +229,7 @@ const MAP = {
         ["search-placeholder", "SearchPlaceholder"], ["no-results-text", "NoResultsText"],
         ["disabled", 'If(Disabled, "true", "false")'],
       ],
-      customEvents: [["change", "OnChange", "e.detail.value"]],
+      customEvents: [["change", "OnChange", "JSON.stringify(e.detail)"]],
       methods: ["open", "close", "clear"],
     },
   },
