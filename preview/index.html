@@ -1762,6 +1762,48 @@
       </loop-multilevel-dropdown>
 
       <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check; the closed field then shows the full path (Asia &gt; South East Asia &gt; Philippines).</p>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Inside the Field Wrapper — the <code>.loop-field--*</code> size ramp and <code>.loop-field--rounded</code> re-point the <code>--loop-select-*</code> custom props, which inherit into the shadow DOM (no extra wiring; native OutSystems Label in the Label placeholder)</span>
+
+      <div class="loop-field loop-field--xlarge pv-mldd">
+        <label>XLarge wrapper (56px field, 16px text)</label>
+        <loop-multilevel-dropdown
+          placeholder="Scaled by the wrapper"
+          items='[
+            {"value":"w1","label":"Group","children":[
+              {"value":"w1a","label":"Option A"},
+              {"value":"w1b","label":"Option B"}]}
+          ]'>
+        </loop-multilevel-dropdown>
+      </div>
+
+      <div class="loop-field loop-field--small pv-mldd">
+        <label>Small wrapper (32px field, 12px text)</label>
+        <loop-multilevel-dropdown
+          placeholder="Scaled by the wrapper"
+          items='[
+            {"value":"s1","label":"Group","children":[
+              {"value":"s1a","label":"Option A"},
+              {"value":"s1b","label":"Option B"}]}
+          ]'>
+        </loop-multilevel-dropdown>
+      </div>
+
+      <div class="loop-field loop-field--rounded pv-mldd">
+        <label>Rounded wrapper (32px pill radius)</label>
+        <loop-multilevel-dropdown
+          placeholder="Pill radius from the wrapper"
+          selected-value="r1a"
+          items='[
+            {"value":"r1","label":"Group","children":[
+              {"value":"r1a","label":"Option A"},
+              {"value":"r1b","label":"Option B"}]}
+          ]'>
+        </loop-multilevel-dropdown>
+      </div>
+
       <p class="pv-log" id="mldd-log">last event: —</p>
     </div>
   </section>
