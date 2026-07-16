@@ -8,7 +8,7 @@
 
 > **Live Style Guide doc**
 
-**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event carrying the selected record `{value, label, path}`.
+**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event whose detail is the **selection chain** — `[{value,label}, …]` root → leaf, one record per level.
 
 **When to use.** Choosing ONE record from a categorised hierarchy (region → sub-region → country; department → team → member) where flat option lists get too long to scan and the category path carries meaning.
 
@@ -63,7 +63,7 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecord (get-only → the change-detail shape below, or null).
+ *             selectedRecords (get-only → the change-detail array below; [] unselected).
  * Methods:    open() · close() · clear().
  *
  * After selection the closed field shows the full ancestor path, e.g.
@@ -71,15 +71,12 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail returns EVERY level of the selection, not just the leaf:
- *              value   — selected leaf's value
- *              label   — selected leaf's label
- *              path    — ancestor labels joined with " > "
- *              records — [{value,label}, …] root → leaf, one per level (a level-3
- *                        pick returns three records: grandparent, parent, child)
- *              parent  — the immediate parent {value,label}, or null for a
- *                        level-1 leaf
- *            clear() fires { value:"", label:"", path:"", records:[], parent:null }.
+ *            detail IS the selection chain: an array of {value,label} records
+ *            root → leaf, one per level — a level-3 pick returns three records:
+ *              [ {value:"asi",label:"Asia"},
+ *                {value:"sea",label:"South East Asia"},
+ *                {value:"ph",label:"Philippines"} ]
+ *            The last entry is always the selected leaf. clear() fires [].
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -169,15 +166,16 @@ class LoopMultilevelDropdown extends HTMLElement {
   get selectedValue() { return this.getAttribute('selected-value') || ''; }
   set selectedValue(v) { this.setAttribute('selected-value', v == null ? '' : String(v)); }
 
-  get selectedRecord() {
+  /* The selection chain root → leaf, one {value,label} record per level — [] when nothing
+     is selected. This IS the change-event detail. */
+  get selectedRecords() {
     const v = this.selectedValue;
-    if (!v) return null;
+    if (!v) return [];
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? this._detailFor(n) : null;
+    return n ? this._chainFor(n) : [];
   }
 
-  /* Ancestor chain root → node as {value,label} records — the payload returns EVERY level,
-     not just the leaf: for a level-3 pick that's [grandparent, parent, child]. */
+  /* Ancestor chain root → node as internal nodes. */
   _ancestry(node) {
     const byKey = this._byKey();
     const chain = [node];
@@ -186,17 +184,17 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* The change-event / selectedRecord shape (see JSDoc header). */
-  _detailFor(node) {
-    const chain = this._ancestry(node);
-    const records = chain.map((n) => ({ value: n.value, label: n.label }));
-    return {
-      value: node.value,
-      label: node.label,
-      path: chain.map((n) => n.label).join(' > '),
-      records,
-      parent: records.length > 1 ? records[records.length - 2] : null,
-    };
+  /* Ancestor chain root → node as clean {value,label} records. */
+  _chainFor(node) {
+    return this._ancestry(node).map((n) => ({ value: n.value, label: n.label }));
+  }
+
+  /* "Africa > West Africa > Ghana" for the closed-field display, '' when unselected. */
+  _selPath() {
+    const v = this.selectedValue;
+    if (!v) return '';
+    const n = this._model().find((x) => x.isLeaf && x.value === v);
+    return n ? this._ancestry(n).map((x) => x.label).join(' > ') : '';
   }
 
   open() {
@@ -222,8 +220,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: { value: '', label: '', path: '', records: [], parent: null },
-      bubbles: true, composed: true,
+      detail: [], bubbles: true, composed: true,
     }));
   }
 
@@ -440,7 +437,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: this._detailFor(node), bubbles: true, composed: true,
+      detail: this._chainFor(node), bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }
@@ -482,7 +479,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   _render() {
     const disabled = this._disabled;
     const label = this._label;
-    const selRec = this.selectedRecord;
+    const selPath = this._selPath();
     const rootCls = 'lmdd'
       + (this._isOpen ? ' lmdd--open' : '')
       + (disabled ? ' lmdd--disabled' : '')
@@ -512,7 +509,7 @@ class LoopMultilevelDropdown extends HTMLElement {
         <button class="lmdd__field" type="button"${disabled ? ' disabled' : ''}
           aria-haspopup="tree" aria-expanded="${this._isOpen}" aria-controls="lmdd-panel"
           ${fieldName}>
-          <span class="lmdd__value${selRec ? '' : ' lmdd__value--placeholder'}" id="lmdd-value"${selRec ? ` title="${this._esc(selRec.path)}"` : ''}>${this._esc(selRec ? selRec.path : this._placeholder)}</span>
+          <span class="lmdd__value${selPath ? '' : ' lmdd__value--placeholder'}" id="lmdd-value"${selPath ? ` title="${this._esc(selPath)}"` : ''}>${this._esc(selPath || this._placeholder)}</span>
           <span class="lmdd__chevron" aria-hidden="true">&#xf078;</span>
         </button>
         <div class="lmdd__panel" id="lmdd-panel">
@@ -908,7 +905,7 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | --- | --- | --- |
 | `items` | get/set | Mirrors the `items` attribute as a parsed array (defensive parse → `[]`). |
 | `selectedValue` | get/set | Mirrors the `selected-value` attribute. |
-| `selectedRecord` | get | The change-detail shape (below) for the selected leaf, or `null`. |
+| `selectedRecords` | get | The selection chain (same array as the change detail); `[]` when nothing is selected. |
 
 ## API — Methods (callable from OutSystems / JS)
 
@@ -916,24 +913,23 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | --- | --- |
 | `open()` | Opens the panel (no-op when disabled) and focuses the search input. |
 | `close()` | Closes the panel and returns focus to the field. |
-| `clear()` | Clears the selection and fires `change` with the empty detail (`records: []`, `parent: null`). |
+| `clear()` | Clears the selection and fires `change` with an empty chain (`[]`). |
 
 ## API — Events
 
 | Event | detail | Options |
 | --- | --- | --- |
-| `change` | `{ value, label, path, records, parent }` — every level of the selection, not just the leaf | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
+| `change` | The **selection chain** — an array of `{value, label}` records, root → leaf, one per level | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
 
-The detail fields:
+`e.detail` IS the chain — nothing else. A level-3 pick returns three records (the last entry is always the selected leaf); a level-1 leaf returns one; `clear()` fires `[]`:
 
-| Field | Shape | Meaning |
-| --- | --- | --- |
-| `value` / `label` | Text | The selected **leaf** record. |
-| `path` | Text | Ancestor labels joined with `" > "` — `"Asia > South East Asia > Philippines"`. |
-| `records` | `[{value, label}, …]` | Root → leaf, **one record per level** — a level-3 pick returns three records (grandparent, parent, child); a level-1 leaf returns one. |
-| `parent` | `{value, label}` or `null` | The immediate parent — `null` for a level-1 leaf. |
-
-`clear()` fires `{ value: "", label: "", path: "", records: [], parent: null }`.
+```json
+[
+  { "value": "asi", "label": "Asia" },
+  { "value": "sea", "label": "South East Asia" },
+  { "value": "ph",  "label": "Philippines" }
+]
+```
 
 Out of scope by decision (see Decision log): multi-select, per-node disabled, node icons, open/close events, error-state attribute.
 
@@ -963,7 +959,7 @@ Out of scope by decision (see Decision log): multi-select, per-node disabled, no
 2. Create a Block `MultilevelDropdown` with inputs `Items` (Text — the JSON), `SelectedValue`, `Placeholder`, `Label`, `ShowSearch` (Boolean), `SearchPlaceholder`, `NoResultsText`, `Disabled` (Boolean) and event `OnChange` (Text payload = the selected value).
 3. Place an HTML element `loop-multilevel-dropdown` and bind one attribute per input (ODC requires a Value expression on every attribute). Booleans are **value-aware**: `search = If(ShowSearch, "true", "false")`, `disabled = If(Disabled, "true", "false")` — never presence-only.
 4. Build the `Items` JSON in a data action or client logic (e.g. `JSONSerialize` over a nested structure, or a small loop over an Aggregate with parent references).
-5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring passes `JSON.stringify(e.detail)` so `OnChange` receives **all levels** (`{value, label, path, records, parent}`) as one Text payload — `JSONDeserialize` it in the Block into a structure with `Records: List of {Value, Label}` to read the parent chain, or just take `.value` if only the leaf matters.
+5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring passes `JSON.stringify(e.detail)` so `OnChange` receives the **selection chain** as one Text payload — `JSONDeserialize` it into a `List of {Value, Label}`; the LAST entry is the selected leaf, the entries before it are its parents.
 6. Sizing: the component consumes `--loop-select-*`, so the shared `.loop-field--xlarge/large/regular/small` wrapper ramp re-scales it automatically (custom properties inherit into shadow DOM).
 
 ## Accessibility (WCAG 2.2 AA)

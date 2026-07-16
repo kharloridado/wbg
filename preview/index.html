@@ -3090,7 +3090,7 @@
   // Surface Multilevel Dropdown change events.
   const mlddLog = document.getElementById('mldd-log');
   document.querySelectorAll('loop-multilevel-dropdown').forEach(el => {
-    el.addEventListener('change', e => { mlddLog.textContent = `change → value: ${e.detail.value} · parent: ${JSON.stringify(e.detail.parent)} · records: ${JSON.stringify(e.detail.records)}`; });
+    el.addEventListener('change', e => { mlddLog.textContent = `change → ${e.detail.map(r => r.label).join(' > ') || '(cleared)'} · detail: ${JSON.stringify(e.detail)}`; });
   });
 
   // Surface Toast events.
