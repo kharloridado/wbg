@@ -110,6 +110,18 @@ const MAP = {
   "loop-popover.md":         [["src/blocks/loop-popover.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-tabs.md":            [["src/blocks/loop-tabs.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-table.md":           [["src/blocks/loop-table.css", "css", "Theme CSS — paste below OutSystems UI"]],
+  "loop-ag-grid.md":         [["src/blocks/loop-ag-grid.css", "css", "Theme CSS — paste below OutSystems UI (AG Grid v33 Theming API CSS is runtime-injected)"]],
+  "loop-ag-grid-pagination.md": {
+    files: [
+      ["src/blocks/loop-pagination.css", "css", "Theme CSS — paste below OutSystems UI (shared pagination block styles)"],
+      ["src/components/loop-ag-grid-pagination.js", "js", "Script resource (Theme/Library), Include = Always"],
+      ["src/components/loop-ag-grid-pagination.css", "css", "Theme CSS — paste below OutSystems UI (component glue styles)"],
+    ],
+    wiring: {
+      tag: "loop-ag-grid-pagination",
+      customEvents: [["loop-pagination-changed", "OnPageChanged", "JSON.stringify(e.detail)"]],
+    },
+  },
   "loop-modal.md": {
     files: [["src/components/loop-modal.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
     wiring: {

@@ -91,8 +91,13 @@ verify/finish · **To build** = net-new.
 ## Navigation
 | Deliverable | Status | Source |
 |---|---|---|
-| Pagination | **To build** | — |
+| Pagination | Needs Review | `src/blocks/loop-pagination.css` (`.loop-pagination--large` 48px size) + `src/components/loop-ag-grid-pagination.js` — numbered pager driving the AG Grid pagination API; `handover/loop-ag-grid-pagination.md` · ref `loop/refs/cmp-ag-grid-pagination` (Figma 27044-57397) |
 | Tab | Built | `src/blocks/loop-tabs.css` |
+
+## Data Display
+| Deliverable | Status | Source |
+|---|---|---|
+| AG Grid (restyle) | Needs Review | `src/blocks/loop-ag-grid.css` + `tokens/component-table.css` — restyle of the real AG Grid Community v33 (`AGGrid_Lib`) to the Loop look via the v33 Theming API; `handover/loop-ag-grid.md` · ref `loop/refs/cmp-ag-grid` (Figma 25983-72091) |
 
 ---
 
