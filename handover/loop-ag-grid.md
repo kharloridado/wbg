@@ -51,21 +51,60 @@ language as the native Table restyle, applied to the real AG Grid library.
 
 ## ⚠ Prerequisites — AG Grid Enterprise (blocking for the rail + row-group panel)
 
-The live demo (`wbg-dev.outsystems.app/AGGridDemo`) loads AG Grid **Community v33**
-(`aggridcommunity_min_noStyle_v33`, `LicenseManager: false`). Community **silently ignores**
-`sideBar` and `rowGroupPanelShow`, so the side rail and the row-group panel **will not render**
-until the platform team, on the `AGGrid_Lib` library (a one-time change, outside this repo):
+`AGGrid_Lib` loads AG Grid **Community v33** (`aggridcommunity_min_noStyle_v33`,
+`LicenseManager: false`). Community **silently ignores** `sideBar` and `rowGroupPanelShow`, so
+the side rail and the row-group panel **will not render** until Enterprise is provisioned
+**inside the `AGGrid_Lib` library** (a one-time platform change, outside this repo):
 
-1. **Swaps the bundle** to AG Grid **Enterprise** v33 (`aggridenterprise_*`) in place of the
-   community bundle.
-2. **Installs a licence key** at startup: `agGrid.LicenseManager.setLicenseKey("<WBG key>")`.
-3. **Registers the Enterprise modules** (v33 is modular):
-   `SideBarModule, ColumnsToolPanelModule, FiltersToolPanelModule, RowGroupingModule,
-   MenuModule, SetFilterModule`.
+1. **Swap the bundle** to an AG Grid **Enterprise v33** build — built the same way as the
+   community bundle (same global, `noStyle`), in place of `aggridcommunity_min_noStyle_v33`.
+2. **Register the Enterprise modules** (v33 is modular): `SideBarModule, ColumnsToolPanelModule,
+   FiltersToolPanelModule, RowGroupingModule, MenuModule, SetFilterModule`.
+3. **Install the licence key**: `agGrid.LicenseManager.setLicenseKey("<WBG key>")`.
 
-Until (1)–(3) exist: **column drag-reorder and per-column filters still work** (Community);
-the **rail + row-group panel stay dark**. This dependency is tracked as **FND-074** (see below).
-The CSS is inert on Community — its target nodes are simply absent, so it is safe to paste now.
+**⚠ Order + location matter — the traps we hit live (2026-07-16):**
+- **Modules + licence must be set BEFORE the grid is created.** AG v33 reads the module
+  registry at `createGrid` time; a Community grid already on the page **cannot be upgraded**
+  afterward. That is why this belongs **inside AGGrid_Lib** (which owns `createGrid`), not in a
+  screen-level "Run JavaScript" node.
+- **A CDN `ag-grid-enterprise` script added as an app/theme resource does NOT work.** Two
+  reasons, both verified on the live page: OutSystems' AMD (RequireJS) loader makes the UMD
+  register as an AMD module instead of augmenting `window.agGrid`, **and** AGGrid_Lib's custom
+  bundle keeps its own module registry. So the enterprise build has to be the one AGGrid_Lib
+  itself loads — check first whether AGGrid_Lib exposes a `LicenseKey` / `Enterprise` input or
+  a documented enterprise option; if not, fork/rebuild its script resource.
+- **Guard `setLicenseKey`.** Calling it while still on Community throws *"Cannot read properties
+  of undefined (reading 'setLicenseKey')"* and **aborts the whole grid render** (blank grid).
+  Always wrap it:
+  ```js
+  if (window.agGrid && window.agGrid.LicenseManager) {
+      window.agGrid.LicenseManager.setLicenseKey("<WBG key>");
+  }
+  ```
+
+**Reference — the init AGGrid_Lib's enterprise bundle must run before `createGrid`** (verified
+live with the WBG key: licence valid, rail + row-group panel + Loop restyle all rendered):
+```js
+// inside the library, after the enterprise-enabled agGrid global is loaded:
+agGrid.ModuleRegistry.registerModules([
+    agGrid.AllCommunityModule,
+    agGrid.AllEnterpriseModule,        // or the named modules listed above
+]);
+if (window.agGrid && window.agGrid.LicenseManager) {
+    agGrid.LicenseManager.setLicenseKey("<WBG key>");
+}
+// … AGGrid_Lib then calls agGrid.createGrid(el, gridOptions) as usual.
+```
+
+Until Enterprise is in place: **column drag-reorder and per-column filters still work**
+(Community); the **rail + row-group panel stay dark**, and — because the Figma-clean header
+hides the per-column filter/menu buttons — filtering has no header UI on Community (it lives in
+the rail). This dependency is tracked as **FND-074** (see below). The CSS is inert on Community,
+so it is safe to paste now.
+
+**Note on the licence.** The WBG key is a *Developer* license and its text states it "has not
+been granted a Deployment License Add-on" — confirm the deployment add-on with WBG before
+production go-live.
 
 ## Capabilities & how to use
 
@@ -480,19 +519,33 @@ Gotchas:
    │ 4. Per-column filters (surfaced by the Filters tool panel). COMMUNITY.       │
    └────────────────────────────────────────────────────────────────────────────┘
 
-   ══ PREREQUISITES (platform work, done ONCE on the AGGrid_Lib library) ═════════
+   ══ PREREQUISITES (platform work, done ONCE INSIDE the AGGrid_Lib library) ═════
    The live demo (wbg-dev.outsystems.app/AGGridDemo) currently loads AG Grid
    COMMUNITY v33 (`aggridcommunity_min_noStyle_v33`). Community SILENTLY IGNORES
    `sideBar` and `rowGroupPanelShow` — the panels below will not render until:
-     A) AGGrid_Lib is pointed at the AG Grid ENTERPRISE bundle
-        (`aggridenterprise_*` v33) instead of the community bundle;
-     B) a valid Enterprise licence key is installed at startup:
+     A) AGGrid_Lib is pointed at an AG Grid ENTERPRISE v33 bundle (built the same
+        way as its community bundle — same global, `noStyle`) instead of community;
+     B) a valid Enterprise licence key is installed:
            agGrid.LicenseManager.setLicenseKey("<WBG_AG_GRID_LICENSE_KEY>");
-     C) the required Enterprise modules are registered (v33 is modular):
+     C) the Enterprise modules are registered (v33 is modular):
            agGrid.ModuleRegistry.registerModules([
              SideBarModule, ColumnsToolPanelModule, FiltersToolPanelModule,
              RowGroupingModule, MenuModule, SetFilterModule,
            ]);
+
+   ⚠ ORDER + LOCATION MATTER (verified live 2026-07-16):
+   • (B)+(C) must run BEFORE the grid is created — AG v33 reads the module registry
+     at createGrid time; an already-created Community grid CANNOT be upgraded after.
+   • This is why it must live INSIDE AGGrid_Lib (which owns createGrid), NOT as an
+     external screen-level Script resource. A CDN `ag-grid-enterprise` UMD dropped
+     next to AGGrid_Lib does NOT attach: OutSystems' AMD (RequireJS) loader makes the
+     UMD register as an AMD module instead of augmenting `window.agGrid`, and AGGrid_Lib's
+     custom bundle keeps its own module registry. So the enterprise bundle must be the
+     one AGGrid_Lib itself loads.
+   • Calling `LicenseManager.setLicenseKey` while still on Community THROWS
+     ("Cannot read properties of undefined (reading 'setLicenseKey')") and aborts grid
+     render — always guard it:  if (window.agGrid && window.agGrid.LicenseManager) { … }
+
    Until (A)+(B)+(C) exist, column drag-reorder (#1) and per-column filters (#4)
    still work on Community; the rail (#2) and row-group panel (#3) stay dark.
    See handover/loop-ag-grid.md and the finding in findings/findings-register.md.
@@ -621,7 +674,7 @@ on the screen/Block that uses the AGGrid_Lib grid. This is grid CONFIGURATION + 
 not styling — the look is already handled by CSS.
 
 Context (already done manually — do NOT re-create or edit these):
-- dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor
+- dist/tokens.css, dist/theme.css and loop-ag-grid.css are already pasted into the ODC Theme editor
   (below OutSystems UI). The rail/panel look is pure CSS + var(--token) — do NOT write,
   edit, or add CSS, and do NOT set an AG Grid `theme` object.
 - The grid-options delta LOOP_AG_GRID_ENTERPRISE_OPTIONS (from
