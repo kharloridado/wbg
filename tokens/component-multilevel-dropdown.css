@@ -1,0 +1,14 @@
+/* component-multilevel-dropdown.css — <loop-multilevel-dropdown> Web Component tokens.
+   A searchable single-select dropdown over a 3-level {value,label,children[]} tree — an L5
+   custom build (no native OSUI widget renders hierarchy; VirtualSelect groups are flat).
+   Field / panel / row geometry REUSES the single-Select tokens (--loop-select-* in
+   component-field.css) so the closed field pixel-matches the Select restyle; only the
+   tree-specific knobs live here. No Figma ref — user-spec'd (see the handover Decision log). */
+:root {
+  --loop-mldd-indent:        var(--space-small);   /* 16px — indentation step per tree level below the first */
+  --loop-mldd-option-h:      40px;                 /* row min-height — matches the native Select's 40px popup rows */
+  --loop-mldd-panel-max-h:   320px;                /* ~8 rows; the tree scrolls beyond this */
+  --loop-mldd-panel-z:       100;                  /* above page content, below OSUI modal/toast layers */
+  --loop-mldd-search-h:      40px;                 /* pinned search-row height (one field-height) */
+  --loop-mldd-chevron-size:  12px;                 /* field chevron + row expander glyph em-box */
+}

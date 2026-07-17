@@ -1,0 +1,259 @@
+/* loop-multilevel-dropdown.css — canonical source of the <loop-multilevel-dropdown> shadow styles.
+   Edit HERE, then mirror the full text into _css() in loop-multilevel-dropdown.js — the component
+   ships as a single drop-in .js and this file is never loaded at runtime (loop-system-alert twin
+   pattern). Geometry matches the single-Select restyle (src/blocks/loop-dropdown.css) by consuming
+   the same --loop-select-* tokens; tree-specific knobs are --loop-mldd-* from
+   tokens/component-multilevel-dropdown.css. Custom properties inherit into shadow DOM, so the
+   .loop-field--* size ramp (which re-points --loop-select-*) scales this component too. */
+
+:host {
+  display: block;
+  position: relative;
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+}
+:host([hidden]) { display: none; }
+
+/* ---- Optional label above the field (Select scale: 13px, not the 16px .loop-field label) ---- */
+.lmdd__label {
+  display: block;
+  margin-bottom: var(--loop-field-label-gap, 6px);
+  color: var(--color-text-on-light-default);
+  font-size: var(--loop-select-label-size, 13px);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--loop-select-label-leading, 16px);
+  letter-spacing: var(--loop-select-label-tracking, 0.25px);
+}
+
+/* ---- Field box (closed trigger) — pixel parity with the single-Select restyle ---- */
+.lmdd__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--loop-select-gap, 8px);
+  width: 100%;
+  height: var(--loop-select-h, 40px); /* pinned — the focus ring below never resizes it */
+  padding: var(--loop-select-padding-block, 11px) var(--loop-select-padding-inline, 16px);
+  background-color: var(--color-bg-container-on-light-lowest, #ffffff);
+  border: 1px solid var(--color-outline-on-light-default);
+  border-radius: var(--loop-select-radius, 8px);
+  color: var(--color-text-on-light-default);
+  font-family: inherit;
+  font-size: var(--loop-select-text-size, 13px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--loop-select-text-leading, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.lmdd__field:hover { border-color: var(--color-outline-on-light-emphasis); }
+/* 2px ring with ZERO layout shift: keep the 1px border and add a 1px inset shadow inside it
+   (border-no-height-shift — no padding compensation, a border never changes the box size). */
+.lmdd__field:focus-visible,
+.lmdd--open .lmdd__field {
+  outline: none;
+  border-color: var(--color-outline-on-light-link-focused);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-link-focused);
+}
+.lmdd--disabled .lmdd__field,
+.lmdd--disabled .lmdd__field:hover {
+  background-color: var(--color-domain-state-disable-low);
+  border-color: var(--color-domain-state-disable-low);
+  color: var(--color-text-on-light-state-disabled);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.lmdd--disabled .lmdd__chevron { color: var(--color-icon-on-light-state-disabled); }
+
+.lmdd__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lmdd__value--placeholder { color: var(--color-text-on-light-subdued); }
+
+/* FA 6 Pro glyphs render from unicode codepoints against the document @font-face
+   (visible inside shadow DOM, unlike .fa-* classes — never the legacy 'FontAwesome' family). */
+.lmdd__chevron,
+.lmdd__expander,
+.lmdd__check,
+.lmdd__search-icon,
+.lmdd__search-clear-glyph {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.lmdd__chevron {
+  flex-shrink: 0;
+  color: var(--color-icon-on-light-default, #4b5e71);
+  font-size: var(--loop-mldd-chevron-size, 12px);
+  transition: transform 0.15s ease;
+}
+.lmdd--open .lmdd__chevron { transform: rotate(180deg); }
+
+/* ---- Panel (renders inside the host — an overflow:hidden ancestor clips it; see handover) ---- */
+.lmdd__panel {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + var(--space-tiny, 4px));
+  z-index: var(--loop-mldd-panel-z, 100);
+  display: none;
+  background-color: var(--color-bg-container-on-light-lowest, #ffffff);
+  border: 1px solid var(--color-outline-on-light-subdued);
+  border-radius: var(--loop-select-list-radius, 8px);
+  box-shadow: var(--loop-select-list-shadow, 0 2px 8px rgba(33, 38, 45, 0.16));
+  overflow: hidden; /* clip rows + scrollbar to the radius */
+}
+.lmdd--open .lmdd__panel { display: block; }
+
+/* ---- Search row (pinned above the tree) ---- */
+.lmdd__search {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-select-gap, 8px);
+  height: var(--loop-mldd-search-h, 40px);
+  padding-inline: var(--loop-select-padding-inline, 16px);
+  border-bottom: 1px solid var(--color-outline-on-light-subdued);
+}
+.lmdd__search-icon {
+  flex-shrink: 0;
+  color: var(--color-icon-on-light-default, #4b5e71);
+  font-size: var(--loop-mldd-chevron-size, 12px);
+}
+.lmdd__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  color: var(--color-text-on-light-default);
+  font-family: inherit;
+  font-size: var(--loop-select-option-text-size, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
+}
+.lmdd__search-input::placeholder { color: var(--color-neutral-alpha-57, rgba(0, 13, 26, 0.57)); }
+.lmdd__search-clear {
+  flex-shrink: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-select-option-check-size, 16px);
+  height: var(--loop-select-option-check-size, 16px);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-icon-on-light-default, #4b5e71);
+  cursor: pointer;
+}
+.lmdd--has-query .lmdd__search-clear { display: inline-flex; }
+.lmdd__search-clear:focus-visible {
+  outline: 2px solid var(--color-outline-on-light-link-focused);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs, 2px);
+}
+.lmdd__search-clear-glyph { font-size: var(--loop-select-tag-cross-size, 14px); }
+
+/* ---- Tree ---- */
+.lmdd__tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: var(--loop-mldd-panel-max-h, 320px);
+  overflow-y: auto;
+}
+.lmdd__group,
+.lmdd__item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lmdd__row {
+  display: flex;
+  align-items: center;
+  gap: var(--loop-select-option-check-gap, 8px);
+  min-height: var(--loop-mldd-option-h, 40px);
+  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  color: var(--color-text-on-light-default);
+  font-size: var(--loop-select-option-text-size, 14px);
+  line-height: 1.5;
+  cursor: pointer;
+}
+/* indentation: one --loop-mldd-indent step per level below the first */
+.lmdd__row--l2 { padding-left: calc(var(--loop-select-padding-inline, 16px) + var(--loop-mldd-indent, 16px)); }
+.lmdd__row--l3 { padding-left: calc(var(--loop-select-padding-inline, 16px) + 2 * var(--loop-mldd-indent, 16px)); }
+
+.lmdd__row:hover,
+.lmdd__row--active { background-color: var(--color-bg-container-on-light-low, #f5f7f9); }
+/* selected wins over hover/active fill (Tags-balloon precedent) */
+.lmdd__row--selected,
+.lmdd__row--selected:hover { background-color: var(--loop-select-option-selected-bg, #e7edf3); }
+/* the keyboard virtual cursor also draws a visible ring (fill alone can't be its only cue) */
+.lmdd__row--active {
+  outline: 2px solid var(--color-outline-on-light-link-focused);
+  outline-offset: -2px;
+}
+
+.lmdd__expander {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--loop-select-option-check-size, 16px);
+  color: var(--color-icon-on-light-default, #4b5e71);
+  font-size: var(--loop-mldd-chevron-size, 12px);
+  transition: transform 0.15s ease;
+}
+.lmdd__row--expanded > .lmdd__expander { transform: rotate(90deg); }
+/* leaves have no expander — an invisible spacer keeps leaf labels aligned with sibling parents */
+.lmdd__expander--spacer { visibility: hidden; }
+
+.lmdd__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lmdd__hl { font-weight: var(--font-weight-semibold, 600); }
+
+.lmdd__check {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--color-icon-on-light-default, #4b5e71);
+  font-size: var(--loop-select-option-check-size, 16px);
+}
+
+/* ---- Empty state (no search matches) ---- */
+.lmdd__empty {
+  display: flex;
+  align-items: center;
+  min-height: var(--loop-mldd-option-h, 40px);
+  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  color: var(--color-text-on-light-subdued);
+  font-size: var(--loop-select-option-text-size, 14px);
+}
+.lmdd__empty[hidden] { display: none; }
+
+/* ---- Visually-hidden live region announcing result counts ---- */
+.lmdd__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lmdd__field,
+  .lmdd__chevron,
+  .lmdd__expander { transition: none; }
+}
