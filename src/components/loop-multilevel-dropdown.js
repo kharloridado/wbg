@@ -11,7 +11,9 @@
  *   items              JSON tree, up to 3 levels: [{ "value": "af", "label": "Africa",
  *                      "children": [ … ] }, …]. A node with a non-empty children[] is a
  *                      non-selectable group header; levels deeper than 3 are ignored.
- *                      Invalid JSON renders an empty list (never throws).
+ *                      Single-quoted JSON is accepted too (convenient in ODC Expressions;
+ *                      escape inner apostrophes as \'). Invalid JSON renders an empty list
+ *                      and logs a console.warn (never throws).
  *   selected-value     Current selection. REFLECTED by the component (before the change
  *                      event fires) so OutSystems can read it back; the ODC echo of the
  *                      same value is a no-op via the o===v guard.
@@ -24,7 +26,7 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecords (get-only → the change-detail array below; [] unselected).
+ *             selectedRecord (get-only → the change-detail tree below; null unselected).
  * Methods:    open() · close() · clear().
  *
  * After selection the closed field shows the full ancestor path, e.g.
@@ -32,12 +34,12 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail IS the selection chain: an array of {value,label} records
- *            root → leaf, one per level — a level-3 pick returns three records:
- *              [ {value:"asi",label:"Asia"},
- *                {value:"sea",label:"South East Asia"},
- *                {value:"ph",label:"Philippines"} ]
- *            The last entry is always the selected leaf. clear() fires [].
+ *            detail IS the selection as a NESTED {value,label,child} tree root → leaf,
+ *            one level per nesting — a level-3 pick nests three deep:
+ *              { value:"asi", label:"Asia",
+ *                child:{ value:"sea", label:"South East Asia",
+ *                  child:{ value:"ph", label:"Philippines" } } }
+ *            The innermost record (no `child` key) is the selected leaf. clear() fires null.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -116,24 +118,59 @@ class LoopMultilevelDropdown extends HTMLElement {
   get _searchPlaceholder() { return this.getAttribute('search-placeholder') || 'Search'; }
   get _noResultsText() { return this.getAttribute('no-results-text') || 'No results found'; }
 
+  /* Parse the `items` attribute. Strict JSON first; falls back to single-quoted JSON —
+     ODC Expressions delimit strings with double quotes, so hand-authored inline JSON
+     there naturally uses single quotes. Warns (never throws) on genuinely invalid input,
+     returning []. */
+  _parseItems(raw) {
+    const s = raw || '[]';
+    try { return JSON.parse(s); } catch { /* fall through to quote-tolerant parse */ }
+    try { return JSON.parse(this._singleToDoubleQuoted(s)); }
+    catch (e) {
+      console.warn('[loop-multilevel-dropdown] invalid items JSON:', e.message, s);
+      return [];
+    }
+  }
+
+  /* Convert a single-quoted JSON-ish string to valid JSON. Char scanner (NOT a naive
+     replace, which corrupts labels like "Côte d'Ivoire"): treats ' as the string
+     delimiter, escapes any literal " inside, and honors \' as an escaped apostrophe.
+     A raw apostrophe inside a value is ambiguous and must be written as \' by the author. */
+  _singleToDoubleQuoted(s) {
+    let out = '', inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) {
+        if (c === '\\' && s[i + 1] === "'") { out += "'"; i++; }   // \' -> literal apostrophe
+        else if (c === '\\') { out += c + (s[i + 1] ?? ''); i++; } // keep other escapes
+        else if (c === "'") { out += '"'; inStr = false; }         // close string
+        else if (c === '"') { out += '\\"'; }                      // escape inner double quote
+        else { out += c; }
+      } else {
+        if (c === "'") { out += '"'; inStr = true; }               // open string
+        else { out += c; }
+      }
+    }
+    return out;
+  }
+
   get items() {
-    try {
-      const v = JSON.parse(this.getAttribute('items') || '[]');
-      return Array.isArray(v) ? v : [];
-    } catch { return []; }
+    const v = this._parseItems(this.getAttribute('items'));
+    return Array.isArray(v) ? v : [];
   }
   set items(arr) { this.setAttribute('items', JSON.stringify(arr || [])); }
 
   get selectedValue() { return this.getAttribute('selected-value') || ''; }
   set selectedValue(v) { this.setAttribute('selected-value', v == null ? '' : String(v)); }
 
-  /* The selection chain root → leaf, one {value,label} record per level — [] when nothing
-     is selected. This IS the change-event detail. */
-  get selectedRecords() {
+  /* The selection as a NESTED tree — {value,label,child:{…}} root → leaf, one level per
+     nesting, the leaf being the innermost node with no `child` — null when nothing is
+     selected. This IS the change-event detail. */
+  get selectedRecord() {
     const v = this.selectedValue;
-    if (!v) return [];
+    if (!v) return null;
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? this._chainFor(n) : [];
+    return n ? this._nestedFor(n) : null;
   }
 
   /* Ancestor chain root → node as internal nodes. */
@@ -145,9 +182,17 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* Ancestor chain root → node as clean {value,label} records. */
-  _chainFor(node) {
-    return this._ancestry(node).map((n) => ({ value: n.value, label: n.label }));
+  /* The ancestor chain as a NESTED {value,label,child} tree root → leaf. The leaf is the
+     innermost record and carries no `child` key. */
+  _nestedFor(node) {
+    const chain = this._ancestry(node);
+    let obj = null;
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const rec = { value: chain[i].value, label: chain[i].label };
+      if (obj) rec.child = obj;
+      obj = rec;
+    }
+    return obj;
   }
 
   /* "Africa > West Africa > Ghana" for the closed-field display, '' when unselected. */
@@ -181,7 +226,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: [], bubbles: true, composed: true,
+      detail: null, bubbles: true, composed: true,
     }));
   }
 
@@ -195,8 +240,7 @@ class LoopMultilevelDropdown extends HTMLElement {
     if (this._modelSrc === src) return this._modelNodes;
     const out = [];
     const map = new Map();
-    let parsed;
-    try { parsed = JSON.parse(src); } catch { parsed = []; }
+    const parsed = this._parseItems(src);
     const walk = (arr, level, parentKey) => {
       if (!Array.isArray(arr)) return;
       for (const raw of arr) {
@@ -398,7 +442,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: this._chainFor(node), bubbles: true, composed: true,
+      detail: this._nestedFor(node), bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }

@@ -8,7 +8,7 @@
 
 > **Live Style Guide doc**
 
-**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event whose detail is the **selection chain** — `[{value,label}, …]` root → leaf, one record per level.
+**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event whose detail is the **selection as a nested tree** — `{value, label, child:{…}}` root → leaf, one level per nesting (the innermost record, with no `child`, is the selected leaf).
 
 **When to use.** Choosing ONE record from a categorised hierarchy (region → sub-region → country; department → team → member) where flat option lists get too long to scan and the category path carries meaning.
 
@@ -18,6 +18,8 @@
 - More than 3 levels — out of scope; levels deeper than 3 are ignored by design.
 
 **How to use.** Serialize the hierarchy to JSON and bind it to `items`; listen to `OnChange` for the selected record. Booleans bind value-aware: `If(Flag, "true", "false")`.
+
+**JSON quoting.** Both valid double-quoted JSON and **single-quoted** JSON are accepted — e.g. `[{'value':'af','label':'Africa','children':[...]}]`. Single quotes are the convenient form for inline ODC Expressions, whose string literals are already delimited by double quotes. A raw apostrophe inside a single-quoted value is ambiguous and must be escaped (`'C\'ôte d\'Ivoire'`) or that value written with double quotes. Genuinely invalid JSON renders an empty list and logs a `console.warn` (never throws).
 
 **Known limitation.** The panel renders inside the host element (no body-append), so an ancestor container with `overflow: hidden` clips the open panel. Avoid overflow-hidden wrappers around the Block, or place the field where the panel has room to drop.
 
@@ -50,7 +52,9 @@
  *   items              JSON tree, up to 3 levels: [{ "value": "af", "label": "Africa",
  *                      "children": [ … ] }, …]. A node with a non-empty children[] is a
  *                      non-selectable group header; levels deeper than 3 are ignored.
- *                      Invalid JSON renders an empty list (never throws).
+ *                      Single-quoted JSON is accepted too (convenient in ODC Expressions;
+ *                      escape inner apostrophes as \'). Invalid JSON renders an empty list
+ *                      and logs a console.warn (never throws).
  *   selected-value     Current selection. REFLECTED by the component (before the change
  *                      event fires) so OutSystems can read it back; the ODC echo of the
  *                      same value is a no-op via the o===v guard.
@@ -63,7 +67,7 @@
  *   disabled           Boolean — inert field, disabled styling.
  *
  * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecords (get-only → the change-detail array below; [] unselected).
+ *             selectedRecord (get-only → the change-detail tree below; null unselected).
  * Methods:    open() · close() · clear().
  *
  * After selection the closed field shows the full ancestor path, e.g.
@@ -71,12 +75,12 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail IS the selection chain: an array of {value,label} records
- *            root → leaf, one per level — a level-3 pick returns three records:
- *              [ {value:"asi",label:"Asia"},
- *                {value:"sea",label:"South East Asia"},
- *                {value:"ph",label:"Philippines"} ]
- *            The last entry is always the selected leaf. clear() fires [].
+ *            detail IS the selection as a NESTED {value,label,child} tree root → leaf,
+ *            one level per nesting — a level-3 pick nests three deep:
+ *              { value:"asi", label:"Asia",
+ *                child:{ value:"sea", label:"South East Asia",
+ *                  child:{ value:"ph", label:"Philippines" } } }
+ *            The innermost record (no `child` key) is the selected leaf. clear() fires null.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -155,24 +159,59 @@ class LoopMultilevelDropdown extends HTMLElement {
   get _searchPlaceholder() { return this.getAttribute('search-placeholder') || 'Search'; }
   get _noResultsText() { return this.getAttribute('no-results-text') || 'No results found'; }
 
+  /* Parse the `items` attribute. Strict JSON first; falls back to single-quoted JSON —
+     ODC Expressions delimit strings with double quotes, so hand-authored inline JSON
+     there naturally uses single quotes. Warns (never throws) on genuinely invalid input,
+     returning []. */
+  _parseItems(raw) {
+    const s = raw || '[]';
+    try { return JSON.parse(s); } catch { /* fall through to quote-tolerant parse */ }
+    try { return JSON.parse(this._singleToDoubleQuoted(s)); }
+    catch (e) {
+      console.warn('[loop-multilevel-dropdown] invalid items JSON:', e.message, s);
+      return [];
+    }
+  }
+
+  /* Convert a single-quoted JSON-ish string to valid JSON. Char scanner (NOT a naive
+     replace, which corrupts labels like "Côte d'Ivoire"): treats ' as the string
+     delimiter, escapes any literal " inside, and honors \' as an escaped apostrophe.
+     A raw apostrophe inside a value is ambiguous and must be written as \' by the author. */
+  _singleToDoubleQuoted(s) {
+    let out = '', inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) {
+        if (c === '\\' && s[i + 1] === "'") { out += "'"; i++; }   // \' -> literal apostrophe
+        else if (c === '\\') { out += c + (s[i + 1] ?? ''); i++; } // keep other escapes
+        else if (c === "'") { out += '"'; inStr = false; }         // close string
+        else if (c === '"') { out += '\\"'; }                      // escape inner double quote
+        else { out += c; }
+      } else {
+        if (c === "'") { out += '"'; inStr = true; }               // open string
+        else { out += c; }
+      }
+    }
+    return out;
+  }
+
   get items() {
-    try {
-      const v = JSON.parse(this.getAttribute('items') || '[]');
-      return Array.isArray(v) ? v : [];
-    } catch { return []; }
+    const v = this._parseItems(this.getAttribute('items'));
+    return Array.isArray(v) ? v : [];
   }
   set items(arr) { this.setAttribute('items', JSON.stringify(arr || [])); }
 
   get selectedValue() { return this.getAttribute('selected-value') || ''; }
   set selectedValue(v) { this.setAttribute('selected-value', v == null ? '' : String(v)); }
 
-  /* The selection chain root → leaf, one {value,label} record per level — [] when nothing
-     is selected. This IS the change-event detail. */
-  get selectedRecords() {
+  /* The selection as a NESTED tree — {value,label,child:{…}} root → leaf, one level per
+     nesting, the leaf being the innermost node with no `child` — null when nothing is
+     selected. This IS the change-event detail. */
+  get selectedRecord() {
     const v = this.selectedValue;
-    if (!v) return [];
+    if (!v) return null;
     const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? this._chainFor(n) : [];
+    return n ? this._nestedFor(n) : null;
   }
 
   /* Ancestor chain root → node as internal nodes. */
@@ -184,9 +223,17 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* Ancestor chain root → node as clean {value,label} records. */
-  _chainFor(node) {
-    return this._ancestry(node).map((n) => ({ value: n.value, label: n.label }));
+  /* The ancestor chain as a NESTED {value,label,child} tree root → leaf. The leaf is the
+     innermost record and carries no `child` key. */
+  _nestedFor(node) {
+    const chain = this._ancestry(node);
+    let obj = null;
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const rec = { value: chain[i].value, label: chain[i].label };
+      if (obj) rec.child = obj;
+      obj = rec;
+    }
+    return obj;
   }
 
   /* "Africa > West Africa > Ghana" for the closed-field display, '' when unselected. */
@@ -220,7 +267,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   clear() {
     this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: [], bubbles: true, composed: true,
+      detail: null, bubbles: true, composed: true,
     }));
   }
 
@@ -234,8 +281,7 @@ class LoopMultilevelDropdown extends HTMLElement {
     if (this._modelSrc === src) return this._modelNodes;
     const out = [];
     const map = new Map();
-    let parsed;
-    try { parsed = JSON.parse(src); } catch { parsed = []; }
+    const parsed = this._parseItems(src);
     const walk = (arr, level, parentKey) => {
       if (!Array.isArray(arr)) return;
       for (const raw of arr) {
@@ -437,7 +483,7 @@ class LoopMultilevelDropdown extends HTMLElement {
   _select(node) {
     this.setAttribute('selected-value', node.value);
     this.dispatchEvent(new CustomEvent('change', {
-      detail: this._chainFor(node), bubbles: true, composed: true,
+      detail: this._nestedFor(node), bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }
@@ -890,7 +936,7 @@ All attributes are observed — changing them from ODC re-renders reactively.
 
 | Attribute | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `items` | Text (JSON) | `[]` | Up to 3 levels of `{ "value", "label", "children": [] }`. A node with a non-empty `children[]` is a non-selectable group header; nodes without children are selectable leaves at any level. Levels deeper than 3 are ignored. Invalid JSON renders an empty list (never throws). |
+| `items` | Text (JSON) | `[]` | Up to 3 levels of `{ "value", "label", "children": [] }`. A node with a non-empty `children[]` is a non-selectable group header; nodes without children are selectable leaves at any level. Levels deeper than 3 are ignored. Single-quoted JSON is accepted (convenient in ODC Expressions; escape inner apostrophes as `\'`). Invalid JSON renders an empty list + a `console.warn` (never throws). |
 | `selected-value` | Text | `""` | Current selection. **Reflected** by the component (before `change` fires) so ODC can read it back; assigning the same value back is a no-op. |
 | `placeholder` | Text | `"Select an option"` | Field text when nothing is selected. |
 | `label` | Text | `""` | Optional visible label above the field (13px Select scale). When empty, the field's `aria-label` falls back to the placeholder. |
@@ -905,7 +951,7 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | --- | --- | --- |
 | `items` | get/set | Mirrors the `items` attribute as a parsed array (defensive parse → `[]`). |
 | `selectedValue` | get/set | Mirrors the `selected-value` attribute. |
-| `selectedRecords` | get | The selection chain (same array as the change detail); `[]` when nothing is selected. |
+| `selectedRecord` | get | The selection as a nested `{value,label,child}` tree (same as the change detail); `null` when nothing is selected. |
 
 ## API — Methods (callable from OutSystems / JS)
 
@@ -919,16 +965,20 @@ All attributes are observed — changing them from ODC re-renders reactively.
 
 | Event | detail | Options |
 | --- | --- | --- |
-| `change` | The **selection chain** — an array of `{value, label}` records, root → leaf, one per level | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
+| `change` | The **selection tree** — a nested `{value, label, child:{…}}` object, root → leaf, one level per nesting | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-value` attribute. |
 
-`e.detail` IS the chain — nothing else. A level-3 pick returns three records (the last entry is always the selected leaf); a level-1 leaf returns one; `clear()` fires `[]`:
+`e.detail` IS the nested tree — nothing else. A level-3 pick nests three deep (the innermost record, with no `child`, is the selected leaf); a level-1 leaf is a single object with no `child`; `clear()` fires `null`:
 
 ```json
-[
-  { "value": "asi", "label": "Asia" },
-  { "value": "sea", "label": "South East Asia" },
-  { "value": "ph",  "label": "Philippines" }
-]
+{
+  "value": "asi", "label": "Asia",
+  "child": {
+    "value": "sea", "label": "South East Asia",
+    "child": {
+      "value": "ph", "label": "Philippines"
+    }
+  }
+}
 ```
 
 Out of scope by decision (see Decision log): multi-select, per-node disabled, node icons, open/close events, error-state attribute.
@@ -959,7 +1009,7 @@ Out of scope by decision (see Decision log): multi-select, per-node disabled, no
 2. Create a Block `MultilevelDropdown` with inputs `Items` (Text — the JSON), `SelectedValue`, `Placeholder`, `Label`, `ShowSearch` (Boolean), `SearchPlaceholder`, `NoResultsText`, `Disabled` (Boolean) and event `OnChange` (Text payload = the selected value).
 3. Place an HTML element `loop-multilevel-dropdown` and bind one attribute per input (ODC requires a Value expression on every attribute). Booleans are **value-aware**: `search = If(ShowSearch, "true", "false")`, `disabled = If(Disabled, "true", "false")` — never presence-only.
 4. Build the `Items` JSON in a data action or client logic (e.g. `JSONSerialize` over a nested structure, or a small loop over an Aggregate with parent references).
-5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring passes `JSON.stringify(e.detail)` so `OnChange` receives the **selection chain** as one Text payload — `JSONDeserialize` it into a `List of {Value, Label}`; the LAST entry is the selected leaf, the entries before it are its parents.
+5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring passes `JSON.stringify(e.detail)` so `OnChange` receives the **selection tree** as one Text payload — `JSONDeserialize` it into a nested Structure, one level per depth: `Selection { Value, Label, Child: Selection2 }`, `Selection2 { Value, Label, Child: Selection3 }`, `Selection3 { Value, Label }`. Descend `.Child` until it is empty to reach the selected leaf; the outer object is the root ancestor. `clear()` sends `null`.
 6. Sizing: the component consumes `--loop-select-*`, so the shared `.loop-field--xlarge/large/regular/small` wrapper ramp re-scales it automatically (custom properties inherit into shadow DOM).
 
 ## Accessibility (WCAG 2.2 AA)
@@ -1020,7 +1070,7 @@ Goal: In ODC Studio, wire up an OutSystems Block that wraps the already-imported
 Web Component <loop-multilevel-dropdown> for the WBG "The Loop" design system.
 
 Context (already done manually — do NOT re-create or edit these):
-- dist/theme.css (brand + component tokens) is already pasted into the ODC Theme editor.
+- dist/tokens.css (brand + component tokens) and dist/theme.css are already pasted into the ODC Theme editor.
 - loop-multilevel-dropdown.js is already imported as a Script resource (Theme/Library), Include = Always. It
   defines the custom element <loop-multilevel-dropdown>.
 - Do NOT write CSS, author or modify JavaScript, or edit the Theme. Your job is only the
@@ -1087,7 +1137,7 @@ Start with step 1 (the Block "MultilevelDropdown" interface) and show it to me b
 - **No Figma ref** — user-spec'd component; geometry and colors are borrowed 1:1 from the shipped single-Select restyle (`--loop-select-*`) for consistency. Per project rules this is a logged decision, not a finding (conventions are three-state; nothing `confirmed` was violated).
 - **Tree/accordion panel** (vs cascading flyouts / drill-down) — chosen by the requester; works on touch, keeps search results in context, simplest ARIA.
 - **Leaf-only selection** — nodes with children are group headers; `change` payload is always an unambiguous record.
-- **Closed field shows the full ancestor path** (`Asia > South East Asia > Philippines`) — requester-specified 2026-07-15; the path also travels on `change.detail.path` and `selectedRecord.path`.
+- **Closed field shows the full ancestor path** (`Asia > South East Asia > Philippines`) — requester-specified 2026-07-15. The same hierarchy travels on the `change` detail as a nested `{value,label,child}` tree (and on the `selectedRecord` property).
 - **Search in the panel** (not in-field) — the closed field must pixel-match the shipped Select; the Tags rebuild's field-side proxy input exists only to work around a VirtualSelect constraint this component doesn't have.
 - **Combobox-with-tree-popup ARIA** — `role="tree"` over listbox+`aria-level` because collapse state needs the `aria-expanded` vocabulary; one combobox only (the search input), the trigger stays a plain disclosure button.
 - **3-level cap** — deeper nesting is ignored, not an error (documented in the API table).

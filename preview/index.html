@@ -1760,8 +1760,21 @@
         ]'>
       </loop-multilevel-dropdown>
       <loop-multilevel-dropdown class="pv-mldd"
-        placeholder="Invalid items JSON (renders empty, no error)"
+        placeholder="Invalid items JSON (renders empty + console.warn)"
         items='not valid json'>
+      </loop-multilevel-dropdown>
+      <!-- Single-quoted JSON — the convenient inline form in ODC Expressions (whose string
+           literals are already double-quoted). Attribute uses double quotes so the JSON can
+           use single quotes; the escaped apostrophe (Côte d\'Ivoire) exercises that path. -->
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Single-quoted JSON (ODC-style)"
+        items="[
+          {'value':'waf','label':'West Africa','children':[
+            {'value':'ci','label':'C\'ôte d\'Ivoire'},
+            {'value':'gh','label':'Ghana'}]},
+          {'value':'eu','label':'Europe','children':[
+            {'value':'fr','label':'France'}]}
+        ]">
       </loop-multilevel-dropdown>
 
       <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check; the closed field then shows the full path (Asia &gt; South East Asia &gt; Philippines).</p>
@@ -3201,7 +3214,10 @@
   // Surface Multilevel Dropdown change events.
   const mlddLog = document.getElementById('mldd-log');
   document.querySelectorAll('loop-multilevel-dropdown').forEach(el => {
-    el.addEventListener('change', e => { mlddLog.textContent = `change → ${e.detail.map(r => r.label).join(' > ') || '(cleared)'} · detail: ${JSON.stringify(e.detail)}`; });
+    el.addEventListener('change', e => {
+      const labels = []; for (let n = e.detail; n; n = n.child) labels.push(n.label);
+      mlddLog.textContent = `change → ${labels.join(' > ') || '(cleared)'} · detail: ${JSON.stringify(e.detail)}`;
+    });
   });
 
   // Surface Toast events.
