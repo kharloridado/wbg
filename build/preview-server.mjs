@@ -43,7 +43,17 @@ const server = createServer(async (req, res) => {
     // compile time). Locally, serve those from the authored assets (src/assets/), falling
     // back to the generated webfonts (dist/fontawesome-webfonts/) so the theme's own
     // @font-face urls resolve too.
-    if (urlPath.startsWith('/TheLoopTheme/')) {
+    //
+    // ODC module **Images** are different: they are served verbatim (no fingerprint) at
+    // /TheLoopTheme/img/TheLoopTheme.<imagename>.<ext>, and ODC drops hyphens from the
+    // uploaded name — so these need an explicit alias back to the authored src/assets file.
+    // Keep this map in sync with any image referenced by url() in the theme CSS.
+    const IMAGE_ALIASES = {
+      '/TheLoopTheme/img/TheLoopTheme.loopiconsidebar.svg': '/src/assets/loop-icon-sidebar.svg',
+    };
+    if (IMAGE_ALIASES[urlPath]) {
+      urlPath = IMAGE_ALIASES[urlPath];
+    } else if (urlPath.startsWith('/TheLoopTheme/')) {
       const name = urlPath.slice('/TheLoopTheme/'.length);
       urlPath = existsSync(join(ROOT, 'src/assets', name))
         ? `/src/assets/${name}`

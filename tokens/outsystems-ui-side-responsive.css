@@ -57,12 +57,14 @@
  *   · .loop-nav-toggle— an ExtendedClass we put on the desktop collapse button that
  *                       lives inside the docked panel's nav header.
  * The glyph is the Figma-exported `sidebar` vector, masked from an SVG that ships as
- * an ODC Theme RESOURCE (`loop-icon-sidebar.svg`, source: src/assets/) — the literal
- * /TheLoopTheme/ path is rewritten by ODC to the fingerprinted resource URL at compile
- * time, exactly like the @font-face woff2 srcs (do NOT "fix" the path). A resolvable
- * module resource keeps OutSystems' offline-behavior warning away (a data-URI here
- * trips it), and the FA `fa-sidebar` glyph tried in between was visibly different from
- * the Figma asset. currentColor drives the fill via the mask. */
+ * an ODC **Image** (source: src/assets/loop-icon-sidebar.svg, uploaded to module
+ * TheLoopTheme). ODC serves module images at the literal, un-fingerprinted path
+ * `/TheLoopTheme/img/TheLoopTheme.<imagename>.svg` (hyphens dropped from the name) —
+ * this is NOT the fingerprint-rewrite the @font-face woff2 srcs get, so the path is
+ * used verbatim (do NOT "simplify" it to /TheLoopTheme/loop-icon-sidebar.svg — that
+ * 404s in ODC). A resolvable module image keeps OutSystems' offline-behavior warning
+ * away (a data-URI here trips it), and the FA `fa-sidebar` glyph tried in between was
+ * visibly different from the Figma asset. currentColor drives the fill via the mask. */
 .layout-side .menu-icon,
 .layout-side .loop-nav-toggle {
   align-items: center;
@@ -95,7 +97,7 @@
 /* The `sidebar` glyph: a rounded panel with a divided left column (1.6px stroke). */
 .layout-side {
   --loop-side-toggle-icon-size: 20px;   /* parity with the menu-item leading icon */
-  --loop-side-toggle-icon: url("/TheLoopTheme/loop-icon-sidebar.svg");  /* ODC Theme resource — path rewritten at compile time */
+  --loop-side-toggle-icon: url("/TheLoopTheme/img/TheLoopTheme.loopiconsidebar.svg");  /* ODC module Image — served verbatim at this path (NOT fingerprint-rewritten) */
 }
 /* Hover / focus affordance — a subtle neutral pill (matches the menu-item hover). */
 .layout-side .menu-icon:hover,
