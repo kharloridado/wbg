@@ -12,4 +12,5 @@
   --loop-pagination-padding-label:    var(--space-xsmall);    /* 12px -- btn padding on text side */
   --loop-pagination-input-radius:     var(--radius-base);     /* 4px -- input/dropdown corner */
   --loop-pagination-page-radius:      var(--radius-pill);     /* 4px -- inactive page chip corner */
+  --loop-pagination-chevron-inset:    10px;                   /* 10px -- items-per-page chevron right offset; off-scale */
 }

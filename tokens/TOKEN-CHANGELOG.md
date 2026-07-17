@@ -7,6 +7,11 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-17 13:57 UTC — v0.6.0
+
+- **[component]** + `--loop-pagination-chevron-inset`: `10px` _(component-pagination.css)_
+
 ## 2026-07-16 18:20 UTC — v0.6.0
 
 - **[component]** + `--loop-table-sidebtn-pad-x`: `var(--space-xsmall)` _(component-table.css)_

@@ -3891,6 +3891,11 @@
       "file": "component-pagination.css",
       "kind": "component"
     },
+    ":root --loop-pagination-chevron-inset": {
+      "value": "10px",
+      "file": "component-pagination.css",
+      "kind": "component"
+    },
     ":root --loop-pagination-font-size": {
       "value": "var(--font-size-200)",
       "file": "component-pagination.css",
