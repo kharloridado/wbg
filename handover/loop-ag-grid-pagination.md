@@ -10,19 +10,26 @@ footer inside the AG Grid frame — frozen ref `loop/refs/cmp-ag-grid-pagination
 `<loop-ag-grid-pagination>`, wrapped in an OutSystems Block. Light DOM on purpose: the app's
 Theme CSS and self-hosted icon font need to reach the generated markup, which a Shadow DOM
 boundary would wall off. It renders the shared `.loop-pagination` BEM block (the same
-component built earlier for node 23714-3726) at its **large** (48px / 16px) size, and reads/
-drives the grid purely through the AG Grid JS pagination API — no server round-trip.
+component built earlier for node 23714-3726) — by default at the AG-footer **large**
+(48px / 16px) size — and reads/drives the grid purely through the AG Grid JS pagination
+API, no server round-trip. **Every option of the base Loop pagination component is
+exposed as an attribute**: labeled or icon-only nav buttons, numbered chips / jump-to-page
+input / "Go to [n] page" select, all three sizes (small 32 / regular 40 / large 48), the
+right-rail items-per-page + Showing-summary toggles, and the hairline divider.
 
 ## When to use / How to use
 
 > **Live Style Guide doc** — short usage spec for the AG Grid Pagination page.
 
-**What it is.** A numbered pagination bar sized for the AG Grid footer (48px controls, 16px
-type), addressable by pointing it at the grid's exposed API object.
+**What it is.** A pagination bar for AG Grid, addressable by pointing it at the grid's
+exposed API object. Defaults render the AG Grid footer frame (48px controls, 16px type,
+numbered chips); attributes unlock every variant of the base Loop pagination component.
 
 **When to use**
 - Below any `AGGrid_Lib` grid instance where the Figma numbered-pager look is required
   instead of AG's native arrows + "x to y of z" paging panel.
+- Also when the grid's pager should use one of the base component's other variants —
+  labeled buttons, jump-to-page input, "Go to [n] page" select, or a smaller size.
 
 **When not to use** (reach for instead)
 - A plain native **Table** (no AG Grid) → the base `.loop-pagination` / `.loop-pagination--small`
@@ -37,13 +44,20 @@ type), addressable by pointing it at the grid's exposed API object.
 - The component polls briefly for the API global at connect (grids in ODC initialize async),
   attaches once found, and re-renders on every AG `paginationChanged` event — so it always
   reflects the grid's real current page/size/row-count.
+- **Variants** (all optional; no attributes = the AG-footer frame exactly):
+  `size="large|regular|small"` picks the scale; `nav="pages|jump|goto"` picks the left-side
+  navigation (numbered chips / page input + "of N pages" / compact "Go to [n] page" select);
+  `button-labels="true"` swaps the icon-only First/Prev/Next/Last for the labeled variant;
+  `show-items-per-page="false"` / `show-summary="false"` hide the right-rail sections;
+  `divider="true"` puts the hairline between them. Booleans are value-aware for ODC's
+  `If(Flag,"true","false")` bindings.
 
 ## Files
 | File | OutSystems destination |
 |---|---|
 | `src/blocks/loop-pagination.css` | Theme CSS — paste below OutSystems UI (shared pagination block styles; adds the `.loop-pagination--large` 48px size used here) |
 | `src/components/loop-ag-grid-pagination.js` | Script resource (Theme/Library), Include = **Always** |
-| `src/components/loop-ag-grid-pagination.css` | Theme CSS — paste below OutSystems UI (component glue styles — native `<select>` chrome + the first/last edge-bar glyphs) |
+| `src/components/loop-ag-grid-pagination.css` | Theme CSS — paste below OutSystems UI (component glue styles — native `<select>` chrome, the jump-input width, and the first/last edge-bar glyphs) |
 
 > Canonical source lives in the three files above; they are embedded into this ticket by
 > `node build/embed-handover-code.mjs` — re-run after editing a source file to keep them in sync.
@@ -373,11 +387,14 @@ type), addressable by pointing it at the grid's exposed API object.
    Component: <loop-ag-grid-pagination>  ("The Loop" numbered pager for AGGrid_Lib)
    Figma: -The Loop- Main Library · "-loop pagination" [node:27044-57397]
           · ref loop/refs/cmp-ag-grid-pagination/
+          · base component variants (labeled / jump / go-to / sizes): node 23714:3726
    Why: AG Grid Community's native paging panel is arrows + "x to y of z" — its DOM
         cannot render the design's numbered page chips. This LIGHT-DOM Web Component
-        renders the `.loop-pagination.loop-pagination--large` BEM structure (styled by
+        renders the `.loop-pagination` BEM structure (styled by
         src/blocks/loop-pagination.css + loop-ag-grid-pagination.css) below the grid
-        and drives it through the AG Grid pagination API.
+        and drives it through the AG Grid pagination API. It exposes every option of
+        the base Loop pagination component (built for the native OutSystems
+        Pagination widget), not just the AG-frame default.
    Light DOM on purpose: the block CSS and the app's icon font must reach the markup
         (shadow DOM would wall off both — see shadow-dom-gotchas).
    Usage (ODC Block wrapper):
@@ -386,10 +403,26 @@ type), addressable by pointing it at the grid's exposed API object.
         Grid options: pagination=true, suppressPaginationPanel=true. Page-size
         switching also needs every offered size accepted by the grid — set
         paginationPageSizeSelector to the same list (or false) or AG logs #94/#95.
-   Attributes:
+   Attributes (defaults reproduce the AG Grid footer frame 27044-57397 exactly):
         grid-api    global name (or dot-path) of the AG Grid API the lib exposes.
                     Default "AgGridAPI". setApi(api) is the programmatic alternative.
         page-sizes  comma-separated items-per-page options. Default "20,50,100".
+        size        "large" (default, 48px — the AG footer scale) | "regular" (40px)
+                    | "small" (32px). Maps to the .loop-pagination--* size modifier.
+        nav         "pages" (default) numbered chips + ellipsis windowing
+                    | "jump"  First/Prev + page input + "of N pages" + Next/Last
+                    | "goto"  compact standalone `Go to [select] page` (suits modest
+                      page counts — every page is an <option>; prefer "jump" for
+                      very large totals).
+        button-labels        boolean, default false. true = labeled First/Prev/
+                    Next/Last buttons (base component's labeled variant); false =
+                    icon-only (--simple). Applies to nav="pages" and nav="jump".
+        show-items-per-page  boolean, default true. Right-rail items-per-page select.
+        show-summary         boolean, default true. Right-rail "Showing X-Y of Z".
+        divider              boolean, default false. Hairline between the two
+                    right-rail sections when both are visible.
+        Booleans are VALUE-aware (ODC binds If(Flag,"true","false")): absent → the
+        default; "false"/"0" → off; anything else (incl. "") → on.
    Events (bubbles, composed — for the ODC wrapper's handlers):
         loop-pagination-changed  detail: { page (1-based), pageSize, total }
    Escalation Level: L5 (custom build — vanilla JS Web Component, no framework)
@@ -404,6 +437,9 @@ type), addressable by pointing it at the grid's exposed API object.
     last:  'fa fa-solid fa-angle-right',
     down:  'fa fa-solid fa-angle-down'
   };
+
+  /* Visible text of the labeled variant (base component, node 23714:3726). */
+  var LABELS = { first: 'First', prev: 'Prev', next: 'Next', last: 'Last' };
 
   function resolveGlobal(path) {
     var obj = window;
@@ -439,14 +475,24 @@ type), addressable by pointing it at the grid's exposed API object.
       this._api = null;
       this._pollTimer = null;
       this._onPaginationChanged = this._handlePaginationChanged.bind(this);
-      this._onClick = this._handleClick.bind(this);
-      this._onSizeChange = this._handleSizeChange.bind(this);
+      /* Delegated on the host — they survive every innerHTML re-render, so the
+         conditional sections (jump input, goto select, right rail) never need
+         per-render rebinding. */
+      this.addEventListener('click', this._handleClick.bind(this));
+      this.addEventListener('change', this._handleChange.bind(this));
+      this.addEventListener('keydown', this._handleKeydown.bind(this));
     }
 
-    static get observedAttributes() { return ['grid-api', 'page-sizes']; }
+    static get observedAttributes() {
+      return ['grid-api', 'page-sizes', 'size', 'nav', 'button-labels',
+              'show-items-per-page', 'show-summary', 'divider'];
+    }
 
-    attributeChangedCallback() {
-      if (this.isConnected) { this._connectApi(); }
+    attributeChangedCallback(name) {
+      if (!this.isConnected) { return; }
+      /* Only a grid-api change needs the (re)poll; the rest are display options. */
+      if (name === 'grid-api') { this._connectApi(); }
+      else if (this._api) { this._render(); }
     }
 
     connectedCallback() { this._connectApi(); }
@@ -471,6 +517,30 @@ type), addressable by pointing it at the grid's exposed API object.
         .map(function (s) { return parseInt(s.trim(), 10); })
         .filter(function (n) { return n > 0; });
     }
+
+    /* Value-aware boolean: ODC binds attrs with a forced value (If(Flag,"true","false")),
+       so presence-based hasAttribute() would read a bound "false" as true. See
+       web-component-boolean-attrs-odc. */
+    _boolAttr(name, dflt) {
+      var v = this.getAttribute(name);
+      if (v === null) { return dflt; }
+      return v !== 'false' && v !== '0';
+    }
+
+    /* "large" is the AG-footer default (frozen ref 27044-57397); "regular" is the
+       base component's unmodified 40px scale; "small" the 32px dashboards scale. */
+    get _sizeClass() {
+      var v = this.getAttribute('size');
+      if (v === 'small')   { return ' loop-pagination--small'; }
+      if (v === 'regular') { return ''; }
+      return ' loop-pagination--large';
+    }
+
+    get _nav()          { return this.getAttribute('nav') || 'pages'; }
+    get _labeled()      { return this._boolAttr('button-labels', false); }
+    get _showSizes()    { return this._boolAttr('show-items-per-page', true); }
+    get _showSummary()  { return this._boolAttr('show-summary', true); }
+    get _divider()      { return this._boolAttr('divider', false); }
 
     /* Grids init async in ODC — poll briefly for the global. */
     _connectApi() {
@@ -537,18 +607,138 @@ type), addressable by pointing it at the grid's exposed API object.
       else if (btn.dataset.nav === 'last')  { api.paginationGoToLastPage(); }
     }
 
-    _handleSizeChange(ev) {
+    _handleChange(ev) {
       if (!this._api) { return; }
-      this._api.setGridOption('paginationPageSize', parseInt(ev.target.value, 10));
+      var t = ev.target;
+      if (t.hasAttribute('data-size')) {
+        this._api.setGridOption('paginationPageSize', parseInt(t.value, 10));
+      } else if (t.hasAttribute('data-goto')) {
+        this._api.paginationGoToPage(parseInt(t.value, 10) - 1);
+      } else if (t.hasAttribute('data-jump')) {
+        this._jumpTo(t.value);
+      }
     }
 
-    _navBtn(kind, label, disabled, edge) {
-      return '<button type="button" class="loop-pagination__btn loop-pagination__btn--icon-only' +
+    _handleKeydown(ev) {
+      if (ev.key === 'Enter' && ev.target.hasAttribute('data-jump')) {
+        this._jumpTo(ev.target.value);
+      }
+    }
+
+    /* Jump input: clamp to 1..total. Same-page (or invalid) entries won't make AG
+       fire paginationChanged, so re-render explicitly to normalize the display. */
+    _jumpTo(raw) {
+      var api = this._api;
+      var total = Math.max(api.paginationGetTotalPages(), 1);
+      var current = api.paginationGetCurrentPage() + 1;
+      var n = parseInt(raw, 10);
+      if (isNaN(n)) { this._render(); return; }
+      n = Math.min(Math.max(n, 1), total);
+      if (n === current) { this._render(); return; }
+      api.paginationGoToPage(n - 1);
+    }
+
+    _navBtn(kind, ariaLabel, disabled, edge) {
+      var labeled = this._labeled;
+      var iconFirst = kind === 'first' || kind === 'prev';
+      var btnClass = 'loop-pagination__btn ' + (labeled
+        ? (iconFirst ? 'loop-pagination__btn--icon-first' : 'loop-pagination__btn--icon-last')
+        : 'loop-pagination__btn--icon-only');
+      var icon = '<span class="loop-pagination__icon' +
+        (edge ? ' loop-pagination__icon--' + edge : '') + '">' +
+        '<i class="' + ICONS[kind] + '" aria-hidden="true"></i></span>';
+      var label = labeled
+        ? '<span class="loop-pagination__btn-label">' + LABELS[kind] + '</span>'
+        : '';
+      return '<button type="button" class="' + btnClass +
         (disabled ? ' loop-pagination__btn--disabled' : '') +
-        '" data-nav="' + kind + '" aria-label="' + label + '"' +
+        '" data-nav="' + kind + '" aria-label="' + ariaLabel + '"' +
         (disabled ? ' disabled' : '') + '>' +
-        '<span class="loop-pagination__icon' + (edge ? ' loop-pagination__icon--' + edge : '') + '">' +
-        '<i class="' + ICONS[kind] + '" aria-hidden="true"></i></span></button>';
+        (iconFirst ? icon + label : label + icon) + '</button>';
+    }
+
+    /* ---- Left-side nav renderers (one per `nav` option) ---- */
+
+    _renderPagesNav(page, total) {
+      var pages = pageWindow(page, total).map(function (p) {
+        if (p === '…') { return '<span class="loop-pagination__ellipsis" aria-hidden="true">...</span>'; }
+        var active = p === page;
+        return '<button type="button" class="loop-pagination__page' +
+          (active ? ' loop-pagination__page--active" aria-current="page' : '') +
+          '" data-page="' + p + '" aria-label="Page ' + p + '">' + p + '</button>';
+      }).join('');
+      /* --simple = the icon-only pages layout; the labeled layout is the plain nav. */
+      return '<div class="loop-pagination__nav' +
+          (this._labeled ? '' : ' loop-pagination__nav--simple') + '">' +
+        this._navBtn('first', 'First page', page <= 1, 'edge-first') +
+        this._navBtn('prev', 'Previous page', page <= 1) +
+        pages +
+        this._navBtn('next', 'Next page', page >= total) +
+        this._navBtn('last', 'Last page', page >= total, 'edge-last') +
+        '</div>';
+    }
+
+    _renderJumpNav(page, total) {
+      return '<div class="loop-pagination__nav loop-pagination__nav--jump">' +
+        this._navBtn('first', 'First page', page <= 1, 'edge-first') +
+        this._navBtn('prev', 'Previous page', page <= 1) +
+        '<div class="loop-pagination__goto">' +
+          '<input type="text" inputmode="numeric" class="loop-pagination__input ' +
+            'loop-pagination__input--jump" value="' + page + '" data-jump ' +
+            'aria-label="Page number">' +
+          '<span class="loop-pagination__label">of ' + total + ' pages</span>' +
+        '</div>' +
+        this._navBtn('next', 'Next page', page >= total) +
+        this._navBtn('last', 'Last page', page >= total, 'edge-last') +
+        '</div>';
+    }
+
+    _renderGotoNav(page, total) {
+      var options = '';
+      for (var p = 1; p <= total; p++) {
+        options += '<option value="' + p + '"' + (p === page ? ' selected' : '') + '>' + p + '</option>';
+      }
+      return '<div class="loop-pagination__goto">' +
+        '<span class="loop-pagination__label">Go to</span>' +
+        '<span class="loop-pagination__select">' +
+          '<select class="loop-pagination__input" data-goto aria-label="Go to page">' + options + '</select>' +
+          '<span class="loop-pagination__select-chevron"><i class="' + ICONS.down + '" aria-hidden="true"></i></span>' +
+        '</span>' +
+        '<span class="loop-pagination__label">page</span>' +
+        '</div>';
+    }
+
+    /* ---- Right-side controls rail (items-per-page · divider · summary) ---- */
+    _renderControls(size, from, to, rows) {
+      var showSizes = this._showSizes;
+      var showSummary = this._showSummary;
+      if (!showSizes && !showSummary) { return ''; }
+
+      var parts = [];
+      if (showSizes) {
+        var sizes = this._pageSizes;
+        if (sizes.indexOf(size) === -1) { sizes = sizes.concat([size]).sort(function (a, b) { return a - b; }); }
+        var options = sizes.map(function (s) {
+          return '<option value="' + s + '"' + (s === size ? ' selected' : '') + '>' + s + '</option>';
+        }).join('');
+        parts.push('<div class="loop-pagination__items-per-page">' +
+          '<span class="loop-pagination__label">items per page</span>' +
+          '<span class="loop-pagination__select">' +
+            '<select class="loop-pagination__input" data-size aria-label="Items per page">' + options + '</select>' +
+            '<span class="loop-pagination__select-chevron"><i class="' + ICONS.down + '" aria-hidden="true"></i></span>' +
+          '</span>' +
+          '</div>');
+      }
+      if (showSizes && showSummary && this._divider) {
+        parts.push('<span class="loop-pagination__divider" aria-hidden="true"></span>');
+      }
+      if (showSummary) {
+        parts.push('<span class="loop-pagination__showing">Showing ' +
+          '<span class="loop-pagination__showing-count">' + from + '-' + to + '</span> of ' +
+          '<span class="loop-pagination__showing-count">' + rows + '</span>' +
+          '</span>');
+      }
+      return '<div class="loop-pagination__controls">' + parts.join('') + '</div>';
     }
 
     _render() {
@@ -560,47 +750,16 @@ type), addressable by pointing it at the grid's exposed API object.
       var rows = api.paginationGetRowCount();
       var from = rows === 0 ? 0 : (page - 1) * size + 1;
       var to = Math.min(page * size, rows);
-      var sizes = this._pageSizes;
-      if (sizes.indexOf(size) === -1) { sizes = sizes.concat([size]).sort(function (a, b) { return a - b; }); }
 
-      var pages = pageWindow(page, total).map(function (p) {
-        if (p === '…') { return '<span class="loop-pagination__ellipsis" aria-hidden="true">...</span>'; }
-        var active = p === page;
-        return '<button type="button" class="loop-pagination__page' +
-          (active ? ' loop-pagination__page--active" aria-current="page' : '') +
-          '" data-page="' + p + '" aria-label="Page ' + p + '">' + p + '</button>';
-      }).join('');
-
-      var options = sizes.map(function (s) {
-        return '<option value="' + s + '"' + (s === size ? ' selected' : '') + '>' + s + '</option>';
-      }).join('');
+      var nav = this._nav === 'jump' ? this._renderJumpNav(page, total)
+              : this._nav === 'goto' ? this._renderGotoNav(page, total)
+              : this._renderPagesNav(page, total);
 
       this.innerHTML =
-        '<nav class="loop-pagination loop-pagination--large" aria-label="Pagination">' +
-          '<div class="loop-pagination__nav loop-pagination__nav--simple">' +
-            this._navBtn('first', 'First page', page <= 1, 'edge-first') +
-            this._navBtn('prev', 'Previous page', page <= 1) +
-            pages +
-            this._navBtn('next', 'Next page', page >= total) +
-            this._navBtn('last', 'Last page', page >= total, 'edge-last') +
-          '</div>' +
-          '<div class="loop-pagination__controls">' +
-            '<div class="loop-pagination__items-per-page">' +
-              '<span class="loop-pagination__label">items per page</span>' +
-              '<span class="loop-pagination__select">' +
-                '<select class="loop-pagination__input" aria-label="Items per page">' + options + '</select>' +
-                '<span class="loop-pagination__select-chevron"><i class="' + ICONS.down + '" aria-hidden="true"></i></span>' +
-              '</span>' +
-            '</div>' +
-            '<span class="loop-pagination__showing">Showing ' +
-              '<span class="loop-pagination__showing-count">' + from + '-' + to + '</span> of ' +
-              '<span class="loop-pagination__showing-count">' + rows + '</span>' +
-            '</span>' +
-          '</div>' +
+        '<nav class="loop-pagination' + this._sizeClass + '" aria-label="Pagination">' +
+          nav +
+          this._renderControls(size, from, to, rows) +
         '</nav>';
-
-      this.querySelector('.loop-pagination__nav').addEventListener('click', this._onClick);
-      this.querySelector('select').addEventListener('change', this._onSizeChange);
     }
   }
 
@@ -652,6 +811,14 @@ loop-ag-grid-pagination {
   color: var(--color-text-on-light-default);
 }
 
+/* ---- Jump-to-page input (nav="jump"): compact fixed box, like the base
+   component's size="3" text input. `ch` keeps it content-relative so it scales
+   with the size modifier's font-size; the block's 85px max-width cap still
+   applies. ---- */
+.loop-pagination__input--jump {
+  width: 7ch;   /* ~4 digits incl. the h-padding (border-box) */
+}
+
 /* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
    a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
 .loop-pagination__icon--edge-first,
@@ -676,6 +843,15 @@ loop-ag-grid-pagination {
 |---|---|---|
 | `grid-api` | global name or dot-path (default `"AgGridAPI"`) | Where to find the AG Grid API object the `AGGrid_Lib` instance exposes. Re-checked on attribute change; also settable programmatically via `setApi(api)`. |
 | `page-sizes` | comma-separated integers (default `"20,50,100"`) | Items-per-page options offered in the select. The grid's **current** page size is always included even if it isn't in this list. |
+| `size` | `"large"` (default) / `"regular"` / `"small"` | Scale of the whole bar: large 48px (the AG-footer frame 27044-57397), regular 40px (the base component default), small 32px (AG-grid dashboards). Maps to the `.loop-pagination--*` size modifier. |
+| `nav` | `"pages"` (default) / `"jump"` / `"goto"` | Left-side navigation. `pages` = numbered chips with ellipsis windowing; `jump` = First/Prev + page input + "of N pages" + Next/Last (Enter or change commits, out-of-range clamps to 1..N); `goto` = compact standalone `Go to [n] page` select (every page is an `<option>` — suits modest page counts; prefer `jump` for very large totals). |
+| `button-labels` | boolean (default `false`) | `true` renders the base component's **labeled** First/Prev/Next/Last buttons; `false` the icon-only (`--simple`) ones. Applies to `nav="pages"` and `nav="jump"`. |
+| `show-items-per-page` | boolean (default `true`) | Show/hide the right-rail items-per-page select. |
+| `show-summary` | boolean (default `true`) | Show/hide the right-rail "Showing X-Y of Z" summary. (Both hidden ⇒ the right rail is omitted entirely.) |
+| `divider` | boolean (default `false`) | Hairline (`__divider`) between the two right-rail sections — rendered only when both are visible. |
+
+> Booleans are **value-aware** (the ODC convention): absent → the default; `"false"`/`"0"` →
+> off; any other value (including `""`) → on. Bind them as `If(Flag, "true", "false")`.
 
 ## API — Events
 | Event | Detail | Description |
@@ -687,9 +863,20 @@ loop-ag-grid-pagination {
 <!-- Below the AGGrid_Lib block on the same screen -->
 <div id="AGGridDemo"><!-- AGGrid_Lib block renders the grid + exposes its API here --></div>
 
+<!-- Default: the AG Grid footer frame (large, numbered chips, full right rail) -->
 <loop-ag-grid-pagination
   grid-api="AgGridAPI"
   page-sizes="20,50,100">
+</loop-ag-grid-pagination>
+
+<!-- Variants: labeled jump pager at the base 40px scale, right rail hidden -->
+<loop-ag-grid-pagination
+  grid-api="AgGridAPI"
+  size="regular"
+  nav="jump"
+  button-labels="true"
+  show-items-per-page="false"
+  show-summary="false">
 </loop-ag-grid-pagination>
 ```
 
@@ -809,4 +996,5 @@ Work iteratively: create the Block interface in step 1 and show it to me before 
 - [ ] On the grid: `pagination = true`, `suppressPaginationPanel = true`, `paginationPageSizeSelector` mirrors this component's `page-sizes` list (or `false`) — else AG logs errors #94/#95.
 - [ ] Place `<loop-ag-grid-pagination>` below the grid with `grid-api` pointed at the grid's real API name.
 - [ ] Test: page navigation (first/prev/next/last + direct page chips), items-per-page change, and that `loop-pagination-changed` fires with the correct `{page, pageSize, total}`.
+- [ ] If the Block exposes the variant options: bind booleans as `If(Flag, "true", "false")` (value-aware) and test `nav="jump"` (Enter commits, out-of-range clamps), `nav="goto"`, `button-labels="true"`, `size="regular"`/`"small"`, `show-items-per-page="false"`, `show-summary="false"`, `divider="true"`.
 - [ ] 1-Click Publish → validate in a **real browser** (Web Components never work in Service Studio Preview) — confirm the grid and pager stay in sync when either drives a page change.

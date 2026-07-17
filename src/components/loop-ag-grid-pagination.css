@@ -35,6 +35,14 @@ loop-ag-grid-pagination {
   color: var(--color-text-on-light-default);
 }
 
+/* ---- Jump-to-page input (nav="jump"): compact fixed box, like the base
+   component's size="3" text input. `ch` keeps it content-relative so it scales
+   with the size modifier's font-size; the block's 85px max-width cap still
+   applies. ---- */
+.loop-pagination__input--jump {
+  width: 7ch;   /* ~4 digits incl. the h-padding (border-box) */
+}
+
 /* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
    a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
 .loop-pagination__icon--edge-first,

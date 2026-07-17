@@ -62,6 +62,8 @@
 <link rel="stylesheet" href="../src/blocks/loop-popover.css">
 <link rel="stylesheet" href="../src/blocks/loop-tabs.css">
 <link rel="stylesheet" href="../src/blocks/loop-pagination.css">
+<!-- Web Component glue CSS (in ODC also pasted below OutSystems UI, same slot). -->
+<link rel="stylesheet" href="../src/components/loop-ag-grid-pagination.css">
 <link rel="stylesheet" href="../src/blocks/loop-breadcrumb.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
 
@@ -2261,6 +2263,71 @@
     </div>
   </section>
 
+  <!-- ============ AG GRID PAGINATION (WEB COMPONENT) ============ -->
+  <section>
+    <h2>AG Grid Pagination — Web Component <code>&lt;loop-ag-grid-pagination&gt;</code></h2>
+    <p class="pv-figma">src/components/loop-ag-grid-pagination.js + .css · shares src/blocks/loop-pagination.css · Figma node 27044-57397 (AG Grid footer, 48px default) + base-component variants 23714-3726 · drives the AG Grid pagination API — the demos below run on a 500-row mock API (<code>window.PreviewGridAPI</code>); all instances stay in sync, exactly like several pagers pointed at one grid</p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Default — the AG Grid footer frame</span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI"></loop-ag-grid-pagination>
+      <span class="pv-note">No attributes beyond <code>grid-api</code>: simple icon-only nav + numbered chips at <code>--large</code> (48px), items-per-page + Showing summary — the frozen ref 27044-57397 unchanged.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Labeled buttons — <code>button-labels="true"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" button-labels="true"></loop-ag-grid-pagination>
+      <span class="pv-note">The base component's labeled variant: First/Prev/Next/Last with text labels (<code>__btn--icon-first/--icon-last</code> + <code>__btn-label</code>).</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump to page — <code>nav="jump" button-labels="true"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" nav="jump" button-labels="true" show-items-per-page="false" show-summary="false"></loop-ag-grid-pagination>
+      <span class="pv-note">Page input + "of N pages" (<code>__nav--jump</code>): type a page and press Enter — out-of-range values clamp to 1..N. Right rail hidden via the show-* attributes.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Jump, icon-only — <code>nav="jump"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" nav="jump" show-items-per-page="false" show-summary="false"></loop-ag-grid-pagination>
+      <span class="pv-note">Same jump layout with icon-only controls.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Go to — <code>nav="goto"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" nav="goto" show-items-per-page="false" show-summary="false"></loop-ag-grid-pagination>
+      <span class="pv-note">Compact standalone <code>Go to [n] page</code> select — every page is an option, so it suits modest page counts (use <code>nav="jump"</code> for very large totals).</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Regular size — <code>size="regular"</code> (40px, the base default)</span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" size="regular"></loop-ag-grid-pagination>
+      <span class="pv-note">The unmodified base scale — no size modifier class.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Small size — <code>size="small"</code> (32px, AG-grid dashboards)</span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" size="small"></loop-ag-grid-pagination>
+      <span class="pv-note">Maps to <code>.loop-pagination--small</code>.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Right-rail divider — <code>divider="true"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" divider="true"></loop-ag-grid-pagination>
+      <span class="pv-note">Hairline (<code>__divider</code>) between items-per-page and the summary — only rendered when both sections are visible.</span>
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Items-per-page only — <code>show-summary="false"</code></span>
+      <loop-ag-grid-pagination grid-api="PreviewGridAPI" show-summary="false"></loop-ag-grid-pagination>
+      <span class="pv-note">Each right-rail section toggles independently (<code>show-items-per-page</code> / <code>show-summary</code>, value-aware booleans for ODC's <code>If(Flag,"true","false")</code> bindings).</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">event</span>
+      <span class="pv-note" id="agpg-log">loop-pagination-changed → interact with any pager above</span>
+    </div>
+  </section>
+
   <!-- ============ BREADCRUMBS ============ -->
   <section>
     <h2>Breadcrumbs — colour override on native OutSystems UI <code>.breadcrumbs</code></h2>
@@ -2937,11 +3004,54 @@
 <script src="../src/components/loop-icon-data.js"></script>
 <script src="../src/components/loop-icon-reference.js"></script>
 <script>
+  // Preview-only: a minimal stand-in for the AG Grid pagination API so the
+  // <loop-ag-grid-pagination> demos run without AG Grid. Implements only the
+  // members the component touches (see its grid-api docs); every demo instance
+  // shares this one object, so they all stay in sync — the same behavior as
+  // several pagers pointed at one real grid. Defined BEFORE the component
+  // script loads so the pagers attach on their first poll.
+  window.PreviewGridAPI = (function () {
+    const rows = 500;
+    let page = 0;                       // AG is 0-based
+    let size = 20;
+    const listeners = [];
+    const totalPages = () => Math.max(Math.ceil(rows / size), 1);
+    const clamp = () => { page = Math.min(Math.max(page, 0), totalPages() - 1); };
+    const fire = () => listeners.slice().forEach(fn => fn());
+    return {
+      paginationGoToPage(n) { page = n; clamp(); fire(); },
+      paginationGoToFirstPage() { page = 0; fire(); },
+      paginationGoToPreviousPage() { page -= 1; clamp(); fire(); },
+      paginationGoToNextPage() { page += 1; clamp(); fire(); },
+      paginationGoToLastPage() { page = totalPages() - 1; fire(); },
+      paginationGetCurrentPage() { return page; },
+      paginationGetTotalPages() { return totalPages(); },
+      paginationGetPageSize() { return size; },
+      paginationGetRowCount() { return rows; },
+      setGridOption(key, value) {
+        if (key === 'paginationPageSize') { size = value; clamp(); fire(); }
+      },
+      addEventListener(type, fn) { if (type === 'paginationChanged') listeners.push(fn); },
+      removeEventListener(type, fn) {
+        const i = listeners.indexOf(fn);
+        if (i > -1) listeners.splice(i, 1);
+      }
+    };
+  })();
+</script>
+<script src="../src/components/loop-ag-grid-pagination.js"></script>
+<script>
   // Preview-only: surface the component's select/toggle events so you can verify wiring.
   const log = document.getElementById('lbd-log');
   document.querySelectorAll('loop-button-dropdown').forEach(el => {
     el.addEventListener('select', e => { log.textContent = `select → ${JSON.stringify(e.detail)}`; });
     el.addEventListener('toggle', e => { if (e.detail.open) log.textContent = `toggle → open`; });
+  });
+
+  // Surface AG Grid Pagination events (bubbles — one document-level listener covers all demos).
+  const agpgLog = document.getElementById('agpg-log');
+  document.addEventListener('loop-pagination-changed', e => {
+    agpgLog.textContent = `loop-pagination-changed → ${JSON.stringify(e.detail)}`;
   });
 
   // Surface System Alert events.
