@@ -55,11 +55,10 @@ numbered chips); attributes unlock every variant of the base Loop pagination com
 ## Files
 | File | OutSystems destination |
 |---|---|
-| `src/blocks/loop-pagination.css` | Theme CSS — paste below OutSystems UI (shared pagination block styles; adds the `.loop-pagination--large` 48px size used here) |
+| `src/blocks/loop-pagination.css` | Theme CSS — paste below OutSystems UI (pagination block styles + the Web Component's light-DOM glue: native `<select>` chrome, jump-input width, first/last edge-bar glyphs. Adds the `.loop-pagination--large` 48px size used here) |
 | `src/components/loop-ag-grid-pagination.js` | Script resource (Theme/Library), Include = **Always** |
-| `src/components/loop-ag-grid-pagination.css` | Theme CSS — paste below OutSystems UI (component glue styles — native `<select>` chrome, the jump-input width, and the first/last edge-bar glyphs) |
 
-> Canonical source lives in the three files above; they are embedded into this ticket by
+> Canonical source lives in the two files above; they are embedded into this ticket by
 > `node build/embed-handover-code.mjs` — re-run after editing a source file to keep them in sync.
 
 ## Code to paste into ODC
@@ -67,7 +66,7 @@ numbered chips); attributes unlock every variant of the base Loop pagination com
 > Copy the code below straight into ODC. The canonical source is the repo path in the summary — these blocks are generated from it (`node build/embed-handover-code.mjs`), so re-run after editing the source to keep the ticket in sync.
 
 <details>
-<summary><code>loop-pagination.css</code> → Theme CSS — paste below OutSystems UI (shared pagination block styles)</summary>
+<summary><code>loop-pagination.css</code> → Theme CSS — paste below OutSystems UI (pagination block + Web Component light-DOM glue)</summary>
 
 ```css
 /* loop-pagination.css -- Pagination component (BEM block: .loop-pagination).
@@ -376,6 +375,71 @@ numbered chips); attributes unlock every variant of the base Loop pagination com
     transition: none;
   }
 }
+
+/* ============================================================================
+   <loop-ag-grid-pagination> light-DOM glue
+   Figma: "-loop pagination" [node:27044-57397] · ref loop/refs/cmp-ag-grid-pagination/
+   The Web Component renders the same .loop-pagination BEM structure below an AG
+   Grid; these rules cover what its generated markup needs beyond the block above:
+   the native <select> chrome and the custom first/last edge-bar glyphs. Kept in
+   the block CSS (not the component file) so `build:theme` emits them into the
+   ODC Theme paste — the component's markup is otherwise unstyled theme-side.
+   ============================================================================ */
+loop-ag-grid-pagination {
+  display: block;
+}
+
+/* ---- Items-per-page: native <select> wearing .loop-pagination__input.
+   Wrapper is the positioning context; the custom chevron is absolutely pinned
+   inside the box (the native arrow is suppressed via appearance:none). ---- */
+.loop-pagination__select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.loop-pagination__select .loop-pagination__input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--space-medium);   /* 32px — clears the chevron */
+  cursor: pointer;
+}
+.loop-pagination__select-chevron {
+  position: absolute;
+  right: var(--loop-pagination-chevron-inset);   /* 10px — inside the box, off the right edge */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;   /* clicks fall through to the native <select> */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  color: var(--color-text-on-light-default);
+}
+
+/* ---- Jump-to-page input (nav="jump"): compact fixed box, like the base
+   component's size="3" text input. `ch` keeps it content-relative so it scales
+   with the size modifier's font-size; the block's 85px max-width cap still
+   applies. ---- */
+.loop-pagination__input--jump {
+  width: 7ch;   /* ~4 digits incl. the h-padding (border-box) */
+}
+
+/* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
+   a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
+.loop-pagination__icon--edge-first,
+.loop-pagination__icon--edge-last {
+  gap: 1px;
+}
+.loop-pagination__icon--edge-first::before,
+.loop-pagination__icon--edge-last::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 2px;
+  height: 13px;
+  border-radius: 1px;
+  background: currentColor;
+}
 ```
 
 </details>
@@ -390,8 +454,8 @@ numbered chips); attributes unlock every variant of the base Loop pagination com
           · base component variants (labeled / jump / go-to / sizes): node 23714:3726
    Why: AG Grid Community's native paging panel is arrows + "x to y of z" — its DOM
         cannot render the design's numbered page chips. This LIGHT-DOM Web Component
-        renders the `.loop-pagination` BEM structure (styled by
-        src/blocks/loop-pagination.css + loop-ag-grid-pagination.css) below the grid
+        renders the `.loop-pagination` BEM structure (styled entirely by
+        src/blocks/loop-pagination.css — block styles + light-DOM glue) below the grid
         and drives it through the AG Grid pagination API. It exposes every option of
         the base Loop pagination component (built for the native OutSystems
         Pagination widget), not just the AG-frame default.
@@ -767,74 +831,6 @@ numbered chips); attributes unlock every variant of the base Loop pagination com
     customElements.define('loop-ag-grid-pagination', LoopAgGridPagination);
   }
 })();
-```
-
-</details>
-<details>
-<summary><code>loop-ag-grid-pagination.css</code> → Theme CSS — paste below OutSystems UI (component glue styles)</summary>
-
-```css
-/* ============================================
-   Component: <loop-ag-grid-pagination> — glue styles only
-   Figma: "-loop pagination" [node:27044-57397] · ref loop/refs/cmp-ag-grid-pagination/
-   The look lives in src/blocks/loop-pagination.css (.loop-pagination--large);
-   this file adds only what the generated light-DOM markup needs beyond the block:
-   the native <select> chrome and the custom first/last edge-bar glyphs.
-============================================ */
-
-loop-ag-grid-pagination {
-  display: block;
-}
-
-/* ---- Items-per-page: native select wearing .loop-pagination__input ---- */
-.loop-pagination__select {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-.loop-pagination__select .loop-pagination__input {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: var(--space-medium);   /* 32px — clears the chevron */
-  cursor: pointer;
-}
-.loop-pagination__select-chevron {
-  position: absolute;
-  right: var(--loop-pagination-chevron-inset);   /* 10px — inside the box, off the right edge */
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;   /* clicks fall through to the native <select> */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 22px;
-  color: var(--color-text-on-light-default);
-}
-
-/* ---- Jump-to-page input (nav="jump"): compact fixed box, like the base
-   component's size="3" text input. `ch` keeps it content-relative so it scales
-   with the size modifier's font-size; the block's 85px max-width cap still
-   applies. ---- */
-.loop-pagination__input--jump {
-  width: 7ch;   /* ~4 digits incl. the h-padding (border-box) */
-}
-
-/* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
-   a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
-.loop-pagination__icon--edge-first,
-.loop-pagination__icon--edge-last {
-  gap: 1px;
-}
-.loop-pagination__icon--edge-first::before,
-.loop-pagination__icon--edge-last::after {
-  content: "";
-  flex: 0 0 auto;
-  width: 2px;
-  height: 13px;
-  border-radius: 1px;
-  background: currentColor;
-}
 ```
 
 </details>

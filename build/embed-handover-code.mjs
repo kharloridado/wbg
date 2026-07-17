@@ -159,9 +159,8 @@ const MAP = {
   },
   "loop-ag-grid-pagination.md": {
     files: [
-      ["src/blocks/loop-pagination.css", "css", "Theme CSS — paste below OutSystems UI (shared pagination block styles)"],
+      ["src/blocks/loop-pagination.css", "css", "Theme CSS — paste below OutSystems UI (pagination block + Web Component light-DOM glue)"],
       ["src/components/loop-ag-grid-pagination.js", "js", "Script resource (Theme/Library), Include = Always"],
-      ["src/components/loop-ag-grid-pagination.css", "css", "Theme CSS — paste below OutSystems UI (component glue styles)"],
     ],
     wiring: {
       tag: "loop-ag-grid-pagination",

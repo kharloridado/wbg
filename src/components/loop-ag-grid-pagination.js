@@ -5,8 +5,8 @@
           · base component variants (labeled / jump / go-to / sizes): node 23714:3726
    Why: AG Grid Community's native paging panel is arrows + "x to y of z" — its DOM
         cannot render the design's numbered page chips. This LIGHT-DOM Web Component
-        renders the `.loop-pagination` BEM structure (styled by
-        src/blocks/loop-pagination.css + loop-ag-grid-pagination.css) below the grid
+        renders the `.loop-pagination` BEM structure (styled entirely by
+        src/blocks/loop-pagination.css — block styles + light-DOM glue) below the grid
         and drives it through the AG Grid pagination API. It exposes every option of
         the base Loop pagination component (built for the native OutSystems
         Pagination widget), not just the AG-frame default.

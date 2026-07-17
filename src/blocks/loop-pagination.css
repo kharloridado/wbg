@@ -304,3 +304,68 @@
     transition: none;
   }
 }
+
+/* ============================================================================
+   <loop-ag-grid-pagination> light-DOM glue
+   Figma: "-loop pagination" [node:27044-57397] · ref loop/refs/cmp-ag-grid-pagination/
+   The Web Component renders the same .loop-pagination BEM structure below an AG
+   Grid; these rules cover what its generated markup needs beyond the block above:
+   the native <select> chrome and the custom first/last edge-bar glyphs. Kept in
+   the block CSS (not the component file) so `build:theme` emits them into the
+   ODC Theme paste — the component's markup is otherwise unstyled theme-side.
+   ============================================================================ */
+loop-ag-grid-pagination {
+  display: block;
+}
+
+/* ---- Items-per-page: native <select> wearing .loop-pagination__input.
+   Wrapper is the positioning context; the custom chevron is absolutely pinned
+   inside the box (the native arrow is suppressed via appearance:none). ---- */
+.loop-pagination__select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.loop-pagination__select .loop-pagination__input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: var(--space-medium);   /* 32px — clears the chevron */
+  cursor: pointer;
+}
+.loop-pagination__select-chevron {
+  position: absolute;
+  right: var(--loop-pagination-chevron-inset);   /* 10px — inside the box, off the right edge */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;   /* clicks fall through to the native <select> */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  color: var(--color-text-on-light-default);
+}
+
+/* ---- Jump-to-page input (nav="jump"): compact fixed box, like the base
+   component's size="3" text input. `ch` keeps it content-relative so it scales
+   with the size modifier's font-size; the block's 85px max-width cap still
+   applies. ---- */
+.loop-pagination__input--jump {
+  width: 7ch;   /* ~4 digits incl. the h-padding (border-box) */
+}
+
+/* ---- First/Last custom glyphs (Figma "angle-left first" / "angle-right last"):
+   a 2px edge bar composed with the angle icon — no new font glyph needed. ---- */
+.loop-pagination__icon--edge-first,
+.loop-pagination__icon--edge-last {
+  gap: 1px;
+}
+.loop-pagination__icon--edge-first::before,
+.loop-pagination__icon--edge-last::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 2px;
+  height: 13px;
+  border-radius: 1px;
+  background: currentColor;
+}
