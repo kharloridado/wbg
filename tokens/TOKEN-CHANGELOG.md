@@ -8,6 +8,16 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-17 18:16 UTC — v0.6.0
+
+- **[component]** + `--loop-mldd-chevron-size`: `12px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-indent`: `var(--space-small)` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-option-h`: `40px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-panel-max-h`: `320px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-panel-z`: `100` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-search-h`: `40px` _(component-multilevel-dropdown.css)_
+
 ## 2026-07-17 13:57 UTC — v0.6.0
 
 - **[component]** + `--loop-pagination-chevron-inset`: `10px` _(component-pagination.css)_
