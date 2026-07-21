@@ -1290,9 +1290,9 @@ if ($public.el) {
 }
 ```
 
-## Troubleshooting — the two silent failures
+## Troubleshooting — the silent failures
 
-Both traps below produce **no error, no console output, and no visual clue**. Both were hit for real on `WBG_POC3/NewCase`; check these first before suspecting the Web Component.
+Every trap below produces **no error, no console output, and no visual clue**. All three were hit for real on `WBG_POC3/NewCase`; check these first before suspecting the Web Component.
 
 **1. "OnChange never fires."** Almost always the wiring is fine and the event name is not. Three things must agree:
 
@@ -1329,7 +1329,16 @@ const e = document.querySelector('loop-multilevel-dropdown');
 console.log(e.selectedRecord, '|', e.getAttribute('selected-record'));
 ```
 
-**3. The open panel is cut off.** The panel renders inside the host — an ancestor with `overflow: hidden` (an OSUI `card`, for instance) clips it. See **Known limitation** at the top.
+**3. "The event fires, but only the first level arrives."** The handler is deserializing the payload into the **items** Structure — `{Value, Label, Children : List}` — instead of the selection shape. The payload nests a single `Child` **object**, so `Children` has nothing to bind to and comes back empty, while `Value`/`Label` of the root map fine:
+
+```
+payload   {"value":"0","label":"Asia","child":{…"child":{…"Vietnam"}}}
+absorbed  { Value: "0", Label: "Asia", Children: [] }        ← levels 2 and 3 dropped
+```
+
+Note this is the exact mirror of trap #2 — the same `Child`/`Children` confusion, on the way out instead of the way in. Fix it with the **flatten-in-OnReady** recipe above, which sidesteps nested Structures entirely; or declare the `Selection` → `Selection2` → `Selection3` chain and descend `.Child`.
+
+**4. The open panel is cut off.** The panel renders inside the host — an ancestor with `overflow: hidden` (an OSUI `card`, for instance) clips it. See **Known limitation** at the top.
 
 ## Build in ODC with Mentor Studio
 
