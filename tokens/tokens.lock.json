@@ -3746,6 +3746,11 @@
       "file": "component-field.css",
       "kind": "component"
     },
+    ":root --loop-mandatory-marker-gap": {
+      "value": "var(--space-tiny)",
+      "file": "outsystems-ui-overrides.css",
+      "kind": "branding"
+    },
     ":root --loop-mldd-chevron-size": {
       "value": "12px",
       "file": "component-multilevel-dropdown.css",
