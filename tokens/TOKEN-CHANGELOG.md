@@ -9,7 +9,9 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
-## 2026-07-22 14:17 UTC — v0.6.0
+
+
+## 2026-07-22 14:46 UTC — v0.6.0
 
 - **[component]** + `--loop-card-neutral-border`: `var(--color-neutral-60)` _(component-card.css)_
 - **[component]** + `--loop-card-section-color`: `var(--color-bg-container-on-light-lowest)` _(component-card.css)_
@@ -24,6 +26,14 @@ modified (~) and removed (−) tokens here, newest first, classified
 - **[component]** + `--loop-card-success-bg`: `var(--color-bg-container-state-success-low)` _(component-card.css)_
 - **[component]** + `--loop-card-success-border`: `var(--color-outline-on-light-state-success-high)` _(component-card.css)_
 - **[component]** + `--loop-card-warning-bg`: `var(--color-domain-state-warning-low)` _(component-card.css)_
+
+## 2026-07-22 14:22 UTC — v0.6.0
+
+- **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
+- **[component]** − `--loop-mldd-search-h` (was `40px`, component-multilevel-dropdown.css)
+
+## 2026-07-17 18:16 UTC — v0.6.0
+
 - **[component]** + `--loop-mldd-chevron-size`: `12px` _(component-multilevel-dropdown.css)_
 - **[component]** + `--loop-mldd-indent`: `var(--space-small)` _(component-multilevel-dropdown.css)_
 - **[component]** + `--loop-mldd-option-h`: `40px` _(component-multilevel-dropdown.css)_

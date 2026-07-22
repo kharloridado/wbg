@@ -1722,10 +1722,10 @@
         ]'>
       </loop-multilevel-dropdown>
 
-      <span class="pv-label pv-label--block">Preselected level-3 leaf (<code>selected-value="ph"</code>)</span>
+      <span class="pv-label pv-label--block">Preselected level-3 leaf via the full <code>selected-record</code> (same nested shape onChange emits — single-quoted, ODC-style)</span>
       <loop-multilevel-dropdown class="pv-mldd"
         placeholder="Select a country"
-        selected-value="ph"
+        selected-record="{'value':'asi','label':'Asia','child':{'value':'sea','label':'South East Asia','child':{'value':'ph','label':'Philippines'}}}"
         items='[
           {"value":"asi","label":"Asia","children":[
             {"value":"sea","label":"South East Asia","children":[
@@ -1734,6 +1734,24 @@
             {"value":"sas","label":"South Asia","children":[
               {"value":"in","label":"India"}]}]}
         ]'>
+      </loop-multilevel-dropdown>
+
+      <span class="pv-label pv-label--block">Duplicate leaf <code>value</code> across branches — the full-path <code>selected-record</code> resolves to the intended branch (a bare leaf value would match the first). Both trees below share leaf value <code>"m"</code>; each is preselected to a different branch.</span>
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Manager under North"
+        selected-record="{'value':'n','label':'North','child':{'value':'m','label':'North Manager'}}"
+        items="[
+          {'value':'n','label':'North','children':[{'value':'m','label':'North Manager'}]},
+          {'value':'s','label':'South','children':[{'value':'m','label':'South Manager'}]}
+        ]">
+      </loop-multilevel-dropdown>
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Manager under South"
+        selected-record="{'value':'s','label':'South','child':{'value':'m','label':'South Manager'}}"
+        items="[
+          {'value':'n','label':'North','children':[{'value':'m','label':'North Manager'}]},
+          {'value':'s','label':'South','children':[{'value':'m','label':'South Manager'}]}
+        ]">
       </loop-multilevel-dropdown>
 
       <span class="pv-label pv-label--block">Disabled · search="false" · narrow container · invalid items JSON</span>
@@ -1760,8 +1778,21 @@
         ]'>
       </loop-multilevel-dropdown>
       <loop-multilevel-dropdown class="pv-mldd"
-        placeholder="Invalid items JSON (renders empty, no error)"
+        placeholder="Invalid items JSON (renders empty + console.warn)"
         items='not valid json'>
+      </loop-multilevel-dropdown>
+      <!-- Single-quoted JSON — the convenient inline form in ODC Expressions (whose string
+           literals are already double-quoted). Attribute uses double quotes so the JSON can
+           use single quotes; the escaped apostrophe (Côte d\'Ivoire) exercises that path. -->
+      <loop-multilevel-dropdown class="pv-mldd"
+        placeholder="Single-quoted JSON (ODC-style)"
+        items="[
+          {'value':'waf','label':'West Africa','children':[
+            {'value':'ci','label':'C\'ôte d\'Ivoire'},
+            {'value':'gh','label':'Ghana'}]},
+          {'value':'eu','label':'Europe','children':[
+            {'value':'fr','label':'France'}]}
+        ]">
       </loop-multilevel-dropdown>
 
       <p class="pv-note">Keyboard: focus field → Enter/Space/↓/↑ opens (or type to open + seed the search) · ↑/↓ move · → expand / first child · ← collapse / parent · Home/End · Enter selects a leaf (parents only expand — leaf-only selection) · Esc closes · click-outside closes. Search matches every level; ancestors stay as context and matched text is bolded. Selection = row fill + right-aligned check; the closed field then shows the full path (Asia &gt; South East Asia &gt; Philippines).</p>
@@ -1798,7 +1829,7 @@
         <label>Rounded wrapper (32px pill radius)</label>
         <loop-multilevel-dropdown
           placeholder="Pill radius from the wrapper"
-          selected-value="r1a"
+          selected-record="{'value':'r1','label':'Group','child':{'value':'r1a','label':'Option A'}}"
           items='[
             {"value":"r1","label":"Group","children":[
               {"value":"r1a","label":"Option A"},
@@ -1806,6 +1837,57 @@
           ]'>
         </loop-multilevel-dropdown>
       </div>
+
+    </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label pv-label--block">Native OutSystems Label + Mandatory, and the <code>invalid</code> state — the component is form-associated, so the <em>host</em> is labelable: <code>&lt;label for&gt;</code> binds to it, clicking the label focuses the trigger, and the label text becomes the trigger's accessible name (no <code>label</code> attribute — supply one or the other, never both)</span>
+
+      <div class="loop-field pv-mldd">
+        <label for="mldd-region" class="mandatory">Region</label>
+        <loop-multilevel-dropdown id="mldd-region" required="true"
+          placeholder="Select a region"
+          items='[
+            {"value":"m1","label":"Group","children":[
+              {"value":"m1a","label":"Option A"},
+              {"value":"m1b","label":"Option B"}]}
+          ]'>
+        </loop-multilevel-dropdown>
+      </div>
+
+      <div class="loop-field pv-mldd">
+        <label for="mldd-invalid" class="mandatory">Region (invalid)</label>
+        <loop-multilevel-dropdown id="mldd-invalid" required="true" invalid="true"
+          placeholder="Select a region"
+          items='[
+            {"value":"e1","label":"Group","children":[
+              {"value":"e1a","label":"Option A"}]}
+          ]'>
+        </loop-multilevel-dropdown>
+      </div>
+
+      <!-- `label` attribute path with required — the internal label draws its own asterisk
+           (.lmdd__label--required), mirroring the native label's .mandatory::after. -->
+      <loop-multilevel-dropdown class="pv-mldd" required="true"
+        label="Internal label, required"
+        placeholder="Select an option"
+        items='[
+          {"value":"i1","label":"Group","children":[
+            {"value":"i1a","label":"Option A"}]}
+        ]'>
+      </loop-multilevel-dropdown>
+
+      <!-- Value-aware booleans: ODC binds If(Flag,"true","false"), so "false" must be falsy. -->
+      <loop-multilevel-dropdown class="pv-mldd" required="false" invalid="false"
+        label='required="false" invalid="false" (no asterisk, no error)'
+        placeholder="Select an option"
+        items='[
+          {"value":"f1","label":"Group","children":[
+            {"value":"f1a","label":"Option A"}]}
+        ]'>
+      </loop-multilevel-dropdown>
+
+      <p class="pv-note">Open the Small wrapper above: panel rows and the search box are one field-height each (<code>--loop-mldd-option-h</code> / <code>--loop-mldd-search-h</code> derive from <code>--loop-select-h</code> at <code>:host</code>), so they ramp 56/48/40/32 with the field instead of staying pinned at 40px. The error <em>message</em> is not part of the component — <code>aria-describedby</code> cannot cross the shadow boundary, so it stays in the Field Wrapper's light DOM.</p>
 
       <p class="pv-log" id="mldd-log">last event: —</p>
     </div>
@@ -3242,7 +3324,10 @@
   // Surface Multilevel Dropdown change events.
   const mlddLog = document.getElementById('mldd-log');
   document.querySelectorAll('loop-multilevel-dropdown').forEach(el => {
-    el.addEventListener('change', e => { mlddLog.textContent = `change → ${e.detail.map(r => r.label).join(' > ') || '(cleared)'} · detail: ${JSON.stringify(e.detail)}`; });
+    el.addEventListener('change', e => {
+      const labels = []; for (let n = e.detail; n; n = (n.children || [])[0]) labels.push(n.label);
+      mlddLog.textContent = `change → ${labels.join(' > ') || '(cleared)'} · detail: ${JSON.stringify(e.detail)}`;
+    });
   });
 
   // Surface Toast events.

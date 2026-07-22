@@ -10,8 +10,18 @@
   display: block;
   position: relative;
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  /* Panel row + search heights are one field-height each, so they track --loop-select-h as
+     the .loop-field--* wrapper ramp re-points it (56/48/40/32) — without this the panel kept
+     40px rows under a 32px Small field. Derived HERE, not in the token file: a var() inside a
+     custom property is substituted where it is declared, so a :root derivation would freeze
+     at 40px; :host is the first scope that sees the wrapper's value. */
+  --loop-mldd-option-h: var(--loop-select-h, 40px);
+  --loop-mldd-search-h: var(--loop-select-h, 40px);
 }
 :host([hidden]) { display: none; }
+/* delegatesFocus (needed so a native <label for> click reaches the trigger) also makes the
+   host match :focus — suppress its ring so only .lmdd__field's own ring ever draws. */
+:host(:focus) { outline: none; }
 
 /* ---- Optional label above the field (Select scale: 13px, not the 16px .loop-field label) ---- */
 .lmdd__label {
@@ -22,6 +32,22 @@
   font-weight: var(--font-weight-semibold, 600);
   line-height: var(--loop-select-label-leading, 16px);
   letter-spacing: var(--loop-select-label-tracking, 0.25px);
+}
+/* Required marker — LEADING asterisk (Figma 19336-9606), mirroring how the native
+   .mandatory marker is repositioned in tokens/outsystems-ui-overrides.css so the internal
+   label matches the OSUI Label it stands in for. The global rule can't reach in here (shadow
+   DOM), so the same flex + order:-1 trick is repeated locally. Only rendered on the internal
+   label; with a native Label, OSUI supplies its own. */
+.lmdd__label--required {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--loop-mandatory-marker-gap, 4px);
+}
+.lmdd__label--required::after {
+  content: "*";
+  order: -1;
+  color: var(--color-text-on-light-state-error);
+  line-height: inherit;
 }
 
 /* ---- Field box (closed trigger) — pixel parity with the single-Select restyle ---- */
@@ -47,6 +73,16 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .lmdd__field:hover { border-color: var(--color-outline-on-light-emphasis); }
+/* Error state — same three tokens as the native Select's .not-valid treatment in
+   src/blocks/loop-dropdown.css. Sits AFTER :hover and BEFORE the focus rules: all three are
+   equal specificity (0,2,0), so source order alone decides — hover can't wash out the error
+   colour, and focusing an invalid field still draws the focus ring over it. Do NOT add a
+   :hover variant here; at (0,3,0) it would outrank the focus ring. */
+.lmdd--invalid .lmdd__field {
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
+}
 /* 2px ring with ZERO layout shift: keep the 1px border and add a 1px inset shadow inside it
    (border-no-height-shift — no padding compensation, a border never changes the box size). */
 .lmdd__field:focus-visible,
