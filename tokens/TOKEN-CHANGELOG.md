@@ -9,6 +9,12 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 16:38 UTC — v0.6.0
+
+- **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
+- **[component]** − `--loop-mldd-search-h` (was `40px`, component-multilevel-dropdown.css)
+
 ## 2026-07-22 16:14 UTC — v0.6.0
 
 - **[branding]** + `--loop-mandatory-marker-gap`: `var(--space-tiny)` _(outsystems-ui-overrides.css)_
