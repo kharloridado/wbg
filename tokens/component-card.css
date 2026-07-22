@@ -8,7 +8,35 @@
    * #21262d29 canonical — the Figma #00396b29 is drift, tracked FND-065, no code change). */
   --loop-card-shadow:          var(--shadow-medium);
 
+  /* ---- Status variants (opt-in .card--success / .card--warning / .card--neutral) ----
+   * Status card surfaces from the 2026-07-22 design. Fills + the success outline
+   * alias the semantic state layer, never the primitives. The success card is
+   * outlined and the warning card is not — drawn that way, kept that way (FND-079).
+   * The neutral card keeps the base white fill and adds only the outline. */
+  --loop-card-success-bg:         var(--color-bg-container-state-success-low);      /* #f6fef0 */
+  --loop-card-success-border:     var(--color-outline-on-light-state-success-high); /* #388004 */
+  --loop-card-warning-bg:         var(--color-domain-state-warning-low);            /* #fef3d7 */
+  /* Neutral outline #4b5e71: no outline role resolves to it — the only semantic role
+   * carrying this value is Icon/On Light/Default, which would be a false claim on a
+   * border. Aliases the primitive instead, as --loop-badge-label-neutral-heavy already
+   * does for the badge outline. Missing outline role raised as FND-081. */
+  --loop-card-neutral-border:     var(--color-neutral-60);                          /* #4b5e71 */
+  --loop-card-status-border-size: var(--border-size-s);                             /* 1px */
+
   /* ---- Content placeholder (dev affordance) ---- */
   --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* Figma neutral/solid/10-s #e7edf3 */
   --loop-card-placeholder-text: var(--color-text-on-light-state-disabled);
+
+  /* ---- Sectioned card (Figma 20020051:21016 white / 20020051:21413 muted) ----
+   * One card silhouette split into differently-tinted sections: a white form
+   * section over a muted section that hosts the AG Grid. Neither Figma frame is
+   * auto-layout — children sit at a 48px inset with a ~29px vertical step. */
+  --loop-card-sectioned-radius:    var(--loop-card-radius);                 /* 8px — the Figma frames specify 16px; snapped to the Loop card token so the sectioned card matches every other card (FND-077) */
+  --loop-card-section-padding:     var(--space-xlarge);                     /* Figma 48px inset */
+  --loop-card-section-gap:         var(--space-medium);                     /* Figma ~29px box-to-box — a text-box crop artifact, normalised to 32px */
+  --loop-card-section-color:       var(--color-bg-container-on-light-lowest);  /* Figma Background/Container/On Light/Lowest #ffffff */
+  --loop-card-section-muted-color: var(--color-bg-container-on-light-low);     /* Figma Domain/Elevations/Light/Low #f5f7f9 */
+  --loop-card-section-divider:     var(--color-divider-on-light-default);      /* #00396b29 — the Figma seam is a standalone Line node whose stroke exports as an image, so the colour is assumed from the Loop hairline */
+  --loop-card-section-title-color: var(--color-text-on-light-default);         /* Figma Text/On Light/Default #000d1ab2 */
+  --loop-card-section-text-color:  var(--color-text-on-light-default);
 }

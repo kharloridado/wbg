@@ -270,23 +270,35 @@ const MAP = {
       include: "Include = Always",
       inputs: [
         ["Items", "Text (JSON)", '"[]"   // up to 3 levels of {value,label,children[]}'],
-        ["SelectedValue", "Text", '""'],
+        ["SelectedRecord", "Text (JSON)", '""    // nested {value,label,children[]} selection record (the items shape)'],
         ["Placeholder", "Text", '"Select an option"'],
         ["Label", "Text", '""'],
         ["ShowSearch", "Boolean", "True"],
         ["SearchPlaceholder", "Text", '"Search"'],
         ["NoResultsText", "Text", '"No results found"'],
         ["Disabled", "Boolean", "False"],
+        ["IsRequired", "Boolean", "False"],
+        ["IsInvalid", "Boolean", "False"],
       ],
       events: ["OnChange"],
       attrs: [
-        ["items", "Items"], ["selected-value", "SelectedValue"],
+        ["items", "Items"], ["selected-record", "SelectedRecord"],
         ["placeholder", "Placeholder"], ["label", "Label"],
         ["search", 'If(ShowSearch, "true", "false")'],
         ["search-placeholder", "SearchPlaceholder"], ["no-results-text", "NoResultsText"],
         ["disabled", 'If(Disabled, "true", "false")'],
+        ["required", 'If(IsRequired, "true", "false")'],
+        ["invalid", 'If(IsInvalid, "true", "false")'],
       ],
-      customEvents: [["change", "OnChange", "JSON.stringify(e.detail)"]],
+      /* FLATTENED payload, not the raw nested detail: OutSystems Structures cannot be
+         recursive, so the `children` chain would need one Structure per level — and the
+         near-miss (deserializing into the items Structure) fails SILENTLY. `path` + `leaf` are
+         two flat Structures that work at any depth. See Troubleshooting #3/#4 in the handover. */
+      customEvents: [["change", "OnChange",
+        "JSON.stringify({ path: path, leaf: path[path.length - 1] || null })",
+        ["// flatten the nested {value,label,children[]} chain → a flat path list + the picked leaf",
+         "var path = [];",
+         "for (var n = e.detail; n; n = (n.children || [])[0]) path.push({ value: n.value, label: n.label });"]]],
       methods: ["open", "close", "clear"],
     },
   },
@@ -377,8 +389,21 @@ function eventWiring(tag, customEvents) {
     `  ? root : (root ? root.querySelector('${tag}') : null);`,
     `if (el) {`,
     `  $public.el = el;                       // stash for OnDestroy cleanup`,
-    ...customEvents.map(([ev, blockEv, detail]) =>
-      `  $public.${handlerName(ev)} = function (e) { $actions.${blockEv}(${detail || ""}); };`),
+    ...customEvents.map(([ev, blockEv, detail, pre]) => {
+      const h = handlerName(ev);
+      /* One-liner unless the entry supplies `pre` — statements the handler needs BEFORE the
+         $actions call (e.g. flattening a nested detail into a shape ODC Structures can hold,
+         since OutSystems Structures cannot be recursive). */
+      if (!pre || !pre.length) {
+        return `  $public.${h} = function (e) { $actions.${blockEv}(${detail || ""}); };`;
+      }
+      return [
+        `  $public.${h} = function (e) {`,
+        ...pre.map((l) => (l ? `    ${l}` : "")),
+        `    $actions.${blockEv}(${detail || ""});`,
+        `  };`,
+      ].join("\n");
+    }),
     ...customEvents.map(([ev]) =>
       `  el.addEventListener(${q(ev)}, $public.${handlerName(ev)});`),
     `}`,

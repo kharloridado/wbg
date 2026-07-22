@@ -28,4 +28,26 @@
 
   /* ---- Spacing between adjacent buttons (The Loop: 8px; OSUI default is --space-m/16px) ---- */
   --loop-btn-adjacent-gap: var(--space-xxsmall, 8px);
+
+  /* ---- Suggestion variant (.btn.btn-suggestion) — AI "Suggested Topics" rows on the
+     New Case screen. Spec supplied as a bare SVG rect (fill #f6fcff, stroke #ced4fd,
+     rx 3.5 on a 0.5 inset = 4px radius, 1px stroke, 36px tall); both hexes resolve to
+     Loop primitives, so nothing here is hard-coded.
+     GAP: #ced4fd is --color-accent-indigo-30, a PRIMITIVE with no semantic role in
+     semantic-colors.css — every other component border points at a --color-outline-*
+     role. Raise as a design-token finding so the role gets named upstream. ---- */
+  --loop-btn-suggestion-h:      36px;                              /* SVG rect height */
+  --loop-btn-suggestion-bg:     var(--color-domain-state-info-low);/* #f6fcff (blue-05) */
+  --loop-btn-suggestion-border: var(--color-accent-indigo-30);     /* #ced4fd — no semantic role yet */
+  --loop-btn-suggestion-text:   var(--color-text-on-light-default);
+  --loop-btn-suggestion-radius: var(--radius-base, 4px);           /* rx 3.5 + 0.5 inset */
+  --loop-btn-suggestion-padding-v: var(--space-xxsmall, 8px);
+
+  /* ASSUMPTION — the SVG carries no type or state spec. Label set to the body-small
+     step at the narrow leading (36px = 8 + 17.5 + 8 + 2px border); hover/pressed stay
+     inside the same indigo ramp. Confirm against a node-specific Figma ref. */
+  --loop-btn-suggestion-font:   var(--font-size-200, 14px);
+  --loop-btn-suggestion-lh:     var(--line-height-narrow, 1.25);
+  --loop-btn-suggestion-border-hover:   var(--color-accent-indigo-40);
+  --loop-btn-suggestion-bg-pressed:     var(--color-accent-indigo-20);
 }
