@@ -7,7 +7,9 @@ The typography counterpart to the color reference. Two deliverables:
    `tokens/typography.css`, folded into the theme automatically.
 2. **`<loop-typography-reference>`** — a vanilla-JS Web Component that auto-renders the whole
    type system in the **Live Style Guide** (named Heading/Body styles, font-size scale,
-   weights, line-heights, letter-spacing), with **no rows built by hand**.
+   weights, line-heights, letter-spacing), with **no rows built by hand**. It follows the
+   **OutSystems UI Style Guide format**: each named style is a specimen — live sample, a
+   one-line spec caption, and the copyable HTML that produces it.
 
 Source of truth: WBG / "The Loop" Figma type page (**node 10995-7259**), font **Open Sans**
 (FND-002 sign-off). Size/weight/line-height/tracking values are read **live from the
@@ -28,6 +30,7 @@ theme**, so the samples can't drift from `dist/theme.css`.
 
 **How to use**
 - Drop `<loop-typography-reference>` on a Style Guide page — it reads sizes/weights live from the theme, no rows built by hand.
+- Each specimen carries a ready-to-copy markup block (`<h1 class="loop-heading-h1-large">…</h1>`), so a developer can lift the exact element + class for the style they need.
 
 ## Files
 | File | OutSystems destination |
@@ -49,10 +52,10 @@ theme**, so the samples can't drift from `dist/theme.css`.
  *
  * The typography counterpart to <loop-color-reference>: drop this one file into ODC
  * (Resources) and place a single <loop-typography-reference> element on a Style-Guide screen.
- * It documents the type system the way the Figma "Type Documentation" frame does — each named
- * style as a row of NAME/SIZE · PROPERTIES · EXAMPLE, grouped into Heading Styles, Labels and
- * Body — then the raw scale, weights, line-heights and letter-spacing reference tables. NO rows
- * are built by hand in Service Studio.
+ * It documents the type system the way the OutSystems UI Style Guide does — each named style as a
+ * specimen: the live sample, a one-line spec caption, and the copyable HTML that produces it —
+ * grouped into Heading Styles, Labels and Body, then the raw scale, weights, line-heights and
+ * letter-spacing reference tables. NO rows are built by hand in Service Studio.
  *
  * Source of truth = the WBG / "The Loop" Figma type page (node 10995-7259), font Open Sans
  * (FND-002). Headings + Labels are Open Sans Bold (700) — the Figma `Heading/Font Weight` and
@@ -63,7 +66,7 @@ theme**, so the samples can't drift from `dist/theme.css`.
  *
  * Responsive: OutSystems UI sets `body.phone` / `body.tablet` at runtime; typography.css
  * redefines the display scale steps under those classes, so headings + labels shrink per
- * form factor. The PROPERTIES column lists the Desktop · Tablet · Phone sizes; the EXAMPLE
+ * form factor. The spec caption lists the Desktop · Tablet · Phone sizes; the sample above it
  * renders at the current viewport's size. Breakpoint→step assignment is FND-059.
  *
  * Off-scale note: Body/Medium tracking (-0.25px) and Body/Tiny tracking (0.25px) are not on the
@@ -101,14 +104,15 @@ theme**, so the samples can't drift from `dist/theme.css`.
   /* Named type styles — the Figma roles (node 10995-7259), Open Sans.
    * size/weight/lh reference scale tokens; `ls` is a token name, or {px} for an off-scale
    * literal, or null for the type's default. `caps` = uppercase All-Caps. `group` is the
-   * Figma path shown in the NAME/SIZE column. */
+   * Figma path shown as the specimen name. `tag` is the element the sample renders in — and
+   * therefore the element in the copyable snippet (defaults to `p`). */
   const STYLES = {
     heading: {
       title: "Heading Styles",
       group: "Headings",
       note: "Open Sans Bold (700) · line-height 1.12. Display headings — sizes step down on tablet & phone (responsive).",
       levels: [
-        { level: "H1", roles: [
+        { level: "H1", tag: "h1", roles: [
           { label: "Large", size: "1200", weight: "bold", lh: "heading", ls: "heading",
             sample: "Transforming Lives",        cls: "loop-heading-h1-large" },
           { label: "Base",  size: "1100", weight: "bold", lh: "heading", ls: null,
@@ -118,13 +122,13 @@ theme**, so the samples can't drift from `dist/theme.css`.
           { label: "Tiny",  size: "700",  weight: "bold", lh: "heading", ls: null,
             sample: "Project Overview",          cls: "loop-heading-h1-tiny"  },
         ] },
-        { level: "H2", roles: [
+        { level: "H2", tag: "h2", roles: [
           { label: "Large", size: "1100", weight: "bold", lh: "heading", ls: null,
             sample: "Strategic Priorities",      cls: "loop-heading-h2-large" },
           { label: "Small", size: "800",  weight: "bold", lh: "heading", ls: null,
             sample: "Regional Analysis",         cls: "loop-heading-h2-small" },
         ] },
-        { level: "H3", roles: [
+        { level: "H3", tag: "h3", roles: [
           { label: "Base",  size: "800",  weight: "bold", lh: "heading", ls: null,
             sample: "Key Findings",              cls: "loop-heading-h3-base"  },
         ] },
@@ -273,110 +277,108 @@ theme**, so the samples can't drift from `dist/theme.css`.
         </p>`;
     }
 
-    /* ---- PROPERTIES cell — Figma-style spec list (Font / Weight / Size / Line height / Letter) ---- */
-    _propsHtml(r) {
+    /* ---- spec caption — the Figma properties flattened onto one line ---- */
+    _specLine(r) {
       const sizeVar = `--font-size-${r.size}`;
-      const weightVar = `--font-weight-${r.weight}`;
       const lhVar = `--line-height-${r.lh}`;
-      const wt = val(weightVar) || "";
+      const wt = val(`--font-weight-${r.weight}`) || "";
       const wtName = r.weight.charAt(0).toUpperCase() + r.weight.slice(1);
 
       // Size — responsive triple if the step is in the display ladder, else a single value.
       const resp = RESP[r.size];
-      const sizeLine = resp
-        ? `<span class="ltr__resp">Desktop <b>${resp.d}</b> · Tablet <b>${resp.t}</b> · Phone <b>${resp.p}</b>px</span>`
-        : `${val(sizeVar) || "—"}`;
+      const size = resp
+        ? `Desktop <b>${resp.d}</b> · Tablet <b>${resp.t}</b> · Phone <b>${resp.p}</b>px`
+        : `<b>${esc(val(sizeVar) || "—")}</b>`;
 
-      // Letter spacing.
-      let lsLabel = "0px (default)", lsCopy = "";
+      // Letter spacing — a token value, an off-scale literal, or the type's default.
+      let ls = "tracking 0px";
       if (typeof r.ls === "string") {
-        lsLabel = (val(`--letter-spacing-${r.ls}`) || "") + ` (${r.ls})`;
-        lsCopy = `--letter-spacing-${r.ls}`;
+        ls = `tracking ${esc(val(`--letter-spacing-${r.ls}`) || "")} (${esc(r.ls)})`;
       } else if (r.ls && r.ls.px) {
-        lsLabel = `${r.ls.px}${r.ls.off ? ' <span class="ltr__tag">off-scale</span>' : ""}`;
+        ls = `tracking ${esc(r.ls.px)}${r.ls.off ? ' <span class="ltr__tag">off-scale</span>' : ""}`;
       }
 
-      const dl = `
-        <dl class="ltr__props">
-          <dt>Font</dt><dd>Open Sans</dd>
-          <dt>Weight</dt><dd>${esc(wtName)} (${esc(wt)})</dd>
-          <dt>Size</dt><dd>${sizeLine}</dd>
-          <dt>Line height</dt><dd>${esc(pct(val(lhVar)))} (${esc(val(lhVar))})</dd>
-          <dt>Letter space</dt><dd>${lsLabel}</dd>
-        </dl>`;
-      const chips = `
-        <div class="ltr__role-tokens">
-          ${this._copyBtn("." + r.cls)} ${this._copyBtn(sizeVar)} ${this._copyBtn(weightVar)} ${this._copyBtn(lhVar)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
-        </div>`;
-      return dl + chips;
+      return `<p class="ltr__spec-line">Open Sans · ${size} · ${esc(wtName)} ${esc(wt)}` +
+        ` · lh ${esc(val(lhVar))} (${esc(pct(val(lhVar)))}) · ${ls}</p>`;
     }
 
-    /* ---- a single documentation row: NAME/SIZE · PROPERTIES · EXAMPLE ---- */
-    _docRow(group, styleName, r) {
-      const name = `
-        <div class="ltr__doc-name">
-          <span class="ltr__doc-path">${esc(group)} /${styleName ? " " + esc(styleName) + " /" : ""}</span>
-          <span class="ltr__doc-size-name">${esc(r.label)}</span>
-        </div>`;
+    /* ---- token chips — the copyable route from a style to the tokens behind it ---- */
+    _tokenChips(r) {
+      const lsCopy = typeof r.ls === "string" ? `--letter-spacing-${r.ls}` : "";
       return `
-        <div class="ltr__doc-row">
-          ${name}
-          <div class="ltr__doc-props">${this._propsHtml(r)}</div>
-          <div class="ltr__doc-example">
-            <p class="ltr__sample ${esc(r.cls)}" aria-hidden="true">${esc(r.sample)}</p>
-          </div>
+        <div class="ltr__role-tokens">
+          ${this._copyBtn("." + r.cls)} ${this._copyBtn(`--font-size-${r.size}`)} ${this._copyBtn(`--font-weight-${r.weight}`)} ${this._copyBtn(`--line-height-${r.lh}`)}${lsCopy ? " " + this._copyBtn(lsCopy) : ""}
+        </div>`;
+    }
+
+    /* ---- the copyable markup that produces the sample above it ---- */
+    _snippet(tag, cls, sample) {
+      const src = `<${tag} class="${cls}">\n  ${sample}\n</${tag}>`;
+      return `
+        <div class="ltr__code">
+          <pre class="ltr__code-pre"><code>${esc(src)}</code></pre>
+          <button type="button" class="ltr__copy ltr__code-copy" data-copy="${esc(src)}"
+            aria-label="Copy HTML for .${esc(cls)}"><code>copy</code></button>
+        </div>`;
+    }
+
+    /* ---- one specimen: name · live sample · spec caption · snippet · token chips ---- */
+    _spec(name, r) {
+      const tag = r.tag || "p";
+      return `
+        <div class="ltr__spec">
+          <h4 class="ltr__spec-name">${esc(name)}</h4>
+          <${tag} class="ltr__sample ${esc(r.cls)}" aria-hidden="true">${esc(r.sample)}</${tag}>
+          ${this._specLine(r)}
+          ${this._snippet(tag, r.cls, r.sample)}
+          ${this._tokenChips(r)}
         </div>`;
     }
 
     /* ---- named type styles group (Heading Styles / Labels / Body) ---- */
     _stylesHtml(group) {
-      const header = `
-        <div class="ltr__doc-row ltr__doc-head" aria-hidden="true">
-          <div class="ltr__col-h">Name / Size</div>
-          <div class="ltr__col-h">Properties</div>
-          <div class="ltr__col-h">Example</div>
-        </div>`;
       const body = group.levels
         ? group.levels.map((lvl) =>
-            lvl.roles.map((r) => this._docRow(`${group.group} / ${lvl.level}`, "", r)).join("")
+            lvl.roles.map((r) =>
+              this._spec(`${group.group} / ${lvl.level} / ${r.label}`, Object.assign({ tag: lvl.tag }, r))
+            ).join("")
           ).join("")
-        : group.roles.map((r) => this._docRow(group.group, "", r)).join("");
+        : group.roles.map((r) => this._spec(`${group.group} / ${r.label}`, r)).join("");
       return `
         <div class="ltr__group">
           <h3 class="ltr__group-title">${esc(group.title)}</h3>
           <p class="ltr__group-note">${esc(group.note)}</p>
-          <div class="ltr__doc">${header}${body}</div>
+          ${body}
         </div>`;
     }
 
     /* ---- native heading element defaults ---- */
     _nativeHtml() {
-      const row = (tag, label, spec, cls, sample) => `
-        <div class="ltr__role">
-          <div class="ltr__role-head">
-            <span class="ltr__role-name">${esc(label)}</span>
-            <span class="ltr__role-spec">${esc(spec)}</span>
+      /* Same specimen shape as the named styles, but the element IS the subject — so the snippet
+       * carries the bare tag (no class) and the spec line is the prose default, not a token read. */
+      const row = (tag, name, spec, cls, sample, bare) => {
+        const src = bare ? `<${tag}>\n  ${sample}\n</${tag}>` : `<${tag} class="${cls}">\n  ${sample}\n</${tag}>`;
+        return `
+        <div class="ltr__spec">
+          <h4 class="ltr__spec-name">${esc(name)}</h4>
+          <${tag} class="ltr__sample${bare ? "" : " " + esc(cls)}" aria-hidden="true">${esc(sample)}</${tag}>
+          <p class="ltr__spec-line">${esc(spec)}</p>
+          <div class="ltr__code">
+            <pre class="ltr__code-pre"><code>${esc(src)}</code></pre>
+            <button type="button" class="ltr__copy ltr__code-copy" data-copy="${esc(src)}"
+              aria-label="Copy HTML for the ${esc(tag)} element"><code>copy</code></button>
           </div>
-          <${tag} class="${esc(cls)}">${esc(sample)}</${tag}>
           <div class="ltr__role-tokens">${this._copyBtn("." + cls)}</div>
         </div>`;
-      const demoRow = `
-        <div class="ltr__role">
-          <div class="ltr__role-head">
-            <span class="ltr__role-name">h1 + .loop-heading-h1-large</span>
-            <span class="ltr__role-spec">Desktop 60px · Bold · lh 1.12 · tracking −3px · class overrides element default</span>
-          </div>
-          <h1 class="loop-heading-h1-large">Transforming Lives</h1>
-          <div class="ltr__role-tokens">${this._copyBtn(".loop-heading-h1-large")}</div>
-        </div>`;
+      };
       return `
         <div class="ltr__group">
           <h3 class="ltr__group-title">Native element defaults (h1–h3)</h3>
           <p class="ltr__group-note">OutSystems Heading widget renders these elements. No ExtendedClass needed for the default role — apply a <code>.loop-heading-*</code> class to override. h4–h6 have no Loop spec. Sizes are responsive (Desktop values shown).</p>
-          ${row("h1", "h1 element", "H1 · Base default · Desktop 48px · Bold · lh 1.12", "loop-heading-h1-base", "Annual Report 2025")}
-          ${row("h2", "h2 element", "H2 · Small default · Desktop 32px · Bold · lh 1.12", "loop-heading-h2-small", "Regional Analysis")}
-          ${row("h3", "h3 element", "H3 · Base default · Desktop 32px · Bold · lh 1.12", "loop-heading-h3-base", "Key Findings")}
-          ${demoRow}
+          ${row("h1", "h1 element", "H1 · Base default · Desktop 48px · Bold · lh 1.12", "loop-heading-h1-base", "Annual Report 2025", true)}
+          ${row("h2", "h2 element", "H2 · Small default · Desktop 32px · Bold · lh 1.12", "loop-heading-h2-small", "Regional Analysis", true)}
+          ${row("h3", "h3 element", "H3 · Base default · Desktop 32px · Bold · lh 1.12", "loop-heading-h3-base", "Key Findings", true)}
+          ${row("h1", "h1 + .loop-heading-h1-large", "Desktop 60px · Bold · lh 1.12 · tracking −3px · class overrides element default", "loop-heading-h1-large", "Transforming Lives", false)}
         </div>`;
     }
 
@@ -519,44 +521,31 @@ theme**, so the samples can't drift from `dist/theme.css`.
 .ltr__legend-dot { flex: 0 0 auto; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%;
   background: var(--color-primary, #004370); }
 
-/* documentation table — Name/Size · Properties · Example */
-.ltr__doc { border-top: 1px solid var(--color-neutral-15, #dae3eb); }
-.ltr__doc-row { display: grid; grid-template-columns: minmax(140px, 1fr) minmax(200px, 1.3fr) minmax(220px, 2fr);
-  gap: 16px 20px; padding: 18px 0; border-bottom: 1px solid var(--color-neutral-10, #e7edf3);
-  align-items: start; }
-.ltr__doc-head { padding: 8px 0; border-bottom: 1px solid var(--color-neutral-15, #dae3eb); }
-.ltr__col-h { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--color-text-on-light-subdued, #586e84); }
-.ltr__doc-name { display: flex; flex-direction: column; gap: 2px; }
-.ltr__doc-path { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
-  color: var(--color-text-on-light-subdued, #586e84); }
-.ltr__doc-size-name { font-size: 18px; font-weight: 700; color: var(--color-text-on-light-headers, #00263e); }
-.ltr__props { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 12px; }
-.ltr__props dt { color: var(--color-text-on-light-subdued, #586e84); }
-.ltr__props dd { margin: 0; color: var(--color-text-on-light-default, #00263e);
+/* specimen — name · live sample · spec caption · copyable markup · token chips */
+.ltr__spec { padding: 20px 0; border-top: 1px solid var(--color-neutral-10, #e7edf3); }
+.ltr__spec-name { margin: 0 0 12px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--color-text-on-light-subdued, #586e84); }
+.ltr__sample { margin: 0; overflow-wrap: anywhere; color: var(--color-text-on-light-headers, #00263e); }
+.ltr__spec-line { margin: 10px 0 0; font-size: 12px; color: var(--color-text-on-light-subdued, #586e84);
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
-.ltr__resp b { font-weight: 700; color: var(--color-text-on-light-headers, #00263e); }
-.ltr__doc-example { min-width: 0; }
-.ltr__doc-example .ltr__sample { margin: 0; overflow-wrap: anywhere; }
-.ltr__sample { color: var(--color-text-on-light-headers, #00263e); }
+.ltr__spec-line b { font-weight: 700; color: var(--color-text-on-light-headers, #00263e); }
+
+/* the copyable markup block */
+.ltr__code { position: relative; margin-top: 12px; }
+.ltr__code-pre { margin: 0; padding: 12px 72px 12px 14px; overflow-x: auto;
+  border-radius: var(--border-radius-soft, 6px); background: var(--color-neutral-05, #f5f7f9);
+  border: 1px solid var(--color-neutral-10, #e7edf3); }
+.ltr__code-pre code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 12px; line-height: 1.6; color: var(--color-text-on-light-default, #00263e);
+  white-space: pre; }
+.ltr__code-copy { position: absolute; top: 8px; right: 8px;
+  background: var(--color-neutral-10, #e7edf3); }
 .ltr__role-tokens { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .ltr__tag { display: inline-block; font-family: var(--font-family-body, sans-serif);
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
   padding: 1px 6px; border-radius: 999px; vertical-align: middle;
   color: var(--color-text-on-light-state-warning, #473201);
   background: var(--color-yellow-03, #fef3d7); }
-
-@media (max-width: 700px) {
-  .ltr__doc-row { grid-template-columns: 1fr; gap: 8px; }
-  .ltr__doc-head { display: none; }
-}
-
-/* named roles (native-element group still uses the simple stacked layout) */
-.ltr__role { padding: 16px 0; border-top: 1px solid var(--color-neutral-10, #e7edf3); }
-.ltr__role-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 8px; }
-.ltr__role-name { font-weight: 600; font-size: 13px; color: var(--color-text-on-light-headers, #00263e); }
-.ltr__role-spec { font-size: 12px; color: var(--color-text-on-light-subdued, #586e84);
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
 
 /* tables (scale / weights / tracking) */
 .ltr__table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -709,9 +698,10 @@ share 48px; H2 Small / H3 Base share 32px — same visual size, different semant
 |---|---|---|
 | `heading` | `Typography` | Section heading |
 | `intro` | — | Intro line under the heading |
-| `filter` | (all) | Comma list of sections: `styles`, `scale`, `weights`, `leading`, `tracking` |
+| `filter` | (all) | Comma list of sections: `styles`, `elements`, `scale`, `weights`, `leading`, `tracking` |
 
-Each class / variable chip is **click-to-copy** (✓ cue).
+Each class / variable chip is **click-to-copy** (✓ cue), as is the **copy** button on every
+specimen's markup block.
 
 ## Accessibility (WCAG 2.2 AA)
 - Section headings + real `<table>`s with `scope`'d headers + visually-hidden captions.
@@ -743,7 +733,8 @@ Constraints: never edit the OutSystems UI module; add no styles. Report what you
 - [ ] `npm run build:theme`; paste `dist/theme.css` into the ODC Theme editor.
 - [ ] Add `loop-typography-reference.js` to Resources; load it on the Style-Guide screen.
 - [ ] Place `<loop-typography-reference>`; publish.
-- [ ] Validate in a **real browser**: samples render at the right size/weight, scale &
-      weight values populate, click-to-copy works, focus rings visible.
+- [ ] Validate in a **real browser**: samples render at the right size/weight, spec captions and
+      scale/weight values populate, the markup blocks show the right element + class,
+      click-to-copy works (chips and **copy** buttons), focus rings visible.
 - [ ] Spot-check a couple of utilities on a Container via ExtendedClass
       (`font-size-800 font-weight-bold`).
