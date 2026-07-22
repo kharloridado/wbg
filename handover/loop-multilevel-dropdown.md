@@ -8,7 +8,7 @@
 
 > **Live Style Guide doc**
 
-**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event whose detail is the **selection as a nested tree** — `{value, label, child:{…}}` root → leaf, one level per nesting (the innermost record, with no `child`, is the selected leaf).
+**What it is.** A select-style field that opens a tree/accordion panel: level-1/2 nodes with children are expandable group headers, leaves (any level) are the selectable records. A pinned search row filters across all three levels — matching text is bolded, ancestors stay visible as context, and branches with matches auto-expand. Picking a leaf closes the panel, shows the **full ancestor path in the field** (e.g. `Asia > South East Asia > Philippines`; long paths ellipsise with the full path in the tooltip), and fires a `change` event whose detail is the **selection as a nested tree** — `{value, label, children:[…]}` root → leaf, one level per nesting, **the same shape as `items`** (each `children` carries the one picked branch; the innermost record, with no `children`, is the selected leaf).
 
 **When to use.** Choosing ONE record from a categorised hierarchy (region → sub-region → country; department → team → member) where flat option lists get too long to scan and the category path carries meaning.
 
@@ -55,15 +55,15 @@
  *                      Single-quoted JSON is accepted too (convenient in ODC Expressions;
  *                      escape inner apostrophes as \'). Invalid JSON renders an empty list
  *                      and logs a console.warn (never throws).
- *   selected-record    Current selection as the SAME nested {value,label,child} record the
- *                      change event emits — preselect by binding an onChange record straight
+ *   selected-record    Current selection as the SAME nested {value,label,children[]} record the
+ *                      change event emits — the items shape, so ONE ODC Structure covers items,
+ *                      preselect and payload. Preselect by binding an onChange record straight
  *                      back. Single-quoted JSON accepted (ODC-style). Resolved to a leaf by
  *                      matching the full value path (root→mid→leaf), which disambiguates leaves
- *                      that share a value across branches. A single-element `children` ARRAY is
- *                      tolerated as an alias for `child` (the items shape — the natural mistake
- *                      when an ODC dev reuses the items Structure for the preselect binding);
- *                      2+ entries warn and take the first. REFLECTED before change fires so ODC
- *                      can read it back; the echo of the same string is a no-op (o===v guard).
+ *                      that share a value across branches. Each level's `children` holds ONE
+ *                      entry (a selection can't fork); 2+ warn and take the first. A legacy
+ *                      `child` OBJECT is tolerated as an alias. REFLECTED before change fires so
+ *                      ODC can read it back; the echo of the same string is a no-op (o===v guard).
  *   placeholder        Field text when nothing is selected (default "Select an option").
  *   label              Optional visible label above the field. When empty the field's
  *                      aria-label falls back to a bound native Label, else the placeholder.
@@ -97,12 +97,13 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail IS the selection as a NESTED {value,label,child} tree root → leaf,
- *            one level per nesting — a level-3 pick nests three deep:
+ *            detail IS the selection as a NESTED {value,label,children[]} tree root → leaf —
+ *            the SAME shape as `items`, one level per nesting, each `children` holding the one
+ *            picked branch. A level-3 pick nests three deep:
  *              { value:"asi", label:"Asia",
- *                child:{ value:"sea", label:"South East Asia",
- *                  child:{ value:"ph", label:"Philippines" } } }
- *            The innermost record (no `child` key) is the selected leaf. clear() fires null.
+ *                children:[{ value:"sea", label:"South East Asia",
+ *                  children:[{ value:"ph", label:"Philippines" }] }] }
+ *            The innermost record (no `children` key) is the selected leaf. clear() fires null.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -265,8 +266,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   }
   set items(arr) { this.setAttribute('items', JSON.stringify(arr || [])); }
 
-  /* The selection is a NESTED record — {value,label,child:{…}} root → leaf, one level per
-     nesting, the innermost node (no `child`) being the selected leaf. This is BOTH the
+  /* The selection is a NESTED record — {value,label,children:[…]} root → leaf, one level per
+     nesting (the items shape), the innermost node (no `children`) being the selected leaf. This is BOTH the
      preselect input (the `selected-record` attribute) AND the change-event detail — one shape,
      both directions. The getter resolves against `items` so labels are canonical and a stale
      or unresolvable record reads back as null (self-healing); null when nothing is selected. */
@@ -279,7 +280,7 @@ class LoopMultilevelDropdown extends HTMLElement {
     this.setAttribute('selected-record', typeof rec === 'string' ? rec : JSON.stringify(rec));
   }
 
-  /* Parse the `selected-record` attribute into a nested {value,label,child} object (or null).
+  /* Parse the `selected-record` attribute into a nested {value,label,children[]} object (or null).
      Same double-quote-first / single-quote-tolerant strategy as `_parseItems`, since ODC
      Expressions naturally hand-author single-quoted JSON. Warns (never throws) on bad input. */
   _parseRecord(raw) {
@@ -293,27 +294,26 @@ class LoopMultilevelDropdown extends HTMLElement {
     }
   }
 
-  /* The next level down from a `selected-record` step. Canonically `.child` (a single object —
-     a selection is ONE path, not a tree). Tolerated alias: `.children` holding a single-element
-     array, i.e. the same shape as `items`. ODC devs naturally reuse the items Structure for the
-     preselect binding, and the mismatch used to fail SILENTLY (path stops at a non-leaf → no
-     selection). Same spirit as the single-quoted-JSON tolerance in _parseRecord: accept the
-     obvious authoring mistake rather than render nothing. A `children` array with 2+ entries is
-     genuinely ambiguous (a selection can't fork), so it warns and takes the first. */
+  /* The next level down from a `selected-record` step. Canonically `.children` — a single-element
+     array, the same shape as `items`, so ONE OutSystems Structure covers items, preselect and the
+     change payload. A selection is one path, not a fork, so 2+ entries are ambiguous: warn and
+     take the first. Tolerated alias: `.child` holding a plain object (the pre-2026-07-21 payload
+     shape) — same spirit as the single-quoted-JSON tolerance in _parseRecord: accept the obvious
+     authoring carry-over rather than silently render nothing. */
   _stepDown(step) {
-    if (step.child != null) return step.child;
     const kids = step.children;
-    if (!Array.isArray(kids) || kids.length === 0) return null;
-    if (kids.length > 1) {
-      console.warn('[loop-multilevel-dropdown] selected-record uses `children` with '
-        + kids.length + ' entries; a selection is a single path — using the first. '
-        + 'Prefer the canonical `child` object.');
+    if (Array.isArray(kids) && kids.length > 0) {
+      if (kids.length > 1) {
+        console.warn('[loop-multilevel-dropdown] selected-record `children` has '
+          + kids.length + ' entries; a selection is a single path — using the first.');
+      }
+      return kids[0];
     }
-    return kids[0];
+    return step.child != null ? step.child : null;
   }
 
-  /* Resolve the `selected-record` to the matching LEAF node by walking the record's `.child`
-     chain (or the tolerated `.children` alias — see _stepDown) against the tree and matching
+  /* Resolve the `selected-record` to the matching LEAF node by walking the record's `.children`
+     chain (or the tolerated legacy `.child` alias — see _stepDown) against the tree and matching
      each level's `value` (labels are ignored). The deepest matched node must be a leaf to count
      as selected — a broken or non-leaf path yields null.
      Full-path matching disambiguates leaves that share a value across different branches.
@@ -357,14 +357,16 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* The ancestor chain as a NESTED {value,label,child} tree root → leaf. The leaf is the
-     innermost record and carries no `child` key. */
+  /* The ancestor chain as a NESTED {value,label,children[]} tree root → leaf — the SAME shape as
+     `items`, so one OutSystems Structure (with a `Children` List) deserializes both. Each level
+     carries a single-element `children` list because a selection is ONE path, not a fork; the
+     leaf is the innermost record and carries no `children` key. */
   _nestedFor(node) {
     const chain = this._ancestry(node);
     let obj = null;
     for (let i = chain.length - 1; i >= 0; i--) {
       const rec = { value: chain[i].value, label: chain[i].label };
-      if (obj) rec.child = obj;
+      if (obj) rec.children = [obj];
       obj = rec;
     }
     return obj;
@@ -1127,7 +1129,7 @@ All attributes are observed — changing them from ODC re-renders reactively.
 | Attribute | Type | Default | Notes |
 | --- | --- | --- | --- |
 | `items` | Text (JSON) | `[]` | Up to 3 levels of `{ "value", "label", "children": [] }`. A node with a non-empty `children[]` is a non-selectable group header; nodes without children are selectable leaves at any level. Levels deeper than 3 are ignored. Single-quoted JSON is accepted (convenient in ODC Expressions; escape inner apostrophes as `\'`). Invalid JSON renders an empty list + a `console.warn` (never throws). |
-| `selected-record` | Text (JSON) | `""` | Current selection as the **same nested `{value, label, child:{…}}` record** the `change` event emits — preselect by binding an onChange record straight back (one shape, both directions). Single-quoted JSON accepted (ODC-style). Resolved to a leaf by **matching the full value path** (root→mid→leaf), which disambiguates leaves that share a `value` across branches. **Reflected** before `change` fires so ODC can read it back; the echo of the same string is a no-op. Invalid/partial/non-leaf record → no selection (+ a `console.warn` on malformed JSON, never throws). |
+| `selected-record` | Text (JSON) | `""` | Current selection as the **same nested `{value, label, children:[…]}` record** the `change` event emits — the **items shape**, so one Structure serves items, preselect and payload — preselect by binding an onChange record straight back (one shape, both directions). Single-quoted JSON accepted (ODC-style). Resolved to a leaf by **matching the full value path** (root→mid→leaf), which disambiguates leaves that share a `value` across branches. **Reflected** before `change` fires so ODC can read it back; the echo of the same string is a no-op. Invalid/partial/non-leaf record → no selection (+ a `console.warn` on malformed JSON, never throws). |
 | `placeholder` | Text | `"Select an option"` | Field text when nothing is selected. |
 | `label` | Text | `""` | Optional visible label above the field (13px Select scale). When empty, the field's `aria-label` falls back to a bound native Label (see **Labelling** below), else the placeholder. |
 | `search` | Boolean (value-aware) | `true` | `search="false"` hides the search row — plain tree dropdown. Bind `If(ShowSearch, "true", "false")`. |
@@ -1180,7 +1182,7 @@ derived from `--loop-select-h` at `:host`, so field, search row and tree rows al
 | Property | Access | Behavior |
 | --- | --- | --- |
 | `items` | get/set | Mirrors the `items` attribute as a parsed array (defensive parse → `[]`). |
-| `selectedRecord` | get/set | Mirrors the `selected-record` attribute. **Get** resolves the record against `items` and returns the nested `{value,label,child}` tree (canonical labels, same shape as the change detail; `null` when unresolved/unselected). **Set** accepts an object or a pre-serialized JSON string. |
+| `selectedRecord` | get/set | Mirrors the `selected-record` attribute. **Get** resolves the record against `items` and returns the nested `{value,label,children[]}` tree (canonical labels, same shape as the change detail; `null` when unresolved/unselected). **Set** accepts an object or a pre-serialized JSON string. |
 
 ## API — Methods (callable from OutSystems / JS)
 
@@ -1194,19 +1196,19 @@ derived from `--loop-select-h` at `:host`, so field, search row and tree rows al
 
 | Event | detail | Options |
 | --- | --- | --- |
-| `change` | The **selection tree** — a nested `{value, label, child:{…}}` object, root → leaf, one level per nesting (identical to the `selected-record` shape) | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-record` attribute. |
+| `change` | The **selection tree** — a nested `{value, label, children:[…]}` object, root → leaf, one level per nesting, identical to the `selected-record` **and `items`** shape | `bubbles: true, composed: true`. Fired ONLY on user selection or `clear()`, never when ODC rewrites the `selected-record` attribute. |
 
-`e.detail` IS the nested tree — nothing else. A level-3 pick nests three deep (the innermost record, with no `child`, is the selected leaf); a level-1 leaf is a single object with no `child`; `clear()` fires `null`:
+`e.detail` IS the nested tree — nothing else. Each level's `children` list holds exactly ONE entry (the branch the user descended), which is what makes it interchangeable with the `items` shape. A level-3 pick nests three deep (the innermost record, with no `children`, is the selected leaf); a level-1 leaf is a single object with no `children`; `clear()` fires `null`:
 
 ```json
 {
   "value": "asi", "label": "Asia",
-  "child": {
+  "children": [{
     "value": "sea", "label": "South East Asia",
-    "child": {
+    "children": [{
       "value": "ph", "label": "Philippines"
-    }
-  }
+    }]
+  }]
 }
 ```
 
@@ -1238,9 +1240,17 @@ Out of scope by decision (see Decision log): multi-select, per-node disabled, no
 2. Create a Block `MultilevelDropdown` with inputs `Items` (Text — the JSON), `SelectedRecord` (Text — the nested selection JSON), `Placeholder`, `Label`, `ShowSearch` (Boolean), `SearchPlaceholder`, `NoResultsText`, `Disabled` (Boolean), `IsRequired` (Boolean), `IsInvalid` (Boolean) and event `OnChange` (Text payload = the selection record).
 3. Place an HTML element `loop-multilevel-dropdown` and bind one attribute per input (ODC requires a Value expression on every attribute). Booleans are **value-aware**: `search = If(ShowSearch, "true", "false")`, `disabled = If(Disabled, "true", "false")`, `required = If(IsRequired, "true", "false")`, `invalid = If(IsInvalid, "true", "false")` — never presence-only.
 4. Build the `Items` JSON in a data action or client logic (e.g. `JSONSerialize` over a nested structure, or a small loop over an Aggregate with parent references).
-5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring passes `JSON.stringify(e.detail)` so `OnChange` receives the **selection tree** as one Text payload — `JSONDeserialize` it into a nested Structure, one level per depth: `Selection { Value, Label, Child: Selection2 }`, `Selection2 { Value, Label, Child: Selection3 }`, `Selection3 { Value, Label }`. Descend `.Child` until it is empty to reach the selected leaf; the outer object is the root ancestor. `clear()` sends `null`.
+5. Wire the `change` CustomEvent in OnReady/OnDestroy — see the generated Event wiring section below. The wiring **flattens** the nested detail before raising the event, so `OnChange` receives one Text payload of the form `{"path":[{value,label},…],"leaf":{value,label}}` — `path` is the ancestor chain root→leaf, `leaf` is the record the user actually picked. `JSONDeserialize` it into **two flat Structures** that work at any depth:
+
+   ```
+   MultilevelStep      { Value: Text, Label: Text }
+   MultilevelSelection { Path: List of MultilevelStep, Leaf: MultilevelStep }
+   ```
+
+   `Leaf.Value` is the selection; `Path[0]`/`Path[1]`/`Path[2]` are the level-1/2/3 ancestors. `clear()` sends `{"path":[],"leaf":null}`.
+   **Why flat and not the raw `children` chain:** OutSystems Structures cannot be recursive, so consuming the nested detail directly needs one Structure per level (`Selection` → `Selection2` → `Selection3`, each nesting a `Children` **list**) and every level must be read as `Children[0]`. Flattening in OnReady sidesteps that entirely — see Troubleshooting #3/#4.
    **Round-trip / preselect:** `selected-record` takes the **same shape**. To preselect, `JSONSerialize` a `Selection` structure (e.g. the one you stored from a prior `OnChange`) and bind it to `SelectedRecord` — one structure, both directions. The component matches the **full value path** (root→mid→leaf), so duplicate leaf values across branches resolve correctly. On user selection the component reflects `selected-record` before firing `OnChange`, so re-assigning the same string back is a no-op.
-   **Careful — `Child`, not `Children`.** The selection is ONE path, so each level nests a single `Child` **object**. Do *not* reuse the `items` Structure (which nests a `Children` **list**) for this binding: that shape used to resolve to no selection, silently. It is now tolerated — a single-element `children` array is read as `child` — but the canonical `Selection` structure is still the shape to bind. A `children` array with 2+ entries is ambiguous: the component warns and takes the first.
+   **`Children` — a list of exactly one (2026-07-21).** The selection is ONE path, so each level's `Children` list carries a single entry. This is deliberately the **same shape as `items`**, so the items Structure binds the selection in both directions and there is no second shape to keep straight. A `Children` list with 2+ entries is ambiguous (a selection can't fork): the component warns and takes the first. The pre-2026-07-21 `child` **object** form is still tolerated on input for records stored under the old shape.
 6. Sizing: the component consumes `--loop-select-*`, so the shared `.loop-field--xlarge/large/regular/small` wrapper ramp re-scales the field, search row and tree rows automatically (custom properties inherit into shadow DOM). See **Sizing** above.
 7. Labelling: give the HTML element an **Id/Name** and point a native Label widget at it (`for`), or use the `Label` input — never both. Set the Label's **Mandatory = True** and pass the same flag to `IsRequired`. See **Labelling** above.
 
@@ -1265,7 +1275,7 @@ Out of scope by decision (see Decision log): multi-select, per-node disabled, no
 
 | CustomEvent | raises Block event |
 |---|---|
-| `change` | `OnChange(JSON.stringify(e.detail))` |
+| `change` | `OnChange(JSON.stringify({ path: path, leaf: path[path.length - 1] || null }))` |
 
 **OnReady** — resolve the element, attach listeners, stash for cleanup:
 
@@ -1276,7 +1286,12 @@ var el = (root && root.tagName && root.tagName.toLowerCase() === 'loop-multileve
   ? root : (root ? root.querySelector('loop-multilevel-dropdown') : null);
 if (el) {
   $public.el = el;                       // stash for OnDestroy cleanup
-  $public.handleChange = function (e) { $actions.OnChange(JSON.stringify(e.detail)); };
+  $public.handleChange = function (e) {
+    // flatten the nested {value,label,children[]} chain → a flat path list + the picked leaf
+    var path = [];
+    for (var n = e.detail; n; n = (n.children || [])[0]) path.push({ value: n.value, label: n.label });
+    $actions.OnChange(JSON.stringify({ path: path, leaf: path[path.length - 1] || null }));
+  };
   el.addEventListener('change', $public.handleChange);
 }
 ```
@@ -1292,7 +1307,7 @@ if ($public.el) {
 
 ## Troubleshooting — the silent failures
 
-Every trap below produces **no error, no console output, and no visual clue**. All three were hit for real on `WBG_POC3/NewCase`; check these first before suspecting the Web Component.
+Every trap below produces **no error, no console output, and no visual clue**. Traps #1–#4 were all hit for real on `WBG_POC3/NewCase`; check these first before suspecting the Web Component.
 
 **1. "OnChange never fires."** Almost always the wiring is fine and the event name is not. Three things must agree:
 
@@ -1321,7 +1336,7 @@ document.querySelector('loop-multilevel-dropdown')
   .addEventListener('change', ev => console.log('detail', ev.detail));
 ```
 
-**2. "The preselect doesn't show."** `SelectedRecord` is a **selection**, not a tree: each level nests a single `Child` **object**. Binding the `items` Structure (which nests a `Children` **list**) used to resolve to nothing at all. A single-element `children` array is now tolerated as an alias, so this shape works — but if the field stays on the placeholder, check that the record's `value` at every level actually matches the corresponding `items` value, and that the innermost record is a **leaf** (a path stopping on a node that has children is not a selection).
+**2. "The preselect doesn't show."** `SelectedRecord` uses the **items shape** — each level nests a `Children` **list** holding the one branch descended — so the items Structure binds it directly. If the field stays on the placeholder, check that the record's `value` at every level actually matches the corresponding `items` value, that each level's `Children` has exactly one entry, and that the innermost record is a **leaf** (a path stopping on a node that still has children is not a selection).
 
 ```js
 // null ⇒ the path didn't resolve; '' ⇒ nothing selected
@@ -1329,16 +1344,47 @@ const e = document.querySelector('loop-multilevel-dropdown');
 console.log(e.selectedRecord, '|', e.getAttribute('selected-record'));
 ```
 
-**3. "The event fires, but only the first level arrives."** The handler is deserializing the payload into the **items** Structure — `{Value, Label, Children : List}` — instead of the selection shape. The payload nests a single `Child` **object**, so `Children` has nothing to bind to and comes back empty, while `Value`/`Label` of the root map fine:
+**3. "The event fires, but only the first level arrives."** The handler is deserializing into a **non-recursive** Structure: OutSystems cannot nest `Children` into itself, so a single `Selection {Value, Label, Children: List of Selection}` is impossible and a one-level `Selection {Value, Label}` silently drops the rest. `Value`/`Label` of the root map fine and the deeper levels vanish:
 
 ```
-payload   {"value":"0","label":"Asia","child":{…"child":{…"Vietnam"}}}
+payload   {"value":"0","label":"Asia","children":[{…"children":[{…"Vietnam"}]}]}
 absorbed  { Value: "0", Label: "Asia", Children: [] }        ← levels 2 and 3 dropped
 ```
 
-Note this is the exact mirror of trap #2 — the same `Child`/`Children` confusion, on the way out instead of the way in. Fix it with the **flatten-in-OnReady** recipe above, which sidesteps nested Structures entirely; or declare the `Selection` → `Selection2` → `Selection3` chain and descend `.Child`.
+Fix it with the **flatten-in-OnReady** recipe above, which sidesteps nested Structures entirely; or declare the `Selection` → `Selection2` → `Selection3` chain explicitly and descend `Children[0]` at each level.
 
-**4. The open panel is cut off.** The panel renders inside the host — an ancestor with `overflow: hidden` (an OSUI `card`, for instance) clips it. See **Known limitation** at the top.
+**4. "The event fires, the action runs, but every attribute is empty."** The half-migrated version of trap #3: the OnReady wiring was updated to the **flat** `{path, leaf}` payload, but the handler still deserializes into the **items** Structure `{Value, Label, Children}`. Now *nothing* binds — not even the root — so the action runs on a blank record and the screen silently does nothing. Reproduced on `WBG_POC3/NewCase` (2026-07-21): the `HR Service / Topic` block emitted a correct three-level payload and the screen's `OnChange` looked for `value`/`label`/`children` on it.
+
+Deserialize into `MultilevelSelection` / `MultilevelStep` instead (see **OutSystems Block wiring** step 5). The two sides must always be migrated together — the OnReady payload shape and the Structure `JSONDeserialize` targets.
+
+The tell is invisible from the DOM, but you can watch the deserializer's own property lookups from DevTools. Paste this, then pick a leaf — every `✗ MISSING` is an attribute your Structure declares that the payload does not carry:
+
+```js
+// wraps the parsed payload in a logging Proxy — reveals which names JSONDeserialize asks for
+const orig = JSON.parse;
+JSON.parse = function (s) {
+  const r = orig.apply(this, arguments);
+  if (typeof s === 'string' && /"leaf"|"children"/.test(s)) {
+    console.log('payload', s);
+    return new Proxy(r, { get(t, k) {
+      if (typeof k === 'string') console.log('  looked for .' + k, k in t ? '✓' : '✗ MISSING');
+      return Reflect.get(t, k);
+    } });
+  }
+  return r;
+};
+```
+
+```
+payload   {"path":[{"value":"0","label":"Asia"},…],"leaf":{"value":"1","label":"Vietnam"}}
+  looked for .value    ✗ MISSING     ← Structure is {Value, Label, Children}
+  looked for .label    ✗ MISSING        the payload is {path, leaf}
+  looked for .children ✗ MISSING
+```
+
+Attribute matching is case-insensitive, so a `Path`/`Leaf` Structure binds `path`/`leaf` correctly — the misses above are genuine name mismatches, not casing.
+
+**5. The open panel is cut off.** The panel renders inside the host — an ancestor with `overflow: hidden` (an OSUI `card`, for instance) clips it. See **Known limitation** at the top.
 
 ## Build in ODC with Mentor Studio
 
@@ -1363,7 +1409,7 @@ Task — create these elements, referencing each by the exact name given:
 
 1. Create a Block named "MultilevelDropdown" with input parameters:
      Items             : Text (JSON) : "[]"   // up to 3 levels of {value,label,children[]}
-     SelectedRecord    : Text (JSON) : ""    // nested {value,label,child} selection record
+     SelectedRecord    : Text (JSON) : ""    // nested {value,label,children[]} selection record (the items shape)
      Placeholder       : Text        : "Select an option"
      Label             : Text        : ""
      ShowSearch        : Boolean     : True
@@ -1423,8 +1469,9 @@ Start with step 1 (the Block "MultilevelDropdown" interface) and show it to me b
 - **No Figma ref** — user-spec'd component; geometry and colors are borrowed 1:1 from the shipped single-Select restyle (`--loop-select-*`) for consistency. Per project rules this is a logged decision, not a finding (conventions are three-state; nothing `confirmed` was violated).
 - **Tree/accordion panel** (vs cascading flyouts / drill-down) — chosen by the requester; works on touch, keeps search results in context, simplest ARIA.
 - **Leaf-only selection** — nodes with children are group headers; `change` payload is always an unambiguous record.
-- **Closed field shows the full ancestor path** (`Asia > South East Asia > Philippines`) — requester-specified 2026-07-15. The same hierarchy travels on the `change` detail as a nested `{value,label,child}` tree (and on the `selectedRecord` property).
-- **Record-based selection, replacing `selected-value` (breaking, 2026-07-21).** Preselection was a single leaf-value string (`selected-value`); the input side is now the **same nested `{value,label,child}` record** the `change`/`selectedRecord` output already carries. Requester-specified: store an `OnChange` record and bind it straight back to preselect — one shape, both directions. The attribute was renamed `selected-value` → `selected-record` and the `selectedValue` property dropped (not aliased) — a clean break was chosen over carrying two selection APIs. Resolution matches the **full value path** (root→mid→leaf), not just the leaf value, which disambiguates leaves that share a value across branches (the old leaf-value match silently picked the first). A stale/partial/non-leaf record resolves to no selection; `_selectedNode()` is memoised per (items src + record string).
+- **Closed field shows the full ancestor path** (`Asia > South East Asia > Philippines`) — requester-specified 2026-07-15. The same hierarchy travels on the `change` detail as a nested `{value,label,children[]}` tree (and on the `selectedRecord` property).
+- **Record-based selection, replacing `selected-value` (breaking, 2026-07-21).** Preselection was a single leaf-value string (`selected-value`); the input side is now the **same nested `{value,label,children[]}` record** the `change`/`selectedRecord` output already carries. Requester-specified: store an `OnChange` record and bind it straight back to preselect — one shape, both directions. The attribute was renamed `selected-value` → `selected-record` and the `selectedValue` property dropped (not aliased) — a clean break was chosen over carrying two selection APIs. Resolution matches the **full value path** (root→mid→leaf), not just the leaf value, which disambiguates leaves that share a value across branches (the old leaf-value match silently picked the first). A stale/partial/non-leaf record resolves to no selection; `_selectedNode()` is memoised per (items src + record string).
+- **Selection payload nests `children[]`, not `child{}` (breaking, 2026-07-21).** The nested selection record now uses a single-element `children` **list** at each level — byte-for-byte the `items` shape — instead of a `child` **object**. Requester-specified: OutSystems deserializes the two shapes with different Structures, and carrying a second shape for the selection was the root of Troubleshooting #2/#3/#4 (the whole `Child`/`Children` false-friend class of silent bug). One shape now covers `items`, `selected-record` and the `change` detail, so the same Structure binds all three. The `child` object form is still accepted on **input** (`_stepDown`) so records stored under the old shape still preselect; output is `children` only. Consumers that walked `n.child` must walk `(n.children || [])[0]` — the flatten-in-OnReady recipe and the preview harness were updated with it.
 - **Search in the panel** (not in-field) — the closed field must pixel-match the shipped Select; the Tags rebuild's field-side proxy input exists only to work around a VirtualSelect constraint this component doesn't have.
 - **Combobox-with-tree-popup ARIA** — `role="tree"` over listbox+`aria-level` because collapse state needs the `aria-expanded` vocabulary; one combobox only (the search input), the trigger stays a plain disclosure button.
 - **3-level cap** — deeper nesting is ignored, not an error (documented in the API table).

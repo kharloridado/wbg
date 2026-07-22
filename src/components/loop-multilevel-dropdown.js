@@ -14,15 +14,15 @@
  *                      Single-quoted JSON is accepted too (convenient in ODC Expressions;
  *                      escape inner apostrophes as \'). Invalid JSON renders an empty list
  *                      and logs a console.warn (never throws).
- *   selected-record    Current selection as the SAME nested {value,label,child} record the
- *                      change event emits — preselect by binding an onChange record straight
+ *   selected-record    Current selection as the SAME nested {value,label,children[]} record the
+ *                      change event emits — the items shape, so ONE ODC Structure covers items,
+ *                      preselect and payload. Preselect by binding an onChange record straight
  *                      back. Single-quoted JSON accepted (ODC-style). Resolved to a leaf by
  *                      matching the full value path (root→mid→leaf), which disambiguates leaves
- *                      that share a value across branches. A single-element `children` ARRAY is
- *                      tolerated as an alias for `child` (the items shape — the natural mistake
- *                      when an ODC dev reuses the items Structure for the preselect binding);
- *                      2+ entries warn and take the first. REFLECTED before change fires so ODC
- *                      can read it back; the echo of the same string is a no-op (o===v guard).
+ *                      that share a value across branches. Each level's `children` holds ONE
+ *                      entry (a selection can't fork); 2+ warn and take the first. A legacy
+ *                      `child` OBJECT is tolerated as an alias. REFLECTED before change fires so
+ *                      ODC can read it back; the echo of the same string is a no-op (o===v guard).
  *   placeholder        Field text when nothing is selected (default "Select an option").
  *   label              Optional visible label above the field. When empty the field's
  *                      aria-label falls back to a bound native Label, else the placeholder.
@@ -56,12 +56,13 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail IS the selection as a NESTED {value,label,child} tree root → leaf,
- *            one level per nesting — a level-3 pick nests three deep:
+ *            detail IS the selection as a NESTED {value,label,children[]} tree root → leaf —
+ *            the SAME shape as `items`, one level per nesting, each `children` holding the one
+ *            picked branch. A level-3 pick nests three deep:
  *              { value:"asi", label:"Asia",
- *                child:{ value:"sea", label:"South East Asia",
- *                  child:{ value:"ph", label:"Philippines" } } }
- *            The innermost record (no `child` key) is the selected leaf. clear() fires null.
+ *                children:[{ value:"sea", label:"South East Asia",
+ *                  children:[{ value:"ph", label:"Philippines" }] }] }
+ *            The innermost record (no `children` key) is the selected leaf. clear() fires null.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -224,8 +225,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   }
   set items(arr) { this.setAttribute('items', JSON.stringify(arr || [])); }
 
-  /* The selection is a NESTED record — {value,label,child:{…}} root → leaf, one level per
-     nesting, the innermost node (no `child`) being the selected leaf. This is BOTH the
+  /* The selection is a NESTED record — {value,label,children:[…]} root → leaf, one level per
+     nesting (the items shape), the innermost node (no `children`) being the selected leaf. This is BOTH the
      preselect input (the `selected-record` attribute) AND the change-event detail — one shape,
      both directions. The getter resolves against `items` so labels are canonical and a stale
      or unresolvable record reads back as null (self-healing); null when nothing is selected. */
@@ -238,7 +239,7 @@ class LoopMultilevelDropdown extends HTMLElement {
     this.setAttribute('selected-record', typeof rec === 'string' ? rec : JSON.stringify(rec));
   }
 
-  /* Parse the `selected-record` attribute into a nested {value,label,child} object (or null).
+  /* Parse the `selected-record` attribute into a nested {value,label,children[]} object (or null).
      Same double-quote-first / single-quote-tolerant strategy as `_parseItems`, since ODC
      Expressions naturally hand-author single-quoted JSON. Warns (never throws) on bad input. */
   _parseRecord(raw) {
@@ -252,27 +253,26 @@ class LoopMultilevelDropdown extends HTMLElement {
     }
   }
 
-  /* The next level down from a `selected-record` step. Canonically `.child` (a single object —
-     a selection is ONE path, not a tree). Tolerated alias: `.children` holding a single-element
-     array, i.e. the same shape as `items`. ODC devs naturally reuse the items Structure for the
-     preselect binding, and the mismatch used to fail SILENTLY (path stops at a non-leaf → no
-     selection). Same spirit as the single-quoted-JSON tolerance in _parseRecord: accept the
-     obvious authoring mistake rather than render nothing. A `children` array with 2+ entries is
-     genuinely ambiguous (a selection can't fork), so it warns and takes the first. */
+  /* The next level down from a `selected-record` step. Canonically `.children` — a single-element
+     array, the same shape as `items`, so ONE OutSystems Structure covers items, preselect and the
+     change payload. A selection is one path, not a fork, so 2+ entries are ambiguous: warn and
+     take the first. Tolerated alias: `.child` holding a plain object (the pre-2026-07-21 payload
+     shape) — same spirit as the single-quoted-JSON tolerance in _parseRecord: accept the obvious
+     authoring carry-over rather than silently render nothing. */
   _stepDown(step) {
-    if (step.child != null) return step.child;
     const kids = step.children;
-    if (!Array.isArray(kids) || kids.length === 0) return null;
-    if (kids.length > 1) {
-      console.warn('[loop-multilevel-dropdown] selected-record uses `children` with '
-        + kids.length + ' entries; a selection is a single path — using the first. '
-        + 'Prefer the canonical `child` object.');
+    if (Array.isArray(kids) && kids.length > 0) {
+      if (kids.length > 1) {
+        console.warn('[loop-multilevel-dropdown] selected-record `children` has '
+          + kids.length + ' entries; a selection is a single path — using the first.');
+      }
+      return kids[0];
     }
-    return kids[0];
+    return step.child != null ? step.child : null;
   }
 
-  /* Resolve the `selected-record` to the matching LEAF node by walking the record's `.child`
-     chain (or the tolerated `.children` alias — see _stepDown) against the tree and matching
+  /* Resolve the `selected-record` to the matching LEAF node by walking the record's `.children`
+     chain (or the tolerated legacy `.child` alias — see _stepDown) against the tree and matching
      each level's `value` (labels are ignored). The deepest matched node must be a leaf to count
      as selected — a broken or non-leaf path yields null.
      Full-path matching disambiguates leaves that share a value across different branches.
@@ -316,14 +316,16 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* The ancestor chain as a NESTED {value,label,child} tree root → leaf. The leaf is the
-     innermost record and carries no `child` key. */
+  /* The ancestor chain as a NESTED {value,label,children[]} tree root → leaf — the SAME shape as
+     `items`, so one OutSystems Structure (with a `Children` List) deserializes both. Each level
+     carries a single-element `children` list because a selection is ONE path, not a fork; the
+     leaf is the innermost record and carries no `children` key. */
   _nestedFor(node) {
     const chain = this._ancestry(node);
     let obj = null;
     for (let i = chain.length - 1; i >= 0; i--) {
       const rec = { value: chain[i].value, label: chain[i].label };
-      if (obj) rec.child = obj;
+      if (obj) rec.children = [obj];
       obj = rec;
     }
     return obj;

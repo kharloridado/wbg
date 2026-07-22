@@ -9,6 +9,12 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 14:22 UTC — v0.6.0
+
+- **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
+- **[component]** − `--loop-mldd-search-h` (was `40px`, component-multilevel-dropdown.css)
+
 ## 2026-07-17 18:16 UTC — v0.6.0
 
 - **[component]** + `--loop-mldd-chevron-size`: `12px` _(component-multilevel-dropdown.css)_

@@ -3641,11 +3641,6 @@
       "file": "component-multilevel-dropdown.css",
       "kind": "component"
     },
-    ":root --loop-mldd-option-h": {
-      "value": "40px",
-      "file": "component-multilevel-dropdown.css",
-      "kind": "component"
-    },
     ":root --loop-mldd-panel-max-h": {
       "value": "320px",
       "file": "component-multilevel-dropdown.css",
@@ -3653,11 +3648,6 @@
     },
     ":root --loop-mldd-panel-z": {
       "value": "100",
-      "file": "component-multilevel-dropdown.css",
-      "kind": "component"
-    },
-    ":root --loop-mldd-search-h": {
-      "value": "40px",
       "file": "component-multilevel-dropdown.css",
       "kind": "component"
     },
