@@ -1157,6 +1157,9 @@
         <label data-label class="mandatory" for="tf-req">Required</label>
         <input class="form-control" data-input id="tf-req" type="text" placeholder="Required field">
       </div>
+      <label data-label class="mandatory" for="tf-req-bare">Required (bare native Label, no <code>.loop-field</code>)</label>
+      <input class="form-control" data-input id="tf-req-bare" type="text" placeholder="Required field">
+      <span class="pv-note">Required marker = OutSystems' own <code>.mandatory</code> class, themed application-wide in <code>outsystems-ui-overrides.css</code>: the native <code>::after</code> is re-ordered to LEAD the label (Figma 19336-9606) instead of trailing it. No Loop modifier and no injected span — it reaches every Mandatory Label, inside a <code>.loop-field</code> or not.</span>
       <div class="loop-field">
         <label data-label for="tf-err">Error</label>
         <input class="form-control not-valid" data-input id="tf-err" type="text" value="Bad input">
@@ -1244,7 +1247,7 @@
         <input class="form-control" data-input id="fw-opt" type="text" placeholder="Optional field">
         <span class="loop-field__helper">Helper text</span>
       </div>
-      <span class="pv-note">Required → leading <code>.loop-field__required</code> asterisk (Figma places it before the label; legacy <code>.mandatory::after</code> trails it — FND-061). Optional → <code>.loop-field__optional</code> tag. Count badge → <code>.loop-field__count</code> + <code>loop-field-count.js</code>.</span>
+      <span class="pv-note">Required → leading <code>.loop-field__required</code> asterisk. Inside the label row this span carries the marker and the native <code>.mandatory::after</code> is suppressed — one or the other, never both; both now lead the label, so the two paths look identical. Optional → <code>.loop-field__optional</code> tag. Count badge → <code>.loop-field__count</code> + <code>loop-field-count.js</code>.</span>
     </div>
 
     <div class="pv-row pv-row--stack pv-row--narrow">

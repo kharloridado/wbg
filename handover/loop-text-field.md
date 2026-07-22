@@ -294,13 +294,9 @@ Class on the field Container.
   letter-spacing: var(--loop-field-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
-/* Required marker — hooks OutSystems' native .mandatory class, not a custom modifier. */
-.loop-field [data-label].mandatory::after,
-.loop-field label.mandatory::after {
-  content: " *";
-  color: var(--color-text-on-light-state-error);
-  margin-left: var(--space-xtiny, 2px);
-}
+/* Required marker: no rule here. OutSystems' native .mandatory class carries it, themed
+   application-wide (leading asterisk, Figma 19336-9606) in tokens/outsystems-ui-overrides.css
+   — it applies to every Mandatory Label, inside a .loop-field or not. */
 
 /* ============================================================
    FieldLabel row — leading required asterisk + label + (optional) + word-count badge.
@@ -315,16 +311,22 @@ Class on the field Container.
   gap: var(--loop-field-label-row-gap, 4px);
 }
 
-/* Inside the FieldLabel row the leading .loop-field__required carries the required marker,
-   so suppress the legacy trailing .mandatory::after — the native Label can still be Mandatory
-   (for the accessibility hook) without rendering a second asterisk. */
+/* Two equivalent paths render the leading asterisk; a field uses one or the other, never
+   both. Outside this row it is OutSystems' native .mandatory marker (themed in
+   outsystems-ui-overrides.css). Inside it, the Block's own .loop-field__required span
+   carries it — so suppress the native one here, and undo the flex the global rule puts on
+   the label (nothing left to order). The native Label stays Mandatory for the a11y hook. */
+.loop-field__label-row [data-label].mandatory,
+.loop-field__label-row label.mandatory {
+  display: block;
+}
 .loop-field__label-row [data-label].mandatory::after,
 .loop-field__label-row label.mandatory::after {
   content: none;
 }
 
-/* Leading required asterisk — Figma places it BEFORE the label (vs the legacy
-   .mandatory::after trailing " *"). Solid red, top-aligned to the cap height. */
+/* Leading required asterisk — Figma places it BEFORE the label. Solid red, top-aligned to
+   the cap height; matches the repositioned native .mandatory marker used outside this row. */
 .loop-field__required {
   align-self: flex-start;
   color: var(--color-text-on-light-state-error);
@@ -539,7 +541,10 @@ span.validation-message::before {
 - `loop-field loop-field--horizontal` — label inline, left of the input.
 - The **Label** needs no extra class — The Loop restyles the native OutSystems label
   element (`[data-label]`) inside `loop-field`. Set the Label widget's **Mandatory**
-  property for the required `*` marker (native `.mandatory` hook).
+  property for the required `*` marker (native `.mandatory` hook). That marker is themed
+  **application-wide** in `dist/theme.css`, not only inside `loop-field`: OutSystems' own
+  `::after` is re-ordered to *lead* the label per Figma 19336-9606, so every Mandatory
+  Label in the app picks it up with no extra class and no injected span.
 - `loop-field__helper` on the helper Text; add a state modifier to colour it:
   `--error` / `--warning` / `--success` / `--disabled`.
 

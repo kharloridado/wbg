@@ -299,13 +299,9 @@ restyled Input, and helper text, wrapped in one Block with a Size and Layout par
   letter-spacing: var(--loop-field-label-tracking, 0px);
   color: var(--color-text-on-light-default);
 }
-/* Required marker — hooks OutSystems' native .mandatory class, not a custom modifier. */
-.loop-field [data-label].mandatory::after,
-.loop-field label.mandatory::after {
-  content: " *";
-  color: var(--color-text-on-light-state-error);
-  margin-left: var(--space-xtiny, 2px);
-}
+/* Required marker: no rule here. OutSystems' native .mandatory class carries it, themed
+   application-wide (leading asterisk, Figma 19336-9606) in tokens/outsystems-ui-overrides.css
+   — it applies to every Mandatory Label, inside a .loop-field or not. */
 
 /* ============================================================
    FieldLabel row — leading required asterisk + label + (optional) + word-count badge.
@@ -320,16 +316,22 @@ restyled Input, and helper text, wrapped in one Block with a Size and Layout par
   gap: var(--loop-field-label-row-gap, 4px);
 }
 
-/* Inside the FieldLabel row the leading .loop-field__required carries the required marker,
-   so suppress the legacy trailing .mandatory::after — the native Label can still be Mandatory
-   (for the accessibility hook) without rendering a second asterisk. */
+/* Two equivalent paths render the leading asterisk; a field uses one or the other, never
+   both. Outside this row it is OutSystems' native .mandatory marker (themed in
+   outsystems-ui-overrides.css). Inside it, the Block's own .loop-field__required span
+   carries it — so suppress the native one here, and undo the flex the global rule puts on
+   the label (nothing left to order). The native Label stays Mandatory for the a11y hook. */
+.loop-field__label-row [data-label].mandatory,
+.loop-field__label-row label.mandatory {
+  display: block;
+}
 .loop-field__label-row [data-label].mandatory::after,
 .loop-field__label-row label.mandatory::after {
   content: none;
 }
 
-/* Leading required asterisk — Figma places it BEFORE the label (vs the legacy
-   .mandatory::after trailing " *"). Solid red, top-aligned to the cap height. */
+/* Leading required asterisk — Figma places it BEFORE the label. Solid red, top-aligned to
+   the cap height; matches the repositioned native .mandatory marker used outside this row. */
 .loop-field__required {
   align-self: flex-start;
   color: var(--color-text-on-light-state-error);
@@ -667,8 +669,8 @@ wrapper modifier so a single `Size` drives the whole field.
 ```
 
 ## What's new vs the bare Text Field restyle
-- **FieldLabel row** (`loop-field__label-row`) — leading red asterisk (`loop-field__required`,
-  Figma places it *before* the label, vs the legacy trailing `.mandatory::after` — see FND-061),
+- **FieldLabel row** (`loop-field__label-row`) — leading red asterisk (`loop-field__required`;
+  the native `.mandatory::after` is suppressed inside the row, so exactly one marker renders),
   the `(optional)` tag (`loop-field__optional`), and the word-count badge (`loop-field__count`,
   bg `--color-bg-container-on-light-regular` #e7edf3, 2px radius).
 - **Live character count** — `loop-field-count.js` reads the Input's `maxlength` and updates
@@ -764,8 +766,10 @@ before building the markup.
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).
 
 ## Open findings linked to this work
-- **FND-061** (consistency, low) — required asterisk placement: the FieldLabel row puts `*`
-  *before* the label (Figma), while the legacy `.mandatory::after` trails it; both ship.
+> **FND-076 — resolved (2026-07-20):** the required-asterisk placement split is gone. OutSystems' native
+> `.mandatory` marker is now re-ordered to *lead* the label application-wide (theme rule in
+> `outsystems-ui-overrides.css`), matching the FieldLabel row's own `loop-field__required`
+> span. Inside the row the native marker stays suppressed — one or the other, never both.
 - Inherits the Text Field findings (register-only): **FND-018** (off-grid padding/gap),
   **FND-019** (resting border ≈ 1.45:1, SC 1.4.11), **FND-020** (placeholder subdued delta),
   **FND-021** (size system documented 3 vs 4 ways).

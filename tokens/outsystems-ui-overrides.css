@@ -164,6 +164,43 @@
   --shadow-m:  var(--shadow-regular);  /* → 0 4px 12px (Loop regular) */
   --shadow-l:  var(--shadow-medium);   /* → 0 8px 20px (Loop medium)  */
   --shadow-xl: var(--shadow-high);     /* → 0 5px 32px (Loop high)    */
+
+  /* ====== Mandatory label marker ====== (see the rule block below) */
+  --loop-mandatory-marker-gap: var(--space-tiny);   /* 4px — asterisk ↔ label */
+}
+
+/* ====== Mandatory (required) label marker — reposition, don't reinvent ======
+ * The platform already emits this marker end-to-end, so we keep the NATIVE mechanism
+ * (OutSystems' own `.mandatory` class — no Loop modifier, no injected span) and only
+ * move it. What ships today, in cascade order:
+ *   OutSystemsReactWidgets  [data-label].mandatory::after { content: "*" }
+ *   OutSystemsUI            [data-label].mandatory::after { color; margin-left: --space-xs }
+ * …which lands the asterisk AFTER the label. Figma (19336-9606, Components) puts it
+ * BEFORE: `* Text Field Label`.
+ *
+ * Turning the label into a flex container makes its ::after a flex item, so `order: -1`
+ * reorders it without touching the DOM or the accessibility tree (the required semantics
+ * ride `required`/`aria-required` on the input, not on this glyph).
+ *
+ * Specificity note: both platform selectors are 0,2,0 (verified 2026-07-20 by enumerating
+ * document.styleSheets on a published ODC screen) — do NOT wrap these in :where(), which
+ * would zero ours out and lose. Written explicitly they tie, and TheLoopTheme loads after
+ * both platform sheets, so source order decides in our favour.
+ * `content` is re-declared because the local preview loads OSUI's compiled CSS (which has
+ * no content) rather than the platform's — this keeps preview and ODC identical. */
+[data-label].mandatory,
+label.mandatory {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--loop-mandatory-marker-gap);
+}
+[data-label].mandatory::after,
+label.mandatory::after {
+    content: "*";
+    order: -1;
+    margin-left: 0;                                  /* cancels OSUI's --space-xs */
+    color: var(--color-text-on-light-state-error);
+    line-height: inherit;
 }
 
 /* ====== has-accessible-features — global focus-ring standardisation ======
