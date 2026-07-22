@@ -3135,7 +3135,48 @@
     </div>
     <span class="pv-note">Default = Classic (dashboard apps): <code>--shadow-medium</code> (0 8px 20px — the Figma <code>effects/shadow/default</code> color is FND-065 drift; canonical <code>--shadow-color</code> per FND-003). <code>card--no-shadow</code> = Modern (external web). <code>card--flush</code> = the no-padding example (20376:15327). Outline transparent in all styles.</span>
 
-    <!-- 2) The bare override applies app-wide — native Card widgets inherit the Loop look -->
+    <!-- 2) Status variants — tinted + neutral card surfaces, opt-in per instance -->
+    <p class="pv-label pv-label--full">Status variants <code>.card--success</code> / <code>.card--warning</code> / <code>.card--neutral</code> — surface-only modifiers</p>
+    <div class="pv-card-grid">
+      <div class="card card--success">
+        <div class="card__placeholder">Content placeholder</div>
+      </div>
+
+      <div class="card card--warning">
+        <div class="card__placeholder">Content placeholder</div>
+      </div>
+
+      <div class="card card--neutral">
+        <div class="card__placeholder">Content placeholder</div>
+      </div>
+
+      <div class="card card--success card--no-shadow">
+        <div class="card__placeholder">Content placeholder</div>
+      </div>
+    </div>
+    <span class="pv-note">Fills and the success outline alias the semantic state layer: success <code>--color-bg-container-state-success-low</code> (<code>#f6fef0</code>) with a 1px <code>--color-outline-on-light-state-success-high</code> (<code>#388004</code>) outline; warning <code>--color-domain-state-warning-low</code> (<code>#fef3d7</code>), borderless. The inconsistent per-status outline is drawn that way and kept that way (FND-079). Neutral is the no-status sibling — base white fill plus a 1px <code>#4b5e71</code> outline; no <code>Outline/On Light/*</code> role resolves to that value, so it aliases the <code>--color-neutral-60</code> primitive (FND-081). Radius follows <code>--loop-card-radius</code> (8px) rather than the mockups' untokenised 10px (FND-080, same call as FND-077). Surface-only, so they compose — the last tile is <code>card--success card--no-shadow</code>.</span>
+
+    <!-- 3) Sectioned card — one silhouette, white form section over a muted content section -->
+    <p class="pv-label pv-label--full">Sectioned <code>.card--sectioned</code> — white section over a muted section hosting the grid</p>
+    <div class="card card--sectioned">
+      <div class="card__section">
+        <h3 class="card__section-title">Requestor</h3>
+        <div class="card__section-content">
+          <div class="card__placeholder">Form fields</div>
+        </div>
+      </div>
+
+      <div class="card__section card__section--muted">
+        <h3 class="card__section-title">Matched Cases</h3>
+        <p class="card__section-description">Review the following cases for duplicates. Select an existing case below to continue with that case.</p>
+        <div class="card__section-content">
+          <div class="card__placeholder">AG Grid</div>
+        </div>
+      </div>
+    </div>
+    <span class="pv-note">Figma 20020051:21016 (white) / 20020051:21413 (muted <code>#f5f7f9</code>) — two frames reading as one card. Sections own the 48px inset, so <code>.card--sectioned</code> zeroes the card padding and clips the fills to the radius; the seam is a hairline on the adjacent sibling only. Radius follows <code>--loop-card-radius</code> (8px) rather than the mockup's 16px (FND-077), and the description renders as body copy rather than the mockup's input-label role (FND-078). <code>.card__section-content</code> is a neutral slot — the AG Grid styles itself from <code>loop-ag-grid.css</code>.</span>
+
+    <!-- 4) The bare override applies app-wide — native Card widgets inherit the Loop look -->
     <p class="pv-label pv-label--full">Native <code>.card</code> / Card Item — inherit the Loop look by default (bare override)</p>
     <div class="pv-card-grid">
       <div class="card">

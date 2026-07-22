@@ -10,6 +10,23 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 14:46 UTC — v0.6.0
+
+- **[component]** + `--loop-card-neutral-border`: `var(--color-neutral-60)` _(component-card.css)_
+- **[component]** + `--loop-card-section-color`: `var(--color-bg-container-on-light-lowest)` _(component-card.css)_
+- **[component]** + `--loop-card-section-divider`: `var(--color-divider-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-section-gap`: `var(--space-medium)` _(component-card.css)_
+- **[component]** + `--loop-card-section-muted-color`: `var(--color-bg-container-on-light-low)` _(component-card.css)_
+- **[component]** + `--loop-card-section-padding`: `var(--space-xlarge)` _(component-card.css)_
+- **[component]** + `--loop-card-section-text-color`: `var(--color-text-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-section-title-color`: `var(--color-text-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-sectioned-radius`: `var(--loop-card-radius)` _(component-card.css)_
+- **[component]** + `--loop-card-status-border-size`: `var(--border-size-s)` _(component-card.css)_
+- **[component]** + `--loop-card-success-bg`: `var(--color-bg-container-state-success-low)` _(component-card.css)_
+- **[component]** + `--loop-card-success-border`: `var(--color-outline-on-light-state-success-high)` _(component-card.css)_
+- **[component]** + `--loop-card-warning-bg`: `var(--color-domain-state-warning-low)` _(component-card.css)_
+
 ## 2026-07-22 14:22 UTC — v0.6.0
 
 - **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
