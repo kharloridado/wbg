@@ -9,31 +9,18 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+## 2026-07-22 16:11 UTC — v0.6.0
 
-
-## 2026-07-22 14:46 UTC — v0.6.0
-
-- **[component]** + `--loop-card-neutral-border`: `var(--color-neutral-60)` _(component-card.css)_
-- **[component]** + `--loop-card-section-color`: `var(--color-bg-container-on-light-lowest)` _(component-card.css)_
-- **[component]** + `--loop-card-section-divider`: `var(--color-divider-on-light-default)` _(component-card.css)_
-- **[component]** + `--loop-card-section-gap`: `var(--space-medium)` _(component-card.css)_
-- **[component]** + `--loop-card-section-muted-color`: `var(--color-bg-container-on-light-low)` _(component-card.css)_
-- **[component]** + `--loop-card-section-padding`: `var(--space-xlarge)` _(component-card.css)_
-- **[component]** + `--loop-card-section-text-color`: `var(--color-text-on-light-default)` _(component-card.css)_
-- **[component]** + `--loop-card-section-title-color`: `var(--color-text-on-light-default)` _(component-card.css)_
-- **[component]** + `--loop-card-sectioned-radius`: `var(--loop-card-radius)` _(component-card.css)_
-- **[component]** + `--loop-card-status-border-size`: `var(--border-size-s)` _(component-card.css)_
-- **[component]** + `--loop-card-success-bg`: `var(--color-bg-container-state-success-low)` _(component-card.css)_
-- **[component]** + `--loop-card-success-border`: `var(--color-outline-on-light-state-success-high)` _(component-card.css)_
-- **[component]** + `--loop-card-warning-bg`: `var(--color-domain-state-warning-low)` _(component-card.css)_
-
-## 2026-07-22 14:22 UTC — v0.6.0
-
-- **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
-- **[component]** − `--loop-mldd-search-h` (was `40px`, component-multilevel-dropdown.css)
-
-## 2026-07-17 18:16 UTC — v0.6.0
-
+- **[component]** + `--loop-btn-suggestion-bg`: `var(--color-domain-state-info-low)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-bg-pressed`: `var(--color-accent-indigo-20)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-border`: `var(--color-accent-indigo-30)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-border-hover`: `var(--color-accent-indigo-40)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-font`: `var(--font-size-200, 14px)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-h`: `36px` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-lh`: `var(--line-height-narrow, 1.25)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-padding-v`: `var(--space-xxsmall, 8px)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-radius`: `var(--radius-base, 4px)` _(component-button.css)_
+- **[component]** + `--loop-btn-suggestion-text`: `var(--color-text-on-light-default)` _(component-button.css)_
 - **[component]** + `--loop-mldd-chevron-size`: `12px` _(component-multilevel-dropdown.css)_
 - **[component]** + `--loop-mldd-indent`: `var(--space-small)` _(component-multilevel-dropdown.css)_
 - **[component]** + `--loop-mldd-option-h`: `40px` _(component-multilevel-dropdown.css)_

@@ -874,6 +874,15 @@
       <span><button class="btn btn-primary">Save</button><button class="btn">Cancel</button><button class="btn btn-ghost">Reset</button></span>
       <span class="pv-note"><code>.btn + .btn</code> margin 8px (<code>--loop-btn-adjacent-gap</code>) — overrides the OSUI 16px default.</span>
     </div>
+
+    <div class="pv-row pv-row--block pv-row--narrow">
+      <span class="pv-label pv-label--block">Suggestion row</span>
+      <button class="btn btn-suggestion">Is there an expected due date for the baby?</button>
+      <button class="btn btn-suggestion">Has requestor notified their manager?</button>
+      <button class="btn btn-suggestion">Has requestor submitted a FMLA leave request that will need to wrap onto a second line?</button>
+      <button class="btn btn-suggestion" disabled>Disabled</button>
+      <span class="pv-note">AI "Suggested Topics" rows = <code>Extended Class = "btn-suggestion"</code> on a native Button. Fill <code>--color-blue-05</code> / border <code>--color-accent-indigo-30</code> / 4px radius / 36px floor, growing to fit wrapped text.</span>
+    </div>
   </section>
 
   <!-- ============ BUTTON TEXT ============ -->

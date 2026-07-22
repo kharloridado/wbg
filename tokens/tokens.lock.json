@@ -3266,6 +3266,56 @@
       "file": "component-button.css",
       "kind": "component"
     },
+    ":root --loop-btn-suggestion-bg": {
+      "value": "var(--color-domain-state-info-low)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-bg-pressed": {
+      "value": "var(--color-accent-indigo-20)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-border": {
+      "value": "var(--color-accent-indigo-30)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-border-hover": {
+      "value": "var(--color-accent-indigo-40)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-font": {
+      "value": "var(--font-size-200, 14px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-h": {
+      "value": "36px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-lh": {
+      "value": "var(--line-height-narrow, 1.25)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-padding-v": {
+      "value": "var(--space-xxsmall, 8px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-radius": {
+      "value": "var(--radius-base, 4px)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-suggestion-text": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
     ":root --loop-card-container-color": {
       "value": "var(--color-white)",
       "file": "component-card.css",
@@ -3706,6 +3756,11 @@
       "file": "component-multilevel-dropdown.css",
       "kind": "component"
     },
+    ":root --loop-mldd-option-h": {
+      "value": "40px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
     ":root --loop-mldd-panel-max-h": {
       "value": "320px",
       "file": "component-multilevel-dropdown.css",
@@ -3713,6 +3768,11 @@
     },
     ":root --loop-mldd-panel-z": {
       "value": "100",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-search-h": {
+      "value": "40px",
       "file": "component-multilevel-dropdown.css",
       "kind": "component"
     },
