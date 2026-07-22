@@ -11,20 +11,44 @@
  *   items              JSON tree, up to 3 levels: [{ "value": "af", "label": "Africa",
  *                      "children": [ … ] }, …]. A node with a non-empty children[] is a
  *                      non-selectable group header; levels deeper than 3 are ignored.
- *                      Invalid JSON renders an empty list (never throws).
- *   selected-value     Current selection. REFLECTED by the component (before the change
- *                      event fires) so OutSystems can read it back; the ODC echo of the
- *                      same value is a no-op via the o===v guard.
+ *                      Single-quoted JSON is accepted too (convenient in ODC Expressions;
+ *                      escape inner apostrophes as \'). Invalid JSON renders an empty list
+ *                      and logs a console.warn (never throws).
+ *   selected-record    Current selection as the SAME nested {value,label,children[]} record the
+ *                      change event emits — the items shape, so ONE ODC Structure covers items,
+ *                      preselect and payload. Preselect by binding an onChange record straight
+ *                      back. Single-quoted JSON accepted (ODC-style). Resolved to a leaf by
+ *                      matching the full value path (root→mid→leaf), which disambiguates leaves
+ *                      that share a value across branches. Each level's `children` holds ONE
+ *                      entry (a selection can't fork); 2+ warn and take the first. A legacy
+ *                      `child` OBJECT is tolerated as an alias. REFLECTED before change fires so
+ *                      ODC can read it back; the echo of the same string is a no-op (o===v guard).
  *   placeholder        Field text when nothing is selected (default "Select an option").
  *   label              Optional visible label above the field. When empty the field's
- *                      aria-label falls back to the placeholder.
+ *                      aria-label falls back to a bound native Label, else the placeholder.
  *   search             Boolean (default true) — "false" hides the search row.
  *   search-placeholder Placeholder of the panel search input (default "Search").
  *   no-results-text    Empty-state row text (default "No results found").
  *   disabled           Boolean — inert field, disabled styling.
+ *   required           Boolean — aria-required on the trigger + asterisk on the internal
+ *                      label. With a native Label the asterisk comes from OSUI's .mandatory.
+ *   invalid            Boolean — error border/background + aria-invalid. Driven by
+ *                      OutSystems' own validation (the .not-valid equivalent); the component
+ *                      never derives it. The error MESSAGE stays in the Field Wrapper's
+ *                      light DOM — aria-describedby cannot cross the shadow boundary.
  *
- * Properties: items (get/set ⇄ attribute) · selectedValue (get/set) ·
- *             selectedRecords (get-only → the change-detail array below; [] unselected).
+ * Labelling: the element is form-associated, so the HOST is labelable — a native OutSystems
+ * Label with Mandatory=True binds via <label for="{host id}">, clicking it focuses the
+ * trigger (delegatesFocus), and its text becomes the trigger's aria-label. Supply EITHER a
+ * native Label OR the `label` attribute, never both — `label` wins and hides the other's
+ * contribution to the accessible name.
+ *
+ * Sizing: no size attribute — the field consumes --loop-select-* and the panel row/search
+ * metrics derive from --loop-select-h, so the shared .loop-field--xlarge|large|regular|small
+ * wrapper ramp scales the whole component (custom properties inherit into shadow DOM).
+ *
+ * Properties: items (get/set ⇄ attribute) · selectedRecord (get/set ⇄ selected-record —
+ *             the nested tree below; get resolves against items, null when unselected).
  * Methods:    open() · close() · clear().
  *
  * After selection the closed field shows the full ancestor path, e.g.
@@ -32,12 +56,13 @@
  *
  * Events (bubbles, composed):
  *   change — fired ONLY on user selection or clear(), never on attribute echo.
- *            detail IS the selection chain: an array of {value,label} records
- *            root → leaf, one per level — a level-3 pick returns three records:
- *              [ {value:"asi",label:"Asia"},
- *                {value:"sea",label:"South East Asia"},
- *                {value:"ph",label:"Philippines"} ]
- *            The last entry is always the selected leaf. clear() fires [].
+ *            detail IS the selection as a NESTED {value,label,children[]} tree root → leaf —
+ *            the SAME shape as `items`, one level per nesting, each `children` holding the one
+ *            picked branch. A level-3 pick nests three deep:
+ *              { value:"asi", label:"Asia",
+ *                children:[{ value:"sea", label:"South East Asia",
+ *                  children:[{ value:"ph", label:"Philippines" }] }] }
+ *            The innermost record (no `children` key) is the selected leaf. clear() fires null.
  *
  * Search: case-insensitive substring on label across all levels. A node stays visible if
  * it matches, any DESCENDANT matches (ancestors kept as context), or any ANCESTOR matches
@@ -56,14 +81,22 @@
  * "false"). Wire the change event in OnReady/OnDestroy (see the handover's Event wiring).
  */
 class LoopMultilevelDropdown extends HTMLElement {
+  /* Form-associated so the HOST is a *labelable* element: a native OutSystems Label
+     (<label for="…">) can only bind to one, and the trigger button is unreachable inside
+     the shadow root. Also gives us setFormValue() participation and the form lifecycle
+     callbacks. Validity is NOT set here — display stays OutSystems-driven via `invalid`. */
+  static formAssociated = true;
+
   static get observedAttributes() {
-    return ['items', 'selected-value', 'placeholder', 'label', 'search',
-            'search-placeholder', 'no-results-text', 'disabled'];
+    return ['items', 'selected-record', 'placeholder', 'label', 'search',
+            'search-placeholder', 'no-results-text', 'disabled', 'required', 'invalid'];
   }
 
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    /* delegatesFocus: a label click calls host.focus(), which must land on the trigger. */
+    this.attachShadow({ mode: 'open', delegatesFocus: true });
+    this._internals = this.attachInternals();
     this._isOpen = false;
     this._expanded = new Set();  // keys of manually expanded parents (untouched by search)
     this._query = '';
@@ -77,9 +110,19 @@ class LoopMultilevelDropdown extends HTMLElement {
 
   connectedCallback() {
     this._render();
+    this._internals.setFormValue(this.getAttribute('selected-record') || '');
     this.shadowRoot.addEventListener('click', this._onClick);
     this.shadowRoot.addEventListener('keydown', this._onKeydown);
     this.shadowRoot.addEventListener('input', this._onInput);
+    /* An external <label for> may parse AFTER this element upgrades, so internals.labels can
+       still be empty here. Re-resolve once the frame settles — but only re-render if the name
+       actually changed, so the common (no external label) case costs nothing. */
+    if (!this._label) {
+      const named = this._externalLabel;
+      requestAnimationFrame(() => {
+        if (this.isConnected && !this._label && this._externalLabel !== named) this._render();
+      });
+    }
   }
 
   disconnectedCallback() {
@@ -96,9 +139,23 @@ class LoopMultilevelDropdown extends HTMLElement {
       this._query = '';
       this._activeKey = null;
     }
+    if (n === 'selected-record') this._internals.setFormValue(v || '');
     if (n === 'disabled' && this._disabled && this._isOpen) this._closePanel(false);
     if (this.isConnected) this._render();
   }
+
+  /* ── form lifecycle (formAssociated) ───────────────────────────────────────── */
+
+  formResetCallback() { this.clear(); }
+
+  /* Fieldset/form disabling is a separate axis from the `disabled` attribute — mirror it
+     onto the attribute so the single _disabled getter stays the source of truth. */
+  formDisabledCallback(disabled) {
+    if (disabled) this.setAttribute('disabled', 'true');
+    else this.removeAttribute('disabled');
+  }
+
+  formStateRestoreCallback(state) { this.setAttribute('selected-record', state || ''); }
 
   /* OutSystems binds booleans as If(Flag,"true","false") so hasAttribute() alone is
      insufficient — must treat "false" and "0" as falsy. */
@@ -109,6 +166,8 @@ class LoopMultilevelDropdown extends HTMLElement {
   }
 
   get _disabled()      { return this._boolAttr('disabled'); }
+  get _required()      { return this._boolAttr('required'); }
+  get _invalid()       { return this._boolAttr('invalid'); }
   /* `search` defaults TRUE when absent — same value-aware parsing, inverted default. */
   get _search()        { const v = this.getAttribute('search'); if (v === null) return true; return v !== 'false' && v !== '0'; }
   get _placeholder()   { return this.getAttribute('placeholder') || 'Select an option'; }
@@ -116,24 +175,136 @@ class LoopMultilevelDropdown extends HTMLElement {
   get _searchPlaceholder() { return this.getAttribute('search-placeholder') || 'Search'; }
   get _noResultsText() { return this.getAttribute('no-results-text') || 'No results found'; }
 
+  /* Text of any native <label for> bound to the host (internals.labels), '' when none.
+     Used only when the `label` attribute is absent — see the naming precedence in _render(). */
+  get _externalLabel() {
+    const labels = this._internals.labels;
+    if (!labels || !labels.length) return '';
+    return Array.from(labels).map((l) => l.textContent.trim()).filter(Boolean).join(' ');
+  }
+
+  /* Parse the `items` attribute. Strict JSON first; falls back to single-quoted JSON —
+     ODC Expressions delimit strings with double quotes, so hand-authored inline JSON
+     there naturally uses single quotes. Warns (never throws) on genuinely invalid input,
+     returning []. */
+  _parseItems(raw) {
+    const s = raw || '[]';
+    try { return JSON.parse(s); } catch { /* fall through to quote-tolerant parse */ }
+    try { return JSON.parse(this._singleToDoubleQuoted(s)); }
+    catch (e) {
+      console.warn('[loop-multilevel-dropdown] invalid items JSON:', e.message, s);
+      return [];
+    }
+  }
+
+  /* Convert a single-quoted JSON-ish string to valid JSON. Char scanner (NOT a naive
+     replace, which corrupts labels like "Côte d'Ivoire"): treats ' as the string
+     delimiter, escapes any literal " inside, and honors \' as an escaped apostrophe.
+     A raw apostrophe inside a value is ambiguous and must be written as \' by the author. */
+  _singleToDoubleQuoted(s) {
+    let out = '', inStr = false;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) {
+        if (c === '\\' && s[i + 1] === "'") { out += "'"; i++; }   // \' -> literal apostrophe
+        else if (c === '\\') { out += c + (s[i + 1] ?? ''); i++; } // keep other escapes
+        else if (c === "'") { out += '"'; inStr = false; }         // close string
+        else if (c === '"') { out += '\\"'; }                      // escape inner double quote
+        else { out += c; }
+      } else {
+        if (c === "'") { out += '"'; inStr = true; }               // open string
+        else { out += c; }
+      }
+    }
+    return out;
+  }
+
   get items() {
-    try {
-      const v = JSON.parse(this.getAttribute('items') || '[]');
-      return Array.isArray(v) ? v : [];
-    } catch { return []; }
+    const v = this._parseItems(this.getAttribute('items'));
+    return Array.isArray(v) ? v : [];
   }
   set items(arr) { this.setAttribute('items', JSON.stringify(arr || [])); }
 
-  get selectedValue() { return this.getAttribute('selected-value') || ''; }
-  set selectedValue(v) { this.setAttribute('selected-value', v == null ? '' : String(v)); }
+  /* The selection is a NESTED record — {value,label,children:[…]} root → leaf, one level per
+     nesting (the items shape), the innermost node (no `children`) being the selected leaf. This is BOTH the
+     preselect input (the `selected-record` attribute) AND the change-event detail — one shape,
+     both directions. The getter resolves against `items` so labels are canonical and a stale
+     or unresolvable record reads back as null (self-healing); null when nothing is selected. */
+  get selectedRecord() {
+    const n = this._selectedNode();
+    return n ? this._nestedFor(n) : null;
+  }
+  set selectedRecord(rec) {
+    if (rec == null || rec === '') { this.setAttribute('selected-record', ''); return; }
+    this.setAttribute('selected-record', typeof rec === 'string' ? rec : JSON.stringify(rec));
+  }
 
-  /* The selection chain root → leaf, one {value,label} record per level — [] when nothing
-     is selected. This IS the change-event detail. */
-  get selectedRecords() {
-    const v = this.selectedValue;
-    if (!v) return [];
-    const n = this._model().find((x) => x.isLeaf && x.value === v);
-    return n ? this._chainFor(n) : [];
+  /* Parse the `selected-record` attribute into a nested {value,label,children[]} object (or null).
+     Same double-quote-first / single-quote-tolerant strategy as `_parseItems`, since ODC
+     Expressions naturally hand-author single-quoted JSON. Warns (never throws) on bad input. */
+  _parseRecord(raw) {
+    const s = (raw == null ? '' : String(raw)).trim();
+    if (!s) return null;
+    try { return JSON.parse(s); } catch { /* fall through to quote-tolerant parse */ }
+    try { return JSON.parse(this._singleToDoubleQuoted(s)); }
+    catch (e) {
+      console.warn('[loop-multilevel-dropdown] invalid selected-record JSON:', e.message, s);
+      return null;
+    }
+  }
+
+  /* The next level down from a `selected-record` step. Canonically `.children` — a single-element
+     array, the same shape as `items`, so ONE OutSystems Structure covers items, preselect and the
+     change payload. A selection is one path, not a fork, so 2+ entries are ambiguous: warn and
+     take the first. Tolerated alias: `.child` holding a plain object (the pre-2026-07-21 payload
+     shape) — same spirit as the single-quoted-JSON tolerance in _parseRecord: accept the obvious
+     authoring carry-over rather than silently render nothing. */
+  _stepDown(step) {
+    const kids = step.children;
+    if (Array.isArray(kids) && kids.length > 0) {
+      if (kids.length > 1) {
+        console.warn('[loop-multilevel-dropdown] selected-record `children` has '
+          + kids.length + ' entries; a selection is a single path — using the first.');
+      }
+      return kids[0];
+    }
+    return step.child != null ? step.child : null;
+  }
+
+  /* Resolve the `selected-record` to the matching LEAF node by walking the record's `.children`
+     chain (or the tolerated legacy `.child` alias — see _stepDown) against the tree and matching
+     each level's `value` (labels are ignored). The deepest matched node must be a leaf to count
+     as selected — a broken or non-leaf path yields null.
+     Full-path matching disambiguates leaves that share a value across different branches.
+     Memoised per (items src + record string) so `_render`/`_renderList` never re-walk. */
+  _selectedNode() {
+    const itemsSrc = this.getAttribute('items') || '[]';
+    const recSrc = this.getAttribute('selected-record') || '';
+    const cacheKey = itemsSrc + '\n' + recSrc;   // \n can't appear unescaped in either JSON string, so the boundary is unambiguous
+    if (this._selSrc === cacheKey) return this._selNode;
+    this._selSrc = cacheKey;
+    this._selNode = null;
+
+    const rec = this._parseRecord(recSrc);
+    if (rec && typeof rec === 'object') {
+      const childrenOf = (parentKey) =>       // _model() (called here) rebuilds per items string before any lookup
+        this._model().filter((n) => n.parentKey === parentKey);
+      let level = childrenOf(null);      // level-1 candidates (parentKey === null)
+      let node = null;
+      let step = rec;
+      while (step && typeof step === 'object') {
+        const wanted = step.value == null ? '' : String(step.value);
+        const hit = level.find((n) => n.value === wanted);
+        if (!hit) { node = null; break; }        // path breaks → no selection
+        node = hit;
+        const next = this._stepDown(step);
+        if (next == null) break;                  // innermost record reached
+        level = childrenOf(hit.key);
+        step = next;
+      }
+      if (node && node.isLeaf) this._selNode = node;
+    }
+    return this._selNode;
   }
 
   /* Ancestor chain root → node as internal nodes. */
@@ -145,24 +316,31 @@ class LoopMultilevelDropdown extends HTMLElement {
     return chain;
   }
 
-  /* Ancestor chain root → node as clean {value,label} records. */
-  _chainFor(node) {
-    return this._ancestry(node).map((n) => ({ value: n.value, label: n.label }));
+  /* The ancestor chain as a NESTED {value,label,children[]} tree root → leaf — the SAME shape as
+     `items`, so one OutSystems Structure (with a `Children` List) deserializes both. Each level
+     carries a single-element `children` list because a selection is ONE path, not a fork; the
+     leaf is the innermost record and carries no `children` key. */
+  _nestedFor(node) {
+    const chain = this._ancestry(node);
+    let obj = null;
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const rec = { value: chain[i].value, label: chain[i].label };
+      if (obj) rec.children = [obj];
+      obj = rec;
+    }
+    return obj;
   }
 
   /* "Africa > West Africa > Ghana" for the closed-field display, '' when unselected. */
   _selPath() {
-    const v = this.selectedValue;
-    if (!v) return '';
-    const n = this._model().find((x) => x.isLeaf && x.value === v);
+    const n = this._selectedNode();
     return n ? this._ancestry(n).map((x) => x.label).join(' > ') : '';
   }
 
   open() {
     if (this._disabled || this._isOpen || !this.isConnected) return;
     this._isOpen = true;
-    const sel = this.selectedValue
-      ? this._model().find((n) => n.isLeaf && n.value === this.selectedValue) : null;
+    const sel = this._selectedNode();
     if (sel) {                   // cursor on the selection, its branch expanded
       let p = sel.parentKey;
       while (p) { this._expanded.add(p); p = this._byKey().get(p).parentKey; }
@@ -179,9 +357,9 @@ class LoopMultilevelDropdown extends HTMLElement {
   close() { this._closePanel(true); }
 
   clear() {
-    this.setAttribute('selected-value', '');   // reflect BEFORE the event, like _select()
+    this.setAttribute('selected-record', '');   // reflect BEFORE the event, like _select()
     this.dispatchEvent(new CustomEvent('change', {
-      detail: [], bubbles: true, composed: true,
+      detail: null, bubbles: true, composed: true,
     }));
   }
 
@@ -195,8 +373,7 @@ class LoopMultilevelDropdown extends HTMLElement {
     if (this._modelSrc === src) return this._modelNodes;
     const out = [];
     const map = new Map();
-    let parsed;
-    try { parsed = JSON.parse(src); } catch { parsed = []; }
+    const parsed = this._parseItems(src);
     const walk = (arr, level, parentKey) => {
       if (!Array.isArray(arr)) return;
       for (const raw of arr) {
@@ -393,12 +570,14 @@ class LoopMultilevelDropdown extends HTMLElement {
     }
   }
 
-  /* Reflect selected-value FIRST (so ODC reads the new value inside the handler and its
-     echo re-assignment is a no-op), then fire change, then close. */
+  /* Reflect selected-record FIRST (so ODC reads the new selection inside the handler and its
+     echo re-assignment is a no-op via the o===v guard), then fire change, then close. The
+     reflected string and the change detail are the SAME nested record — one shape, both ways. */
   _select(node) {
-    this.setAttribute('selected-value', node.value);
+    const rec = this._nestedFor(node);
+    this.setAttribute('selected-record', JSON.stringify(rec));
     this.dispatchEvent(new CustomEvent('change', {
-      detail: this._chainFor(node), bubbles: true, composed: true,
+      detail: rec, bubbles: true, composed: true,
     }));
     this._closePanel(true);
   }
@@ -444,13 +623,23 @@ class LoopMultilevelDropdown extends HTMLElement {
     const rootCls = 'lmdd'
       + (this._isOpen ? ' lmdd--open' : '')
       + (disabled ? ' lmdd--disabled' : '')
+      + (this._invalid ? ' lmdd--invalid' : '')
       + (this._query.trim() ? ' lmdd--has-query' : '');
+    /* Naming precedence: own `label` attr (renders a visible label) → a native OutSystems
+       Label bound to the host (its text is copied in; NO internal label is rendered, so the
+       two must never both be supplied) → the placeholder. */
+    const extLabel = label ? '' : this._externalLabel;
     const fieldName = label
       ? 'aria-labelledby="lmdd-label lmdd-value"'
-      : `aria-label="${this._esc(this._placeholder)}"`;
+      : `aria-label="${this._esc(extLabel || this._placeholder)}"`;
     const treeName = label
       ? 'aria-labelledby="lmdd-label"'
-      : `aria-label="${this._esc(this._placeholder)}"`;
+      : `aria-label="${this._esc(extLabel || this._placeholder)}"`;
+    /* aria-required/-invalid ride the trigger — the light-DOM Field Wrapper's asterisk and
+       message cannot reach across the shadow boundary. */
+    const validityAttrs = (this._required ? ' aria-required="true"' : '')
+      + (this._invalid ? ' aria-invalid="true"' : '');
+    const labelCls = 'lmdd__label' + (this._required ? ' lmdd__label--required' : '');
     const searchRow = this._search ? `
         <div class="lmdd__search">
           <span class="lmdd__search-icon" aria-hidden="true">&#xf002;</span>
@@ -463,13 +652,16 @@ class LoopMultilevelDropdown extends HTMLElement {
           </button>
         </div>` : '';
 
+    /* Read BEFORE the innerHTML swap — it destroys whatever held focus (see the restore below). */
+    const hadShadowFocus = !!this.shadowRoot.activeElement;
+
     this.shadowRoot.innerHTML = `
       <style>${this._css()}</style>
       <div class="${rootCls}">
-        ${label ? `<span class="lmdd__label" id="lmdd-label">${this._esc(label)}</span>` : ''}
+        ${label ? `<span class="${labelCls}" id="lmdd-label">${this._esc(label)}</span>` : ''}
         <button class="lmdd__field" type="button"${disabled ? ' disabled' : ''}
           aria-haspopup="tree" aria-expanded="${this._isOpen}" aria-controls="lmdd-panel"
-          ${fieldName}>
+          ${fieldName}${validityAttrs}>
           <span class="lmdd__value${selPath ? '' : ' lmdd__value--placeholder'}" id="lmdd-value"${selPath ? ` title="${this._esc(selPath)}"` : ''}>${this._esc(selPath || this._placeholder)}</span>
           <span class="lmdd__chevron" aria-hidden="true">&#xf078;</span>
         </button>
@@ -483,7 +675,15 @@ class LoopMultilevelDropdown extends HTMLElement {
     this._renderList();
     if (this._isOpen && this._search) {
       const inp = this.shadowRoot.querySelector('.lmdd__search-input');
-      if (inp) inp.value = this._query;             // full render preserves an in-flight query
+      if (inp) {
+        inp.value = this._query;                    // full render preserves an in-flight query
+        /* …and its FOCUS. A full render destroys the focused input, so an attribute change
+           mid-interaction (ODC flipping `invalid` as validation runs, or re-pushing `items`)
+           would strand focus on <body> — leaving the shadowRoot keydown listener unreachable
+           and the panel stuck open with Escape and the arrow keys dead. Only re-focus if the
+           render actually orphaned the focus, so we never steal it from elsewhere. */
+        if (hadShadowFocus && !this.shadowRoot.activeElement) inp.focus();
+      }
     }
   }
 
@@ -511,13 +711,13 @@ class LoopMultilevelDropdown extends HTMLElement {
       this._activeKey = flat.length ? flat[0].key : null;
     }
 
-    const selVal = this.selectedValue;
+    const selKey = this._selectedNode()?.key;   // KEY match (not value) — disambiguates duplicate leaf values
     const renderGroup = (parentKey) => {
       let html = '';
       for (const n of nodes) {
         if (n.parentKey !== parentKey || !visible.has(n.key)) continue;
         const isExpanded = !n.isLeaf && expandedFor(n.key);
-        const isSelected = n.isLeaf && selVal !== '' && n.value === selVal;
+        const isSelected = n.isLeaf && n.key === selKey;
         const isActive = n.key === this._activeKey;
         const cls = ['lmdd__row', 'lmdd__row--l' + n.level];
         if (isExpanded) cls.push('lmdd__row--expanded');
@@ -588,8 +788,18 @@ class LoopMultilevelDropdown extends HTMLElement {
   display: block;
   position: relative;
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  /* Panel row + search heights are one field-height each, so they track --loop-select-h as
+     the .loop-field--* wrapper ramp re-points it (56/48/40/32) — without this the panel kept
+     40px rows under a 32px Small field. Derived HERE, not in the token file: a var() inside a
+     custom property is substituted where it is declared, so a :root derivation would freeze
+     at 40px; :host is the first scope that sees the wrapper's value. */
+  --loop-mldd-option-h: var(--loop-select-h, 40px);
+  --loop-mldd-search-h: var(--loop-select-h, 40px);
 }
 :host([hidden]) { display: none; }
+/* delegatesFocus (needed so a native <label for> click reaches the trigger) also makes the
+   host match :focus — suppress its ring so only .lmdd__field's own ring ever draws. */
+:host(:focus) { outline: none; }
 
 /* ---- Optional label above the field (Select scale: 13px, not the 16px .loop-field label) ---- */
 .lmdd__label {
@@ -600,6 +810,22 @@ class LoopMultilevelDropdown extends HTMLElement {
   font-weight: var(--font-weight-semibold, 600);
   line-height: var(--loop-select-label-leading, 16px);
   letter-spacing: var(--loop-select-label-tracking, 0.25px);
+}
+/* Required marker — LEADING asterisk (Figma 19336-9606), mirroring how the native
+   .mandatory marker is repositioned in tokens/outsystems-ui-overrides.css so the internal
+   label matches the OSUI Label it stands in for. The global rule can't reach in here (shadow
+   DOM), so the same flex + order:-1 trick is repeated locally. Only rendered on the internal
+   label; with a native Label, OSUI supplies its own. */
+.lmdd__label--required {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--loop-mandatory-marker-gap, 4px);
+}
+.lmdd__label--required::after {
+  content: "*";
+  order: -1;
+  color: var(--color-text-on-light-state-error);
+  line-height: inherit;
 }
 
 /* ---- Field box (closed trigger) — pixel parity with the single-Select restyle ---- */
@@ -625,6 +851,16 @@ class LoopMultilevelDropdown extends HTMLElement {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .lmdd__field:hover { border-color: var(--color-outline-on-light-emphasis); }
+/* Error state — same three tokens as the native Select's .not-valid treatment in
+   src/blocks/loop-dropdown.css. Sits AFTER :hover and BEFORE the focus rules: all three are
+   equal specificity (0,2,0), so source order alone decides — hover can't wash out the error
+   colour, and focusing an invalid field still draws the focus ring over it. Do NOT add a
+   :hover variant here; at (0,3,0) it would outrank the focus ring. */
+.lmdd--invalid .lmdd__field {
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
+}
 /* 2px ring with ZERO layout shift: keep the 1px border and add a 1px inset shadow inside it
    (border-no-height-shift — no padding compensation, a border never changes the box size). */
 .lmdd__field:focus-visible,

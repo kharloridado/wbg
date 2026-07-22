@@ -29,6 +29,101 @@
   padding: var(--space-none, 0px);
 }
 
+/* ---------------------------------------------------------------------------
+ * Status variants (2026-07-22 design — 292x180 tinted + 292x152 neutral surfaces)
+ *
+ * SURFACE-ONLY modifiers: they change the fill and/or the outline and nothing
+ * else, so they compose with the existing modifiers —
+ * ExtendedClass="card--success card--no-shadow" for the flat treatment,
+ * "card--warning card--flush" for a bleed. Shadow and padding stay on the base
+ * card deliberately; the mockups are flat rects that state neither.
+ *
+ * Success is outlined, warning is not — exactly as drawn (FND-079). The mockups
+ * specify a 10px radius, which has no token (scale 2/4/8/16/32); we follow
+ * --loop-card-radius (8px) so these match every other Loop card, the same call
+ * as FND-077 — raised as FND-080.
+ * ------------------------------------------------------------------------- */
+.card--success {
+  background-color: var(--loop-card-success-bg);
+  /* base .card sets border:0, so the shorthand has to be restated here */
+  border: var(--loop-card-status-border-size) solid var(--loop-card-success-border);
+}
+
+.card--warning {
+  background-color: var(--loop-card-warning-bg);
+  /* no border — the amber card is borderless in the design (FND-079) */
+}
+
+/* Neutral / no-status sibling: the base white fill, outlined. The mockup's rect is
+ * fill="none", read as white per the 2026-07-22 user ruling, so the fill stays on
+ * the base card and this modifier adds only the outline. */
+.card--neutral {
+  border: var(--loop-card-status-border-size) solid var(--loop-card-neutral-border);
+}
+
+/* ---------------------------------------------------------------------------
+ * Sectioned card (Figma 20020051:21016 white section / 20020051:21413 muted)
+ *
+ * One card silhouette split into differently-tinted sections — a white form
+ * section over a muted section hosting the AG Grid. The sections own the inset,
+ * so the card's own padding is zeroed; overflow:hidden clips the section fills
+ * to the card radius so the muted fill rounds into the bottom corners.
+ *
+ * The Figma frames specify a 16px radius; we follow --loop-card-radius (8px) so
+ * the sectioned card matches every other Loop card — raised as FND-077.
+ * ------------------------------------------------------------------------- */
+.card--sectioned {
+  padding: var(--space-none, 0px);
+  border-radius: var(--loop-card-sectioned-radius);
+  overflow: hidden;
+}
+
+.card__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--loop-card-section-gap);
+  padding: var(--loop-card-section-padding);
+  background-color: var(--loop-card-section-color);
+}
+
+/* Muted section — the grey field the table/AG Grid sits on */
+.card__section--muted {
+  background-color: var(--loop-card-section-muted-color);
+}
+
+/* Seam between adjacent sections. Adjacent-sibling so it never lands above the
+ * first section. (Figma draws this as a standalone Line node at the boundary.) */
+.card--sectioned .card__section + .card__section {
+  border-top: var(--border-size-s) solid var(--loop-card-section-divider);
+}
+
+.card__section-title {
+  margin: 0;
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:   var(--font-size-600);          /* Figma Heading/H2/Tiny — 24px */
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  color:       var(--loop-card-section-title-color);
+}
+
+/* Body copy. Figma sets this in the .Input/Label/Label role (SemiBold, line-height
+ * 16px on 16px text, nowrap + ellipsis) — a label role applied to a paragraph;
+ * rendered here as body copy per FND-078 so the sentence wraps and stays legible. */
+.card__section-description {
+  margin: 0;
+  font-family: var(--font-family-body, 'Open Sans', system-ui, sans-serif);
+  font-size:   var(--font-size-300);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+  color:       var(--loop-card-section-text-color);
+}
+
+/* Neutral content slot — whatever lands here (AG Grid, table, form) brings its
+ * own styling from its own block CSS; the slot deliberately adds none. */
+.card__section-content {
+  min-width: 0;   /* let a wide grid scroll instead of blowing out the card */
+}
+
 /* Content placeholder (dev affordance shown before real content is swapped in) */
 .card .card__placeholder {
   display: flex;

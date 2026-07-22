@@ -134,7 +134,6 @@
   display: none;
 }
 
- .desktop .layout-side.aside-collapsed .header-logo { padding-right: var(--space-base); }
 /* Animate the panel width + the content reflow when collapsing/expanding. */
 .desktop .layout-side .app-menu-content { transition: width 220ms ease, max-width 220ms ease; }
 .desktop .layout-side .main { transition: margin-left 220ms ease; }
@@ -160,7 +159,12 @@
  *   · .is-swapped           → the sidebar TOGGLE icon instead.
  * Both trigger expand — the developer wires whichever is shown (the preview makes the header
  * itself the trigger). */
-.desktop .layout-side.aside-collapsed .header-logo { justify-content: center; }
+/* `padding-inline: 0` is load-bearing: OSUI's own .header-logo carries a 24px inline padding
+ * and the expanded-state neutraliser above is scoped `:not(.aside-collapsed)`, so in the rail
+ * the native asymmetry survives and shifts the centred glyph right of the menu-item icons
+ * (24px left vs 16px right => +4px). Zeroing it lets `justify-content: center` centre the
+ * glyph on the rail axis, in line with the icons below it. */
+.desktop .layout-side.aside-collapsed .header-logo { justify-content: center; padding-inline: 0; }
 .desktop .layout-side.aside-collapsed .header-logo .application-name { display: none; }
 /* default: logo shown as the trigger, toggle hidden */
 .desktop .layout-side.aside-collapsed:not(.is-swapped) .loop-nav-toggle { display: none; }
