@@ -62,6 +62,53 @@
 }
 
 /* ---------------------------------------------------------------------------
+ * Headed card (2026-07-22 "Call in Progress" screenshot — no Figma node)
+ *
+ * A solid status bar carrying a title, over the ordinary white card body. NOT a
+ * status variant: card--success tints the WHOLE surface, this tints only the bar
+ * and leaves the body white. Structurally it borrows the sectioned card's shape —
+ * the card's own padding is zeroed because the header and body own the inset, and
+ * overflow:hidden clips the bar fill into the top corners.
+ *
+ * Bar geometry comes from the supplied 292x53 SVG: the 16px/24px inset renders it
+ * at 52px rather than pinning a height, so the bar still grows if the title wraps.
+ *
+ * Composes with card--no-shadow / card--flush is NOT meaningful here (the body
+ * owns the padding), but the shadow opt-out still applies.
+ *
+ * The mockup draws a ~10px radius, which has no token (scale 2/4/8/16/32); we
+ * follow --loop-card-radius (8px) so this matches every other Loop card — the
+ * same call as FND-077/FND-080, already filed, not re-flagged.
+ * ------------------------------------------------------------------------- */
+.card--headed {
+  padding: var(--space-none, 0px);   /* header + body own the inset */
+  overflow: hidden;                  /* clip the bar fill to the card radius */
+  /* base .card sets border:0, so the shorthand has to be restated here */
+  border: var(--loop-card-status-border-size) solid var(--loop-card-header-accent);
+}
+
+.card__header {
+  padding: var(--loop-card-header-padding);
+  background-color: var(--loop-card-header-bg);
+  color: var(--loop-card-header-text);
+}
+
+.card__header-title {
+  margin: 0;
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:   var(--loop-card-header-title-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  color: inherit;                    /* the white comes from .card__header */
+}
+
+/* Neutral content slot — whatever lands here (copy, buttons, a form) brings its
+ * own styling from its own block CSS; the body adds only the card's own inset. */
+.card__body {
+  padding: var(--loop-card-padding);
+}
+
+/* ---------------------------------------------------------------------------
  * Sectioned card (Figma 20020051:21016 white section / 20020051:21413 muted)
  *
  * One card silhouette split into differently-tinted sections — a white form

@@ -23,6 +23,22 @@
   --loop-card-neutral-border:     var(--color-neutral-60);                          /* #4b5e71 */
   --loop-card-status-border-size: var(--border-size-s);                             /* 1px */
 
+  /* ---- Headed card (opt-in .card--headed) ----
+   * A solid status bar carrying a title, over the ordinary white card body
+   * ("Call in Progress", 2026-07-22 screenshot — no Figma node, values derived
+   * from the mockup and snapped to the existing scale). The fill and the outline
+   * alias two different semantic roles that both resolve to green-60, so the bar
+   * and the card edge stay the same colour. Only the green bar is designed today;
+   * a future status set re-points BOTH of these vars. */
+  --loop-card-header-bg:         var(--color-bg-container-state-success-high); /* #388004 */
+  --loop-card-header-accent:     var(--loop-card-success-border);              /* #388004 — outline matches the bar */
+  --loop-card-header-text:       var(--color-white);                           /* 4.93:1 on #388004 — passes AA */
+  /* 16px/24px — the bar SVG is 292x53 with a 24px title inset; 16 + (18*1.12) + 16
+   * = 52.2px, landing the drawn 53px height without pinning it (so the bar still
+   * grows if the title wraps). */
+  --loop-card-header-padding:    var(--space-small) var(--space-regular);
+  --loop-card-header-title-size: var(--font-size-400);                         /* 18px bold */
+
   /* ---- Content placeholder (dev affordance) ---- */
   --loop-card-placeholder-bg:   var(--color-neutral-10);                  /* Figma neutral/solid/10-s #e7edf3 */
   --loop-card-placeholder-text: var(--color-text-on-light-state-disabled);
