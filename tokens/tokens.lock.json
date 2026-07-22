@@ -3271,6 +3271,11 @@
       "file": "component-card.css",
       "kind": "component"
     },
+    ":root --loop-card-neutral-border": {
+      "value": "var(--color-neutral-60)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
     ":root --loop-card-padding": {
       "value": "var(--space-regular)",
       "file": "component-card.css",
@@ -3291,8 +3296,68 @@
       "file": "component-card.css",
       "kind": "component"
     },
+    ":root --loop-card-section-color": {
+      "value": "var(--color-bg-container-on-light-lowest)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-divider": {
+      "value": "var(--color-divider-on-light-default)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-gap": {
+      "value": "var(--space-medium)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-muted-color": {
+      "value": "var(--color-bg-container-on-light-low)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-padding": {
+      "value": "var(--space-xlarge)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-text-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-section-title-color": {
+      "value": "var(--color-text-on-light-default)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-sectioned-radius": {
+      "value": "var(--loop-card-radius)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
     ":root --loop-card-shadow": {
       "value": "var(--shadow-medium)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-status-border-size": {
+      "value": "var(--border-size-s)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-success-bg": {
+      "value": "var(--color-bg-container-state-success-low)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-success-border": {
+      "value": "var(--color-outline-on-light-state-success-high)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-warning-bg": {
+      "value": "var(--color-domain-state-warning-low)",
       "file": "component-card.css",
       "kind": "component"
     },
@@ -3629,6 +3694,36 @@
     ":root --loop-field-text-weight": {
       "value": "var(--font-weight-regular)",
       "file": "component-field.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-chevron-size": {
+      "value": "12px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-indent": {
+      "value": "var(--space-small)",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-option-h": {
+      "value": "40px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-panel-max-h": {
+      "value": "320px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-panel-z": {
+      "value": "100",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-search-h": {
+      "value": "40px",
+      "file": "component-multilevel-dropdown.css",
       "kind": "component"
     },
     ":root --loop-modal-bg": {

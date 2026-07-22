@@ -8,6 +8,29 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 14:17 UTC — v0.6.0
+
+- **[component]** + `--loop-card-neutral-border`: `var(--color-neutral-60)` _(component-card.css)_
+- **[component]** + `--loop-card-section-color`: `var(--color-bg-container-on-light-lowest)` _(component-card.css)_
+- **[component]** + `--loop-card-section-divider`: `var(--color-divider-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-section-gap`: `var(--space-medium)` _(component-card.css)_
+- **[component]** + `--loop-card-section-muted-color`: `var(--color-bg-container-on-light-low)` _(component-card.css)_
+- **[component]** + `--loop-card-section-padding`: `var(--space-xlarge)` _(component-card.css)_
+- **[component]** + `--loop-card-section-text-color`: `var(--color-text-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-section-title-color`: `var(--color-text-on-light-default)` _(component-card.css)_
+- **[component]** + `--loop-card-sectioned-radius`: `var(--loop-card-radius)` _(component-card.css)_
+- **[component]** + `--loop-card-status-border-size`: `var(--border-size-s)` _(component-card.css)_
+- **[component]** + `--loop-card-success-bg`: `var(--color-bg-container-state-success-low)` _(component-card.css)_
+- **[component]** + `--loop-card-success-border`: `var(--color-outline-on-light-state-success-high)` _(component-card.css)_
+- **[component]** + `--loop-card-warning-bg`: `var(--color-domain-state-warning-low)` _(component-card.css)_
+- **[component]** + `--loop-mldd-chevron-size`: `12px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-indent`: `var(--space-small)` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-option-h`: `40px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-panel-max-h`: `320px` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-panel-z`: `100` _(component-multilevel-dropdown.css)_
+- **[component]** + `--loop-mldd-search-h`: `40px` _(component-multilevel-dropdown.css)_
+
 ## 2026-07-17 13:57 UTC — v0.6.0
 
 - **[component]** + `--loop-pagination-chevron-inset`: `10px` _(component-pagination.css)_
