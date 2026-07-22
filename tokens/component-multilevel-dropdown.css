@@ -6,9 +6,15 @@
    tree-specific knobs live here. No Figma ref — user-spec'd (see the handover Decision log). */
 :root {
   --loop-mldd-indent:        var(--space-small);   /* 16px — indentation step per tree level below the first */
-  --loop-mldd-option-h:      40px;                 /* row min-height — matches the native Select's 40px popup rows */
   --loop-mldd-panel-max-h:   320px;                /* ~8 rows; the tree scrolls beyond this */
   --loop-mldd-panel-z:       100;                  /* above page content, below OSUI modal/toast layers */
-  --loop-mldd-search-h:      40px;                 /* pinned search-row height (one field-height) */
+  /* Fixed across the ramp: the ramp's text steps (16/14/13/12) don't map onto the glyph box,
+     and there is no Figma ref for this component to derive a chevron ramp from. */
   --loop-mldd-chevron-size:  12px;                 /* field chevron + row expander glyph em-box */
+  /* --loop-mldd-option-h / --loop-mldd-search-h are deliberately NOT declared here. Both are
+     one field-height, so they must follow --loop-select-h as the .loop-field--* ramp re-points
+     it (56/48/40/32) — and a var() inside a custom property is substituted where it is
+     DECLARED, so a :root derivation would freeze at 40px and ignore the wrapper. They are
+     derived at :host in loop-multilevel-dropdown.css, the first scope that sees the
+     wrapper's --loop-select-h. */
 }

@@ -3631,6 +3631,26 @@
       "file": "component-field.css",
       "kind": "component"
     },
+    ":root --loop-mldd-chevron-size": {
+      "value": "12px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-indent": {
+      "value": "var(--space-small)",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-panel-max-h": {
+      "value": "320px",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
+    ":root --loop-mldd-panel-z": {
+      "value": "100",
+      "file": "component-multilevel-dropdown.css",
+      "kind": "component"
+    },
     ":root --loop-modal-bg": {
       "value": "var(--color-bg-container-on-light-lowest)",
       "file": "component-modal.css",
