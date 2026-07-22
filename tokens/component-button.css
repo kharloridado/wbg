@@ -29,6 +29,45 @@
   /* ---- Spacing between adjacent buttons (The Loop: 8px; OSUI default is --space-m/16px) ---- */
   --loop-btn-adjacent-gap: var(--space-xxsmall, 8px);
 
+  /* ---- Status buttons (danger / success) — DERIVED, NOT FROM FIGMA ----
+     The Loop Button component set (node 15597:766) defines only Primary / Secondary /
+     Tertiary — there is no status button in the library. OutSystems UI ships
+     .btn-error / .btn-success natively, so these restyle them rather than inventing a
+     .btn-danger. Enabled fills map to the SHIPPED status roles already used by
+     loop-badge-status / loop-note / loop-card; hover + pressed have no token at all, so
+     they step the primitive ramp one stop.
+     UNRESOLVED ASYMMETRY — the two sides hover in OPPOSITE directions, and the palette
+     forces it. Figma's brand pattern is LIGHTEN on hover (.btn-primary: blue-70 ->
+     blue-40), and the error side follows it (red-70 -> red-60, white label 5.7:1). The
+     success side CANNOT: the only green lighter than green-60 that isn't a pale tint is
+     green-on-dark-base #459e05, and white on it measures 3.4:1 — a fail, and the token is
+     named for dark surfaces anyway. So success darkens instead (green-60 -> green-70).
+     Both press darker. This asymmetry is the substance of FND-082, not a decision —
+     do not treat any of these values as design-approved. */
+  --loop-btn-error-bg:            var(--color-bg-container-state-error-high);    /* red-70 */
+  --loop-btn-error-bg-hover:      var(--color-red-60);
+  --loop-btn-error-bg-pressed:    var(--color-red-80);
+  --loop-btn-error-text:          var(--color-text-on-light-state-error);        /* ghost label */
+  --loop-btn-error-ghost-hover:   var(--color-bg-container-state-error-low);      /* red-10 */
+  --loop-btn-error-ghost-pressed: var(--color-red-20);
+  --loop-btn-error-text-pressed:  var(--color-text-on-state-error-emphasis);     /* red-80 on the red-20 tint */
+
+  --loop-btn-success-bg:          var(--color-bg-container-state-success-high);  /* green-60 */
+  --loop-btn-success-bg-hover:    var(--color-green-70);
+  --loop-btn-success-bg-pressed:  var(--color-green-base);
+  --loop-btn-success-text:        var(--color-text-on-light-state-success);
+  --loop-btn-success-ghost-hover: var(--color-bg-container-state-success-low);    /* green-03 */
+  --loop-btn-success-ghost-pressed: var(--color-green-30);
+  --loop-btn-success-text-pressed:  var(--color-text-on-state-success-emphasis); /* green-70 on the green-30 tint */
+
+  /* Contrast (WCAG 2.2 AA, verified by hand + in-browser):
+     white on red-70 8.2:1 · red-60 5.7:1 · green-60 4.9:1 · red-80/green-70/green-base higher.
+     Ghost labels on white: red-70 8.2:1 · green-60 4.9:1.
+     Ghost PRESSED is why -text-pressed exists: green-60 on the green-30 tint is only
+     3.6:1 (fail), so pressed deepens the label to the emphasis role too — green-70 on
+     green-30 is 7.1:1. The error side does the same for symmetry. Disabled states are
+     exempt under SC 1.4.3 (inactive components) and reuse the shared neutral. */
+
   /* ---- Suggestion variant (.btn.btn-suggestion) — AI "Suggested Topics" rows on the
      New Case screen. Spec supplied as a bare SVG rect (fill #f6fcff, stroke #ced4fd,
      rx 3.5 on a 0.5 inset = 4px radius, 1px stroke, 36px tall); both hexes resolve to

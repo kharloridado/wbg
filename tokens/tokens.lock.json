@@ -3191,6 +3191,41 @@
       "file": "component-button.css",
       "kind": "component"
     },
+    ":root --loop-btn-error-bg": {
+      "value": "var(--color-bg-container-state-error-high)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-bg-hover": {
+      "value": "var(--color-red-60)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-bg-pressed": {
+      "value": "var(--color-red-80)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-ghost-hover": {
+      "value": "var(--color-bg-container-state-error-low)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-ghost-pressed": {
+      "value": "var(--color-red-20)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-text": {
+      "value": "var(--color-text-on-light-state-error)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-error-text-pressed": {
+      "value": "var(--color-text-on-state-error-emphasis)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
     ":root --loop-btn-font-large": {
       "value": "var(--font-size-200, 14px)",
       "file": "component-button.css",
@@ -3263,6 +3298,41 @@
     },
     ":root --loop-btn-lh-small": {
       "value": "20px",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-bg": {
+      "value": "var(--color-bg-container-state-success-high)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-bg-hover": {
+      "value": "var(--color-green-70)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-bg-pressed": {
+      "value": "var(--color-green-base)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-ghost-hover": {
+      "value": "var(--color-bg-container-state-success-low)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-ghost-pressed": {
+      "value": "var(--color-green-30)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-text": {
+      "value": "var(--color-text-on-light-state-success)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-text-pressed": {
+      "value": "var(--color-text-on-state-success-emphasis)",
       "file": "component-button.css",
       "kind": "component"
     },

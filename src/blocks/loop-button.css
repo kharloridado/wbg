@@ -25,6 +25,12 @@
      .btn.btn-ghost      → Ghost/Tertiary (text-fill, no border) — added modifier, no native
                             ghost in OutSystems UI.
      .btn.btn-rounded    → any variant with 32px pill radius (opt-in).
+     .btn-error          → Danger (filled red) — native OSUI class, restyled here.
+     .btn-success        → Success (filled green) — native OSUI class, restyled here.
+     .btn-error.btn-ghost / .btn-success.btn-ghost → low-emphasis status (text-fill).
+       NOTE: the status pair is NOT in the Figma library (only Primary/Secondary/Tertiary
+       exist at node 15597:766). Fills derive from the shipped status roles; hover/pressed
+       are invented ramp steps. See tokens/component-button.css and FND-082.
 
    Tokens consumed: --radius-pill, --radius-medium, --space-small, --space-button-gap,
      --loop-btn-h-*, --loop-btn-font-*, --loop-btn-lh(-small), --loop-btn-icon-*,
@@ -34,7 +40,9 @@
      --color-text-on-light-link-primary-enabled, --color-outline-on-light-link-enabled,
      --color-bg-link-secondary-{hover,pressed,disabled},
      --color-bg-link-tertiary-{hover,pressed,disabled},
-     --color-text-on-light-state-disabled.
+     --color-text-on-light-state-disabled,
+     --loop-btn-{error,success}-{bg,bg-hover,bg-pressed,text,text-pressed,ghost-hover,ghost-pressed}
+       (component-button.css).
 
    Fidelity note: secondary/ghost HOVER fill (blue-40 / blue-20) under the blue-70 label
      is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
@@ -116,6 +124,78 @@
 .btn-ghost:active { background-color: var(--color-bg-link-tertiary-pressed); }
 .btn-ghost[disabled],
 .btn-ghost[aria-disabled="true"] {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* ---- .btn-error / .btn-success → status (filled) ----
+   Restyles the native OutSystems UI status classes (OSUI v2.28.1 _btn.scss) so the stock
+   Button widget's Style value renders as a Loop button instead of the framework default.
+   Disabled reuses the SAME neutral fill as .btn-primary so every filled button disables
+   identically. Sizes / rounded / icon scaling / adjacent gap all inherit — nothing to add.
+   Hover direction is asymmetric on purpose: error LIGHTENS (red-70 -> red-60), following
+   the Figma brand pattern of .btn-primary; success DARKENS (green-60 -> green-70) because
+   no lighter green keeps the white label at 4.5:1. Unresolved — see FND-082. */
+.btn-error {
+  background-color: var(--loop-btn-error-bg);
+  border-color: var(--loop-btn-error-bg);
+  color: var(--color-white, #ffffff);
+}
+.btn-error:hover  { background-color: var(--loop-btn-error-bg-hover);   border-color: var(--loop-btn-error-bg-hover);   color: var(--color-white, #ffffff); }
+.btn-error:active { background-color: var(--loop-btn-error-bg-pressed); border-color: var(--loop-btn-error-bg-pressed); color: var(--color-white, #ffffff); }
+
+.btn-success {
+  background-color: var(--loop-btn-success-bg);
+  border-color: var(--loop-btn-success-bg);
+  color: var(--color-white, #ffffff);
+}
+.btn-success:hover  { background-color: var(--loop-btn-success-bg-hover);   border-color: var(--loop-btn-success-bg-hover);   color: var(--color-white, #ffffff); }
+.btn-success:active { background-color: var(--loop-btn-success-bg-pressed); border-color: var(--loop-btn-success-bg-pressed); color: var(--color-white, #ffffff); }
+
+.btn-error[disabled],
+.btn-error[aria-disabled="true"],
+.btn-success[disabled],
+.btn-success[aria-disabled="true"] {
+  background-color: var(--color-bg-link-primary-disabled);
+  border-color: var(--color-bg-link-primary-disabled);
+  color: var(--color-white, #ffffff);
+}
+
+/* ---- .btn-error.btn-ghost / .btn-success.btn-ghost → low-emphasis status (text-fill) ----
+   The :hover/:active rules here (0,3,0) out-specify everything above. The BASE rule is only
+   a specificity TIE with .btn-error / .btn:hover (0,2,0) and wins on SOURCE ORDER — so this
+   block must stay below .btn-ghost and .btn-error; reordering it silently breaks the label
+   colour. Pressed deepens the LABEL as well as the tint: the enabled label on the pressed
+   tint fails 4.5:1 on the green side (3.6:1) — see component-button.css. */
+.btn-error.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--loop-btn-error-text);
+}
+.btn-error.btn-ghost:hover  { background-color: var(--loop-btn-error-ghost-hover); }
+.btn-error.btn-ghost:active {
+  background-color: var(--loop-btn-error-ghost-pressed);
+  color: var(--loop-btn-error-text-pressed);
+}
+
+.btn-success.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--loop-btn-success-text);
+}
+.btn-success.btn-ghost:hover  { background-color: var(--loop-btn-success-ghost-hover); }
+.btn-success.btn-ghost:active {
+  background-color: var(--loop-btn-success-ghost-pressed);
+  color: var(--loop-btn-success-text-pressed);
+}
+
+/* The ghost rules above (0,3,0) out-specify .btn-ghost[disabled] (0,2,0), so the disabled
+   ghost needs its own rule or it keeps the red/green label. */
+.btn-error.btn-ghost[disabled],
+.btn-error.btn-ghost[aria-disabled="true"],
+.btn-success.btn-ghost[disabled],
+.btn-success.btn-ghost[aria-disabled="true"] {
   background-color: transparent;
   border-color: transparent;
   color: var(--color-text-on-light-state-disabled);

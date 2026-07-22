@@ -10,6 +10,24 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 17:11 UTC — v0.6.0
+
+- **[component]** + `--loop-btn-error-bg`: `var(--color-bg-container-state-error-high)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-bg-hover`: `var(--color-red-60)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-bg-pressed`: `var(--color-red-80)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-ghost-hover`: `var(--color-bg-container-state-error-low)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-ghost-pressed`: `var(--color-red-20)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-text`: `var(--color-text-on-light-state-error)` _(component-button.css)_
+- **[component]** + `--loop-btn-error-text-pressed`: `var(--color-text-on-state-error-emphasis)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-bg`: `var(--color-bg-container-state-success-high)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-bg-hover`: `var(--color-green-70)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-bg-pressed`: `var(--color-green-base)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-ghost-hover`: `var(--color-bg-container-state-success-low)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-ghost-pressed`: `var(--color-green-30)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-text`: `var(--color-text-on-light-state-success)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-text-pressed`: `var(--color-text-on-state-success-emphasis)` _(component-button.css)_
+
 ## 2026-07-22 16:38 UTC — v0.6.0
 
 - **[component]** − `--loop-mldd-option-h` (was `40px`, component-multilevel-dropdown.css)
