@@ -167,6 +167,61 @@
   border-radius: var(--radius-pill, 32px);
 }
 
+/* ---- .btn.btn-suggestion → Suggestion row (AI "Suggested Topics") ----
+   Full-width, left-aligned, wrapping click target: one tinted row per suggested
+   question. Restyles the NATIVE Button widget (ExtendedClass="btn-suggestion") so the
+   real <button> carries click/keyboard/focus/ARIA and ODC's OnClick for free — no Web
+   Component. Named like the other added modifiers in this file (.btn-ghost,
+   .btn-rounded) rather than loop-*, because it modifies a native widget class.
+
+   Deltas from base .btn: 1px hairline instead of 2px, height auto (base pins 40px) with
+   a 36px floor, regular weight at the body-small step instead of bold 12px, and text
+   that wraps + aligns left instead of centring on one line. */
+.btn.btn-suggestion {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;              /* questions wrap; base .btn keeps one line */
+  height: auto;                     /* base pins --loop-btn-h-regular */
+  min-height: var(--loop-btn-suggestion-h, 36px);
+  padding-block: var(--loop-btn-suggestion-padding-v, 8px);
+  border-width: var(--border-size-s, 1px);
+  border-radius: var(--loop-btn-suggestion-radius, 4px);
+
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--loop-btn-suggestion-font, 14px);
+  line-height: var(--loop-btn-suggestion-lh, 1.25);
+  letter-spacing: normal;           /* base applies the -0.5px button tracking */
+
+  background-color: var(--loop-btn-suggestion-bg);
+  border-color:     var(--loop-btn-suggestion-border);
+  color:            var(--loop-btn-suggestion-text);
+}
+.btn.btn-suggestion:hover {
+  background-color: var(--loop-btn-suggestion-bg);
+  border-color:     var(--loop-btn-suggestion-border-hover);
+  color:            var(--loop-btn-suggestion-text);
+}
+.btn.btn-suggestion:active {
+  background-color: var(--loop-btn-suggestion-bg-pressed);
+  border-color:     var(--loop-btn-suggestion-border-hover);
+  color:            var(--loop-btn-suggestion-text);
+}
+.btn.btn-suggestion[disabled],
+.btn.btn-suggestion[aria-disabled="true"] {
+  background-color: var(--color-bg-link-secondary-disabled);
+  border-color:     var(--color-outline-on-light-state-disable-low);
+  color:            var(--color-text-on-light-state-disabled);
+}
+
+/* Suggestions stack vertically — undo the horizontal 8px gap the generic
+   `.btn + .btn` rule above would otherwise apply between adjacent rows. */
+.btn.btn-suggestion + .btn.btn-suggestion {
+  margin-left: 0;
+  margin-top: var(--loop-btn-adjacent-gap, 8px);
+}
+
 /* ---- Focus indicator (WCAG 2.2 SC 2.4.7/2.4.13) — design's own brand color ---- */
 .btn:focus-visible {
   outline: 2px solid var(--color-outline-on-light-link-enabled, var(--color-blue-70));
