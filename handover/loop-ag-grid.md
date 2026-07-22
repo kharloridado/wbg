@@ -190,6 +190,69 @@ Gotchas:
 - **`sideBar` + `rowGroupPanelShow` need the Enterprise bundle** (see Prerequisites / FND-074);
   cell editors, dirty-tracking, and formatters are Community and work regardless.
 
+## Row click → OutSystems Client Action (navigate to a detail screen)
+
+Row click is **not** a Loop option — it is AG Grid's own `rowClicked` event bridged to an
+OutSystems Client Action via `$actions`, the same JS→OutSystems bridge the Web Components use
+(see `handover/loop-multilevel-dropdown.md` § Event wiring). Community feature; works today.
+
+**⚠ The row object is nested under `bulk_record`.** `AGGrid_Lib` does not hand AG Grid a flat
+row — it wraps each record. Verified live on `TheLoopLiveStyleGuide/Cases` (2026-07-21), the
+first row node's `data` is:
+
+```json
+{ "bulk_record": { "Id": 1, "Name": "Product1", "Price": 51, "Brand": "Brand2", "…": "…" } }
+```
+
+Top-level keys: `["bulk_record"]` — so **`e.data.Id` is `undefined`**. A handler guarded on
+`e.data.Id` never fires and reports **no error**: a silent no-op that looks like the listener
+never attached. Read the ID through the wrapper. The same nesting shows up in `columnDefs`,
+whose fields are `bulk_record.Name`, `bulk_record.Price`, … — match on those prefixed field
+names in any per-column editor/formatter mapping too.
+
+**Wiring** — in the grid's OnReady (or the Client Action that already configures the grid,
+alongside the `defaultColDef` merge above):
+
+```js
+// AGGrid_Lib nests the row under `bulk_record`; the fallback keeps this working
+// if a future library version hands over a flat row.
+var handleRowClicked = function (e) {
+    var row = e.data && (e.data.bulk_record || e.data);
+    var id = row && row.Id;
+    if (id !== undefined && id !== null && id !== '') {
+        $actions.OnRowClicked(String(id));   // -> Client Action, input ProductId: Text
+    }
+};
+
+// Bind once — see the duplicate-listener note below.
+if (!GridAPI.__loopRowClickBound) {
+    GridAPI.__loopRowClickBound = true;
+    GridAPI.addEventListener('rowClicked', handleRowClicked);
+}
+```
+
+Then in the Client Action `OnRowClicked(ProductId: Text)`: convert if the target screen takes
+an Integer (`TextToIntegerValidate`), then a **Destination** node to the detail screen. If the
+grid sits in a Block, declare `OnRowClicked` as a **Block event** and put the Destination on
+the consuming screen so the Block stays reusable.
+
+Gotchas:
+- **`addEventListener`, not `setGridOption("onRowClicked", …)`.** `setGridOption` replaces any
+  handler `AGGrid_Lib` or another script already set; `addEventListener` composes.
+- **Guard against double-binding.** When this runs in a *Client Action* (not a Block OnReady)
+  there is no OnDestroy to `removeEventListener` from, so a second run — grid re-ready, data
+  refresh, tab revisit — stacks a second handler and fires the action twice per click. The
+  `__loopRowClickBound` flag above is the cheap fix. In a Block, prefer the proper
+  OnReady/OnDestroy pair and stash the handler on `$public` for removal by reference.
+- **`$public` is Block/Screen scope.** Inside a Client Action JS node use a plain local `var`
+  (as above) — you cannot clean up from there anyway, so stashing it buys nothing.
+- **Ignore clicks on action/checkbox columns** by binding `cellClicked` instead and returning
+  early on `e.colDef.field`.
+- **Affordance + a11y.** Rows do not look clickable — add `cursor: pointer` on `.ag-row`. A
+  click-only row is also unreachable by keyboard and invisible to assistive tech (WCAG 2.2 AA
+  2.1.1): make the first cell a real link via a `cellRenderer` and keep the row click as a
+  convenience on top, or raise an `a11y` finding rather than shipping it silently.
+
 ## Files
 | File | OutSystems destination |
 |---|---|
@@ -784,6 +847,7 @@ Enterprise-bundle prerequisite as blocking for the rail + row-group panel.
 - [ ] Merge `LOOP_AG_GRID_ENTERPRISE_OPTIONS` into the `AGGrid_Lib` grid options (block GridOptions input, or `AgGridAPI` in OnReady). **`rowNumbers` must go through the pre-`createGrid` GridOptions input** — it is ignored if set in OnReady.
 - [ ] 1-Click Publish → validate in a **real browser**: a 60px **row-number column** (1, 2, 3…) is pinned at the left edge and renumbers on sort/filter; the right rail shows **Columns** + **Filters** tabs, both expand to 250px Loop-styled panels; the top strip reads "Drag here to set row groups"; dragging a header reorders columns.
 - [ ] Confirm column drag-reorder + Filters work even before the Enterprise swap (Community capabilities).
+- [ ] **If wiring row click:** read the ID as `e.data.bulk_record.Id` (not `e.data.Id` — silently undefined), bind once via `addEventListener('rowClicked', …)`, and verify the Client Action fires exactly once per click. See § Row click → OutSystems Client Action.
 
 ## Findings linked to this work
 - **FND-074 (open, platform dependency)** — the Figma AG Grid requires **AG Grid Enterprise**
