@@ -74,7 +74,10 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      .btn.btn-rounded    → any variant with 32px pill radius (opt-in).
      .btn-error          → Danger (filled red) — native OSUI class, restyled here.
      .btn-success        → Success (filled green) — native OSUI class, restyled here.
-     .btn-error.btn-ghost / .btn-success.btn-ghost → low-emphasis status (text-fill).
+     Each status colour carries the same three emphasis levels as the brand ramp:
+       .btn-error                    → filled     (= Primary)
+       .btn-error.btn-outline        → outlined   (= Secondary) — added modifier, no native
+       .btn-error.btn-ghost          → text-fill  (= Tertiary)  — added modifier, no native
        NOTE: the status pair is NOT in the Figma library (only Primary/Secondary/Tertiary
        exist at node 15597:766). Fills derive from the shipped status roles; hover/pressed
        are invented ramp steps. See tokens/component-button.css and FND-082.
@@ -88,8 +91,8 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
      --color-bg-link-secondary-{hover,pressed,disabled},
      --color-bg-link-tertiary-{hover,pressed,disabled},
      --color-text-on-light-state-disabled,
-     --loop-btn-{error,success}-{bg,bg-hover,bg-pressed,text,text-pressed,ghost-hover,ghost-pressed}
-       (component-button.css).
+     --loop-btn-{error,success}-{bg,bg-hover,bg-pressed,border,text,text-pressed,
+       ghost-hover,ghost-pressed} (component-button.css).
 
    Fidelity note: secondary/ghost HOVER fill (blue-40 / blue-20) under the blue-70 label
      is a WCAG 2.2 AA contrast risk — logged as FND-014, NOT silently re-shaded.
@@ -207,6 +210,63 @@ OutSystems **Button** widget; the theme makes it look like The Loop.
   background-color: var(--color-bg-link-primary-disabled);
   border-color: var(--color-bg-link-primary-disabled);
   color: var(--color-white, #ffffff);
+}
+
+/* ---- .btn-error.btn-outline / .btn-success.btn-outline → status Secondary (outlined) ----
+   Completes the three-emphasis set, mirroring the brand ramp Primary / Secondary / Tertiary:
+   filled (above) / outlined (here) / ghost (below). There is no native outlined class in
+   OutSystems UI — .btn-outline is an added modifier, exactly like .btn-ghost.
+   The border uses the OUTLINE role (--color-outline-on-light-state-*-high), not the
+   background role, even though both resolve to the same hex — the roles are what design
+   edits. Enabled is transparent with a status border + status label; hover and pressed FILL
+   with the same steps as the filled variant and flip the label to white, which is how the
+   brand Secondary behaves (.btn:hover fills with blue-40). White on those fills measures
+   5.7:1 (red-60) / 9.6:1 (green-70), so this deliberately avoids the FND-014 problem where
+   the brand Secondary keeps a blue-70 label on its blue-40 hover fill.
+   Specificity: .btn-error.btn-outline (0,2,0) TIES .btn-error:hover and .btn:hover — it
+   wins on source order, so this block must stay below the filled block. */
+.btn-error.btn-outline {
+  background-color: transparent;
+  border-color: var(--loop-btn-error-border);
+  color: var(--loop-btn-error-text);
+}
+.btn-error.btn-outline:hover {
+  background-color: var(--loop-btn-error-bg-hover);
+  border-color: var(--loop-btn-error-bg-hover);
+  color: var(--color-white, #ffffff);
+}
+.btn-error.btn-outline:active {
+  background-color: var(--loop-btn-error-bg-pressed);
+  border-color: var(--loop-btn-error-bg-pressed);
+  color: var(--color-white, #ffffff);
+}
+
+.btn-success.btn-outline {
+  background-color: transparent;
+  border-color: var(--loop-btn-success-border);
+  color: var(--loop-btn-success-text);
+}
+.btn-success.btn-outline:hover {
+  background-color: var(--loop-btn-success-bg-hover);
+  border-color: var(--loop-btn-success-bg-hover);
+  color: var(--color-white, #ffffff);
+}
+.btn-success.btn-outline:active {
+  background-color: var(--loop-btn-success-bg-pressed);
+  border-color: var(--loop-btn-success-bg-pressed);
+  color: var(--color-white, #ffffff);
+}
+
+/* Disabled keeps the OUTLINED shape (transparent fill, neutral border + label) rather than
+   the filled variant's neutral block — matches how .btn[disabled] treats brand Secondary.
+   Needs 0,3,1 to beat .btn-error[disabled] (0,2,0) above. */
+.btn-error.btn-outline[disabled],
+.btn-error.btn-outline[aria-disabled="true"],
+.btn-success.btn-outline[disabled],
+.btn-success.btn-outline[aria-disabled="true"] {
+  background-color: var(--color-bg-link-secondary-disabled);
+  border-color: var(--color-text-on-light-state-disabled);
+  color: var(--color-text-on-light-state-disabled);
 }
 
 /* ---- .btn-error.btn-ghost / .btn-success.btn-ghost → low-emphasis status (text-fill) ----

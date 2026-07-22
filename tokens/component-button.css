@@ -51,6 +51,7 @@
   --loop-btn-error-ghost-hover:   var(--color-bg-container-state-error-low);      /* red-10 */
   --loop-btn-error-ghost-pressed: var(--color-red-20);
   --loop-btn-error-text-pressed:  var(--color-text-on-state-error-emphasis);     /* red-80 on the red-20 tint */
+  --loop-btn-error-border:        var(--color-outline-on-light-state-error-high); /* red-70 — outlined/Secondary */
 
   --loop-btn-success-bg:          var(--color-bg-container-state-success-high);  /* green-60 */
   --loop-btn-success-bg-hover:    var(--color-green-70);
@@ -59,6 +60,7 @@
   --loop-btn-success-ghost-hover: var(--color-bg-container-state-success-low);    /* green-03 */
   --loop-btn-success-ghost-pressed: var(--color-green-30);
   --loop-btn-success-text-pressed:  var(--color-text-on-state-success-emphasis); /* green-70 on the green-30 tint */
+  --loop-btn-success-border:        var(--color-outline-on-light-state-success-high); /* green-60 — outlined/Secondary */
 
   /* Contrast (WCAG 2.2 AA, verified by hand + in-browser):
      white on red-70 8.2:1 · red-60 5.7:1 · green-60 4.9:1 · red-80/green-70/green-base higher.

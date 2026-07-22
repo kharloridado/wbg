@@ -3206,6 +3206,11 @@
       "file": "component-button.css",
       "kind": "component"
     },
+    ":root --loop-btn-error-border": {
+      "value": "var(--color-outline-on-light-state-error-high)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
     ":root --loop-btn-error-ghost-hover": {
       "value": "var(--color-bg-container-state-error-low)",
       "file": "component-button.css",
@@ -3313,6 +3318,11 @@
     },
     ":root --loop-btn-success-bg-pressed": {
       "value": "var(--color-green-base)",
+      "file": "component-button.css",
+      "kind": "component"
+    },
+    ":root --loop-btn-success-border": {
+      "value": "var(--color-outline-on-light-state-success-high)",
       "file": "component-button.css",
       "kind": "component"
     },

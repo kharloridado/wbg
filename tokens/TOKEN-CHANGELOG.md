@@ -11,6 +11,12 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-22 17:36 UTC — v0.6.0
+
+- **[component]** + `--loop-btn-error-border`: `var(--color-outline-on-light-state-error-high)` _(component-button.css)_
+- **[component]** + `--loop-btn-success-border`: `var(--color-outline-on-light-state-success-high)` _(component-button.css)_
+
 ## 2026-07-22 17:11 UTC — v0.6.0
 
 - **[component]** + `--loop-btn-error-bg`: `var(--color-bg-container-state-error-high)` _(component-button.css)_
