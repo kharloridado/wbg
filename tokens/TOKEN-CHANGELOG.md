@@ -12,6 +12,20 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+
+## 2026-07-22 18:34 UTC — v0.6.0
+
+- **[component]** ~ `--loop-card-header-padding`: `var(--space-regular)` → `var(--space-small) var(--space-regular)` _(component-card.css)_
+
+## 2026-07-22 18:29 UTC — v0.6.0
+
+- **[component]** + `--loop-card-header-accent`: `var(--loop-card-success-border)` _(component-card.css)_
+- **[component]** + `--loop-card-header-bg`: `var(--color-bg-container-state-success-high)` _(component-card.css)_
+- **[component]** + `--loop-card-header-padding`: `var(--space-regular)` _(component-card.css)_
+- **[component]** + `--loop-card-header-text`: `var(--color-white)` _(component-card.css)_
+- **[component]** + `--loop-card-header-title-size`: `var(--font-size-400)` _(component-card.css)_
+
 ## 2026-07-22 17:36 UTC — v0.6.0
 
 - **[component]** + `--loop-btn-error-border`: `var(--color-outline-on-light-state-error-high)` _(component-button.css)_

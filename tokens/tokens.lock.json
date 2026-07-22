@@ -3401,6 +3401,31 @@
       "file": "component-card.css",
       "kind": "component"
     },
+    ":root --loop-card-header-accent": {
+      "value": "var(--loop-card-success-border)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-header-bg": {
+      "value": "var(--color-bg-container-state-success-high)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-header-padding": {
+      "value": "var(--space-small) var(--space-regular)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-header-text": {
+      "value": "var(--color-white)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
+    ":root --loop-card-header-title-size": {
+      "value": "var(--font-size-400)",
+      "file": "component-card.css",
+      "kind": "component"
+    },
     ":root --loop-card-neutral-border": {
       "value": "var(--color-neutral-60)",
       "file": "component-card.css",

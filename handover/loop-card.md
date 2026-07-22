@@ -26,6 +26,14 @@ matching `Outline/On Light/*` role in the library, so it aliases the `--color-ne
 primitive (FND-081); and the mockups' 10px radius has no token, so these follow
 `--loop-card-radius` (8px) like every other Loop card (FND-080).
 
+**Added 2026-07-22 — headed card (`card--headed`).** A card whose title sits in a **solid green
+bar** across the top, over the ordinary white body (the "Call in Progress" call-control card).
+This is **not** a status variant: `card--success` tints the whole surface, `card--headed` tints
+only the bar. See *Headed card* below. **Assumptions:** this variant was built from a screenshot —
+there is **no Figma node** for it, so the bar fill, the title size and the paddings were derived
+from the mockup and snapped to the existing token scale (see the table in that section). Confirm
+against the design file when one exists.
+
 ## When to use / How to use
 
 > **Live Style Guide doc** — short usage spec for the Card page.
@@ -36,6 +44,7 @@ primitive (FND-081); and the mockups' 10px radius has no token, so these follow
 - Group related content into a contained surface — dashboard tiles, grid items, content panels.
 - **Classic (default, with shadow)** → dashboard apps. **Modern (`card--no-shadow`)** → external web pages.
 - **Status variants** → when the whole surface carries the status: `card--success` (green, outlined) / `card--warning` (amber) / `card--neutral` (white, outlined — the no-status sibling). Surface-only, so they stack with `card--no-shadow` / `card--flush`.
+- **Headed (`card--headed`)** → when the card needs a **titled status bar** and a plain white body — a live/ongoing state panel such as the call-control card. Use this instead of `card--success` when only the header should carry the colour.
 
 **When not to use** (reach for instead)
 - A page-level message → **System Alert**.
@@ -43,7 +52,7 @@ primitive (FND-081); and the mockups' 10px radius has no token, so these follow
 - A floating panel anchored to a control → **Popover**.
 
 **How to use**
-- Use the native **Card** widget — it is styled by default. Drop content in the Card's placeholder. Add an Extended Class only to opt out (`card--no-shadow` / `card--flush`) or to set a status surface (`card--success` / `card--warning` / `card--neutral`).
+- Use the native **Card** widget — it is styled by default. Drop content in the Card's placeholder. Add an Extended Class only to opt out (`card--no-shadow` / `card--flush`), to set a status surface (`card--success` / `card--warning` / `card--neutral`), or to add a titled bar (`card--headed` + a `card__header` / `card__body` Container pair).
 
 ## Files
 | File | OutSystems destination |
@@ -123,6 +132,53 @@ primitive (FND-081); and the mockups' 10px radius has no token, so these follow
  * the base card and this modifier adds only the outline. */
 .card--neutral {
   border: var(--loop-card-status-border-size) solid var(--loop-card-neutral-border);
+}
+
+/* ---------------------------------------------------------------------------
+ * Headed card (2026-07-22 "Call in Progress" screenshot — no Figma node)
+ *
+ * A solid status bar carrying a title, over the ordinary white card body. NOT a
+ * status variant: card--success tints the WHOLE surface, this tints only the bar
+ * and leaves the body white. Structurally it borrows the sectioned card's shape —
+ * the card's own padding is zeroed because the header and body own the inset, and
+ * overflow:hidden clips the bar fill into the top corners.
+ *
+ * Bar geometry comes from the supplied 292x53 SVG: the 16px/24px inset renders it
+ * at 52px rather than pinning a height, so the bar still grows if the title wraps.
+ *
+ * Composes with card--no-shadow / card--flush is NOT meaningful here (the body
+ * owns the padding), but the shadow opt-out still applies.
+ *
+ * The mockup draws a ~10px radius, which has no token (scale 2/4/8/16/32); we
+ * follow --loop-card-radius (8px) so this matches every other Loop card — the
+ * same call as FND-077/FND-080, already filed, not re-flagged.
+ * ------------------------------------------------------------------------- */
+.card--headed {
+  padding: var(--space-none, 0px);   /* header + body own the inset */
+  overflow: hidden;                  /* clip the bar fill to the card radius */
+  /* base .card sets border:0, so the shorthand has to be restated here */
+  border: var(--loop-card-status-border-size) solid var(--loop-card-header-accent);
+}
+
+.card__header {
+  padding: var(--loop-card-header-padding);
+  background-color: var(--loop-card-header-bg);
+  color: var(--loop-card-header-text);
+}
+
+.card__header-title {
+  margin: 0;
+  font-family: var(--font-family-heading, 'Open Sans', system-ui, sans-serif);
+  font-size:   var(--loop-card-header-title-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  color: inherit;                    /* the white comes from .card__header */
+}
+
+/* Neutral content slot — whatever lands here (copy, buttons, a form) brings its
+ * own styling from its own block CSS; the body adds only the card's own inset. */
+.card__body {
+  padding: var(--loop-card-padding);
 }
 
 /* ---------------------------------------------------------------------------
@@ -215,6 +271,7 @@ primitive (FND-081); and the mockups' 10px radius has no token, so these follow
 | Modern (external web) | `card--no-shadow` | same, no shadow |
 | No padding (node 20376:15327) | `card--flush` | content bleeds to the card edge |
 | Sectioned (nodes 20020051:21016 / 20020051:21413) | `card--sectioned` | one silhouette split into tinted sections; card padding zeroed, fills clipped to the radius |
+| Headed (2026-07-22 screenshot — no Figma node) | `card--headed` | green title bar over a white body; card padding zeroed, bar clipped to the radius, 1px green outline |
 
 > The multimedia hero / sectioned / list-card treatments from the earlier restyle are **out of
 > scope**. Native Card Background / Card Sectioned / Card Item inherit the base `.card` look
@@ -225,6 +282,60 @@ primitive (FND-081); and the mockups' 10px radius has no token, so these follow
 - **Modern / external web** → add `card--no-shadow`.
 - **No padding** → add `card--flush`.
 - **Placeholder** → `card__placeholder` renders the grey dev placeholder before real content.
+
+## Headed card (`card--headed`)
+
+A Card whose title sits in a solid green bar across the top, over the ordinary white body —
+the "Call in Progress" call-control panel. Only the bar carries the colour; the body stays
+white (that is what separates it from `card--success`, which tints the whole surface).
+
+**In OutSystems:** one native **Card** widget with `ExtendedClass="card--headed"`, containing
+two Containers — the header and the body. The header and body own their own insets, so
+`card--headed` zeroes the Card's own padding and clips the bar fill into the top corners. The
+bar's height is not pinned — the 16px/24px inset renders the supplied 292×53 bar, and the bar
+still grows if a long title wraps.
+
+```html
+<div class="card card--headed">
+  <div class="card__header">
+    <h3 class="card__header-title">Call in Progress</h3>
+  </div>
+  <div class="card__body">
+    <!-- app content — ordinary type + button classes, no card CSS involved -->
+    <button class="btn btn-success btn-outline">Transfer</button>
+    <button class="btn btn-error btn-outline">Hang Up</button>
+  </div>
+</div>
+```
+
+| Class | Role |
+|---|---|
+| `card--headed` | On the **Card** widget. Zeroes card padding, clips the bar to the 8px radius, adds the 1px green outline. |
+| `card__header` | The bar. `#388004` fill, white text, 16px/24px inset (renders the drawn 53px height). |
+| `card__header-title` | Title inside the bar — 18px bold, colour inherited from the bar. Use a real `<h2>`/`<h3>` so the heading order stays valid. |
+| `card__body` | Neutral slot for the card content. Adds only the 24px card inset — the copy and buttons bring their own styling. |
+
+**Values (derived from the 2026-07-22 screenshot — no Figma node)**
+
+| Property | Value | Token |
+|---|---|---|
+| Bar fill | `#388004` | `--color-bg-container-state-success-high` |
+| Card outline | 1px `#388004` | `--loop-card-success-border` (same green as the bar) |
+| Title | white · bold · 18px | `--color-white` / `--font-weight-bold` / `--font-size-400` |
+| Bar inset | 16px / 24px — renders the supplied 292×53 bar at 52px | `--space-small` / `--space-regular` |
+| Body inset | 24px | `--loop-card-padding` |
+| Radius | 8px | `--loop-card-radius` (mockup draws ~10px — untokenised, same call as FND-077/FND-080) |
+
+**Notes**
+- White on `#388004` measures **4.93:1** — passes WCAG 2.2 AA for normal text, so no accessibility
+  finding is raised. (The title is bold 18px, which is large text anyway.)
+- Only the green bar is designed today. The bar fill and the outline both read from
+  `--loop-card-header-bg` / `--loop-card-header-accent`, so a future amber/red/blue set is a
+  re-point of those two tokens — don't hard-code a second bar colour.
+- Shadow is untouched, so it still composes with `card--no-shadow`. `card--flush` is meaningless
+  here (the body owns the padding).
+- The Transfer / Hold / Hang Up buttons in the mockup are ordinary `.btn-success.btn-outline` /
+  `.btn-error.btn-outline` — already shipped, no card CSS involved.
 
 ## Sectioned card (`card--sectioned`)
 
@@ -314,6 +425,7 @@ generating, list what you created by name and flag anything you could not finish
 - [ ] Rebuild + paste latest `dist/theme.css` into the ODC Theme editor (carries the `--loop-card-*` tokens and the `--text-color-neutral-10` contrast fix).
 - [ ] Paste `loop-card.css` into Theme CSS, **below** OutSystems UI.
 - [ ] Card → native **Card** widget (styled by default, no Extended Class); Modern → `card--no-shadow`; No padding → `card--flush`; Sectioned → `card--sectioned` + `card__section` Containers.
+- [ ] Headed card: `card--headed` on the Card + `card__header` / `card__body` Containers; confirm the green bar is clipped into the top corners (no white sliver) and the outline matches the bar.
 - [ ] Sectioned card: confirm one continuous silhouette (no per-section corners/shadow), the muted fill rounds into the bottom corners, and the description **wraps** instead of truncating.
 - [ ] Verify default Cards / Card Items now render the Loop look (white, 8px radius, shadow, 24px padding) app-wide, and Card Item titles stay legible.
 - [ ] 1-Click Publish → validate in a **real browser** at phone/tablet/desktop (never Service Studio Preview).
