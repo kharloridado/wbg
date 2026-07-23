@@ -87,6 +87,7 @@ verify/finish · **To build** = net-new.
 | Toast | Built | `src/components/loop-toast.js` |
 | Notes | Built | `src/blocks/loop-note.css` |
 | Tooltip | Built | `src/blocks/loop-tooltip.css` |
+| Inline Loading | Needs Review | `src/blocks/loop-inline-loading.css` · `handover/loop-inline-loading.md` · no Figma ref (user screenshot + SVG) |
 
 ## Navigation
 | Deliverable | Status | Source |
