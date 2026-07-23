@@ -34,7 +34,10 @@ editor (it already contains these rules). The exact delta, for review:
 <summary><code>tokens/outsystems-ui-overrides.css</code> → in <code>dist/theme.css</code>, UserInfo block section</summary>
 
 ```css
-[data-block*="Loop_Common.UserInfo"] .user-info {
+/* Anchored by the block's own `.user-info` BEM class, NOT the ODC `data-block`
+ * attribute — the `data-block` value carries the module + block name and would
+ * silently break this styling if the block/module is ever renamed. */
+.user-info {
     display: flex;
     flex-direction: column;
     /* Reset the native OSUI `align-items: center` — with our column direction it
