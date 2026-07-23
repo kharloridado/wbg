@@ -1,0 +1,128 @@
+/* ============================================
+   Component: Inline Loading  ("The Loop" — loop/inline-loading)
+   Source: user screenshot ("Generating case data") + provided sparkle SVG.
+           No frozen Figma ref exists for this item — manual build.
+   Approach: NET-NEW CSS-only BEM block (no native OSUI widget, no Web Component,
+             no JS). The developer places static markup in an ODC Block/Container
+             and this theme override animates it. Modeled on the OSUI "Loading"
+             pattern: a leading sparkle, an optional label, and a trailing spinner.
+   Location: Theme CSS (paste below OutSystems UI so it wins on equal specificity).
+   Escalation Level: L2/L3 (custom block + token-driven theme override).
+
+   Structure (all three children optional — omit an element to drop that part):
+     .loop-inline-loading            flex row: icon + label + spinner
+       .loop-inline-loading__icon      leading sparkle wrapper (aria-hidden)
+         .loop-inline-loading__sparkle   inline <svg>, viewBox 0 0 18 18
+           .loop-inline-loading__star      the two four-pointed stars (--lg / --sm)
+       .loop-inline-loading__label     text ("Generating case data")
+       .loop-inline-loading__spinner   FA6 Pro 'spinner-third' glyph (f3f4), aria-hidden
+
+   Motion (pure CSS @keyframes, killed under prefers-reduced-motion):
+     · the trailing spinner glyph rotates 0 → 360° (~850ms, matching OSUI ButtonLoading);
+     · the two sparkle stars twinkle (opacity + scale pulse), staggered so it shimmers.
+
+   State: loading is the DEFAULT (bare .loop-inline-loading — animations run). Add the
+     `--done` modifier when the operation FINISHES to freeze all motion (spinner rests as a
+     static arc, sparkle at full opacity) without changing the markup. In ODC toggle it via
+     ExtendedClass = "loop-inline-loading" + If(IsDone, " loop-inline-loading--done", "").
+
+   Colour: the container sets `color` to the WB blue-70 icon role; the sparkle paths
+     (fill:currentColor) and the spinner glyph inherit it. NOTE the sparkle is kept as
+     inline SVG artwork (a user-directed exception to the usual FA-glyph-only rule) so
+     it can be animated per path; its markup must carry fill="currentColor" (NOT the
+     #004370 the source SVG hard-codes) so it stays token-driven.
+
+   Tokens consumed: --color-icon-on-light-primary (blue-70), --font-family-body,
+     --font-family-icon, --font-weight-icon-solid, --font-weight-bold, --line-height-base,
+     and the namespaced --loop-inline-loading-* below (each with a literal fallback).
+   ============================================ */
+
+.loop-inline-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--loop-inline-loading-gap, var(--space-xxsmall, 8px));
+  box-sizing: border-box;
+  color: var(--color-icon-on-light-primary, #004370);
+}
+
+/* ---- Leading sparkle (inline SVG artwork) ---- */
+.loop-inline-loading__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width:  var(--loop-inline-loading-icon-size, 20px);
+  height: var(--loop-inline-loading-icon-size, 20px);
+}
+.loop-inline-loading__sparkle {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* both stars pulse; each scales about its OWN centre (fill-box), the small one offset
+   so the pair shimmers rather than blinking in unison */
+.loop-inline-loading__star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: loop-inline-loading-twinkle
+             var(--loop-inline-loading-twinkle-dur, 1.6s) ease-in-out infinite;
+}
+.loop-inline-loading__star--sm {
+  animation-delay: var(--loop-inline-loading-twinkle-stagger, -0.8s);
+}
+
+/* ---- Label ---- */
+/* defaults to the body base size (--font-size-300, 16px); override the alias to resize */
+.loop-inline-loading__label {
+  font-family: var(--font-family-body, "Open Sans", system-ui, sans-serif);
+  font-size:   var(--loop-inline-loading-label-size, var(--font-size-300, 16px));
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-base, 1.5);
+  color:       var(--color-icon-on-light-primary, #004370);
+}
+
+/* ---- Trailing spinner (FA6 Pro 'spinner-third' glyph, rotated) ---- */
+.loop-inline-loading__spinner {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width:  var(--loop-inline-loading-spinner-size, 18px);
+  height: var(--loop-inline-loading-spinner-size, 18px);
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size:   var(--loop-inline-loading-spinner-size, 18px);
+  font-style:  normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  will-change: transform;
+  animation: loop-inline-loading-spin
+             var(--loop-inline-loading-spin-dur, 0.85s) linear infinite;
+}
+
+@keyframes loop-inline-loading-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes loop-inline-loading-twinkle {
+  0%, 100% { opacity: 0.55; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1); }
+}
+
+/* ---- State: finished ---- */
+/* --done freezes all motion once the operation completes (spinner static, sparkle at
+   full opacity). Same rest state the reduced-motion block below produces. */
+.loop-inline-loading--done .loop-inline-loading__spinner,
+.loop-inline-loading--done .loop-inline-loading__star {
+  animation: none;
+}
+.loop-inline-loading--done .loop-inline-loading__star { opacity: 1; }
+
+/* Reduced motion — no rotation, no twinkle. The spinner rests as a static partial
+   arc and the sparkle sits at full opacity so both stay legible. */
+@media (prefers-reduced-motion: reduce) {
+  .loop-inline-loading__spinner,
+  .loop-inline-loading__star {
+    animation: none;
+  }
+  .loop-inline-loading__star { opacity: 1; }
+}

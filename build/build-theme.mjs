@@ -118,6 +118,7 @@ const META = {
   "loop-badge.css":         { group: "Custom Components", name: "Badge / Label (+ native Tag)" },
   "loop-badge-status.css":  { group: "Custom Components", name: "Badge Status" },
   "loop-pagination.css":    { group: "Custom Components", name: "Pagination" },
+  "loop-inline-loading.css": { group: "Custom Components", name: "Inline Loading" },
   "loop-card.css":          { group: "Widget Overrides", name: "Card" },
   "component-card.css":     { group: "Components",       name: "Card" },
   "component-modal.css":    { group: "Components",       name: "Modal" },

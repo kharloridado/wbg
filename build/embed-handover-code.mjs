@@ -101,6 +101,39 @@ const MAP = {
   "loop-tag.md":             [["src/blocks/loop-tag.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-badge.md":           [["src/blocks/loop-badge.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
   "loop-card.md":            [["src/blocks/loop-card.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
+  "loop-inline-loading.md": {
+    files: [["src/blocks/loop-inline-loading.css", "css", "Theme CSS (also folded into dist/theme.css)"]],
+    mentor: {
+      prompt: `Goal: In ODC Studio, scaffold a reusable "InlineLoading" Block for the WBG
+"The Loop" inline loading indicator (a leading sparkle, an optional label, and a
+trailing animated spinner).
+
+Context (already done): loop-inline-loading.css, dist/tokens.css and dist/theme.css are
+already pasted into the ODC Theme editor (below OutSystems UI). The look AND the motion are
+pure CSS + tokens (CSS @keyframes) — there is nothing for you to style, and you must not
+write or edit CSS. This component is NOT a native-widget restyle: it is static HTML markup
+you place inside a Container, not a stock OutSystems widget.
+
+Task — build the Block and its structure by name:
+1. Create a Block "InlineLoading" with a Text input "Label" (Text, default ""), a Boolean
+   input "ShowSpinner" (default True) and a Boolean input "IsDone" (default False).
+2. Inside it place a Container whose ExtendedClass expression is
+   "loop-inline-loading" + If(IsDone, " loop-inline-loading--done", "") — the --done modifier
+   freezes the sparkle twinkle + spinner rotation once the operation finishes — with role
+   "status" and aria-live "polite". Give it three children:
+   - a Container (ExtendedClass "loop-inline-loading__icon", aria-hidden "true") holding the
+     sparkle inline SVG exactly as provided in this handover (fill="currentColor");
+   - an Expression (ExtendedClass "loop-inline-loading__label") bound to the Label input,
+     wrapped in an If so it renders only when Label is not empty;
+   - an Icon/Container (ExtendedClass "loop-inline-loading__spinner", aria-hidden "true")
+     carrying the Font Awesome "spinner-third" glyph, wrapped in an If on ShowSpinner.
+3. Build any screen/Block logic the screen needs around it.
+
+Constraints: never edit the OutSystems UI module; add no CSS and no hard-coded colors/sizes
+(all values come from the pasted theme tokens). After generating, list what you created by
+name and flag anything you could not finish.`,
+    },
+  },
   "loop-button-dropdown.md": {
     files: [["src/components/loop-button-dropdown.js", "js", "Script resource (Theme/Library), Include = When invoked"]],
     wiring: {

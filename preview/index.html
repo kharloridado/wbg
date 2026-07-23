@@ -64,6 +64,7 @@
 <link rel="stylesheet" href="../src/blocks/loop-pagination.css">
 <link rel="stylesheet" href="../src/blocks/loop-breadcrumb.css">
 <link rel="stylesheet" href="../src/blocks/loop-card.css">
+<link rel="stylesheet" href="../src/blocks/loop-inline-loading.css">
 
 <!-- 3b) Font Awesome 6 Free — the FULL icon set, self-hosted. In ODC this is the
         dist/fontawesome.css paste with @font-face → /TheLoopTheme/*.woff2 (ODC Resources).
@@ -2117,6 +2118,60 @@
 
       <div class="loop-note loop-note--success">
         <p class="loop-note__body"><span class="loop-note__label">Success: </span>Your changes have been saved and submitted for approval.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INLINE LOADING (custom CSS-only BEM block) ============ -->
+  <section>
+    <h2>Inline Loading — custom CSS block <code>.loop-inline-loading</code></h2>
+    <p class="pv-figma">src/blocks/loop-inline-loading.css · handover/loop-inline-loading.md · no Figma ref — user screenshot + sparkle SVG · sparkle twinkles + <code>spinner-third</code> glyph rotates (CSS <code>@keyframes</code>, killed under <code>prefers-reduced-motion</code>)</p>
+
+    <div class="pv-row pv-row--stack">
+      <!-- 1) icon + label + spinner (matches the screenshot) -->
+      <div class="loop-inline-loading" role="status" aria-live="polite">
+        <span class="loop-inline-loading__icon" aria-hidden="true">
+          <svg class="loop-inline-loading__sparkle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+            <path class="loop-inline-loading__star loop-inline-loading__star--lg" fill="currentColor" d="M16.1133 7.86157C12.0633 6.74324 11.2211 5.90013 10.1026 1.85089C10.0671 1.72211 9.95015 1.6333 9.81693 1.6333C9.6837 1.6333 9.56676 1.72212 9.53124 1.85089C8.41291 5.90089 7.56981 6.7431 3.52056 7.86157C3.39178 7.89709 3.30371 8.01403 3.30371 8.14726C3.30371 8.28048 3.39253 8.39742 3.52056 8.43294C7.57056 9.55127 8.41277 10.3944 9.53124 14.4436C9.56676 14.5724 9.6837 14.6612 9.81693 14.6612C9.95015 14.6612 10.0671 14.5724 10.1026 14.4436C11.2209 10.3936 12.064 9.55141 16.1133 8.43294C16.2421 8.39742 16.3301 8.28048 16.3301 8.14726C16.3301 8.01403 16.2413 7.89709 16.1133 7.86157Z"/>
+            <path class="loop-inline-loading__star loop-inline-loading__star--sm" fill="currentColor" d="M7.08376 13.0426C5.51024 12.6081 5.20827 12.3062 4.77388 10.7327C4.73836 10.6039 4.62142 10.5151 4.4882 10.5151C4.35498 10.5151 4.23803 10.604 4.20251 10.7327C3.76804 12.3063 3.46608 12.6082 1.89263 13.0426C1.76385 13.0781 1.67578 13.1951 1.67578 13.3283C1.67578 13.4615 1.7646 13.5785 1.89263 13.614C3.46616 14.0484 3.76812 14.3504 4.20251 15.9239C4.23803 16.0526 4.35498 16.1414 4.4882 16.1414C4.62142 16.1414 4.73836 16.0526 4.77388 15.9239C5.20835 14.3503 5.51031 14.0484 7.08376 13.614C7.21254 13.5785 7.30061 13.4615 7.30061 13.3283C7.30061 13.1951 7.2118 13.0781 7.08376 13.0426Z"/>
+          </svg>
+        </span>
+        <span class="loop-inline-loading__label">Generating case data</span>
+        <i class="loop-inline-loading__spinner" aria-hidden="true">&#xf3f4;</i>
+      </div>
+
+      <!-- 2) label omitted — icon + spinner only -->
+      <div class="loop-inline-loading" role="status" aria-live="polite" aria-label="Loading">
+        <span class="loop-inline-loading__icon" aria-hidden="true">
+          <svg class="loop-inline-loading__sparkle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+            <path class="loop-inline-loading__star loop-inline-loading__star--lg" fill="currentColor" d="M16.1133 7.86157C12.0633 6.74324 11.2211 5.90013 10.1026 1.85089C10.0671 1.72211 9.95015 1.6333 9.81693 1.6333C9.6837 1.6333 9.56676 1.72212 9.53124 1.85089C8.41291 5.90089 7.56981 6.7431 3.52056 7.86157C3.39178 7.89709 3.30371 8.01403 3.30371 8.14726C3.30371 8.28048 3.39253 8.39742 3.52056 8.43294C7.57056 9.55127 8.41277 10.3944 9.53124 14.4436C9.56676 14.5724 9.6837 14.6612 9.81693 14.6612C9.95015 14.6612 10.0671 14.5724 10.1026 14.4436C11.2209 10.3936 12.064 9.55141 16.1133 8.43294C16.2421 8.39742 16.3301 8.28048 16.3301 8.14726C16.3301 8.01403 16.2413 7.89709 16.1133 7.86157Z"/>
+            <path class="loop-inline-loading__star loop-inline-loading__star--sm" fill="currentColor" d="M7.08376 13.0426C5.51024 12.6081 5.20827 12.3062 4.77388 10.7327C4.73836 10.6039 4.62142 10.5151 4.4882 10.5151C4.35498 10.5151 4.23803 10.604 4.20251 10.7327C3.76804 12.3063 3.46608 12.6082 1.89263 13.0426C1.76385 13.0781 1.67578 13.1951 1.67578 13.3283C1.67578 13.4615 1.7646 13.5785 1.89263 13.614C3.46616 14.0484 3.76812 14.3504 4.20251 15.9239C4.23803 16.0526 4.35498 16.1414 4.4882 16.1414C4.62142 16.1414 4.73836 16.0526 4.77388 15.9239C5.20835 14.3503 5.51031 14.0484 7.08376 13.614C7.21254 13.5785 7.30061 13.4615 7.30061 13.3283C7.30061 13.1951 7.2118 13.0781 7.08376 13.0426Z"/>
+          </svg>
+        </span>
+        <i class="loop-inline-loading__spinner" aria-hidden="true">&#xf3f4;</i>
+      </div>
+
+      <!-- 3) sparkle + label only (no trailing spinner) -->
+      <div class="loop-inline-loading" role="status" aria-live="polite">
+        <span class="loop-inline-loading__icon" aria-hidden="true">
+          <svg class="loop-inline-loading__sparkle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+            <path class="loop-inline-loading__star loop-inline-loading__star--lg" fill="currentColor" d="M16.1133 7.86157C12.0633 6.74324 11.2211 5.90013 10.1026 1.85089C10.0671 1.72211 9.95015 1.6333 9.81693 1.6333C9.6837 1.6333 9.56676 1.72212 9.53124 1.85089C8.41291 5.90089 7.56981 6.7431 3.52056 7.86157C3.39178 7.89709 3.30371 8.01403 3.30371 8.14726C3.30371 8.28048 3.39253 8.39742 3.52056 8.43294C7.57056 9.55127 8.41277 10.3944 9.53124 14.4436C9.56676 14.5724 9.6837 14.6612 9.81693 14.6612C9.95015 14.6612 10.0671 14.5724 10.1026 14.4436C11.2209 10.3936 12.064 9.55141 16.1133 8.43294C16.2421 8.39742 16.3301 8.28048 16.3301 8.14726C16.3301 8.01403 16.2413 7.89709 16.1133 7.86157Z"/>
+            <path class="loop-inline-loading__star loop-inline-loading__star--sm" fill="currentColor" d="M7.08376 13.0426C5.51024 12.6081 5.20827 12.3062 4.77388 10.7327C4.73836 10.6039 4.62142 10.5151 4.4882 10.5151C4.35498 10.5151 4.23803 10.604 4.20251 10.7327C3.76804 12.3063 3.46608 12.6082 1.89263 13.0426C1.76385 13.0781 1.67578 13.1951 1.67578 13.3283C1.67578 13.4615 1.7646 13.5785 1.89263 13.614C3.46616 14.0484 3.76812 14.3504 4.20251 15.9239C4.23803 16.0526 4.35498 16.1414 4.4882 16.1414C4.62142 16.1414 4.73836 16.0526 4.77388 15.9239C5.20835 14.3503 5.51031 14.0484 7.08376 13.614C7.21254 13.5785 7.30061 13.4615 7.30061 13.3283C7.30061 13.1951 7.2118 13.0781 7.08376 13.0426Z"/>
+          </svg>
+        </span>
+        <span class="loop-inline-loading__label">Summarizing documents</span>
+      </div>
+
+      <!-- 4) finished — `--done` freezes the sparkle twinkle + spinner rotation -->
+      <div class="loop-inline-loading loop-inline-loading--done" role="status" aria-live="polite">
+        <span class="loop-inline-loading__icon" aria-hidden="true">
+          <svg class="loop-inline-loading__sparkle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none">
+            <path class="loop-inline-loading__star loop-inline-loading__star--lg" fill="currentColor" d="M16.1133 7.86157C12.0633 6.74324 11.2211 5.90013 10.1026 1.85089C10.0671 1.72211 9.95015 1.6333 9.81693 1.6333C9.6837 1.6333 9.56676 1.72212 9.53124 1.85089C8.41291 5.90089 7.56981 6.7431 3.52056 7.86157C3.39178 7.89709 3.30371 8.01403 3.30371 8.14726C3.30371 8.28048 3.39253 8.39742 3.52056 8.43294C7.57056 9.55127 8.41277 10.3944 9.53124 14.4436C9.56676 14.5724 9.6837 14.6612 9.81693 14.6612C9.95015 14.6612 10.0671 14.5724 10.1026 14.4436C11.2209 10.3936 12.064 9.55141 16.1133 8.43294C16.2421 8.39742 16.3301 8.28048 16.3301 8.14726C16.3301 8.01403 16.2413 7.89709 16.1133 7.86157Z"/>
+            <path class="loop-inline-loading__star loop-inline-loading__star--sm" fill="currentColor" d="M7.08376 13.0426C5.51024 12.6081 5.20827 12.3062 4.77388 10.7327C4.73836 10.6039 4.62142 10.5151 4.4882 10.5151C4.35498 10.5151 4.23803 10.604 4.20251 10.7327C3.76804 12.3063 3.46608 12.6082 1.89263 13.0426C1.76385 13.0781 1.67578 13.1951 1.67578 13.3283C1.67578 13.4615 1.7646 13.5785 1.89263 13.614C3.46616 14.0484 3.76812 14.3504 4.20251 15.9239C4.23803 16.0526 4.35498 16.1414 4.4882 16.1414C4.62142 16.1414 4.73836 16.0526 4.77388 15.9239C5.20835 14.3503 5.51031 14.0484 7.08376 13.614C7.21254 13.5785 7.30061 13.4615 7.30061 13.3283C7.30061 13.1951 7.2118 13.0781 7.08376 13.0426Z"/>
+          </svg>
+        </span>
+        <span class="loop-inline-loading__label">Case data generated</span>
+        <i class="loop-inline-loading__spinner" aria-hidden="true">&#xf3f4;</i>
       </div>
     </div>
   </section>
