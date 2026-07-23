@@ -16,9 +16,12 @@
  *   - whitespace collapsed; rules compared structurally (selector → declarations),
  *     with :root custom properties diffed token-by-token.
  *
- * The live CSS URL carries a per-publish fingerprint too, so it is DISCOVERED by
- * scraping the Live Style Guide page for the current <link>; the pinned constant
- * below is only a fallback (update it if discovery ever breaks after a republish).
+ * ODC serves the theme at STABLE, un-fingerprinted, auth-free URLs — one per paste
+ * (the 2026-07-16 token split): TheLoopTheme.TheLoopTokens.css (paste #1, the :root
+ * tokens) and TheLoopTheme.TheLoopTheme.css (paste #2, classes/overrides). We fetch
+ * BOTH and concatenate them (tokens first, same order as dist/tokens.css +
+ * dist/theme.css), which reconstructs the full live theme without chasing the
+ * per-publish fingerprint or scraping the JS-rendered Style Guide SPA shell.
  *
  * Usage:  node build/check-live-theme.mjs [--live-file <path>] [--local-file <path>]
  *         (the --*-file overrides exist for offline testing / self-diff sanity checks)
@@ -30,10 +33,10 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-const STYLE_GUIDE_URL = "https://wbg-dev.outsystems.app/TheLoopLiveStyleGuide/";
-/* Fallback only — the fingerprint rotates on every ODC publish. */
-const PINNED_CSS_URL =
-  "https://wbg-dev.outsystems.app/TheLoopLiveStyleGuide/css/TheLoopTheme.TheLoopTheme__JnP1x1BwZHdGeghtD1AtmA.css?JnP1x1BwZHdGeghtD1AtmA";
+/* Stable, un-fingerprinted, auth-free theme resources — one per ODC paste. */
+const STABLE_BASE = "https://wbg-dev.outsystems.app/TheLoopLiveStyleGuide/css/";
+const LIVE_TOKENS_URL = STABLE_BASE + "TheLoopTheme.TheLoopTokens.css"; // paste #1 (:root tokens)
+const LIVE_THEME_URL = STABLE_BASE + "TheLoopTheme.TheLoopTheme.css"; // paste #2 (classes/overrides)
 const FETCH_TIMEOUT_MS = 30_000;
 
 function argValue(flag) {
@@ -50,29 +53,22 @@ async function fetchText(url) {
   return res.text();
 }
 
-/* Discover the current fingerprinted theme-CSS URL from the Style Guide page.
- * Falls back to PINNED_CSS_URL when the page can't be scraped. */
+/* Fetch both stable paste URLs and concatenate them (tokens first, then theme — same
+ * order as the local dist/tokens.css + dist/theme.css), reconstructing the full live
+ * theme. Comparison is structural, so the concatenation point never reads as drift. */
 async function resolveLiveCss() {
-  const attempts = [];
   try {
-    const html = await fetchText(STYLE_GUIDE_URL);
-    const m = /[\w/.-]*\/css\/TheLoopTheme\.TheLoopTheme__[\w-]+\.css(?:\?[\w-]*)?/.exec(html);
-    if (m) {
-      const url = new URL(m[0], STYLE_GUIDE_URL).href;
-      return { url, css: await fetchText(url), via: "discovered" };
-    }
-    attempts.push(`no TheLoopTheme <link> found on ${STYLE_GUIDE_URL}`);
+    const [tokens, theme] = await Promise.all([
+      fetchText(LIVE_TOKENS_URL),
+      fetchText(LIVE_THEME_URL),
+    ]);
+    return { url: LIVE_THEME_URL, css: `${tokens}\n${theme}`, via: "stable" };
   } catch (e) {
-    attempts.push(`style-guide page: ${e.message}`);
+    throw new Error(
+      `live theme unreachable — could not fetch the stable paste URLs ` +
+        `(${LIVE_TOKENS_URL} + ${LIVE_THEME_URL}): ${e.message}`
+    );
   }
-  try {
-    return { url: PINNED_CSS_URL, css: await fetchText(PINNED_CSS_URL), via: "pinned" };
-  } catch (e) {
-    attempts.push(`pinned URL: ${e.message}`);
-  }
-  throw new Error(
-    `live theme unreachable — likely republished with a new fingerprint. ${attempts.join("; ")}`
-  );
 }
 
 /* "Version 0.6.0 · built 2026-07-14" from the /*! head, before comments are stripped. */
