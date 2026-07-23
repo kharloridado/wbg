@@ -241,23 +241,29 @@ label.mandatory::after {
     display: contents;
 }
 
-/* ====== UserInfo block (Loop_Common.UserInfo) — avatar + name/role, global ======
- * The `Loop_Common.UserInfo` Block (avatar next to a name-over-role lockup) renders in
- * more than one place: the foot of the Layout Side panel AND the top-right of the Layout
- * Top / Blank header (e.g. the Design System Homepage). Its resting look was only styled
- * under `.layout-side`, so in the top header the block fell back to native OSUI: the inner
+/* ====== UserInfo block — avatar + name/role lockup, global ======
+ * The UserInfo Block (avatar next to a name-over-role lockup) renders in more than one
+ * place: the foot of the Layout Side panel AND the top-right of the Layout Top / Blank
+ * header (e.g. the Design System Homepage). Its resting look was only styled under
+ * `.layout-side`, so in the top header the block fell back to native OSUI: the inner
  * `.app-login-info` stayed `display:block` (avatar stacked ABOVE the text) and `.user-info`
  * stayed a `row` — collapsing the name + role onto one line ("John DoeAdministrator").
- * Scope the block's own resting layout to the Block wrapper so it is correct wherever it is
- * dropped; the Layout Side file adds the foot-of-panel divider/colour on top and wins by
- * specificity. */
-[data-block*="Loop_Common.UserInfo"] .app-login-info {
+ *
+ * Anchor by the block's own custom classes, NOT the ODC `data-block` attribute: the
+ * `data-block` value carries the module + block name (e.g. `Loop_Common.UserInfo`), which
+ * changes if the block or module is ever renamed and would silently drop this styling.
+ * `.user-info` / `.user-info__name` / `.user-info__role` are the block's own (unique) BEM
+ * classes, so they need no wrapper scope; the native `.app-login-info` parent is scoped by
+ * the *presence* of our `.user-info` lockup (`:has()`) so we only touch this block's
+ * login-info, wherever it is dropped. The Layout Side file adds the foot-of-panel
+ * divider/colour on top and wins by specificity. */
+.app-login-info:has(.user-info) {
     display: flex;
     align-items: center;
     gap: var(--space-xxsmall);
     color: var(--color-text-on-light-default);
 }
-[data-block*="Loop_Common.UserInfo"] .user-info {
+.user-info {
     display: flex;
     flex-direction: column;
     /* Reset the native OSUI `align-items: center` — with our column direction it
@@ -266,13 +272,13 @@ label.mandatory::after {
     align-items: flex-start;
     min-width: 0;
 }
-[data-block*="Loop_Common.UserInfo"] .user-info__name {
+.user-info__name {
     font-family: var(--font-family-body);
     font-size: var(--font-size-300);
     font-weight: var(--font-weight-bold);
     line-height: var(--line-height-base);
 }
-[data-block*="Loop_Common.UserInfo"] .user-info__role {
+.user-info__role {
     font-family: var(--font-family-body);
     font-size: var(--font-size-100);
     font-weight: var(--font-weight-regular);
