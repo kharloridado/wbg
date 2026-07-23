@@ -107,6 +107,7 @@ const META = {
   "loop-text-field.css":    { group: "Widget Overrides", name: "Text Field" },
   "loop-search.css":        { group: "Widget Overrides", name: "Search" },
   "loop-dropdown.css":      { group: "Widget Overrides", name: "Dropdown / Select" },
+  "loop-dropdown-tags.css": { group: "Widget Overrides", name: "Dropdown (Tags / Multi-select)" },
   "loop-datepicker.css":    { group: "Widget Overrides", name: "DatePicker" },
   "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
