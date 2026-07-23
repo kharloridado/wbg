@@ -173,6 +173,10 @@
 .layout-side .app-login-info .user-info {
   display: flex;
   flex-direction: column;
+  /* Reset native OSUI `align-items: center` so the role left-aligns under the
+   * name rather than floating centred (this selector out-specifies the block
+   * override, so it must carry the reset too). */
+  align-items: flex-start;
   min-width: 0;
 }
 .layout-side .app-login-info .user-info__name {
@@ -184,6 +188,13 @@
   font-size: var(--font-size-100);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-narrow);
+}
+/* Logout icon: a direct child of `.app-login-info`, natively left sitting right
+ * after the name/role column mid-row. In the full-width panel foot, push it to
+ * the far-right edge (margin auto absorbs the free space); the row's align-items
+ * keeps it vertically centred against the whole lockup. */
+.layout-side .app-login-info > .icon {
+  margin-left: auto;
 }
 
 /* ── Sidebar imagery: constrain the OutSystems Image widgets. The design previews drew

@@ -260,6 +260,10 @@ label.mandatory::after {
 [data-block*="Loop_Common.UserInfo"] .user-info {
     display: flex;
     flex-direction: column;
+    /* Reset the native OSUI `align-items: center` — with our column direction it
+     * centred each line, so the shorter role line floated centred under the name
+     * instead of left-aligning with it. Anchor the lockup to the start edge. */
+    align-items: flex-start;
     min-width: 0;
 }
 [data-block*="Loop_Common.UserInfo"] .user-info__name {
