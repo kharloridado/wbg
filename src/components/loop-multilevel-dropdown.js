@@ -788,12 +788,13 @@ class LoopMultilevelDropdown extends HTMLElement {
   display: block;
   position: relative;
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
-  /* Panel row + search heights are one field-height each, so they track --loop-select-h as
-     the .loop-field--* wrapper ramp re-points it (56/48/40/32) — without this the panel kept
-     40px rows under a 32px Small field. Derived HERE, not in the token file: a var() inside a
-     custom property is substituted where it is declared, so a :root derivation would freeze
-     at 40px; :host is the first scope that sees the wrapper's value. */
-  --loop-mldd-option-h: var(--loop-select-h, 40px);
+  /* Option rows match the shared option-list spec (37px, like the native Dropdown Search / Tags
+     balloon) — size-INDEPENDENT, the same as the native list, so they do NOT scale with the field
+     ramp. The SEARCH field, by contrast, is a field surface and DOES track --loop-select-h as the
+     .loop-field--* wrapper re-points it (56/48/40/32). Derived HERE, not in the token file: a
+     var() inside a custom property is substituted where it is declared, so a :root derivation of
+     the search height would freeze at 40px; :host is the first scope that sees the wrapper's value. */
+  --loop-mldd-option-h: var(--loop-select-option-h, 37px);
   --loop-mldd-search-h: var(--loop-select-h, 40px);
 }
 :host([hidden]) { display: none; }
@@ -990,16 +991,19 @@ class LoopMultilevelDropdown extends HTMLElement {
   display: flex;
   align-items: center;
   gap: var(--loop-select-option-check-gap, 8px);
-  min-height: var(--loop-mldd-option-h, 40px);
-  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  /* border-box so --loop-mldd-option-h (37px) is the TOTAL row height incl. the 8px block padding
+     (matching the native option-list row), not content-height + padding = 53px. */
+  box-sizing: border-box;
+  min-height: var(--loop-mldd-option-h, 37px);
+  padding: var(--space-xxsmall, 8px) var(--loop-select-option-padding-inline, 12px);
   color: var(--color-text-on-light-default);
   font-size: var(--loop-select-option-text-size, 14px);
   line-height: 1.5;
   cursor: pointer;
 }
 /* indentation: one --loop-mldd-indent step per level below the first */
-.lmdd__row--l2 { padding-left: calc(var(--loop-select-padding-inline, 16px) + var(--loop-mldd-indent, 16px)); }
-.lmdd__row--l3 { padding-left: calc(var(--loop-select-padding-inline, 16px) + 2 * var(--loop-mldd-indent, 16px)); }
+.lmdd__row--l2 { padding-left: calc(var(--loop-select-option-padding-inline, 12px) + var(--loop-mldd-indent, 16px)); }
+.lmdd__row--l3 { padding-left: calc(var(--loop-select-option-padding-inline, 12px) + 2 * var(--loop-mldd-indent, 16px)); }
 
 .lmdd__row:hover,
 .lmdd__row--active { background-color: var(--color-bg-container-on-light-low, #f5f7f9); }
@@ -1046,8 +1050,9 @@ class LoopMultilevelDropdown extends HTMLElement {
 .lmdd__empty {
   display: flex;
   align-items: center;
-  min-height: var(--loop-mldd-option-h, 40px);
-  padding: var(--space-xxsmall, 8px) var(--loop-select-padding-inline, 16px);
+  box-sizing: border-box;
+  min-height: var(--loop-mldd-option-h, 37px);
+  padding: var(--space-xxsmall, 8px) var(--loop-select-option-padding-inline, 12px);
   color: var(--color-text-on-light-subdued);
   font-size: var(--loop-select-option-text-size, 14px);
 }

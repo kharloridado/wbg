@@ -224,17 +224,27 @@ own box metrics: 8px soft-rounded (`--radius-medium`; 32px pill is opt-in via
   letter-spacing: var(--loop-select-text-tracking, 0.5px);
 }
 
-/* Caret — recolour OSUI's own caret to the Loop icon colour (keeps parity with the shipping
-   div-mode Select, which also keeps the OSUI caret rather than an FA chevron). OSUI draws this
-   caret either as an icon-font glyph (colour = `color`) or as a border-triangle (colour =
-   `border-color`) depending on the OSUI version, so set BOTH — each is a no-op for the other
-   style. NOTE: OSUI's glyph uses the legacy 'FontAwesome' family, which this theme deliberately
-   never declares (it belongs to OSUI's native Icon widget), so the caret shows as a tofu box in
-   the local preview but renders correctly in ODC where OSUI loads that font — same as the
-   already-shipping div-mode Select. */
+/* Caret — redraw OSUI's caret as the FA 6 Pro chevron so the native Select matches Search / Tags
+   (and renders in the local preview, where OSUI's legacy 'FontAwesome' family is deliberately not
+   declared). We keep OSUI's ::after box/position (absolute, right:16px, line-height:30px centres
+   it) and only swap the glyph, family, size and colour. Native-only via :has(> select). The
+   div-based Select keeps OSUI's own caret (out of scope — native only). */
 .dropdown-container:has(> select.dropdown-display)::after {
+  content: "\f078";                                    /* fa-chevron-down */
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-select-chevron-size, 16px);
   color: var(--color-icon-on-light-default);
-  border-color: var(--color-icon-on-light-default);
+  border: 0;                                           /* drop OSUI's border-triangle geometry if that impl is active */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Placeholder — a native <select> shows its selected <option>; OSUI renders the "Prompt" as a
+   value-less <option>, so subdue the field text only while that option is the selected one
+   (reverts to the default colour on a real selection). Same subdued alpha as the div-mode
+   .is-placeholder and the sibling controls (FND-020/071 lineage). */
+.dropdown-container > select.dropdown-display:has(option[value=""]:checked) {
+  color: var(--color-neutral-alpha-57);
 }
 
 /* Hover */
@@ -259,7 +269,6 @@ own box metrics: 8px soft-rounded (`--radius-medium`; 32px pill is opt-in via
 }
 .dropdown-container.not-valid:has(> select.dropdown-display)::after {
   color: var(--color-icon-on-light-state-error);
-  border-color: var(--color-icon-on-light-state-error);
 }
 
 /* Warning — author modifier .is-warning (no native dropdown warning state) */
@@ -278,7 +287,6 @@ own box metrics: 8px soft-rounded (`--radius-medium`; 32px pill is opt-in via
 }
 .dropdown-container.dropdown-disabled:has(> select.dropdown-display)::after {
   color: var(--color-icon-on-light-state-disabled);
-  border-color: var(--color-icon-on-light-state-disabled);
 }
 
 /* =====================================================================

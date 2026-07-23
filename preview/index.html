@@ -1641,7 +1641,15 @@
     </div>
 
     <div class="pv-row pv-row--end">
-      <span class="pv-label pv-label--full">Native <code>&lt;select&gt;</code> (IsNative=True) — real <code>&lt;select class="dropdown-display dropdown"&gt;</code> inside a bare <code>.dropdown-container</code>. Closed field + caret + states are styled; the OPEN option list is the browser-native popup (unstylable — <a href="#">FND native-select-list</a>).</span>
+      <span class="pv-label pv-label--full">Native <code>&lt;select&gt;</code> (IsNative=True) — real <code>&lt;select class="dropdown-display dropdown"&gt;</code> inside a bare <code>.dropdown-container</code>. Closed field + FA chevron + states styled; a value-less <code>&lt;option&gt;</code> (OSUI's Prompt) renders the subdued placeholder. The OPEN option list is the browser-native popup (unstylable — FND-083).</span>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-nat-ph">Placeholder</label>
+        <div class="dropdown-container" id="dd-nat-ph-c">
+          <select class="dropdown-display dropdown" id="dd-nat-ph">
+            <option value="" selected>Select Item</option><option value="1">Edward</option><option value="2">Andrea</option>
+          </select>
+        </div>
+      </div>
       <div class="loop-field loop-field--select pv-field">
         <label data-label for="dd-nat-def">Filled</label>
         <div class="dropdown-container" id="dd-nat-def-c">
@@ -1654,7 +1662,7 @@
         <label data-label for="dd-nat-err">Error</label>
         <div class="dropdown-container not-valid" id="dd-nat-err-c">
           <select class="dropdown-display dropdown" id="dd-nat-err">
-            <option>Select Item</option><option>Edward</option>
+            <option value="" selected>Select Item</option><option>Edward</option>
           </select>
         </div>
         <span class="loop-field__helper loop-field__helper--error">Error message here</span>
@@ -1663,7 +1671,7 @@
         <label data-label for="dd-nat-warn">Warning</label>
         <div class="dropdown-container is-warning" id="dd-nat-warn-c">
           <select class="dropdown-display dropdown" id="dd-nat-warn">
-            <option>Select Item</option><option>Edward</option>
+            <option value="" selected>Select Item</option><option>Edward</option>
           </select>
         </div>
       </div>
@@ -1671,7 +1679,7 @@
         <label data-label for="dd-nat-dis">Disabled</label>
         <div class="dropdown-container dropdown-disabled" id="dd-nat-dis-c">
           <select class="dropdown-display dropdown" id="dd-nat-dis" disabled aria-disabled="true">
-            <option>Select Item</option>
+            <option value="" selected>Select Item</option>
           </select>
         </div>
       </div>
@@ -1679,7 +1687,7 @@
         <label data-label for="dd-nat-sm">Small (32px)</label>
         <div class="dropdown-container" id="dd-nat-sm-c">
           <select class="dropdown-display dropdown" id="dd-nat-sm">
-            <option>Select Item</option><option>Edward</option>
+            <option value="" selected>Select Item</option><option>Edward</option>
           </select>
         </div>
       </div>

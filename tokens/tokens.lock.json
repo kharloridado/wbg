@@ -4351,6 +4351,11 @@
       "file": "component-search.css",
       "kind": "component"
     },
+    ":root --loop-select-chevron-size": {
+      "value": "16px",
+      "file": "component-field.css",
+      "kind": "component"
+    },
     ":root --loop-select-gap": {
       "value": "var(--space-xxsmall)",
       "file": "component-field.css",

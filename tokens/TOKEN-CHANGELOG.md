@@ -14,6 +14,11 @@ modified (~) and removed (−) tokens here, newest first, classified
 
 
 
+
+## 2026-07-23 20:56 UTC — v0.6.0
+
+- **[component]** + `--loop-select-chevron-size`: `16px` _(component-field.css)_
+
 ## 2026-07-22 18:34 UTC — v0.6.0
 
 - **[component]** ~ `--loop-card-header-padding`: `var(--space-regular)` → `var(--space-small) var(--space-regular)` _(component-card.css)_

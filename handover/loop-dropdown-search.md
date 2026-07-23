@@ -159,6 +159,10 @@ fit-script), and the **search input lives in the provider's own balloon** (not i
    2) Value / placeholder — a single text label (NOT chips)
    ===================================================================== */
 .osui-dropdown-search .vscomp-value {
+  /* The provider pins this a fixed ~20px tall; with our 14px line-height the single line then sits
+     at the TOP of that box and reads high. Collapse it to its own line (height:auto) so the
+     toggle's `align-items:center` (§1) centres the text. */
+  height: auto;
   font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
   font-size: var(--loop-select-text-size, 13px);
   line-height: var(--loop-select-text-leading, 14px);

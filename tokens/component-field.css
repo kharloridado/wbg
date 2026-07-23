@@ -62,6 +62,7 @@
   --loop-select-padding-block:    11px;                        /* off-grid */
   --loop-select-padding-inline:   var(--space-small);          /* 16px */
   --loop-select-gap:              var(--space-xxsmall);        /* 8px — content ↔ chevron */
+  --loop-select-chevron-size:     16px;                        /* single-Select chevron (Figma loop/field/icon size); distinct from the Tags 20px --loop-select-icon-size */
   --loop-select-label-size:       13px;
   --loop-select-label-leading:    16px;
   --loop-select-label-tracking:   0.25px;
