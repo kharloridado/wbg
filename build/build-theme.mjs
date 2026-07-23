@@ -107,6 +107,7 @@ const META = {
   "loop-text-field.css":    { group: "Widget Overrides", name: "Text Field" },
   "loop-search.css":        { group: "Widget Overrides", name: "Search" },
   "loop-dropdown.css":      { group: "Widget Overrides", name: "Dropdown / Select" },
+  "loop-dropdown-tags.css": { group: "Widget Overrides", name: "Dropdown (Tags / Multi-select)" },
   "loop-datepicker.css":    { group: "Widget Overrides", name: "DatePicker" },
   "loop-switch.css":        { group: "Widget Overrides", name: "Toggle / Switch" },
   "loop-tooltip.css":       { group: "Widget Overrides", name: "Tooltip" },
@@ -129,6 +130,7 @@ const META = {
   "component-table.css":       { group: "Components",   name: "Table (AG Grid look)" },
   "component-multilevel-dropdown.css": { group: "Components", name: "Multilevel Dropdown" },
   "loop-table.css":            { group: "Widget Overrides", name: "Table (AG Grid look)" },
+  "loop-inline-loading.css":   { group: "Custom Components", name: "Inline Loading" },
 };
 
 /* Token classification for the change report: which maintenance bucket a token
