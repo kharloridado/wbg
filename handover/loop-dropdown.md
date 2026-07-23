@@ -3,22 +3,29 @@
 The Loop **Dropdown / Select** styling, ready to add into OutSystems.
 Figma: `-The Loop- Main Library` · "Select" [node 18787-4817].
 
-> **Scope: this ticket is the native single Select only.**
-> Dropdown **Search** (`.osui-dropdown-search`) is still NOT shipping — its VirtualSelect restyle
-> was removed on 2026-07-07. Dropdown **Tags** came back into scope on 2026-07-14 and was rebuilt
-> from scratch; it has its own ticket — see `handover/loop-dropdown-tags.md`
-> (`src/blocks/loop-dropdown-tags.css` + `src/components/loop-dropdown-tags.js`).
+> **Scope: this ticket is the native single Select — BOTH renderings of the OSUI Dropdown widget:**
+> the div-based variant (`.dropdown-container.dropdown > div.dropdown-display`) AND the
+> **native `<select>` variant (IsNative=True)** — added 2026-07-23 (§1b in the CSS). Dropdown
+> **Search** (`.osui-dropdown-search`) was **revived 2026-07-23** and has its own ticket —
+> `handover/loop-dropdown-search.md` (`src/blocks/loop-dropdown-search.css`). Dropdown **Tags**
+> is a separate ticket — `handover/loop-dropdown-tags.md`.
 
 **Approach:** No custom dropdown class system. This **restyles the native OutSystems UI
 single-Select Dropdown widget** to The Loop design — same pattern as the Button / Text Field:
 
 1. **Dropdown PATTERN** (server-side single Select) → `.dropdown-container.dropdown` /
    `.dropdown-display` / `.dropdown-list` / `.dropdown-popup-row`.
+2. **Native `<select>` (IsNative=True)** → OSUI renders `<div class="dropdown-container"><select
+   class="dropdown-display dropdown">`, so the `.dropdown` class is on the `<select>`, not the
+   container. §1b targets `.dropdown-container > select.dropdown-display` (scoped by the select
+   child so the div variant is untouched) and recolours OSUI's caret. **The open option list is
+   the browser-native popup and cannot be CSS-styled (FND-083);** only the closed field + caret +
+   states follow The Loop.
 
 Developers keep using the stock **Dropdown** block; this layer makes it render to The Loop
 spec. The field reuses the Text Field's state **colours** (shared semantic tokens) but has its
-own box metrics: a pill (`--radius-pill` 32px), 13px text, ~40px tall. Focus = 2px Blue/50
-brand ring (FND-012).
+own box metrics: 8px soft-rounded (`--radius-medium`; 32px pill is opt-in via
+`.loop-field--rounded`), 13px text, ~40px tall. Focus = 2px Blue/50 brand ring (FND-012).
 
 ## When to use / How to use
 
@@ -54,10 +61,15 @@ brand ring (FND-012).
 
 ```css
 /* loop-dropdown.css — Dropdown / Select: native single-Select Dropdown pattern.
-   NOTE: Dropdown SEARCH (the other VirtualSelect provider variant) is NOT shipping —
-   it was removed on 2026-07-07 and this file covers only the native single Select.
-   Dropdown TAGS came back into scope on 2026-07-14 and was rebuilt from scratch; it
-   lives in its own file, src/blocks/loop-dropdown-tags.css. */
+   Covers BOTH renderings of the OSUI Dropdown widget:
+     · §1  the div-based variant  (.dropdown-container.dropdown > div.dropdown-display)
+     · §1b the NATIVE variant (IsNative = True) — a real <select>: OSUI renders
+           <div class="dropdown-container"><select class="dropdown-display dropdown">, so the
+           `.dropdown` class is on the <select>, NOT the container. §1's
+           `.dropdown-container.dropdown > …` selectors never reach it; §1b does (added 2026-07-23).
+   Dropdown SEARCH (the single-select VirtualSelect provider) came BACK into scope 2026-07-23
+   and is restyled in its own file, src/blocks/loop-dropdown-search.css.
+   Dropdown TAGS (multi-select VirtualSelect) lives in src/blocks/loop-dropdown-tags.css. */
 
 /* =====================================================================
    1) Native Dropdown PATTERN — single Select  (.dropdown-container.dropdown)
@@ -183,6 +195,93 @@ brand ring (FND-012).
 }
 
 /* =====================================================================
+   1b) Native <select> variant  (IsNative = True)
+   OSUI renders <div class="dropdown-container"><select class="dropdown-display dropdown">, so
+   the `.dropdown` class is on the <select> and §1's `.dropdown-container.dropdown > …` rules
+   never match. These do, scoped by the `> select.dropdown-display` child (the div variant has
+   no <select>), so §1 is left untouched. OSUI already sets appearance:none on the select and
+   draws the caret as a border-triangle on `.dropdown-container::after` — we recolour that caret
+   and restyle the closed field/states. The OPEN option list is the browser's native popup and
+   cannot be CSS-styled (recorded as a native-limitation finding — flag-don't-fix).
+   ===================================================================== */
+.dropdown-container > select.dropdown-display {
+  -webkit-appearance: none;
+          appearance: none;                 /* OSUI sets this; reassert so the browser arrow never returns */
+  height: var(--loop-select-h, 40px);
+  padding: var(--loop-select-padding-block, 11px) var(--loop-select-padding-inline, 16px);
+  /* reserve the right gutter for the container's caret: 16 edge + 16 caret + 8 gap */
+  padding-right: calc(var(--loop-select-padding-inline, 16px) + 16px + var(--loop-select-gap, 8px));
+
+  background-color: var(--color-bg-container-on-light-lowest);
+  border: 1px solid var(--color-outline-on-light-default);
+  border-radius: var(--loop-select-radius);
+  color: var(--color-text-on-light-default);
+
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-text-size, 13px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--loop-select-text-leading, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
+}
+
+/* Caret — recolour OSUI's own caret to the Loop icon colour (keeps parity with the shipping
+   div-mode Select, which also keeps the OSUI caret rather than an FA chevron). OSUI draws this
+   caret either as an icon-font glyph (colour = `color`) or as a border-triangle (colour =
+   `border-color`) depending on the OSUI version, so set BOTH — each is a no-op for the other
+   style. NOTE: OSUI's glyph uses the legacy 'FontAwesome' family, which this theme deliberately
+   never declares (it belongs to OSUI's native Icon widget), so the caret shows as a tofu box in
+   the local preview but renders correctly in ODC where OSUI loads that font — same as the
+   already-shipping div-mode Select. */
+.dropdown-container:has(> select.dropdown-display)::after {
+  color: var(--color-icon-on-light-default);
+  border-color: var(--color-icon-on-light-default);
+}
+
+/* Hover */
+.dropdown-container > select.dropdown-display:hover {
+  border-color: var(--color-outline-on-light-emphasis);
+}
+
+/* Focus — 2px brand ring; shrink padding 1px so the box doesn't jump as the border grows 1→2px */
+.dropdown-container > select.dropdown-display:focus,
+.dropdown-container > select.dropdown-display:focus-visible {
+  outline: none;
+  border: 2px solid var(--color-outline-on-light-link-focused);
+  padding: calc(var(--loop-select-padding-block, 11px) - 1px) calc(var(--loop-select-padding-inline, 16px) - 1px);
+  padding-right: calc(var(--loop-select-padding-inline, 16px) + 16px + var(--loop-select-gap, 8px) - 1px);
+}
+
+/* Error — native .not-valid lands on the container in native mode too */
+.dropdown-container.not-valid > select.dropdown-display {
+  background-color: var(--color-bg-container-state-error-low);
+  border-color: var(--color-outline-on-light-state-error-high);
+  color: var(--color-text-on-state-error-emphasis);
+}
+.dropdown-container.not-valid:has(> select.dropdown-display)::after {
+  color: var(--color-icon-on-light-state-error);
+  border-color: var(--color-icon-on-light-state-error);
+}
+
+/* Warning — author modifier .is-warning (no native dropdown warning state) */
+.dropdown-container.is-warning > select.dropdown-display {
+  background-color: var(--color-domain-state-warning-low);
+  border-color: var(--color-outline-on-light-state-warning-high);
+  color: var(--color-text-on-state-warning-emphasis);
+}
+
+/* Disabled — container gets .dropdown-disabled, the <select> gets [disabled] + aria-disabled */
+.dropdown-container > select.dropdown-display[disabled],
+.dropdown-container.dropdown-disabled > select.dropdown-display {
+  background-color: var(--color-domain-state-disable-low);
+  border-color: var(--color-domain-state-disable-low);
+  color: var(--color-text-on-light-state-disabled);
+}
+.dropdown-container.dropdown-disabled:has(> select.dropdown-display)::after {
+  color: var(--color-icon-on-light-state-disabled);
+  border-color: var(--color-icon-on-light-state-disabled);
+}
+
+/* =====================================================================
    2) Field Wrapper size cascade — Select follows the .loop-field--* size
    =====================================================================
    Mirrors the Text Field / Search size ramp (cmp-field-sizing ref: "every sizeable control
@@ -223,7 +322,8 @@ brand ring (FND-012).
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   .dropdown-container.dropdown > div.dropdown-display,
-  .dropdown-container.dropdown > div.dropdown-display::after { transition: none; }
+  .dropdown-container.dropdown > div.dropdown-display::after,
+  .dropdown-container > select.dropdown-display { transition: none; }
 }
 ```
 

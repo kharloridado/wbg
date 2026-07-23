@@ -82,6 +82,12 @@ const MAP = {
   },
   "loop-search.md":          [["src/blocks/loop-search.css", "css", "Theme CSS — paste below OutSystems UI"]],
   "loop-dropdown.md":        [["src/blocks/loop-dropdown.css", "css", "Theme CSS — paste below OutSystems UI (provider CSS is runtime-injected)"]],
+  "loop-dropdown-search.md": {
+    files: [
+      ["src/blocks/loop-dropdown-search.css", "css", "Theme CSS — paste below OutSystems UI (VirtualSelect provider CSS ships inside outsystems-ui.css)"],
+    ],
+    mentor: { kind: "restyle" },
+  },
   "loop-dropdown-tags.md":   {
     files: [
       ["src/blocks/loop-dropdown-tags.css", "css", "Theme CSS — paste below OutSystems UI (VirtualSelect provider CSS ships inside outsystems-ui.css)"],
