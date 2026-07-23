@@ -285,20 +285,24 @@
       "node": "18787-4817",
       "node_multiselect": "18830-17312",
       "artifact": "src/blocks/loop-dropdown.css",
-      "approach": "restyle native Dropdown pattern (.dropdown) + VirtualSelect provider (.osui-dropdown-search/-tags)",
+      "artifact_search": "src/blocks/loop-dropdown-search.css",
+      "approach": "restyle native Dropdown pattern (.dropdown, div + native <select>) + VirtualSelect provider (.osui-dropdown-search single-select / .osui-dropdown-tags multi)",
       "status": "built",
-      "checker": "PASS (round 2 — finding-ID hygiene)",
+      "checker": "PASS (round 3 — native <select> + Dropdown Search revival, 2026-07-23)",
       "risk_tier": "standard",
       "det_gate": "pass",
       "confidence": "high",
-      "rounds": 2,
-      "decision_log": "Restyled the native Dropdown pattern + VirtualSelect provider rather than building a parallel component (restyle-native-outsystems-widgets). Ruled out a custom Web Component: native pattern carries the a11y/keyboard behaviour for free. Assumed Select node 18787-4817 metrics over Text Field's where they diverged (flagged as FND-031, not silently reconciled).",
+      "rounds": 3,
+      "decision_log": "Restyled the native Dropdown pattern + VirtualSelect provider rather than building a parallel component (restyle-native-outsystems-widgets). Ruled out a custom Web Component: native pattern carries the a11y/keyboard behaviour for free. Assumed Select node 18787-4817 metrics over Text Field's where they diverged (flagged as FND-031, not silently reconciled). 2026-07-23 (user goal: the two OSUI Dropdown pattern pages, Native=True): (1) found the native <select> variant unstyled — loop-dropdown.css keyed only off .dropdown-container.dropdown (the div variant), while IsNative=True puts .dropdown on the <select> and leaves the container bare — added §1b `.dropdown-container > select.dropdown-display` scoped by the select child + :has() so the div variant is untouched; caret recoloured via BOTH color and border-color to cover either OSUI caret implementation (FND-084). Native option list is the OS-native popup, unstylable (FND-083). (2) Revived Dropdown Search (descoped 2026-07-07) per user decision — new loop-dropdown-search.css mirrors the loop-dropdown-tags.css VirtualSelect techniques for single-select (no chips/fit-script), balloon scoped to .vscomp-wrapper.has-search-input:not(.multiple) to stay off the Tags balloon. Reused existing --loop-select-* / --loop-select-option-* tokens; no new tokens. Verified in-browser via computed styles + screenshots.",
       "handover_doc": "handover/loop-dropdown.md",
+      "handover_doc_search": "handover/loop-dropdown-search.md",
       "findings": [
         "FND-031",
-        "FND-032"
+        "FND-032",
+        "FND-083",
+        "FND-084"
       ],
-      "note": "Covers single Select, Dropdown Search, Dropdown Tags (multi). Figma nodes + rendered DOM provided by user 2026-06-18 (outsystems-widgets-reference/widgets/dropdown*.md).",
+      "note": "Covers single Select (div + native <select>), Dropdown Search (single-select searchable, revived 2026-07-23), Dropdown Tags (multi). Figma nodes + rendered DOM provided by user 2026-06-18 (outsystems-widgets-reference/widgets/dropdown*.md). Live OSUI DOM re-verified 2026-07-23 from the two Style Guide pattern pages (Cat=7/Sub=15 native Dropdown, Cat=3/Sub=20 Dropdown Search).",
       "handover": [
         66
       ]

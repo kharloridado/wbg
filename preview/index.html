@@ -1506,7 +1506,7 @@
   <!-- ============ DROPDOWN / SELECT ============ -->
   <section>
     <h2>Dropdown / Select — restyle native <code>.dropdown</code></h2>
-    <p class="pv-figma">handover/loop-dropdown.md · Figma node 18787-4817 (Select). Dropdown Search + Dropdown Tags are NOT shipping (removed 2026-07-07).</p>
+    <p class="pv-figma">handover/loop-dropdown.md · Figma node 18787-4817 (Select). Covers the div-based Select AND the native <code>&lt;select&gt;</code> (IsNative=True) variant. Dropdown Search revived 2026-07-23 (own section below); Dropdown Tags ships (further below).</p>
 
     <div class="pv-row pv-row--end">
       <span class="pv-label pv-label--full">Select — states (closed)</span>
@@ -1640,9 +1640,104 @@
       </div>
     </div>
 
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Native <code>&lt;select&gt;</code> (IsNative=True) — real <code>&lt;select class="dropdown-display dropdown"&gt;</code> inside a bare <code>.dropdown-container</code>. Closed field + caret + states are styled; the OPEN option list is the browser-native popup (unstylable — <a href="#">FND native-select-list</a>).</span>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-nat-def">Filled</label>
+        <div class="dropdown-container" id="dd-nat-def-c">
+          <select class="dropdown-display dropdown" id="dd-nat-def">
+            <option>Patricia Wesley</option><option>Edward</option><option>Andrea</option>
+          </select>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-nat-err">Error</label>
+        <div class="dropdown-container not-valid" id="dd-nat-err-c">
+          <select class="dropdown-display dropdown" id="dd-nat-err">
+            <option>Select Item</option><option>Edward</option>
+          </select>
+        </div>
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-nat-warn">Warning</label>
+        <div class="dropdown-container is-warning" id="dd-nat-warn-c">
+          <select class="dropdown-display dropdown" id="dd-nat-warn">
+            <option>Select Item</option><option>Edward</option>
+          </select>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-nat-dis">Disabled</label>
+        <div class="dropdown-container dropdown-disabled" id="dd-nat-dis-c">
+          <select class="dropdown-display dropdown" id="dd-nat-dis" disabled aria-disabled="true">
+            <option>Select Item</option>
+          </select>
+        </div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--small pv-field">
+        <label data-label for="dd-nat-sm">Small (32px)</label>
+        <div class="dropdown-container" id="dd-nat-sm-c">
+          <select class="dropdown-display dropdown" id="dd-nat-sm">
+            <option>Select Item</option><option>Edward</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="pv-row pv-row--stack pv-row--narrow">
-      <span class="pv-note">Dropdown <em>Search</em> (searchable single) is still NOT shipping. Only the native single <code>.dropdown</code> Select above, and Dropdown <em>Tags</em> below, ship.</span>
       <span class="pv-note">FND-031: Select text 13px ≠ 16px elsewhere; vpadding 11px off-grid. Built as designed. (Radius shared: Text Field + single Select both use --radius-medium 8px per Figma 18770:10424; 32px pill is opt-in via .loop-field--rounded.)</span>
+    </div>
+  </section>
+
+  <!-- ============ DROPDOWN SEARCH (VirtualSelect provider — single-select, searchable) ============ -->
+  <section>
+    <h2>Dropdown Search — single-select, searchable (<code>.osui-dropdown-search</code>)</h2>
+    <p class="pv-figma">tokens/component-field.css · src/blocks/loop-dropdown-search.css · Figma node 18787-4817 (Select) · ODC provider = VirtualSelect (single-select) · <strong>live widget</strong> · <em>revived 2026-07-23</em></p>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-note">Closed field matches the native single Select (40px · 13px · 16px chevron). Open a field: the balloon carries a <strong>search input</strong> (single-select's own, in the balloon) + option rows; the selected row gets an #e7edf3 fill + right-aligned check. Balloon scoping is <code>.vscomp-wrapper.has-search-input:not(.multiple)</code> — <code>:not(.multiple)</code> keeps it off the Tags balloon. Balloon appended to <code>&lt;body&gt;</code> for ODC parity.</span>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">States (closed)</span>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-srch-ph">Placeholder</label>
+        <div class="osui-dropdown-search" id="dd-srch-ph"></div>
+      </div>
+      <div class="loop-field loop-field--select pv-field">
+        <label data-label for="dd-srch-def">Filled</label>
+        <div class="osui-dropdown-search" id="dd-srch-def"></div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--error pv-field">
+        <label data-label for="dd-srch-err">Error</label>
+        <div class="osui-dropdown-search" id="dd-srch-err"></div>
+        <span class="loop-field__helper loop-field__helper--error">Error message here</span>
+      </div>
+      <div class="loop-field loop-field--select loop-field--disabled pv-field">
+        <label data-label for="dd-srch-dis">Disabled</label>
+        <div class="osui-dropdown-search" id="dd-srch-dis"></div>
+      </div>
+    </div>
+
+    <div class="pv-row pv-row--end">
+      <span class="pv-label pv-label--full">Sizes — one <code>.loop-field--*</code> scales the field (matches the single Select ramp 56/48/40/32)</span>
+      <div class="loop-field loop-field--select loop-field--xlarge pv-field">
+        <label data-label for="dd-srch-xlarge">xLarge (56px)</label>
+        <div class="osui-dropdown-search" id="dd-srch-xlarge"></div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--large pv-field">
+        <label data-label for="dd-srch-large">Large (48px)</label>
+        <div class="osui-dropdown-search" id="dd-srch-large"></div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--regular pv-field">
+        <label data-label for="dd-srch-regular">Regular (40px)</label>
+        <div class="osui-dropdown-search" id="dd-srch-regular"></div>
+      </div>
+      <div class="loop-field loop-field--select loop-field--small pv-field">
+        <label data-label for="dd-srch-small">Small (32px)</label>
+        <div class="osui-dropdown-search" id="dd-srch-small"></div>
+      </div>
     </div>
   </section>
 
@@ -2625,6 +2720,17 @@
       <span class="pv-label">event</span>
       <span class="pv-note" id="agpg-log">loop-pagination-changed → interact with any pager above</span>
     </div>
+
+    <div class="pv-row pv-row--stack">
+      <span class="pv-label">Server mode — <code>mode="server"</code> (aggregate paging)</span>
+      <loop-ag-grid-pagination id="agpg-server" mode="server" total-records="1240" start-index="0" page-size="50" page-sizes="20,50,100"></loop-ag-grid-pagination>
+      <span class="pv-note">Pure pager — no grid API. Driven by <code>total-records</code>/<code>start-index</code>/<code>page-size</code>; emits <code>loop-page-navigate</code> (with <code>newStartIndex</code>) and <code>loop-page-size-changed</code> (with <code>maxRecords</code>). The stub below plays OutSystems: it writes the emitted values back onto the attributes, which re-renders the pager — exactly what an aggregate refresh does.</span>
+    </div>
+
+    <div class="pv-row">
+      <span class="pv-label">event</span>
+      <span class="pv-note" id="agpg-server-log">loop-page-navigate / loop-page-size-changed → interact with the server pager above</span>
+    </div>
   </section>
 
   <!-- ============ BREADCRUMBS ============ -->
@@ -3416,6 +3522,23 @@
     agpgLog.textContent = `loop-pagination-changed → ${JSON.stringify(e.detail)}`;
   });
 
+  // Server-mode pager: play OutSystems. On the two server events, write the emitted
+  // StartIndex/MaxRecords back onto the attributes (as an aggregate refresh would),
+  // which re-renders the pager. No grid API involved.
+  const agpgServer = document.getElementById('agpg-server');
+  const agpgServerLog = document.getElementById('agpg-server-log');
+  if (agpgServer) {
+    agpgServer.addEventListener('loop-page-navigate', e => {
+      agpgServer.setAttribute('start-index', e.detail.newStartIndex);
+      agpgServerLog.textContent = `loop-page-navigate → ${JSON.stringify(e.detail)}`;
+    });
+    agpgServer.addEventListener('loop-page-size-changed', e => {
+      agpgServer.setAttribute('page-size', e.detail.maxRecords);
+      agpgServer.setAttribute('start-index', e.detail.newStartIndex); // reset to first page
+      agpgServerLog.textContent = `loop-page-size-changed → ${JSON.stringify(e.detail)}`;
+    });
+  }
+
   // Surface System Alert events.
   const saLog = document.getElementById('sysalert-log');
   document.querySelectorAll('loop-system-alert').forEach(el => {
@@ -3458,7 +3581,7 @@
         same library in ODC; here we init it directly so the preview is the live widget, styled
         to The Loop spec by loop-dropdown-tags.css. Note we load the provider's JS only — its
         CSS already reaches the page inside outsystems-ui.css (layer 1), exactly as in ODC.
-        (Dropdown SEARCH is not shipping; only the Tags variant is initialised below.) -->
+        Drives BOTH Tags (multi-select) and the revived Dropdown Search (single-select) below. -->
 <script src="vendor/virtual-select/virtual-select.min.js"></script>
 <!-- The Loop Tags behaviour layer: one-line "+N" fit + the field-side search proxy. -->
 <script src="../src/components/loop-dropdown-tags.js"></script>
@@ -3514,6 +3637,38 @@
   // recomputes per size automatically.
   ['xlarge', 'large', 'regular', 'small'].forEach(function (size) {
     VirtualSelect.init({ ...ddTagsBase, ele: '#dd-tags-' + size, options: ddTagOptions, selectedValue: ddTagSelected });
+  });
+
+  // Dropdown SEARCH — the SAME VirtualSelect library in its single-select searchable form
+  // (Interaction.DropdownSearch in ODC). No tags, no fit-script — the provider's own balloon
+  // search does the filtering. Styled by loop-dropdown-search.css. The target divs already carry
+  // the osui-dropdown-search class, which VirtualSelect preserves on the .vscomp-ele root.
+  const ddSearchOptions = [
+    { label: 'Patricia Wesley', value: 'pw' },
+    { label: 'Bridget Hernandez', value: 'bh' },
+    { label: 'Camila Stevenson', value: 'cs' },
+    { label: 'Carl Vedder', value: 'cv' },
+    { label: 'Edward Kim', value: 'ek' },
+    { label: 'Andrea Lopez', value: 'al' },
+  ];
+  const ddSearchBase = {
+    multiple: false,
+    showValueAsTags: false,
+    search: true,                    // the single-select searchable variant (balloon search input)
+    hideClearButton: false,
+    placeholder: 'Select...',
+    searchPlaceholderText: 'Search',
+    noOptionsText: 'Nothing to show',
+    optionHeight: '37px',
+    dropboxWrapper: 'body',          // ODC parity — balloon appended to <body>; CSS scopes on the mirrored .vscomp-wrapper.has-search-input:not(.multiple)
+  };
+
+  VirtualSelect.init({ ...ddSearchBase, ele: '#dd-srch-ph',  options: ddSearchOptions });
+  VirtualSelect.init({ ...ddSearchBase, ele: '#dd-srch-def', options: ddSearchOptions, selectedValue: 'pw' });
+  VirtualSelect.init({ ...ddSearchBase, ele: '#dd-srch-err', options: ddSearchOptions });
+  VirtualSelect.init({ ...ddSearchBase, ele: '#dd-srch-dis', options: ddSearchOptions, selectedValue: 'pw', disabled: true });
+  ['xlarge', 'large', 'regular', 'small'].forEach(function (size) {
+    VirtualSelect.init({ ...ddSearchBase, ele: '#dd-srch-' + size, options: ddSearchOptions, selectedValue: 'pw' });
   });
 </script>
 

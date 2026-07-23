@@ -1,0 +1,310 @@
+/* loop-dropdown-search.css — Dropdown SEARCH (single-select, searchable).
+   A restyle of the OutSystems VirtualSelect provider in its SINGLE-select form
+   (Interaction.DropdownSearch). ExtendedClass hook: `osui-dropdown-search` — already OSUI's
+   own class on the .vscomp-ele root, we simply scope to it; nothing here mutates OSUI internals.
+
+   Revived 2026-07-23 (it was descoped 2026-07-07). Sibling of loop-dropdown-tags.css, which
+   restyles the SAME provider in its multi-select "Tags" form — this file reuses that file's
+   proven techniques (inset-shadow ring, FA-glyph icons, mirrored-class balloon scoping) but for
+   single-select: the value is ONE text label (no chips, no "+N", no fit-script), and the search
+   input lives in the provider's own balloon rather than in the field.
+
+   Closed field matches the native single Select (loop-dropdown.css §1): the --loop-select-*
+   scale (40px box · 13px text · 16px chevron · 8px radius). Open balloon matches the Select
+   popup: 8px radius, --shadow-low, 14px rows with a right-aligned selected check.
+
+   THE CASCADE WE ARE FIGHTING (same as Tags — all ships inside outsystems-ui.css):
+     · OSUI bundles VirtualSelect v1.1.5's stylesheet verbatim then layers its own theme; our
+       rules land after both, so prefixing with `.osui-dropdown-search` (+0,1,0) out-specifies
+       the provider/theme rules rather than spraying !important.
+     · The chevron is NOT `.vscomp-arrow` (OSUI hides it) — OSUI draws the caret as an icon-font
+       glyph on `.vscomp-toggle-button::after`; we re-point that pseudo at the FA family + codepoint.
+     · The clear × is OSUI's icon-font glyph on `.vscomp-clear-icon::after`; the provider's two
+       rotated background bars underneath are already neutralised by OSUI.
+   ===================================================================== */
+
+/* =====================================================================
+   1) Field box — the single Select surface (--loop-select-* scale)
+   ===================================================================== */
+.osui-dropdown-search {
+  /* single-select cluster is a 16px chevron (Select scale), NOT the Tags 20px */
+  --loop-select-icon-size: 16px;
+}
+
+.osui-dropdown-search .vscomp-toggle-button {
+  --vscomp-toogle-btn-arrow-size: var(--loop-select-icon-size, 16px);
+
+  height: var(--loop-select-h, 40px);
+  min-height: var(--loop-select-h, 40px);
+  line-height: normal;
+
+  background-color: var(--color-bg-container-on-light-lowest);
+  /* Outline is an INSET shadow, not a border, so it occupies zero layout (same reasoning as
+     loop-dropdown-tags.css §1 — the provider pins the toggle height, a real border would grow it). */
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-default);
+  border-radius: var(--loop-select-radius);
+  color: var(--color-text-on-light-default);
+
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-text-size, 13px);
+}
+
+/* Padding. Carry the wrapper class to out-specify OSUI's toggle padding rule. The right side
+   reserves the gutter the absolutely-positioned icon cluster lives in (§3): 16 edge + 16 chevron
+   + 8 gap + 16 clear + 8 gap = 64px. */
+.osui-dropdown-search .vscomp-wrapper .vscomp-toggle-button {
+  padding: var(--loop-select-padding-block, 11px)
+           calc(var(--loop-select-padding-inline, 16px)
+                + var(--loop-select-icon-size, 16px)
+                + var(--loop-field-gap, 8px)
+                + var(--loop-select-icon-size, 16px)
+                + var(--loop-field-gap, 8px))
+           var(--loop-select-padding-block, 11px)
+           var(--loop-select-padding-inline, 16px);
+  gap: var(--loop-field-gap, 8px);
+}
+
+.osui-dropdown-search .vscomp-toggle-button:hover {
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-emphasis);
+}
+
+/* Focus — the design's own 2px ring; inset shadow so the thicker ring still costs zero layout.
+   The :focus-within arm matches loop-dropdown-tags.css: the provider adds `.focused` only while
+   the balloon is open, so after Escape (caret kept in the field) only :focus-within still shows
+   the ring (WCAG 2.4.7). */
+.osui-dropdown-search .vscomp-wrapper.focused .vscomp-toggle-button,
+.osui-dropdown-search .vscomp-wrapper:focus .vscomp-toggle-button,
+.osui-dropdown-search .vscomp-wrapper:focus-visible .vscomp-toggle-button,
+.osui-dropdown-search .vscomp-wrapper:focus-within .vscomp-toggle-button {
+  box-shadow: inset 0 0 0 2px var(--color-outline-on-light-link-focused);
+  outline: none;
+}
+
+/* =====================================================================
+   2) Value / placeholder — a single text label (NOT chips)
+   ===================================================================== */
+.osui-dropdown-search .vscomp-value {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-text-size, 13px);
+  line-height: var(--loop-select-text-leading, 14px);
+  letter-spacing: var(--loop-select-text-tracking, 0.5px);
+  color: var(--color-text-on-light-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Placeholder — the subdued alpha the sibling Text Field / Tags use, NOT the orphan
+   --color-text-on-light-subdued (FND-020 / FND-071 lineage). */
+.osui-dropdown-search .vscomp-wrapper:not(.has-value) .vscomp-value {
+  color: var(--color-neutral-alpha-57);
+  opacity: 1;
+}
+
+/* =====================================================================
+   3) Right icon cluster — clear × + chevron ⌄  (absolutely positioned by OSUI)
+      Figma single Select: chevron 16px at the 16px edge; clear-all 16px one 8px gap to its left
+      → clear right = 16 + 16 + 8 = 40px.
+   ===================================================================== */
+.osui-dropdown-search .vscomp-toggle-button::after {          /* chevron glyph */
+  right: var(--loop-select-padding-inline, 16px);
+  color: var(--color-icon-on-light-default);
+}
+
+.osui-dropdown-search .vscomp-clear-button,
+.osui-dropdown-search .vscomp-wrapper:not(.text-direction-rtl).has-value .vscomp-clear-button {
+  right: calc(var(--loop-select-padding-inline, 16px)
+              + var(--loop-select-icon-size, 16px)
+              + var(--loop-field-gap, 8px));               /* 40px */
+  top: 50%;
+  margin-top: 0;
+  transform: translateY(-50%);
+  width: var(--loop-select-icon-size, 16px);
+  height: var(--loop-select-icon-size, 16px);
+  border-radius: 0;
+}
+
+.osui-dropdown-search .vscomp-clear-button:hover {
+  background-color: transparent;
+}
+
+.osui-dropdown-search .vscomp-clear-button:focus-visible {
+  outline: 2px solid var(--color-outline-on-light-link-focused);
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   4) Icons — FA 6 Pro glyphs (re-point OSUI's icon-font ::after pseudo-elements,
+      exactly as loop-search.css / loop-datepicker.css / loop-dropdown-tags.css §5).
+   ===================================================================== */
+.osui-dropdown-search .vscomp-toggle-button::after,
+.osui-dropdown-search .vscomp-clear-icon::after {
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-icon-on-light-default);
+}
+
+/* chevron-down */
+.osui-dropdown-search .vscomp-toggle-button::after {
+  content: "\f078";                                    /* fa-chevron-down */
+  font-size: var(--loop-select-icon-size, 16px);
+}
+
+/* xmark (clear-all) — neutralise the provider's two rotated background bars so only the glyph shows */
+.osui-dropdown-search .vscomp-clear-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.osui-dropdown-search .vscomp-clear-icon::before {
+  display: none;
+}
+.osui-dropdown-search .vscomp-clear-icon::after {
+  content: "\f00d";                                    /* fa-xmark */
+  position: static;
+  width: auto;
+  height: auto;
+  background: none;
+  transform: none;
+  text-indent: 0;
+  font-size: var(--loop-select-icon-size, 16px);
+}
+
+/* =====================================================================
+   5) States — inherited from the Field Wrapper, matching loop-dropdown.css /
+      loop-dropdown-tags.css §6. All re-colour the same inset ring §1 draws (never a real
+      border, or the field would change height between states).
+   ===================================================================== */
+.loop-field--error .osui-dropdown-search .vscomp-toggle-button,
+.osui-dropdown-search.osui-dropdown--not-valid .vscomp-toggle-button {
+  background-color: var(--color-bg-container-state-error-low);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-state-error-high);
+}
+
+.loop-field--warning .osui-dropdown-search .vscomp-toggle-button {
+  background-color: var(--color-domain-state-warning-low);
+  box-shadow: inset 0 0 0 1px var(--color-outline-on-light-state-warning-high);
+}
+
+.loop-field--disabled .osui-dropdown-search .vscomp-toggle-button,
+.osui-dropdown-search.vscomp-ele[disabled] .vscomp-toggle-button {
+  background-color: var(--color-domain-state-disable-low);
+  /* disabled outline is white-48 over the #dae3eb fill — a light inner edge (do NOT reuse the
+     fill colour, the ring would vanish). Same as loop-dropdown-tags.css §6. */
+  box-shadow: inset 0 0 0 1px var(--color-gray-alpha-white-48);
+  color: var(--color-text-on-light-state-disabled);
+}
+.loop-field--disabled .osui-dropdown-search .vscomp-value,
+.osui-dropdown-search.vscomp-ele[disabled] .vscomp-value {
+  color: var(--color-text-on-light-state-disabled);
+}
+
+/* =====================================================================
+   6) Option list — the open balloon (matches the single Select popup)
+      SCOPING RULE (load-bearing, same lesson as loop-dropdown-tags.css §7): in ODC the provider
+      appends the balloon to <body> as a `.vscomp-dropbox-wrapper` that MIRRORS the wrapper's
+      classes — but NOT the OSUI `osui-dropdown-search` root class — so a root-scoped rule would
+      never reach it. Scope on the mirrored provider classes instead:
+      `.vscomp-wrapper.has-search-input:not(.multiple)` — `.has-search-input` is the Search
+      variant's marker, `:not(.multiple)` excludes the Tags balloon (which is `.multiple`).
+   ===================================================================== */
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-dropbox {
+  background-color: var(--color-bg-container-on-light-lowest);
+  border-radius: var(--loop-select-list-radius, 8px);
+  box-shadow: var(--loop-select-list-shadow);          /* 0 2px 8px — the single Select popup shadow */
+  padding: 0;
+}
+
+/* Balloon search input — Open Sans, subdued placeholder, no provider chrome */
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-search-input {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-text-size, 13px);
+  color: var(--color-text-on-light-default);
+}
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-search-input::placeholder {
+  color: var(--color-neutral-alpha-57);
+  opacity: 1;
+}
+
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option {
+  background-color: var(--color-bg-container-on-light-lowest);
+  padding: 0 var(--loop-select-option-padding-inline, 12px);
+}
+
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option-text {
+  width: auto;
+  flex: 1;
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-option-text-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.5;
+  color: var(--color-text-on-light-default);
+}
+
+/* Selected row — #e7edf3 fill + a right-aligned FA check (same glyph pattern as §4). */
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option.selected {
+  background-color: var(--loop-select-option-selected-bg);
+}
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option.selected::after {
+  content: "\f00c";                                    /* fa-check */
+  font-family: var(--font-family-icon, "Font Awesome 6 Pro");
+  font-weight: var(--font-weight-icon-solid, 900);
+  font-size: var(--loop-select-option-check-size, 16px);
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-icon-on-light-default);
+  margin-left: var(--loop-select-option-check-gap, 8px);
+  flex-shrink: 0;
+}
+
+/* Hover / keyboard-focused row — one step lighter than the selected fill; selected wins. */
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option.focused {
+  background-color: var(--color-bg-container-on-light-low);
+}
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-option.selected.focused {
+  background-color: var(--loop-select-option-selected-bg);
+}
+
+/* Empty state ("Nothing to show") */
+.vscomp-wrapper.has-search-input:not(.multiple) .vscomp-no-options {
+  font-family: var(--font-family-base, "Open Sans", system-ui, sans-serif);
+  font-size: var(--loop-select-option-text-size, 14px);
+  color: var(--color-text-on-light-subdued);
+}
+
+/* =====================================================================
+   7) Sizes — the Field Wrapper cascade, matching the single Select ramp (loop-dropdown.css §2):
+      height 56/48/40/32, vpadding 18/14/11/8, text 16/14/13/12. One modifier re-points the
+      --loop-select-* props the rules above already read. Regular is the token default but is
+      re-declared so a field nested under an outer sized wrapper still resolves to its own size.
+      The body-appended balloon inherits none of this — correct, the option list is size-independent.
+   ===================================================================== */
+.loop-field--xlarge .osui-dropdown-search {
+  --loop-select-h: 56px;
+  --loop-select-padding-block: var(--loop-field-padding-block, 18px);
+  --loop-select-text-size: 16px;    --loop-select-text-leading: 16px;
+}
+.loop-field--large .osui-dropdown-search {
+  --loop-select-h: 48px;
+  --loop-select-padding-block: 14px;
+  --loop-select-text-size: 14px;    --loop-select-text-leading: 16px;
+}
+.loop-field--regular .osui-dropdown-search {
+  --loop-select-h: 40px;
+  --loop-select-padding-block: 11px;
+  --loop-select-text-size: 13px;    --loop-select-text-leading: 14px;
+}
+.loop-field--small .osui-dropdown-search {
+  --loop-select-h: 32px;
+  --loop-select-padding-block: 8px;
+  --loop-select-padding-inline: var(--space-xsmall, 12px);
+  --loop-select-text-size: 12px;    --loop-select-text-leading: 12px;
+}

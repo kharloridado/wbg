@@ -51,8 +51,11 @@
   /* =========================================================================
      Select / Dropdown — restyle of the native single-Select Dropdown.
      Reuses the Text Field state colours but has its own pill box (40px tall, 13px text).
-     NOTE: Dropdown SEARCH (the other VirtualSelect variant) is still NOT shipping.
-     Dropdown TAGS was rebuilt from scratch 2026-07-14 — its tokens are the block below.
+     These --loop-select-* tokens are shared by THREE surfaces: the native Dropdown
+     (div + <select>) in src/blocks/loop-dropdown.css, AND the single-select searchable
+     Dropdown SEARCH (VirtualSelect) — revived 2026-07-23 — in src/blocks/loop-dropdown-search.css
+     (which reuses the field scale here + the option-list tokens in the Tags block below).
+     Dropdown TAGS (multi-select) was rebuilt 2026-07-14 — its own tokens are the block below.
      ========================================================================= */
   --loop-select-h:                40px;                        /* pinned height of the field box */
   --loop-select-radius:           var(--radius-medium);        /* 8px soft-rounded — default, shared with the Text Field. Rounded (32px pill) variant via .loop-field--rounded. */
